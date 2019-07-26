@@ -121,9 +121,12 @@ namespace System.Net.Security.Tests
                         false));
 
                     Assert.NotNull(e.InnerException);
-                    Assert.True(e.InnerException.Message.Contains("SSL_ERROR_SSL"));
-                    Assert.NotNull(e.InnerException.InnerException);
-                    Assert.True(e.InnerException.InnerException.Message.Contains("protocol"));
+                    if (!PlatformDetection.IsMono)
+                    {
+                        Assert.True(e.InnerException.Message.Contains("SSL_ERROR_SSL"));
+                        Assert.NotNull(e.InnerException.InnerException);
+                        Assert.True(e.InnerException.InnerException.Message.Contains("protocol"));
+                    }
                 }
             }
 

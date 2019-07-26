@@ -216,17 +216,35 @@ options. This feature is experimental.
 .TP
 .I llvmopts=[options]
 Use this option to add more flags to the built-in set of flags passed to the
-LLVM optimizer.   The list of possible flags that can be passed can be
-obtained by calling the bundled 
+LLVM optimizer.   When you invoke the 
+.I mono
+command with the 
+.I --aot=llvm 
+it displays the current list of flags that are being passed to the 
 .I opt
-program that comes with Mono.
+command.  
+.I The list of possible flags that can be passed can be
+obtained by calling the bundled 
+.I opt 
+program that comes with Mono, and calling it like this:
+.nf
+
+	opt --help
+
+.fi
+
 .TP
 .I llvmllc=[options]
 Use this option to add more flags to the built-in set of flags passed to the
 LLVM static compiler (llc).   The list of possible flags that can be passed can be
 obtained by calling the bundled 
 .I llc
-program that comes with Mono.
+program that comes with Mono, and calling it like this:
+.nf
+
+	llc --help
+
+.fi
 .TP
 .I llvm-outfile=[filename]
 Gives the path for the temporary LLVM bitcode file created during AOT.
@@ -249,6 +267,9 @@ Print the architecture the AOT in this copy of Mono targets and quit.
 Generates all required wrappers, so that it is possible to run --interpreter without
 any code generation at runtime.  This option only makes sense with \fBmscorlib.dll\fR.
 Embedders can set
+.TP
+.I depfile=[filename]
+Outputs a gcc -M style dependency file.
 
 .nf
 mono_jit_set_aot_mode (MONO_AOT_MODE_INTERP);
@@ -638,6 +659,9 @@ mscorlib and assemblies located on the global assembly cache.
 \fB-V\fR, \fB--version\fR
 Prints JIT version information (system configuration, release number
 and branch names if available). 
+.TP
+\fB--version=number\fR
+Print version number only.
 
 
 .SH DEVELOPMENT OPTIONS

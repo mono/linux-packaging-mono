@@ -57,6 +57,7 @@ namespace System.Net.Security.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono)]
         public async Task SslStream_StreamToStream_ServerInitiatedCloseNotify_Ok()
         {
             VirtualNetwork network = new VirtualNetwork();
@@ -89,6 +90,7 @@ namespace System.Net.Security.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono)]
         public async Task SslStream_StreamToStream_ClientInitiatedCloseNotify_Ok()
         {
             VirtualNetwork network = new VirtualNetwork();

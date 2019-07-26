@@ -39,6 +39,7 @@
 #include <mono/metadata/metadata-internals.h>
 #include <mono/metadata/appdomain.h>
 #include <mono/metadata/mono-config.h>
+#include <mono/metadata/mono-hash-internals.h>
 #include <mono/metadata/threads-types.h>
 #include <mono/metadata/runtime.h>
 #include <mono/metadata/w32mutex.h>
@@ -436,14 +437,14 @@ mono_domain_create (void)
 	domain->mp = mono_mempool_new ();
 	domain->code_mp = mono_code_manager_new ();
 	domain->lock_free_mp = lock_free_mempool_new ();
-	domain->env = mono_g_hash_table_new_type ((GHashFunc)mono_string_hash_internal, (GCompareFunc)mono_string_equal_internal, MONO_HASH_KEY_VALUE_GC, MONO_ROOT_SOURCE_DOMAIN, domain, "Domain Environment Variable Table");
+	domain->env = mono_g_hash_table_new_type_internal ((GHashFunc)mono_string_hash_internal, (GCompareFunc)mono_string_equal_internal, MONO_HASH_KEY_VALUE_GC, MONO_ROOT_SOURCE_DOMAIN, domain, "Domain Environment Variable Table");
 	domain->domain_assemblies = NULL;
 	domain->assembly_bindings = NULL;
 	domain->assembly_bindings_parsed = FALSE;
 	domain->class_vtable_array = g_ptr_array_new ();
 	domain->proxy_vtable_hash = g_hash_table_new ((GHashFunc)mono_ptrarray_hash, (GCompareFunc)mono_ptrarray_equal);
 	mono_jit_code_hash_init (&domain->jit_code_hash);
-	domain->ldstr_table = mono_g_hash_table_new_type ((GHashFunc)mono_string_hash_internal, (GCompareFunc)mono_string_equal_internal, MONO_HASH_KEY_VALUE_GC, MONO_ROOT_SOURCE_DOMAIN, domain, "Domain String Pool Table");
+	domain->ldstr_table = mono_g_hash_table_new_type_internal ((GHashFunc)mono_string_hash_internal, (GCompareFunc)mono_string_equal_internal, MONO_HASH_KEY_VALUE_GC, MONO_ROOT_SOURCE_DOMAIN, domain, "Domain String Pool Table");
 	domain->num_jit_info_table_duplicates = 0;
 	domain->jit_info_table = mono_jit_info_table_new (domain);
 	domain->jit_info_free_queue = NULL;
@@ -709,8 +710,13 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 	mono_defaults.thread_class = mono_class_load_from_name (
                 mono_defaults.corlib, "System.Threading", "Thread");
 
+#ifdef ENABLE_NETCORE
+	/* There is only one thread class */
+	mono_defaults.internal_thread_class = mono_defaults.thread_class;
+#else
 	mono_defaults.internal_thread_class = mono_class_load_from_name (
                 mono_defaults.corlib, "System.Threading", "InternalThread");
+#endif
 
 	mono_defaults.appdomain_class = mono_class_get_appdomain_class ();
 
@@ -741,8 +747,13 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 	mono_defaults.method_info_class = mono_class_load_from_name (
 		mono_defaults.corlib, "System.Reflection", "MethodInfo");
 
+#ifdef ENABLE_NETCORE
+	mono_defaults.stack_frame_class = mono_class_load_from_name (
+	        mono_defaults.corlib, "System.Diagnostics", "MonoStackFrame");
+#else
 	mono_defaults.stack_frame_class = mono_class_load_from_name (
 	        mono_defaults.corlib, "System.Diagnostics", "StackFrame");
+#endif
 
 	mono_defaults.marshal_class = mono_class_load_from_name (
 	        mono_defaults.corlib, "System.Runtime.InteropServices", "Marshal");
@@ -776,7 +787,6 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 	mono_defaults.generic_ienumerator_class = mono_class_load_from_name (
 	        mono_defaults.corlib, "System.Collections.Generic", "IEnumerator`1");
 
-#ifndef ENABLE_NETCORE
 	ERROR_DECL (error);
 
 	MonoClass *threadpool_wait_callback_class = mono_class_load_from_name (
@@ -785,7 +795,6 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 	mono_defaults.threadpool_perform_wait_callback_method = mono_class_get_method_from_name_checked (
 		threadpool_wait_callback_class, "PerformWaitCallback", 0, 0, error);
 	mono_error_assert_ok (error);
-#endif
 
 	domain->friendly_name = g_path_get_basename (filename);
 
@@ -948,18 +957,6 @@ mono_domain_set_internal_with_options (MonoDomain *domain, gboolean migrate_exce
 }
 
 /**
- * mono_domain_set_internal:
- * \param domain the new domain
- *
- * Sets the current domain to \p domain.
- */
-void
-mono_domain_set_internal (MonoDomain *domain)
-{
-	mono_domain_set_internal_with_options (domain, TRUE);
-}
-
-/**
  * mono_domain_foreach:
  * \param func function to invoke with the domain data
  * \param user_data user-defined pointer that is passed to the supplied \p func fo reach domain
@@ -1036,9 +1033,9 @@ mono_domain_assembly_open_internal (MonoDomain *domain, const char *name)
 	if (domain != mono_domain_get ()) {
 		current = mono_domain_get ();
 
-		mono_domain_set (domain, FALSE);
+		mono_domain_set_fast (domain, FALSE);
 		ass = mono_assembly_request_open (name, &req, NULL);
-		mono_domain_set (current, FALSE);
+		mono_domain_set_fast (current, FALSE);
 	} else {
 		ass = mono_assembly_request_open (name, &req, NULL);
 	}

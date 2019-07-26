@@ -241,6 +241,8 @@ CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
+COREARCH = @COREARCH@
+CORETARGETS = @CORETARGETS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CSC = @CSC@
@@ -371,8 +373,10 @@ PATHSEP = @PATHSEP@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PIDTYPE = @PIDTYPE@
 PKG_CONFIG = @PKG_CONFIG@
+PLATFORM_AOT_PREFIX = @PLATFORM_AOT_PREFIX@
 PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
+RID = @RID@
 SEARCHSEP = @SEARCHSEP@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -489,9 +493,11 @@ MONOTOUCH_SUBDIRS = $(libgc_dir) mono
 @ENABLE_MSVC_TRUE@build_with_msvc = msvc
 @ENABLE_MSVC_FALSE@build_without_msvc = msvc
 @ENABLE_MSVC_TRUE@build_without_msvc = 
+@ENABLE_NETCORE_FALSE@update_submodules = update_submodules
+@ENABLE_NETCORE_TRUE@update_submodules = 
 SUBDIRS = $(build_with_msvc) mk po $(libgc_dir) llvm mono $(ikvm_native_dir) support data runtime scripts man samples $(tools_dir) $(build_without_msvc) $(docs_dir) acceptance-tests
 # Keep in sync with SUBDIRS
-DIST_SUBDIRS = $(build_with_msvc) m4 mk po $(libgc_dir) llvm mono ikvm-native support data runtime scripts man samples tools $(build_without_msvc) docs acceptance-tests
+DIST_SUBDIRS = $(build_with_msvc) m4 mk po $(libgc_dir) llvm mono ikvm-native support data runtime scripts man samples tools $(build_without_msvc) docs acceptance-tests netcore
 EXTRA_DIST = \
 	README.md 		\
 	LICENSE 		\
@@ -1009,7 +1015,7 @@ uninstall-am:
 .PRECIOUS: Makefile
 
 
-all: update_submodules
+all: $(update_submodules)
 
 update_submodules:
 	@cd $(srcdir) && scripts/update_submodules.sh

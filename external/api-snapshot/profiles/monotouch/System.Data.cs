@@ -595,6 +595,38 @@ namespace System.Data
         public DataException(string s) { }
         public DataException(string s, System.Exception innerException) { }
     }
+    public static partial class DataReaderExtensions
+    {
+        public static bool GetBoolean(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static byte GetByte(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static long GetBytes(this System.Data.Common.DbDataReader reader, string name, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw null; }
+        public static char GetChar(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static long GetChars(this System.Data.Common.DbDataReader reader, string name, long dataOffset, char[] buffer, int bufferOffset, int length) { throw null; }
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+        public static System.Data.Common.DbDataReader GetData(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static string GetDataTypeName(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static System.DateTime GetDateTime(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static decimal GetDecimal(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static double GetDouble(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static System.Type GetFieldType(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static System.Threading.Tasks.Task<T> GetFieldValueAsync<T>(this System.Data.Common.DbDataReader reader, string name, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) { throw null; }
+        public static T GetFieldValue<T>(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static float GetFloat(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static System.Guid GetGuid(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static short GetInt16(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static int GetInt32(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static long GetInt64(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+        public static System.Type GetProviderSpecificFieldType(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+        public static object GetProviderSpecificValue(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static System.IO.Stream GetStream(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static string GetString(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static System.IO.TextReader GetTextReader(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static object GetValue(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static bool IsDBNull(this System.Data.Common.DbDataReader reader, string name) { throw null; }
+        public static System.Threading.Tasks.Task<bool> IsDBNullAsync(this System.Data.Common.DbDataReader reader, string name, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) { throw null; }
+    }
     [System.ComponentModel.DefaultPropertyAttribute("RelationName")]
     [System.ComponentModel.TypeConverterAttribute("System.Data.RelationshipConverter")]
     public partial class DataRelation
@@ -808,6 +840,7 @@ namespace System.Data
         object System.ComponentModel.ICustomTypeDescriptor.GetPropertyOwner(System.ComponentModel.PropertyDescriptor pd) { throw null; }
     }
     [System.ComponentModel.DefaultPropertyAttribute("DataSetName")]
+    [System.ComponentModel.ToolboxItemAttribute("Microsoft.VSDesigner.Data.VS.DataSetToolboxItem, Microsoft.VSDesigner, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
     [System.Xml.Serialization.XmlRootAttribute("DataSet")]
     [System.Xml.Serialization.XmlSchemaProviderAttribute("GetDataSetSchema")]
     [System.SerializableAttribute]
@@ -937,10 +970,10 @@ namespace System.Data
         Utc = 4,
     }
     [System.AttributeUsageAttribute(System.AttributeTargets.All)]
-    [System.ObsoleteAttribute("DataSysDescriptionAttribute has been deprecated.  http://go.microsoft.com/fwlink/?linkid=14202", false)]
+    [System.ObsoleteAttribute("DataSysDescriptionAttribute has been deprecated.  https://go.microsoft.com/fwlink/?linkid=14202", false)]
     public partial class DataSysDescriptionAttribute : System.ComponentModel.DescriptionAttribute
     {
-        [System.ObsoleteAttribute("DataSysDescriptionAttribute has been deprecated.  http://go.microsoft.com/fwlink/?linkid=14202", false)]
+        [System.ObsoleteAttribute("DataSysDescriptionAttribute has been deprecated.  https://go.microsoft.com/fwlink/?linkid=14202", false)]
         public DataSysDescriptionAttribute(string description) { }
         public override string Description { get { throw null; } }
     }
@@ -2137,7 +2170,7 @@ namespace System.Data.Common
         public System.Nullable<int> NumericScale { get { throw null; } protected set { } }
         public string UdtAssemblyQualifiedName { get { throw null; } protected set { } }
     }
-    public abstract partial class DbCommand : System.ComponentModel.Component, System.Data.IDbCommand, System.IDisposable
+    public abstract partial class DbCommand : System.ComponentModel.Component, System.Data.IDbCommand, System.IAsyncDisposable, System.IDisposable
     {
         protected DbCommand() { }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -2174,6 +2207,7 @@ namespace System.Data.Common
         public abstract void Cancel();
         protected abstract System.Data.Common.DbParameter CreateDbParameter();
         public System.Data.Common.DbParameter CreateParameter() { throw null; }
+        public virtual System.Threading.Tasks.ValueTask DisposeAsync() { throw null; }
         protected abstract System.Data.Common.DbDataReader ExecuteDbDataReader(System.Data.CommandBehavior behavior);
         protected virtual System.Threading.Tasks.Task<System.Data.Common.DbDataReader> ExecuteDbDataReaderAsync(System.Data.CommandBehavior behavior, System.Threading.CancellationToken cancellationToken) { throw null; }
         public abstract int ExecuteNonQuery();
@@ -2189,6 +2223,7 @@ namespace System.Data.Common
         public System.Threading.Tasks.Task<object> ExecuteScalarAsync() { throw null; }
         public virtual System.Threading.Tasks.Task<object> ExecuteScalarAsync(System.Threading.CancellationToken cancellationToken) { throw null; }
         public abstract void Prepare();
+        public virtual System.Threading.Tasks.Task PrepareAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) { throw null; }
         System.Data.IDbDataParameter System.Data.IDbCommand.CreateParameter() { throw null; }
         System.Data.IDataReader System.Data.IDbCommand.ExecuteReader() { throw null; }
         System.Data.IDataReader System.Data.IDbCommand.ExecuteReader(System.Data.CommandBehavior behavior) { throw null; }
@@ -2232,7 +2267,7 @@ namespace System.Data.Common
         protected abstract void SetRowUpdatingHandler(System.Data.Common.DbDataAdapter adapter);
         public virtual string UnquoteIdentifier(string quotedIdentifier) { throw null; }
     }
-    public abstract partial class DbConnection : System.ComponentModel.Component, System.Data.IDbConnection, System.IDisposable
+    public abstract partial class DbConnection : System.ComponentModel.Component, System.Data.IDbConnection, System.IAsyncDisposable, System.IDisposable
     {
         protected DbConnection() { }
         [System.ComponentModel.DefaultValueAttribute("")]
@@ -2250,12 +2285,18 @@ namespace System.Data.Common
         public abstract System.Data.ConnectionState State { get; }
         public virtual event System.Data.StateChangeEventHandler StateChange { add { } remove { } }
         protected abstract System.Data.Common.DbTransaction BeginDbTransaction(System.Data.IsolationLevel isolationLevel);
+        protected virtual System.Threading.Tasks.ValueTask<System.Data.Common.DbTransaction> BeginDbTransactionAsync(System.Data.IsolationLevel isolationLevel, System.Threading.CancellationToken cancellationToken) { throw null; }
         public System.Data.Common.DbTransaction BeginTransaction() { throw null; }
         public System.Data.Common.DbTransaction BeginTransaction(System.Data.IsolationLevel isolationLevel) { throw null; }
+        public System.Threading.Tasks.ValueTask<System.Data.Common.DbTransaction> BeginTransactionAsync(System.Data.IsolationLevel isolationLevel, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) { throw null; }
+        public System.Threading.Tasks.ValueTask<System.Data.Common.DbTransaction> BeginTransactionAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) { throw null; }
         public abstract void ChangeDatabase(string databaseName);
+        public virtual System.Threading.Tasks.Task ChangeDatabaseAsync(string databaseName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) { throw null; }
         public abstract void Close();
+        public virtual System.Threading.Tasks.Task CloseAsync() { throw null; }
         public System.Data.Common.DbCommand CreateCommand() { throw null; }
         protected abstract System.Data.Common.DbCommand CreateDbCommand();
+        public virtual System.Threading.Tasks.ValueTask DisposeAsync() { throw null; }
         public virtual void EnlistTransaction(System.Transactions.Transaction transaction) { }
         public virtual System.Data.DataTable GetSchema() { throw null; }
         public virtual System.Data.DataTable GetSchema(string collectionName) { throw null; }
@@ -2421,7 +2462,7 @@ namespace System.Data.Common
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public bool ShouldSerializeKeyRestrictions() { throw null; }
     }
-    public abstract partial class DbDataReader : System.MarshalByRefObject, System.Collections.IEnumerable, System.Data.IDataReader, System.Data.IDataRecord, System.IDisposable
+    public abstract partial class DbDataReader : System.MarshalByRefObject, System.Collections.IEnumerable, System.Data.IDataReader, System.Data.IDataRecord, System.IAsyncDisposable, System.IDisposable
     {
         protected DbDataReader() { }
         public abstract int Depth { get; }
@@ -2433,9 +2474,11 @@ namespace System.Data.Common
         public abstract int RecordsAffected { get; }
         public virtual int VisibleFieldCount { get { throw null; } }
         public virtual void Close() { }
+        public virtual System.Threading.Tasks.Task CloseAsync() { throw null; }
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
+        public virtual System.Threading.Tasks.ValueTask DisposeAsync() { throw null; }
         public abstract bool GetBoolean(int ordinal);
         public abstract byte GetByte(int ordinal);
         public abstract long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length);
@@ -2690,9 +2733,24 @@ namespace System.Data.Common
         protected abstract void SetParameter(int index, System.Data.Common.DbParameter value);
         protected abstract void SetParameter(string parameterName, System.Data.Common.DbParameter value);
     }
+    public static partial class DbProviderFactories
+    {
+        public static System.Data.Common.DbProviderFactory GetFactory(System.Data.Common.DbConnection connection) { throw null; }
+        public static System.Data.Common.DbProviderFactory GetFactory(System.Data.DataRow providerRow) { throw null; }
+        public static System.Data.Common.DbProviderFactory GetFactory(string providerInvariantName) { throw null; }
+        public static System.Data.DataTable GetFactoryClasses() { throw null; }
+        public static System.Collections.Generic.IEnumerable<string> GetProviderInvariantNames() { throw null; }
+        public static void RegisterFactory(string providerInvariantName, System.Data.Common.DbProviderFactory factory) { }
+        public static void RegisterFactory(string providerInvariantName, string factoryTypeAssemblyQualifiedName) { }
+        public static void RegisterFactory(string providerInvariantName, System.Type providerFactoryClass) { }
+        public static bool TryGetFactory(string providerInvariantName, out System.Data.Common.DbProviderFactory factory) { throw null; }
+        public static bool UnregisterFactory(string providerInvariantName) { throw null; }
+    }
     public abstract partial class DbProviderFactory
     {
         protected DbProviderFactory() { }
+        public virtual bool CanCreateCommandBuilder { get { throw null; } }
+        public virtual bool CanCreateDataAdapter { get { throw null; } }
         public virtual bool CanCreateDataSourceEnumerator { get { throw null; } }
         public virtual System.Data.Common.DbCommand CreateCommand() { throw null; }
         public virtual System.Data.Common.DbCommandBuilder CreateCommandBuilder() { throw null; }
@@ -2710,7 +2768,7 @@ namespace System.Data.Common
         public DbProviderSpecificTypePropertyAttribute(bool isProviderSpecificTypeProperty) { }
         public bool IsProviderSpecificTypeProperty { get { throw null; } }
     }
-    public abstract partial class DbTransaction : System.MarshalByRefObject, System.Data.IDbTransaction, System.IDisposable
+    public abstract partial class DbTransaction : System.MarshalByRefObject, System.Data.IDbTransaction, System.IAsyncDisposable, System.IDisposable
     {
         protected DbTransaction() { }
         public System.Data.Common.DbConnection Connection { get { throw null; } }
@@ -2718,9 +2776,12 @@ namespace System.Data.Common
         public abstract System.Data.IsolationLevel IsolationLevel { get; }
         System.Data.IDbConnection System.Data.IDbTransaction.Connection { get { throw null; } }
         public abstract void Commit();
+        public virtual System.Threading.Tasks.Task CommitAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) { throw null; }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
+        public virtual System.Threading.Tasks.ValueTask DisposeAsync() { throw null; }
         public abstract void Rollback();
+        public virtual System.Threading.Tasks.Task RollbackAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) { throw null; }
     }
     public enum GroupByBehavior
     {

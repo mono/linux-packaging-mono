@@ -1187,7 +1187,7 @@ namespace System.Xml
         [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
         public override System.Uri ResolveUri(System.Uri baseUri, string relativeUri) { throw null; }
     }
-    [System.ObsoleteAttribute("Use XmlReader created by XmlReader.Create() method using appropriate XmlReaderSettings instead. http://go.microsoft.com/fwlink/?linkid=14202")]
+    [System.ObsoleteAttribute("Use XmlReader created by XmlReader.Create() method using appropriate XmlReaderSettings instead. https://go.microsoft.com/fwlink/?linkid=14202")]
     [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
     public partial class XmlValidatingReader : System.Xml.XmlReader, System.Xml.IXmlLineInfo, System.Xml.IXmlNamespaceResolver
     {
@@ -1652,7 +1652,7 @@ namespace System.Xml.Schema
         [System.Xml.Serialization.XmlElementAttribute("sequence", typeof(System.Xml.Schema.XmlSchemaSequence))]
         public override System.Xml.Schema.XmlSchemaObjectCollection Items { get { throw null; } }
     }
-    [System.ObsoleteAttribute("Use System.Xml.Schema.XmlSchemaSet for schema compilation and validation. http://go.microsoft.com/fwlink/?linkid=14202")]
+    [System.ObsoleteAttribute("Use System.Xml.Schema.XmlSchemaSet for schema compilation and validation. https://go.microsoft.com/fwlink/?linkid=14202")]
     public sealed partial class XmlSchemaCollection : System.Collections.ICollection, System.Collections.IEnumerable
     {
         public XmlSchemaCollection() { }
@@ -2552,6 +2552,10 @@ namespace System.Xml.Serialization
         bool Normalized { get; set; }
         System.Xml.WhitespaceHandling WhitespaceHandling { get; set; }
     }
+    public abstract partial class SchemaImporter
+    {
+        protected SchemaImporter() { }
+    }
     [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue)]
     public partial class SoapAttributeAttribute : System.Attribute
     {
@@ -2672,7 +2676,7 @@ namespace System.Xml.Serialization
         public void Insert(int index, System.Xml.Serialization.XmlAnyElementAttribute attribute) { }
         public void Remove(System.Xml.Serialization.XmlAnyElementAttribute attribute) { }
     }
-    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue, AllowMultiple=false)]
     public partial class XmlArrayAttribute : System.Attribute
     {
         public XmlArrayAttribute() { }
@@ -2759,7 +2763,7 @@ namespace System.Xml.Serialization
         public System.Xml.Serialization.XmlTextAttribute XmlText { get { throw null; } set { } }
         public System.Xml.Serialization.XmlTypeAttribute XmlType { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue, AllowMultiple=false)]
     public partial class XmlChoiceIdentifierAttribute : System.Attribute
     {
         public XmlChoiceIdentifierAttribute() { }
@@ -2946,7 +2950,7 @@ namespace System.Xml.Serialization
         public System.Xml.XmlQualifiedName ExportTypeMapping(System.Xml.Serialization.XmlMembersMapping xmlMembersMapping) { throw null; }
         public void ExportTypeMapping(System.Xml.Serialization.XmlTypeMapping xmlTypeMapping) { }
     }
-    public partial class XmlSchemaImporter
+    public partial class XmlSchemaImporter : System.Xml.Serialization.SchemaImporter
     {
         public XmlSchemaImporter(System.Xml.Serialization.XmlSchemas schemas) { }
         public XmlSchemaImporter(System.Xml.Serialization.XmlSchemas schemas, System.Xml.Serialization.CodeIdentifiers typeIdentifiers) { }
@@ -3264,7 +3268,7 @@ namespace System.Xml.Serialization
         [System.MonoNotSupportedAttribute("")]
         public void Serialize(System.Xml.XmlWriter xmlWriter, object o, System.Xml.Serialization.XmlSerializerNamespaces namespaces, string encodingStyle, string id) { }
     }
-    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Enum | System.AttributeTargets.Interface | System.AttributeTargets.Struct)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Enum | System.AttributeTargets.Interface | System.AttributeTargets.Struct, AllowMultiple=false)]
     public sealed partial class XmlSerializerAssemblyAttribute : System.Attribute
     {
         public XmlSerializerAssemblyAttribute() { }

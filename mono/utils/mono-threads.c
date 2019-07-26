@@ -1167,7 +1167,7 @@ is_thread_in_critical_region (MonoThreadInfo *info)
 	gpointer stack_start;
 	MonoThreadUnwindState *state;
 
-	if (mono_threads_platform_in_critical_region (mono_thread_info_get_tid (info)))
+	if (mono_threads_platform_in_critical_region (info))
 		return TRUE;
 
 	/* Are we inside a system critical region? */
@@ -1342,6 +1342,13 @@ mono_thread_info_safe_suspend_and_run (MonoNativeThreadId id, gboolean interrupt
 		mono_hazard_pointer_set (hp, 1, info);
 		mono_thread_info_core_resume (info);
 		mono_threads_wait_pending_operations ();
+#ifdef USE_WINDOWS_BACKEND
+		// If we interrupt kernel but have blocking sync IO requests preventing the thread from running APC's
+		// try to abort all sync blocking IO request. This must be done after thread has been resumed, but before releasing
+		// global suspend lock (preventing other threads from supsending the thread).
+		if (interrupt_kernel)
+			mono_win32_abort_blocking_io_call (info);
+#endif
 		break;
 	case KeepSuspended:
 		THREADS_SUSPEND_DEBUG ("CALLBACK tid %p (%s): KeepSuspended\n", (void*)id, interrupt_kernel ? "int" : "");
@@ -1821,6 +1828,11 @@ mono_thread_info_uninstall_interrupt (gboolean *interrupted)
 	MonoThreadInfo *info;
 	MonoThreadInfoInterruptToken *previous_token;
 
+	/* Common to uninstall interrupt handler around OS API's affecting last error. */
+	/* This method could call OS API's on some platforms that will reset last error so make sure to restore */
+	/* last error before exit. */
+	W32_DEFINE_LAST_ERROR_RESTORE_POINT;
+
 	g_assert (interrupted);
 	*interrupted = FALSE;
 
@@ -1841,6 +1853,8 @@ mono_thread_info_uninstall_interrupt (gboolean *interrupted)
 
 	THREADS_INTERRUPT_DEBUG ("interrupt uninstall  tid %p previous_token %p interrupted %s\n",
 		mono_thread_info_get_tid (info), previous_token, *interrupted ? "TRUE" : "FALSE");
+
+	W32_RESTORE_LAST_ERROR_FROM_RESTORE_POINT;
 }
 
 static MonoThreadInfoInterruptToken*

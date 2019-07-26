@@ -65,6 +65,7 @@ namespace Mono.Debugger.Soft
         internal AssemblyMirror() { }
         public Mono.Debugger.Soft.AppDomainMirror Domain { get { throw null; } }
         public Mono.Debugger.Soft.MethodMirror EntryPoint { get { throw null; } }
+        public bool HasDebugInfo { get { throw null; } }
         public bool HasFetchedPdb { get { throw null; } }
         public bool HasPdb { get { throw null; } }
         public bool IsDynamic { get { throw null; } }
@@ -850,6 +851,7 @@ namespace Mono.Debugger.Soft
         public Mono.Debugger.Soft.Event GetNextEvent() { throw null; }
         public Mono.Debugger.Soft.Event GetNextEvent(int timeout) { throw null; }
         public Mono.Debugger.Soft.EventSet GetNextEventSet() { throw null; }
+        public Mono.Debugger.Soft.EventSet GetNextEventSet(int timeoutInMilliseconds) { throw null; }
         [System.ObsoleteAttribute("Use GetNextEventSet () instead")]
         public T GetNextEvent<T>() where T : Mono.Debugger.Soft.Event { throw null; }
         public System.Collections.Generic.IList<Mono.Debugger.Soft.ThreadMirror> GetThreads() { throw null; }

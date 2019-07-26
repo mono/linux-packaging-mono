@@ -30,6 +30,7 @@ namespace NUnit.Framework.Api
     /// skipped or was inconclusive. The Label provides a more
     /// detailed breakdown for use by client runners.
 	/// </summary>
+    [System.Serializable]
 	public class ResultState
 	{
         private readonly TestStatus status;
@@ -134,6 +135,15 @@ namespace NUnit.Framework.Api
         {
             string s = status.ToString();
             return label == null || label.Length == 0 ? s : string.Format("{0}:{1}", s, label);
+        }
+
+        public override bool Equals (object o)
+        {
+            if (!(o is ResultState that))
+                return false;
+
+            return that.status.Equals(this.status)
+                    && that.label.Equals (this.label);
         }
     }
 }

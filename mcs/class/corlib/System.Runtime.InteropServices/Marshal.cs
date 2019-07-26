@@ -41,7 +41,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 
 using System.Runtime.ConstrainedExecution;
-#if !FULL_AOT_RUNTIME && !NETCORE
+#if !FULL_AOT_RUNTIME && !NETCORE && !DISABLE_REMOTING
 using Mono.Interop;
 #endif
 
@@ -53,14 +53,14 @@ namespace System.Runtime.InteropServices
 		public static readonly int SystemMaxDBCSCharSize = 2; // don't know what this is
 		public static readonly int SystemDefaultCharSize = Environment.IsRunningOnWindows ? 2 : 1;
 
-#if !MOBILE
+#if !MOBILE || WINAOT
 		[MethodImplAttribute (MethodImplOptions.InternalCall)]
 		private extern static int AddRefInternal (IntPtr pUnk);
 #endif
 
 		public static int AddRef (IntPtr pUnk)
 		{
-#if !MOBILE
+#if !MOBILE || WINAOT
 			if (pUnk == IntPtr.Zero)
 				throw new ArgumentException ("Value cannot be null.", "pUnk");
 			return AddRefInternal (pUnk);
@@ -294,7 +294,7 @@ namespace System.Runtime.InteropServices
 
 		public static object CreateWrapperOfType (object o, Type t)
 		{
-#if FULL_AOT_RUNTIME || NETCORE
+#if FULL_AOT_RUNTIME || NETCORE || DISABLE_REMOTING
 			throw new PlatformNotSupportedException ();
 #else
 			__ComObject co = o as __ComObject;
@@ -513,8 +513,19 @@ namespace System.Runtime.InteropServices
 			if (m == null)
 				throw new ArgumentNullException ("m");
 
-			return m.GetHINSTANCE ();
+			if (m is RuntimeModule rm)
+				return RuntimeModule.GetHINSTANCE (rm.MonoModule);
+
+			return (IntPtr)(-1);
 		}
+#else
+		public static IntPtr GetHINSTANCE (Module m) => throw new PlatformNotSupportedException();
+		public static IntPtr GetIDispatchForObject (object o) => throw new PlatformNotSupportedException();
+		public static object GetTypedObjectForIUnknown (IntPtr pUnk, Type t) => throw new PlatformNotSupportedException();
+		public static bool SetComObjectData (object obj, object key, object data) => throw new PlatformNotSupportedException();
+		public static object GetComObjectData (object obj, object key) => throw new PlatformNotSupportedException();
+		public static string GenerateProgIdForType (Type type) => throw new PlatformNotSupportedException();
+		public static Guid GenerateGuidForType (Type type) => throw new PlatformNotSupportedException();
 #endif // !FULL_AOT_RUNTIME
 
 		public static int GetExceptionCode ()
@@ -713,7 +724,7 @@ namespace System.Runtime.InteropServices
 
 		public static object GetTypedObjectForIUnknown (IntPtr pUnk, Type t)
 		{
-#if NETCORE
+#if NETCORE || DISABLE_REMOTING
 			throw new NotImplementedException ();
 #else
 			ComInteropProxy proxy = new ComInteropProxy (pUnk, t);
@@ -915,14 +926,14 @@ namespace System.Runtime.InteropServices
 			return (T) PtrToStructure (ptr, typeof (T));
 		}
 
-#if !MOBILE
+#if !MOBILE || WINAOT
 		[MethodImplAttribute (MethodImplOptions.InternalCall)]
 		private extern static int QueryInterfaceInternal (IntPtr pUnk, ref Guid iid, out IntPtr ppv);
 #endif
 
 		public static int QueryInterface (IntPtr pUnk, ref Guid iid, out IntPtr ppv)
 		{
-#if !MOBILE
+#if !MOBILE || WINAOT
 			if (pUnk == IntPtr.Zero)
 				throw new ArgumentException ("Value cannot be null.", "pUnk");
 			return QueryInterfaceInternal (pUnk, ref iid, out ppv);
@@ -1086,7 +1097,7 @@ namespace System.Runtime.InteropServices
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static IntPtr ReAllocHGlobal (IntPtr pv, IntPtr cb);
 
-#if !MOBILE
+#if !MOBILE || WINAOT
 		[ReliabilityContractAttribute (Consistency.WillNotCorruptState, Cer.Success)]
 		[MethodImplAttribute (MethodImplOptions.InternalCall)]
 		private extern static int ReleaseInternal (IntPtr pUnk);
@@ -1095,7 +1106,7 @@ namespace System.Runtime.InteropServices
 		[ReliabilityContract (Consistency.WillNotCorruptState, Cer.Success)]
 		public static int Release (IntPtr pUnk)
 		{
-#if !MOBILE
+#if !MOBILE || WINAOT
 			if (pUnk == IntPtr.Zero)
 				throw new ArgumentException ("Value cannot be null.", "pUnk");
 
@@ -1277,7 +1288,19 @@ namespace System.Runtime.InteropServices
 #endif
 		}
 
-		public static IntPtr SecureStringToCoTaskMemAnsi (SecureString s)
+		internal delegate IntPtr SecureStringAllocator(int len);
+
+		internal static IntPtr SecureStringCoTaskMemAllocator (int len)
+		{
+			return AllocCoTaskMem (len);
+		}
+
+		internal static IntPtr SecureStringGlobalAllocator (int len)
+		{
+			return AllocHGlobal (len);
+		}
+
+		internal static IntPtr SecureStringToAnsi (SecureString s, SecureStringAllocator allocator)
 		{
 			if (s == null)
 				throw new ArgumentNullException ("s");
@@ -1286,7 +1309,7 @@ namespace System.Runtime.InteropServices
 			return s.MarshalToString (false, false);
 #else
 			int len = s.Length;
-			IntPtr ctm = AllocCoTaskMem (len + 1);
+			IntPtr ctm = allocator (len + 1);
 			byte [] copy = new byte [len+1];
 
 			try {
@@ -1310,7 +1333,7 @@ namespace System.Runtime.InteropServices
 #endif
 		}
 
-		public static IntPtr SecureStringToCoTaskMemUnicode (SecureString s)
+		internal static IntPtr SecureStringToUnicode (SecureString s, SecureStringAllocator allocator)
 		{
 			if (s == null)
 				throw new ArgumentNullException ("s");
@@ -1318,7 +1341,7 @@ namespace System.Runtime.InteropServices
 			return s.MarshalToString (false, true);
 #else
 			int len = s.Length;
-			IntPtr ctm = AllocCoTaskMem (len * 2 + 2);
+			IntPtr ctm = allocator (len * 2 + 2);
 			byte [] buffer = null;
 			try {
 				buffer = s.GetBuffer ();
@@ -1334,6 +1357,17 @@ namespace System.Runtime.InteropServices
 			}
 			return ctm;
 #endif
+
+		}
+
+		public static IntPtr SecureStringToCoTaskMemAnsi (SecureString s)
+		{
+			return SecureStringToAnsi (s, SecureStringCoTaskMemAllocator);
+		}
+
+		public static IntPtr SecureStringToCoTaskMemUnicode (SecureString s)
+		{
+			return SecureStringToUnicode (s, SecureStringCoTaskMemAllocator);
 		}
 
 		public static IntPtr SecureStringToGlobalAllocAnsi (SecureString s)
@@ -1343,7 +1377,7 @@ namespace System.Runtime.InteropServices
 #if NETCORE
 			return s.MarshalToString (true, false);
 #else
-			return SecureStringToCoTaskMemAnsi (s);
+			return SecureStringToAnsi (s, SecureStringGlobalAllocator);
 #endif
 		}
 
@@ -1354,7 +1388,7 @@ namespace System.Runtime.InteropServices
 #if NETCORE
 			return s.MarshalToString (true, true);
 #else
-			return SecureStringToCoTaskMemUnicode (s);
+			return SecureStringToUnicode (s, SecureStringGlobalAllocator);
 #endif
 		}
 
@@ -1586,7 +1620,9 @@ namespace System.Runtime.InteropServices
 			const int ERROR_FILENAME_EXCED_RANGE = unchecked ((int)0xCE);
 			const int COR_E_RANK = unchecked ((int)0x80131517L);
 			const int COR_E_REFLECTIONTYPELOAD = unchecked ((int)0x80131602L);
+#if !DISABLE_REMOTING
 			const int COR_E_REMOTING = unchecked ((int)0x8013150BL);
+#endif
 			const int COR_E_SAFEARRAYTYPEMISMATCH = unchecked ((int)0x80131533L);
 			const int COR_E_SECURITY = unchecked ((int)0x8013150AL);
 			const int COR_E_SERIALIZATION = unchecked ((int)0x8013150CL);
@@ -1703,8 +1739,10 @@ namespace System.Runtime.InteropServices
 					return new RankException ();
 				case COR_E_REFLECTIONTYPELOAD:
 					return new System.Reflection.ReflectionTypeLoadException (new Type[] { }, new Exception[] { });
+#if !DISABLE_REMOTING
 				case COR_E_REMOTING:
 					return new System.Runtime.Remoting.RemotingException ();
+#endif
 				case COR_E_SAFEARRAYTYPEMISMATCH:
 					return new SafeArrayTypeMismatchException ();
 				case COR_E_SECURITY:
@@ -2015,6 +2053,30 @@ namespace System.Runtime.InteropServices
 			}
 
 			return result;
+		}
+
+		public static unsafe IntPtr StringToCoTaskMemUTF8(string s)
+		{
+			if (s == null)
+			{
+				return IntPtr.Zero;
+			}
+
+			int nb = Encoding.UTF8.GetMaxByteCount(s.Length);
+
+			IntPtr pMem = AllocCoTaskMem(nb + 1);
+
+			int nbWritten;
+			byte* pbMem = (byte*)pMem;
+
+			fixed (char* firstChar = s)
+			{
+				nbWritten = Encoding.UTF8.GetBytes(firstChar, s.Length, pbMem, nb);
+			}
+
+			pbMem[nbWritten] = 0;
+
+			return pMem;
 		}
 	}
 }

@@ -14,9 +14,9 @@ namespace System
 #if !MONO
     [TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
 #endif
-    public struct Byte : IComparable, IConvertible, IFormattable, IComparable<Byte>, IEquatable<Byte>, ISpanFormattable
+    public readonly struct Byte : IComparable, IConvertible, IFormattable, IComparable<Byte>, IEquatable<Byte>, ISpanFormattable
     {
-        private byte m_value; // Do not rename (binary serialization)
+        private readonly byte m_value; // Do not rename (binary serialization)
 
         // The maximum value that a Byte may represent: 255.
         public const byte MaxValue = (byte)0xFF;

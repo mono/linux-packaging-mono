@@ -637,5 +637,24 @@ namespace System.IO.Tests
                 }
             }
         }
+
+#if MONO && (!MOBILE || MOBILE_DESKTOP_HOST)
+        [Fact]
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
+        public void FileSystemWatcher_WatchFileWithSpaces()
+        {
+            using (var testDirectory = new TempDirectory(GetTestFilePath()))
+            using (var file = new TempFile(Path.Combine(testDirectory.Path, " ")))
+            using (var watcher = new FileSystemWatcher(testDirectory.Path, "*"))
+            {
+                NotifyFilters filter = NotifyFilters.LastWrite | NotifyFilters.FileName;
+                watcher.NotifyFilter = filter;
+
+                Action action = () => File.AppendAllText(file.Path, "longText!");
+                
+                ExpectNoEvent(watcher, WatcherChangeTypes.Changed, action, expectedPath: file.Path);
+            }
+        }
+#endif
     }
 }

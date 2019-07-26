@@ -88,7 +88,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@HOST_WIN32_TRUE@am__append_1 = --config tests-config --runtime "$(if $(MONO_EXECUTABLE),$(shell cygpath -w -a $(MONO_EXECUTABLE) | sed 's/\\/\\\\/g'),$(top_builddir)/runtime/mono-wrapper)"
+@HOST_WIN32_TRUE@am__append_1 = --config tests-config --runtime "$(if $(MONO_EXECUTABLE),$(shell cygpath -w -a $(MONO_EXECUTABLE) | sed 's/\\/\\\\/g'),$(DEFAULT_WIN32_RUNTIME))"
 @HOST_WIN32_FALSE@am__append_2 = --config tests-config --runtime "$(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),$(top_builddir)/runtime/mono-wrapper)"
 @FULL_AOT_TESTS_TRUE@am__append_3 = --runtime-args "$(TEST_AOT_RUN_FLAGS)"
 @HYBRID_AOT_TESTS_TRUE@am__append_4 = --runtime-args "$(TEST_AOT_RUN_FLAGS)"
@@ -168,6 +168,8 @@ CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
+COREARCH = @COREARCH@
+CORETARGETS = @CORETARGETS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CSC = @CSC@
@@ -298,8 +300,10 @@ PATHSEP = @PATHSEP@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PIDTYPE = @PIDTYPE@
 PKG_CONFIG = @PKG_CONFIG@
+PLATFORM_AOT_PREFIX = @PLATFORM_AOT_PREFIX@
 PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
+RID = @RID@
 SEARCHSEP = @SEARCHSEP@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -663,6 +667,9 @@ TEST_RUNTIME_ARGS ?= $(RUNTIME_ARGS)
 TEST_AOT_BUILD_FLAGS ?= $(AOT_BUILD_FLAGS)
 TEST_AOT_RUN_FLAGS ?= $(AOT_RUN_FLAGS)
 
+@ENABLE_MSVC_TRUE@@HOST_WIN32_TRUE@	DEFAULT_WIN32_RUNTIME=$(shell cygpath -w -a $(top_builddir)/@mono_runtime@ | sed 's/\\/\\\\/g')
+@ENABLE_MSVC_FALSE@@HOST_WIN32_TRUE@	DEFAULT_WIN32_RUNTIME=$(top_builddir)/runtime/mono-wrapper)
+
 ### Test cases
 
 .PHONY: run-test test-local
@@ -676,6 +683,7 @@ test-local: compile-samedir compile-separatedir compile-mainanddep
 compile-samedir: samedir/LoadFromMain.exe samedir/LoadFileMain.exe samedir/Dep.dll samedir/Mid.dll
 
 samedir/%.dll: src/%.dll
+	mkdir -p $(@D)
 	cp $< $@
 
 compile-separatedir: separatedir/LoadFromMain.exe separatedir/LoadFileMain.exe separatedir/middle/Dep.dll separatedir/middle/Mid.dll
@@ -687,6 +695,7 @@ separatedir/middle/%.dll: src/%.dll
 compile-mainanddep: mainanddep/LoadFromMain.exe mainanddep/LoadFileMain.exe mainanddep/Dep.dll mainanddep/middle/Mid.dll
 
 mainanddep/Dep.dll: src/Dep.dll
+	mkdir -p $(@D)
 	cp $< $@
 
 mainanddep/middle/Mid.dll: src/Mid.dll
@@ -694,15 +703,18 @@ mainanddep/middle/Mid.dll: src/Mid.dll
 	cp $< $@
 
 src/Dep.dll: src/Dep.cs
+	mkdir -p $(@D)
 	$(MCS) -out:$@ $< -target:library
 
 src/Mid.dll: src/Mid.cs src/Dep.dll
 	$(MCS) -out:$@ $< -r:src/Dep.dll -target:library
 
 %/LoadFromMain.exe: %/LoadFromMain.cs
+	mkdir -p $(@D)
 	$(MCS) -out:$@ $< -target:exe
 
 %/LoadFileMain.exe: %/LoadFileMain.cs
+	mkdir -p $(@D)
 	$(MCS) -out:$@ $< -target:exe
 
 %/LoadFromMain.exe$(PLATFORM_AOT_SUFFIX): %/LoadFromMain.exe

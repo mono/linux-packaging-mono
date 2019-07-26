@@ -28,7 +28,6 @@
 
 #if !MONO_FEATURE_SRE
 
-
 using System;
 using System.Collections.Generic;
 

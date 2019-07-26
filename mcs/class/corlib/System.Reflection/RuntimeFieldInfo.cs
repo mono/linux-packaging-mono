@@ -228,10 +228,8 @@ namespace System.Reflection {
 			return MonoCustomAttrs.GetCustomAttributes (this, attributeType, inherit);
 		}
 
-#if !NETCORE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal override extern int GetFieldOffset ();
-#endif
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		private extern object GetValueInternal (object obj);
@@ -311,6 +309,24 @@ namespace System.Reflection {
 		{
 			return 1;
 		}
+#elif NETCORE
+		public override bool IsSecurityTransparent {
+			get {
+				return false;
+			}
+		}
+
+		public override bool IsSecurityCritical {
+			get {
+				return true;
+			}
+		}
+
+		public override bool IsSecuritySafeCritical {
+			get {
+				return false;
+			}
+		}
 #else
 		//seclevel { transparent = 0, safe-critical = 1, critical = 2}
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -329,9 +345,7 @@ namespace System.Reflection {
 		}
 #endif
 
-#if !NETCORE
 		public sealed override bool HasSameMetadataDefinitionAs (MemberInfo other) => HasSameMetadataDefinitionAsCore<RuntimeFieldInfo> (other);
-#endif
 
 		public override int MetadataToken {
 			get {
@@ -350,15 +364,5 @@ namespace System.Reflection {
 		public override Type[] GetRequiredCustomModifiers () => GetCustomModifiers (false);
 
 		private Type[] GetCustomModifiers (bool optional) => GetTypeModifiers (optional) ?? Type.EmptyTypes;
-
-#if NETCORE
-		internal object[] GetPseudoCustomAttributes () {
-			throw new NotImplementedException ();
-		}
-
-		internal CustomAttributeData[] GetPseudoCustomAttributesData () {
-			throw new NotImplementedException ();
-		}
-#endif
 	}
 }

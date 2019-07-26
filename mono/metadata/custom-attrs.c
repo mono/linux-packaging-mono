@@ -15,6 +15,7 @@
 #include <config.h>
 #include "mono/metadata/assembly.h"
 #include "mono/metadata/class-init.h"
+#include "mono/metadata/class-internals.h"
 #include "mono/metadata/gc-internals.h"
 #include "mono/metadata/mono-endian.h"
 #include "mono/metadata/object-internals.h"
@@ -956,7 +957,7 @@ create_custom_attr (MonoImage *image, MonoMethod *method, const guchar *data, gu
 			mono_field_set_value_internal (MONO_HANDLE_RAW (attr), field, val); // FIXMEcoop
 		} else if (named_type == CATTR_TYPE_PROPERTY) {
 			MonoProperty *prop;
-			prop = mono_class_get_property_from_name (mono_handle_class (attr), name);
+			prop = mono_class_get_property_from_name_internal (mono_handle_class (attr), name);
 			if (!prop) {
 				mono_error_set_generic_error (error, "System.Reflection", "CustomAttributeFormatException", "Could not find a property with name %s", name);
 				goto fail;
@@ -1142,7 +1143,7 @@ mono_reflection_create_custom_attr_data_args (MonoImage *image, MonoMethod *meth
 			/* Named arg is a property */
 			MonoObject *obj;
 			MonoType *prop_type;
-			MonoProperty *prop = mono_class_get_property_from_name (attrklass, name);
+			MonoProperty *prop = mono_class_get_property_from_name_internal (attrklass, name);
 
 			if (!prop || !prop->set) {
 				g_free (name);
@@ -1292,7 +1293,7 @@ mono_reflection_create_custom_attr_data_args_noalloc (MonoImage *image, MonoMeth
 		} else if (named_type == CATTR_TYPE_PROPERTY) {
 			/* Named arg is a property */
 			MonoType *prop_type;
-			MonoProperty *prop = mono_class_get_property_from_name (attrklass, name);
+			MonoProperty *prop = mono_class_get_property_from_name_internal (attrklass, name);
 
 			if (!prop || !prop->set) {
 				g_free (name);
@@ -1372,10 +1373,10 @@ reflection_resolve_custom_attribute_data (MonoReflectionMethod *ref_method, Mono
 
 	for (i = 0; i < mono_array_length_internal (namedargs); ++i) {
 		MonoObject *obj = mono_array_get_internal (namedargs, MonoObject*, i);
-		MonoObject *typedarg, *namedarg, *minfo;
+		MonoObject *namedarg, *minfo;
 
 		if (arginfo [i].prop) {
-			minfo = (MonoObject*)mono_property_get_object_checked (domain, NULL, arginfo [i].prop, error);
+			minfo = (MonoObject*)mono_property_get_object_checked (domain, arginfo [i].prop->parent, arginfo [i].prop, error);
 			if (!minfo)
 				goto leave;
 		} else {
@@ -1383,9 +1384,13 @@ reflection_resolve_custom_attribute_data (MonoReflectionMethod *ref_method, Mono
 			goto_if_nok (error, leave);
 		}
 
-		typedarg = create_cattr_typed_arg (arginfo [i].type, obj, error);
+#if ENABLE_NETCORE
+		namedarg = create_cattr_named_arg (minfo, obj, error);
+#else
+		MonoObject* typedarg = create_cattr_typed_arg (arginfo [i].type, obj, error);
 		goto_if_nok (error, leave);
 		namedarg = create_cattr_named_arg (minfo, typedarg, error);
+#endif
 		goto_if_nok (error, leave);
 
 		mono_array_setref_internal (namedargs, i, namedarg);
@@ -2102,11 +2107,15 @@ mono_reflection_get_custom_attrs_info_checked (MonoObjectHandle obj, MonoError *
 		goto_if_nok (error, leave);
 	} else if (strcmp ("ParameterInfo", klass_name) == 0 || strcmp ("RuntimeParameterInfo", klass_name) == 0) {
 		MonoReflectionParameterHandle param = MONO_HANDLE_CAST (MonoReflectionParameter, obj);
-		MonoObjectHandle member_impl = MONO_HANDLE_NEW_GET (MonoObject, param, MemberImpl);
+
+		MonoObjectHandle member_impl = MONO_HANDLE_NEW (MonoObject, NULL);
+		int position;
+		mono_reflection_get_param_info_member_and_pos (param, member_impl, &position);
+
 		MonoClass *member_class = mono_handle_class (member_impl);
 		if (mono_class_is_reflection_method_or_constructor (member_class)) {
 			MonoReflectionMethodHandle rmethod = MONO_HANDLE_CAST (MonoReflectionMethod, member_impl);
-			cinfo = mono_custom_attrs_from_param_checked (MONO_HANDLE_GETVAL (rmethod, method), MONO_HANDLE_GETVAL (param, PositionImpl) + 1, error);
+			cinfo = mono_custom_attrs_from_param_checked (MONO_HANDLE_GETVAL (rmethod, method), position + 1, error);
 			goto_if_nok (error, leave);
 		} else if (mono_is_sr_mono_property (member_class)) {
 			MonoReflectionPropertyHandle prop = MONO_HANDLE_CAST (MonoReflectionProperty, member_impl);
@@ -2116,7 +2125,7 @@ mono_reflection_get_custom_attrs_info_checked (MonoObjectHandle obj, MonoError *
 				method = property->set;
 			g_assert (method);
 
-			cinfo = mono_custom_attrs_from_param_checked (method, MONO_HANDLE_GETVAL (param, PositionImpl) + 1, error);
+			cinfo = mono_custom_attrs_from_param_checked (method, position + 1, error);
 			goto_if_nok (error, leave);
 		} 
 #ifndef DISABLE_REFLECTION_EMIT
@@ -2155,10 +2164,15 @@ mono_reflection_get_custom_attrs_info_checked (MonoObjectHandle obj, MonoError *
 		MonoArrayHandle cattrs = MONO_HANDLE_NEW_GET (MonoArray, mb, cattrs);
 		cinfo = mono_custom_attrs_from_builders_handle (NULL, &dynamic_image->image, cattrs);
 	} else if (strcmp ("ConstructorBuilder", klass_name) == 0) {
+#ifdef ENABLE_NETCORE
+		mono_error_set_not_supported (error, "");
+		goto leave;
+#else
 		MonoReflectionCtorBuilderHandle cb = MONO_HANDLE_CAST (MonoReflectionCtorBuilder, obj);
 		MonoMethod *mhandle = MONO_HANDLE_GETVAL (cb, mhandle);
 		MonoArrayHandle cattrs = MONO_HANDLE_NEW_GET (MonoArray, cb, cattrs);
 		cinfo = mono_custom_attrs_from_builders_handle (NULL, m_class_get_image (mhandle->klass), cattrs);
+#endif
 	} else if (strcmp ("MethodBuilder", klass_name) == 0) {
 		MonoReflectionMethodBuilderHandle mb = MONO_HANDLE_CAST (MonoReflectionMethodBuilder, obj);
 		MonoMethod *mhandle = MONO_HANDLE_GETVAL (mb, mhandle);

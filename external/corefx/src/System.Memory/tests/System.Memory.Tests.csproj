@@ -236,6 +236,7 @@
     <Compile Include="ParsersAndFormatters\TestData.cs" />
     <Compile Include="ParsersAndFormatters\TestUtils.cs" />
   </ItemGroup>
+
   <ItemGroup>
     <Compile Include="Base64\Base64DecoderUnitTests.cs" />
     <Compile Include="Base64\Base64EncoderUnitTests.cs" />

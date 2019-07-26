@@ -1730,6 +1730,7 @@ public class DirectoryTest
 	}
 
 	[Test]
+	[Category("AndroidSdksNotWorking")]
 	public void GetNoFiles () // Bug 58875. This throwed an exception on windows.
 	{
 		DirectoryInfo dir = new DirectoryInfo (".");

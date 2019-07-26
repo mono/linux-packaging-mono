@@ -31,7 +31,7 @@
 namespace System.Reflection.Emit
 {
 	public sealed partial class PropertyBuilder : System.Reflection.PropertyInfo
-	{
+    {
         internal PropertyBuilder() { throw new PlatformNotSupportedException (); } 
         public override System.Reflection.PropertyAttributes Attributes { get { throw new PlatformNotSupportedException (); } }
         public override bool CanRead { get { throw new PlatformNotSupportedException (); } }
@@ -59,7 +59,7 @@ namespace System.Reflection.Emit
         public void SetSetMethod(System.Reflection.Emit.MethodBuilder mdBuilder) { throw new PlatformNotSupportedException (); } 
         public override void SetValue(object obj, object value, object[] index) { throw new PlatformNotSupportedException (); } 
         public override void SetValue(object obj, object value, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, object[] index, System.Globalization.CultureInfo culture) { throw new PlatformNotSupportedException (); } 
-	}
+    }
 }
 
 #endif

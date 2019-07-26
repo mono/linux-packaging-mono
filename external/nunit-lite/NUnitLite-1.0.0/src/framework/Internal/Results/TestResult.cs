@@ -30,6 +30,7 @@ namespace NUnit.Framework.Internal
     /// <summary>
     /// The TestResult class represents the result of a test.
     /// </summary>
+    [System.Serializable]
     public abstract class TestResult : ITestResult
     {
         #region Fields

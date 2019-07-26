@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace System.ComponentModel
 {
+#if MONO
+    [System.ComponentModel.DefaultEventAttribute("DoWork")]
+#endif
     public class BackgroundWorker : Component
     {
         // Private instance members

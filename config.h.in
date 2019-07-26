@@ -342,6 +342,10 @@
    0 if you don't. */
 #undef HAVE_DECL_INTERLOCKEDINCREMENT64
 
+/* Define to 1 if you have the declaration of `pthread_mutexattr_setprotocol',
+   and to 0 if you don't. */
+#undef HAVE_DECL_PTHREAD_MUTEXATTR_SETPROTOCOL
+
 /* Define to 1 if you have the declaration of `strerror_r', and to 0 if you
    don't. */
 #undef HAVE_DECL_STRERROR_R
@@ -1367,6 +1371,9 @@
 
 /* Host Platform is Darwin */
 #undef HOST_DARWIN
+
+/* Targeting the Fuchsia platform */
+#undef HOST_FUCHSIA
 
 /* ... */
 #undef HOST_MIPS

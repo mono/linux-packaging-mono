@@ -16,6 +16,7 @@ using SR = System.Reflection;
 
 using Mono.Collections.Generic;
 using Mono.Cecil.Cil;
+using Mono.Cecil.PE;
 
 namespace Mono.Cecil.Cil {
 
@@ -749,9 +750,8 @@ namespace Mono.Cecil.Cil {
 	}
 
 	public interface ISymbolReader : IDisposable {
-#if !READ_ONLY
+
 		ISymbolWriterProvider GetWriterProvider ();
-#endif
 		bool ProcessDebugHeader (ImageDebugHeader header);
 		MethodDebugInformation Read (MethodDefinition method);
 	}
@@ -759,6 +759,44 @@ namespace Mono.Cecil.Cil {
 	public interface ISymbolReaderProvider {
 		ISymbolReader GetSymbolReader (ModuleDefinition module, string fileName);
 		ISymbolReader GetSymbolReader (ModuleDefinition module, Stream symbolStream);
+	}
+
+#if !NET_CORE
+	[Serializable]
+#endif
+	public sealed class SymbolsNotFoundException : FileNotFoundException {
+
+		public SymbolsNotFoundException (string message) : base (message)
+		{
+		}
+
+#if !NET_CORE
+		SymbolsNotFoundException (
+			System.Runtime.Serialization.SerializationInfo info,
+			System.Runtime.Serialization.StreamingContext context)
+			: base (info, context)
+		{
+		}
+#endif
+	}
+
+#if !NET_CORE
+	[Serializable]
+#endif
+	public sealed class SymbolsNotMatchingException : InvalidOperationException {
+
+		public SymbolsNotMatchingException (string message) : base (message)
+		{
+		}
+
+#if !NET_CORE
+		SymbolsNotMatchingException (
+			System.Runtime.Serialization.SerializationInfo info,
+			System.Runtime.Serialization.StreamingContext context)
+			: base (info, context)
+		{
+		}
+#endif
 	}
 
 	public class DefaultSymbolReaderProvider : ISymbolReaderProvider {
@@ -810,14 +848,76 @@ namespace Mono.Cecil.Cil {
 			}
 
 			if (throw_if_no_symbol)
-				throw new FileNotFoundException (string.Format ("No symbol found for file: {0}", fileName));
+				throw new SymbolsNotFoundException (string.Format ("No symbol found for file: {0}", fileName));
 
 			return null;
 		}
 
 		public ISymbolReader GetSymbolReader (ModuleDefinition module, Stream symbolStream)
 		{
-			throw new NotSupportedException ();
+			if (module.Image.HasDebugTables ())
+				return null;
+
+			if (module.HasDebugHeader) {
+				var header = module.GetDebugHeader ();
+				var entry = header.GetEmbeddedPortablePdbEntry ();
+				if (entry != null)
+					return new EmbeddedPortablePdbReaderProvider ().GetSymbolReader (module, "");
+			}
+
+			Mixin.CheckStream (symbolStream);
+			Mixin.CheckReadSeek (symbolStream);
+
+			var position = symbolStream.Position;
+
+			const int portablePdbHeader = 0x424a5342;
+
+			var reader = new BinaryStreamReader (symbolStream);
+			var intHeader = reader.ReadInt32 ();
+			symbolStream.Position = position;
+
+			if (intHeader == portablePdbHeader) {
+				return new PortablePdbReaderProvider ().GetSymbolReader (module, symbolStream);
+			}
+
+			const string nativePdbHeader = "Microsoft C/C++ MSF 7.00";
+
+			var bytesHeader = reader.ReadBytes (nativePdbHeader.Length);
+			symbolStream.Position = position;
+			var isNativePdb = true;
+
+			for (var i = 0; i < bytesHeader.Length; i++) {
+				if (bytesHeader [i] != (byte) nativePdbHeader [i]) {
+					isNativePdb = false;
+					break;
+				}
+			}
+
+			if (isNativePdb) {
+				try {
+					return SymbolProvider.GetReaderProvider (SymbolKind.NativePdb).GetSymbolReader (module, symbolStream);
+				} catch (Exception) {
+					// We might not include support for native pdbs.
+				}
+			}
+
+			const long mdbHeader = 0x45e82623fd7fa614;
+
+			var longHeader = reader.ReadInt64 ();
+			symbolStream.Position = position;
+
+			if (longHeader == mdbHeader) {
+				try {
+					return SymbolProvider.GetReaderProvider (SymbolKind.Mdb).GetSymbolReader (module, symbolStream);
+				} catch (Exception) {
+					// We might not include support for mdbs.
+				}
+			}
+
+			if (throw_if_no_symbol)
+				throw new SymbolsNotFoundException (string.Format ("No symbols found in stream"));
+
+			return null;
 		}
 	}
 
@@ -837,11 +937,16 @@ namespace Mono.Cecil.Cil {
 
 			var suffix = GetSymbolNamespace (kind);
 
-			var cecil_name = typeof (SymbolProvider).Assembly ().GetName ();
+			var cecil_name = typeof (SymbolProvider).Assembly.GetName ();
 
 			var name = new SR.AssemblyName {
 				Name = cecil_name.Name + "." + suffix,
 				Version = cecil_name.Version,
+#if NET_CORE
+				CultureName = cecil_name.CultureName,
+#else
+				CultureInfo = cecil_name.CultureInfo,
+#endif
 			};
 
 			name.SetPublicKeyToken (cecil_name.GetPublicKeyToken ());
@@ -905,8 +1010,6 @@ namespace Mono.Cecil.Cil {
 		}
 	}
 
-#if !READ_ONLY
-
 	public interface ISymbolWriter : IDisposable {
 
 		ISymbolReaderProvider GetReaderProvider ();
@@ -939,8 +1042,6 @@ namespace Mono.Cecil.Cil {
 			throw new NotSupportedException ();
 		}
 	}
-
-#endif
 }
 
 namespace Mono.Cecil {

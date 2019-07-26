@@ -170,6 +170,8 @@ G_EXTERN_C void     mono_fstore_r4 (double val, float *ptr);
 
 G_EXTERN_C guint32  mono_fload_r4_arg (double val);
 
+G_EXTERN_C double mono_fmod (double a, double b);
+
 G_EXTERN_C void     mono_break (void);
 
 G_EXTERN_C MonoException *mono_create_corlib_exception_0 (guint32 token);
@@ -216,6 +218,8 @@ G_EXTERN_C MonoObject* mono_get_method_object (MonoMethod *method);
 G_EXTERN_C double mono_ckfinite (double d);
 
 G_EXTERN_C void mono_throw_method_access (MonoMethod *caller, MonoMethod *callee);
+
+G_EXTERN_C void mono_throw_bad_image (void);
 
 G_EXTERN_C void mono_dummy_jit_icall (void);
 

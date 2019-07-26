@@ -11,7 +11,7 @@
 #include "mini.h"
 
 /* Version number of the AOT file format */
-#define MONO_AOT_FILE_VERSION 156
+#define MONO_AOT_FILE_VERSION 162
 
 #define MONO_AOT_TRAMP_PAGE_SIZE 16384
 
@@ -80,7 +80,8 @@ typedef enum {
 	MONO_AOT_METHOD_FLAG_NONE = 0,
 	MONO_AOT_METHOD_FLAG_HAS_CCTOR = 1,
 	MONO_AOT_METHOD_FLAG_GSHAREDVT_VARIABLE = 2,
-	MONO_AOT_METHOD_FLAG_HAS_PATCHES = 4
+	MONO_AOT_METHOD_FLAG_HAS_PATCHES = 4,
+	MONO_AOT_METHOD_FLAG_HAS_CTX = 8
 } MonoAotMethodFlags;
 
 typedef enum {
@@ -261,25 +262,11 @@ MonoMethod* mono_aot_get_array_helper_from_wrapper (MonoMethod *method);
 void     mono_aot_set_make_unreadable       (gboolean unreadable);
 gboolean mono_aot_is_pagefault              (void *ptr);
 void     mono_aot_handle_pagefault          (void *ptr);
-void     mono_aot_register_jit_icall        (const char *name, gpointer addr);
-
-#ifdef __cplusplus
-template <typename T>
-inline void
-mono_aot_register_jit_icall (const char *name, T addr)
-{
-	mono_aot_register_jit_icall (name, (gpointer)addr);
-}
-#endif // __cplusplus
 
 guint32  mono_aot_find_method_index         (MonoMethod *method);
-gboolean mono_aot_init_llvmonly_method      (gpointer amodule, guint32 method_index, MonoClass *init_class,
-											 MonoGenericContext *context, gboolean lookup_context, MonoError *error);
+gboolean mono_aot_init_llvmonly_method      (gpointer amodule, guint32 method_index, MonoClass *init_class, MonoError *error);
 GHashTable *mono_aot_get_weak_field_indexes (MonoImage *image);
 MonoAotMethodFlags mono_aot_get_method_flags (guint8 *code);
-
-/* This is an exported function */
-MONO_API void     mono_aot_register_module           (gpointer *aot_info);
 
 /* These are used to load the AOT data for aot images compiled with MONO_AOT_FILE_FLAG_SEPARATE_DATA */
 /*

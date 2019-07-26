@@ -23,4 +23,7 @@ partial class SR
 	public const string Argument_MemberAndArray = "Cannot supply both a MemberInfo and an Array to indicate the parent of a value type.";
 	public const string Argument_MustSupplyContainer = "When supplying a FieldInfo for fixing up a nested type, a valid ID for that containing object must also be supplied.";
 	public const string Serialization_NoID = "Object has never been assigned an objectID";
+	public const string Arg_SwitchExpressionException = "Non-exhaustive switch expression failed to match its input.";
+	public const string SwitchExpressionException_UnmatchedValue = "Unmatched value was {0}.";
+	public const string Argument_InvalidRandomRange = "Range of random number does not contain at least one possibility.";
 }

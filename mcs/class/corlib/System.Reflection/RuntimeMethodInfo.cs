@@ -259,7 +259,11 @@ namespace System.Reflection {
 		}
 
 		[MethodImplAttribute (MethodImplOptions.InternalCall)]
+#if NETCORE
+		[PreserveDependency(".ctor(System.Reflection.ExceptionHandlingClause[],System.Reflection.LocalVariableInfo[],System.Byte[],System.Boolean,System.Int32,System.Int32)", "System.Reflection.RuntimeMethodBody")]
+#else
 		[PreserveDependency(".ctor(System.Reflection.ExceptionHandlingClause[],System.Reflection.LocalVariableInfo[],System.Byte[],System.Boolean,System.Int32,System.Int32)", "System.Reflection.MethodBody")]
+#endif
 		internal extern static MethodBody GetMethodBodyInternal (IntPtr handle);
 
 		internal static MethodBody GetMethodBody (IntPtr handle)
@@ -395,6 +399,10 @@ namespace System.Reflection {
 				} catch (MethodAccessException) {
 					throw;
 #endif
+#if NETCORE
+				} catch (Mono.NullByRefReturnException) {
+					throw new NullReferenceException ();
+#endif
 				} catch (OverflowException) {
 					throw;
 				} catch (Exception e) {
@@ -403,7 +411,15 @@ namespace System.Reflection {
 			}
 			else
 			{
+#if NETCORE
+				try {
+					o = InternalInvoke (obj, parameters, out exc);
+				} catch (Mono.NullByRefReturnException) {
+					throw new NullReferenceException ();
+				}
+#else
 				o = InternalInvoke (obj, parameters, out exc);
+#endif
 			}
 
 			if (exc != null)
@@ -510,7 +526,7 @@ namespace System.Reflection {
 				attrs [count ++] = new PreserveSigAttribute ();
 			if ((info.attrs & MethodAttributes.PinvokeImpl) != 0) {
 #if NETCORE
-				throw new NotImplementedException ();
+				attrs [count ++] = GetDllImportAttribute ();
 #else
 				attrs [count ++] = DllImportAttribute.GetCustomAttribute (this);
 #endif
@@ -518,6 +534,52 @@ namespace System.Reflection {
 
 			return attrs;
 		}
+
+#if NETCORE
+        Attribute GetDllImportAttribute ()
+        {
+            string entryPoint, dllName = null;
+            int token = MetadataToken;
+            PInvokeAttributes flags = 0;
+
+            GetPInvoke (out flags, out entryPoint, out dllName);
+
+            CharSet charSet = CharSet.None;
+
+            switch (flags & PInvokeAttributes.CharSetMask) {
+                case PInvokeAttributes.CharSetNotSpec: charSet = CharSet.None; break;
+                case PInvokeAttributes.CharSetAnsi: charSet = CharSet.Ansi; break;
+                case PInvokeAttributes.CharSetUnicode: charSet = CharSet.Unicode; break;
+                case PInvokeAttributes.CharSetAuto: charSet = CharSet.Auto; break;
+
+                // Invalid: default to CharSet.None
+                default: break;
+            }
+
+            CallingConvention callingConvention = InteropServicesCallingConvention.Cdecl;
+
+            switch (flags & PInvokeAttributes.CallConvMask) {
+                case PInvokeAttributes.CallConvWinapi: callingConvention = InteropServicesCallingConvention.Winapi; break;
+                case PInvokeAttributes.CallConvCdecl: callingConvention = InteropServicesCallingConvention.Cdecl; break;
+                case PInvokeAttributes.CallConvStdcall: callingConvention = InteropServicesCallingConvention.StdCall; break;
+                case PInvokeAttributes.CallConvThiscall: callingConvention = InteropServicesCallingConvention.ThisCall; break;
+                case PInvokeAttributes.CallConvFastcall: callingConvention = InteropServicesCallingConvention.FastCall; break;
+
+                // Invalid: default to CallingConvention.Cdecl
+                default: break;
+            }
+
+            bool exactSpelling = (flags & PInvokeAttributes.NoMangle) != 0;
+            bool setLastError = (flags & PInvokeAttributes.SupportsLastError) != 0;
+            bool bestFitMapping = (flags & PInvokeAttributes.BestFitMask) == PInvokeAttributes.BestFitEnabled;
+            bool throwOnUnmappableChar = (flags & PInvokeAttributes.ThrowOnUnmappableCharMask) == PInvokeAttributes.ThrowOnUnmappableCharEnabled;
+            bool preserveSig = (GetMethodImplementationFlags() & MethodImplAttributes.PreserveSig) != 0;
+
+			return new DllImportAttribute (dllName) { EntryPoint = entryPoint, CharSet = charSet, SetLastError = setLastError,
+					ExactSpelling = exactSpelling, PreserveSig = preserveSig, BestFitMapping = bestFitMapping,
+					ThrowOnUnmappableChar = throwOnUnmappableChar, CallingConvention = callingConvention };
+        }
+#endif // NETCORE
 
 		internal CustomAttributeData[] GetPseudoCustomAttributesData ()
 		{
@@ -649,13 +711,11 @@ namespace System.Reflection {
 			}
 
 			if (hasUserType) {
-#if FULL_AOT_RUNTIME
-				throw new NotSupportedException ("User types are not supported under full aot");
-#elif NETCORE
-				throw new NotImplementedException ();
-#else
-				return new MethodOnTypeBuilderInst (this, methodInstantiation);
+#if !FULL_AOT_RUNTIME
+				if (RuntimeFeature.IsDynamicCodeSupported)
+					return new MethodOnTypeBuilderInst (this, methodInstantiation);
 #endif
+				throw new NotSupportedException ("User types are not supported under full aot");
 			}
 
 			MethodInfo ret = MakeGenericMethod_impl (methodInstantiation);
@@ -704,11 +764,7 @@ namespace System.Reflection {
 		}
 
 		public override MethodBody GetMethodBody () {
-#if NETCORE
-			throw new NotImplementedException ();
-#else
 			return GetMethodBody (mhandle);
-#endif
 		}
 
 		public override IList<CustomAttributeData> GetCustomAttributesData () {
@@ -738,9 +794,7 @@ namespace System.Reflection {
 			get { return get_core_clr_security_level () == 1; }
 		}
 
-#if !NETCORE
 		public sealed override bool HasSameMetadataDefinitionAs (MemberInfo other) => HasSameMetadataDefinitionAsCore<RuntimeMethodInfo> (other);
-#endif
 	}
 	
 	[Serializable()]
@@ -966,7 +1020,16 @@ namespace System.Reflection {
 
 		public override string ToString () {
 #if NETCORE
-			throw new NotImplementedException ();
+			StringBuilder sbName = new StringBuilder(Name);
+			sbName.Append ("Void ");
+
+			TypeNameFormatFlags format = TypeNameFormatFlags.FormatBasic;
+
+			sbName.Append("(");
+			RuntimeParameterInfo.FormatParameters (sbName, GetParametersNoCopy (), CallingConvention, false);
+			sbName.Append(")");
+
+			return sbName.ToString();
 #else
 			return "Void " + FormatNameAndSig (false);
 #endif
@@ -986,9 +1049,7 @@ namespace System.Reflection {
 		public extern int get_core_clr_security_level ();
 #endif
 
-#if !NETCORE
 		public sealed override bool HasSameMetadataDefinitionAs (MemberInfo other) => HasSameMetadataDefinitionAsCore<RuntimeConstructorInfo> (other);
-#endif
 
 		public override bool IsSecurityTransparent {
 			get { return get_core_clr_security_level () == 0; }

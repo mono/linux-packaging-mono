@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using System.Security.Cryptography;
 
 using Mono;
 using Mono.Collections.Generic;
@@ -28,8 +29,6 @@ using BlobIndex = System.UInt32;
 using GuidIndex = System.UInt32;
 
 namespace Mono.Cecil {
-
-#if !READ_ONLY
 
 	using ModuleRow      = Row<StringIndex, GuidIndex>;
 	using TypeRefRow     = Row<CodedRID, StringIndex, StringIndex>;
@@ -103,13 +102,13 @@ namespace Mono.Cecil {
 			if (symbol_writer_provider == null && parameters.WriteSymbols)
 				symbol_writer_provider = new DefaultSymbolWriterProvider ();
 
-#if !NET_CORE
 			if (parameters.StrongNameKeyPair != null && name != null) {
 				name.PublicKey = parameters.StrongNameKeyPair.PublicKey;
 				module.Attributes |= ModuleAttributes.StrongNameSigned;
 			}
-#endif
 
+			if (parameters.DeterministicMvid)
+				module.Mvid = Guid.Empty;
 			var metadata = new MetadataBuilder (module, fq_name, timestamp, symbol_writer_provider);
 			try {
 				module.metadata_builder = metadata;
@@ -122,14 +121,56 @@ namespace Mono.Cecil {
 					stream.value.SetLength (0);
 					writer.WriteImage ();
 
-#if !NET_CORE
 					if (parameters.StrongNameKeyPair != null)
 						CryptoService.StrongName (stream.value, writer, parameters.StrongNameKeyPair);
-#endif
+					if (parameters.DeterministicMvid) {
+						module.Mvid = ComputeGuid (stream.value);
+						writer.PatchMvid (module.Mvid);
+					}
 				}
 			} finally {
 				module.metadata_builder = null;
 			}
+		}
+
+		static void CopyStreamChunk (Stream stream, Stream dest_stream, byte [] buffer, int length)
+		{
+			while (length > 0) {
+				int read = stream.Read (buffer, 0, System.Math.Min (buffer.Length, length));
+				dest_stream.Write (buffer, 0, read);
+				length -= read;
+			}
+		}
+
+		static byte [] ComputeHash (Stream stream)
+		{
+			const int buffer_size = 8192;
+
+			var sha1 = new SHA1Managed ();
+
+			stream.Seek (0, SeekOrigin.Begin);
+			var buffer = new byte [buffer_size];
+
+			using (var crypto_stream = new CryptoStream (Stream.Null, sha1, CryptoStreamMode.Write))
+				CopyStreamChunk (stream, crypto_stream, buffer, (int) stream.Length);
+			return sha1.Hash;
+		}
+
+		static unsafe Guid ComputeGuid (Stream stream)
+		{
+			byte[] hashCode = ComputeHash (stream);
+
+			// From corefx/src/System.Reflection.Metadata/src/System/Reflection/Metadata/BlobContentId.cs
+			Guid guid = default(Guid);
+			byte* guidPtr = (byte*)&guid;
+			for (var i = 0; i < 16; i++) {
+				guidPtr[i] = hashCode[i];
+			}
+			// modify the guid data so it decodes to the form of a "random" guid ala rfc4122
+			guidPtr[7] = (byte)((guidPtr[7] & 0x0f) | (4 << 4));
+			guidPtr[8] = (byte)((guidPtr[8] & 0x3f) | (2 << 6));
+
+			return guid;
 		}
 
 		static void BuildMetadata (ModuleDefinition module, MetadataBuilder metadata)
@@ -1202,10 +1243,8 @@ namespace Mono.Cecil {
 			var table = GetTable<FileTable> (Table.File);
 			var hash = resource.Hash;
 
-#if !NET_CORE
 			if (hash.IsNullOrEmpty ())
 				hash = CryptoService.ComputeHash (resource.File);
-#endif
 
 			return (uint) table.AddRow (new FileRow (
 				FileAttributes.ContainsNoMetaData,
@@ -1923,7 +1962,7 @@ namespace Mono.Cecil {
 
 		static ElementType GetConstantType (Type type)
 		{
-			switch (type.GetTypeCode ()) {
+			switch (Type.GetTypeCode (type)) {
 			case TypeCode.Boolean:
 				return ElementType.Boolean;
 			case TypeCode.Byte:
@@ -2983,7 +3022,7 @@ namespace Mono.Cecil {
 			if (value == null)
 				throw new ArgumentNullException ();
 
-			switch (value.GetType ().GetTypeCode ()) {
+			switch (Type.GetTypeCode (value.GetType ())) {
 			case TypeCode.Boolean:
 				WriteByte ((byte) (((bool) value) ? 1 : 0));
 				break;
@@ -3295,8 +3334,6 @@ namespace Mono.Cecil {
 			}
 		}
 	}
-
-#endif
 
 	static partial class Mixin {
 

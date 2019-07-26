@@ -1338,6 +1338,58 @@ get_wrapper_shared_type (MonoType *t)
 	return get_wrapper_shared_type_full (t, FALSE);
 }
 
+
+/* Returns the intptr type for types that are passed in a single register */
+static MonoType*
+get_wrapper_shared_type_reg (MonoType *t)
+{
+	t = get_wrapper_shared_type (t);
+	if (t->byref)
+		return t;
+
+	switch (t->type) {
+	case MONO_TYPE_BOOLEAN:
+	case MONO_TYPE_CHAR:
+	case MONO_TYPE_I1:
+	case MONO_TYPE_U1:
+	case MONO_TYPE_I2:
+	case MONO_TYPE_U2:
+	case MONO_TYPE_I4:
+	case MONO_TYPE_U4:
+	case MONO_TYPE_I:
+	case MONO_TYPE_U:
+#if TARGET_SIZEOF_VOID_P == 8
+	case MONO_TYPE_I8:
+	case MONO_TYPE_U8:
+		return mono_get_int_type ();
+#endif
+	case MONO_TYPE_OBJECT:
+	case MONO_TYPE_STRING:
+	case MONO_TYPE_CLASS:
+	case MONO_TYPE_SZARRAY:
+	case MONO_TYPE_ARRAY:
+	case MONO_TYPE_PTR:
+		return mono_get_int_type ();
+	default:
+		return t;
+	}
+}
+
+static MonoMethodSignature*
+mini_get_underlying_reg_signature (MonoMethodSignature *sig)
+{
+	MonoMethodSignature *res = mono_metadata_signature_dup (sig);
+	int i;
+
+	res->ret = get_wrapper_shared_type_reg (sig->ret);
+	for (i = 0; i < sig->param_count; ++i)
+		res->params [i] = get_wrapper_shared_type_reg (sig->params [i]);
+	res->generic_param_count = 0;
+	res->is_inflated = 0;
+
+	return res;
+}
+
 static MonoMethodSignature*
 mini_get_underlying_signature (MonoMethodSignature *sig)
 {
@@ -1642,7 +1694,7 @@ mini_get_interp_in_wrapper (MonoMethodSignature *sig)
 	gboolean generic = FALSE;
 	gboolean return_native_struct;
 
-	sig = mini_get_underlying_signature (sig);
+	sig = mini_get_underlying_reg_signature (sig);
 
 	gshared_lock ();
 	if (!cache)
@@ -1834,27 +1886,32 @@ mini_get_interp_in_wrapper (MonoMethodSignature *sig)
 MonoMethod*
 mini_get_interp_lmf_wrapper (const char *name, gpointer target)
 {
+	static MonoMethod *cache [2];
+	g_assert (target == (gpointer)mono_interp_to_native_trampoline || target == (gpointer)mono_interp_entry_from_trampoline);
+	const int index = target == (gpointer)mono_interp_to_native_trampoline;
+	const MonoJitICallId jit_icall_id = index ? MONO_JIT_ICALL_mono_interp_to_native_trampoline : MONO_JIT_ICALL_mono_interp_entry_from_trampoline;
+
 	MonoMethod *res, *cached;
 	MonoMethodSignature *sig;
 	MonoMethodBuilder *mb;
 	WrapperInfo *info;
-	static GHashTable *cache = NULL;
-	MonoType *int_type = mono_get_int_type ();
 
 	gshared_lock ();
-	if (!cache)
-		cache = g_hash_table_new_full (NULL, NULL, NULL, NULL);
-	res = (MonoMethod *) g_hash_table_lookup (cache, target);
+
+	res = cache [index];
+
 	gshared_unlock ();
 
 	if (res)
 		return res;
 
+	MonoType *int_type = mono_get_int_type ();
+
 	char *wrapper_name = g_strdup_printf ("__interp_lmf_%s", name);
 	mb = mono_mb_new (mono_defaults.object_class, wrapper_name, MONO_WRAPPER_OTHER);
 
 	sig = mono_metadata_signature_alloc (mono_defaults.corlib, 2);
-	sig->ret = mono_get_void_type ();;
+	sig->ret = mono_get_void_type ();
 	sig->params [0] = int_type;
 	sig->params [1] = int_type;
 
@@ -1866,21 +1923,22 @@ mini_get_interp_lmf_wrapper (const char *name, gpointer target)
 	mono_mb_emit_byte (mb, CEE_LDARG_1);
 
 	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-	mono_mb_emit_op (mb, CEE_MONO_ICALL, target);
+	mono_mb_emit_byte (mb, CEE_MONO_ICALL);
+	mono_mb_emit_i4 (mb, jit_icall_id);
 
 	mono_mb_emit_byte (mb, CEE_RET);
 #endif
 	info = mono_wrapper_info_create (mb, WRAPPER_SUBTYPE_INTERP_LMF);
-	info->d.icall.func = (gpointer) target;
+	info->d.icall.jit_icall_id = jit_icall_id;
 	res = mono_mb_create (mb, sig, 4, info);
 
 	gshared_lock ();
-	cached = (MonoMethod *) g_hash_table_lookup (cache, target);
+	cached = cache [index];
 	if (cached) {
 		mono_free_method (res);
 		res = cached;
 	} else {
-		g_hash_table_insert (cache, target, res);
+		cache [index] = res;
 	}
 	gshared_unlock ();
 	mono_mb_free (mb);

@@ -60,7 +60,7 @@ namespace NUnitLite.Runner
 
         private ITestAssemblyRunner runner;
 
-        private FinallyDelegate finallyDelegate;
+        private FinallyDelegate finallyDelegate = new FinallyDelegate();
 
         public bool Failure;
 
@@ -86,17 +86,36 @@ namespace NUnitLite.Runner
         {
             // Set the default writer - may be overridden by the args specified
             this.writer = writer;
-            this.finallyDelegate = new FinallyDelegate();
-            this.runner = new NUnitLiteTestAssemblyRunner(new NUnitLiteTestAssemblyBuilder(), this.finallyDelegate);
             this.listener = listener;
         }
 
-	void TopLevelHandler(object sender, UnhandledExceptionEventArgs e)
-	{
-		// Make sure that the test harness knows this exception was thrown
-		if (this.finallyDelegate != null)
-			this.finallyDelegate.HandleUnhandledExc(e.ExceptionObject as Exception);
-	}
+        void TopLevelHandler(object sender, UnhandledExceptionEventArgs e)
+        {
+            // Make sure that the test harness knows this exception was thrown
+            this.finallyDelegate.HandleUnhandledExc(e.ExceptionObject as Exception);
+        }
+
+        ITestAssemblyRunner DefaultRunner ()
+        {
+            return new NUnitLiteTestAssemblyRunner(new NUnitLiteTestAssemblyBuilder(), this.finallyDelegate);;
+        }
+
+#if MONODROID_TOOLS
+        ITestAssemblyRunner AndroidRunner (string app)
+        {
+            return new Xamarin.AndroidTestAssemblyRunner(app);
+        }
+#elif MONOTOUCH_TOOLS
+        ITestAssemblyRunner iOSRunner (string app)
+        {
+            throw new NotImplementedException ();
+        }
+#elif WASM_TOOLS
+        ITestAssemblyRunner WebAssemblyRunner (string app)
+        {
+            throw new NotImplementedException ();
+        }
+#endif
 
         #endregion
 
@@ -111,6 +130,36 @@ namespace NUnitLite.Runner
         {
             this.commandLineOptions = new CommandLineOptions();
             commandLineOptions.Parse(args);
+
+            if (runner == null) {
+#if MONODROID_TOOLS
+                if (!string.IsNullOrEmpty (commandLineOptions.Android)) {
+                    runner = AndroidRunner (commandLineOptions.Android);
+                } else if (!string.IsNullOrEmpty (commandLineOptions.Remote) && commandLineOptions.Remote.StartsWith ("android:")) {
+                    Xamarin.AndroidRemoteRunner.App = commandLineOptions.Remote.Substring (8);
+                    runner = DefaultRunner ();
+                } else
+#elif MONOTOUCH_TOOLS
+                if (!string.IsNullOrEmpty (commandLineOptions.iOS)) {
+                    runner = iOSRunner (commandLineOptions.iOS);
+                } else if (!string.IsNullOrEmpty (commandLineOptions.Remote) && commandLineOptions.Remote.StartsWith ("ios:")) {
+                    // Xamarin.iOSRemoteRunner.App = commandLineOptions.Remote.Substring (4);
+                    // runner = DefaultRunner ();
+                    throw new NotImplementedException ();
+                } else
+#elif WASM_TOOLS
+                if (!string.IsNullOrEmpty (commandLineOptions.WebAssembly)) {
+                    runner = WebAssemblyRunner (commandLineOptions.WebAssembly);
+                } else if (!string.IsNullOrEmpty (commandLineOptions.Remote) && commandLineOptions.Remote.StartsWith ("wasm:")) {
+                    // Xamarin.WebAssemblyRemoteRunner.App = commandLineOptions.Remote.Substring (5);
+                    // runner = DefaultRunner ();
+                    throw new NotImplementedException ();
+                } else
+#endif
+                {
+                    runner = DefaultRunner ();
+                }
+            }
 
             if (commandLineOptions.OutFile != null)
                 this.writer = new StreamWriter(commandLineOptions.OutFile);
@@ -312,7 +361,7 @@ namespace NUnitLite.Runner
             string resultFile = commandLineOptions.ResultFile;
             string resultFormat = commandLineOptions.ResultFormat;
 
-            this.Failure = (result.ResultState == ResultState.Failure);
+            this.Failure = (result.ResultState.Equals(ResultState.Failure) || result.ResultState.Equals(ResultState.Error));
 
             if (resultFile != null || commandLineOptions.ResultFormat != null)
             {

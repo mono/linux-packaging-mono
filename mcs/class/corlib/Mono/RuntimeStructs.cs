@@ -71,7 +71,11 @@ namespace Mono {
 		internal uint hash_alg;
 		internal uint hash_len;
 		internal uint flags;
+#if NETCORE
+		internal int major, minor, build, revision;
+#else
 		internal ushort major, minor, build, revision;
+#endif
 		internal ushort arch;
 	}
 
@@ -116,5 +120,12 @@ namespace Mono {
         public T3 Item3;
         public T4 Item4;
         public T5 Item5;
+	}
+
+	internal class NullByRefReturnException : Exception
+	{
+		public NullByRefReturnException ()
+		{
+		}
 	}
 }

@@ -95,7 +95,6 @@ typedef struct _InterpMethod
 	struct _InterpMethod *next_jit_code_hash;
 	guint32 locals_size;
 	guint32 total_locals_size;
-	guint32 args_size;
 	guint32 stack_size;
 	guint32 vt_stack_size;
 	guint32 alloca_size;
@@ -103,13 +102,11 @@ typedef struct _InterpMethod
 	unsigned int vararg : 1;
 	unsigned int needs_thread_attach : 1;
 	unsigned short *code;
-	unsigned short *new_body_start; /* after all STINARG instrs */
 	MonoPIFunc func;
 	int num_clauses;
 	MonoExceptionClause *clauses;
 	void **data_items;
 	int transformed;
-	guint32 *arg_offsets;
 	guint32 *local_offsets;
 	guint32 *exvar_offsets;
 	unsigned int param_count;
@@ -152,6 +149,14 @@ typedef struct {
 	/* Clause that we are resuming to */
 	MonoJitExceptionInfo *handler_ei;
 } ThreadContext;
+
+typedef struct {
+	gint64 transform_time;
+	gint32 inlined_methods;
+	gint32 inline_failures;
+} MonoInterpStats;
+
+extern MonoInterpStats mono_interp_stats;
 
 extern int mono_interp_traceopt;
 extern int mono_interp_opt;

@@ -69,6 +69,8 @@ namespace Mono.Linker {
 			get { return _annotations; }
 		}
 
+		public bool DeterministicOutput { get; set; }
+
 		public string OutputDirectory {
 			get { return _outputDirectory; }
 			set { _outputDirectory = value; }
@@ -149,6 +151,8 @@ namespace Mono.Linker {
 
 		public CodeOptimizations DisabledOptimizations { get; set; }
 
+		public bool AddReflectionAnnotations { get; set; }
+
 		public LinkContext (Pipeline pipeline)
 			: this (pipeline, new AssemblyResolver ())
 		{
@@ -181,6 +185,9 @@ namespace Mono.Linker {
 			Tracer = factory.CreateTracer (this);
 			MarkedKnownMembers = new KnownMembers ();
 			StripResources = true;
+
+			// See https://github.com/mono/linker/issues/612
+			DisabledOptimizations |= CodeOptimizations.UnreachableBodies;
 		}
 
 		public TypeDefinition GetType (string fullName)
@@ -206,8 +213,12 @@ namespace Mono.Linker {
 		public AssemblyDefinition Resolve (string name)
 		{
 			if (File.Exists (name)) {
-				AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly (name, _readerParameters);
-				return _resolver.CacheAssembly (assembly);
+				try {
+					AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly (name, _readerParameters);
+					return _resolver.CacheAssembly (assembly);
+				} catch (Exception e) {
+					throw new AssemblyResolutionException (new AssemblyNameReference (name, new Version ()), e);
+				}
 			}
 
 			return Resolve (new AssemblyNameReference (name, new Version ()));
@@ -293,9 +304,13 @@ namespace Mono.Linker {
 			return reference;
 		}
 		
-		public void SetAction(AssemblyDefinition assembly, AssemblyAction action)
+		public void SetAction (AssemblyDefinition assembly, AssemblyAction defaultAction)
 		{
 			RegisterAssembly (assembly);
+
+			if (!_actions.TryGetValue (assembly.Name.Name, out AssemblyAction action))
+				action = defaultAction;
+
 			Annotations.SetAction (assembly, action);
 		}
 
@@ -401,5 +416,10 @@ namespace Mono.Linker {
 		/// that do not get an instance constructor marked.
 		/// </summary>
 		OverrideRemoval = 1 << 1,
+		
+		/// <summary>
+		/// Option to disable delaying marking of instance methods until an instance of that type could exist
+		/// </summary>
+		UnreachableBodies = 1 << 2
 	}
 }

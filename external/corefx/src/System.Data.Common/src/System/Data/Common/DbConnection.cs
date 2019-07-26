@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace System.Data.Common
 {
-    public abstract partial class DbConnection : Component, IDbConnection
+    public abstract partial class DbConnection : Component, IDbConnection, IAsyncDisposable
     {
 #pragma warning disable 649 // ignore unassigned field warning
         internal bool _suppressStateChangeForReconnection;
@@ -126,6 +126,66 @@ namespace System.Data.Common
                 {
                     return Task.FromException(e);
                 }
+            }
+        }
+
+        protected virtual ValueTask<DbTransaction> BeginDbTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return new ValueTask<DbTransaction>(Task.FromCanceled<DbTransaction>(cancellationToken));
+            }
+
+            try
+            {
+                return new ValueTask<DbTransaction>(BeginDbTransaction(isolationLevel));
+            }
+            catch (Exception e)
+            {
+                return new ValueTask<DbTransaction>(Task.FromException<DbTransaction>(e));
+            }
+        }
+
+        public ValueTask<DbTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+            => BeginDbTransactionAsync(IsolationLevel.Unspecified, cancellationToken);
+
+        public ValueTask<DbTransaction> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
+            => BeginDbTransactionAsync(isolationLevel, cancellationToken);
+
+        public virtual Task CloseAsync()
+        {
+            try
+            {
+                Close();
+                return Task.CompletedTask;
+            }
+            catch (Exception e)
+            {
+                return Task.FromException(e);
+            }
+        }
+
+        public virtual ValueTask DisposeAsync()
+        {
+            Dispose();
+            return default;
+        }
+
+        public virtual Task ChangeDatabaseAsync(string databaseName, CancellationToken cancellationToken = default)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return Task.FromCanceled(cancellationToken);
+            }
+
+            try
+            {
+                ChangeDatabase(databaseName);
+                return Task.CompletedTask;
+            }
+            catch (Exception e)
+            {
+                return Task.FromException(e);
             }
         }
     }

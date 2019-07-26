@@ -2,7 +2,7 @@
 
 namespace Mono.Linker
 {
-	static class BCL
+	public static class BCL
 	{
 		public static class EventTracingForWindows
 		{
@@ -65,9 +65,14 @@ namespace Mono.Linker
 			var cache = context.Resolver.AssemblyCache;
 
 			AssemblyDefinition corlib;
-			if (cache.TryGetValue ("mscorlib", out corlib))
-				return corlib.MainModule.GetType (ns, name);
-				
+			TypeDefinition type = null;
+			if (cache.TryGetValue ("mscorlib", out corlib)) {
+				type = corlib.MainModule.GetType (ns, name);
+				// The assembly could be a facade with type forwarders, in which case we don't find the type in this assembly.
+				if (type != null)
+					return type;
+			}
+
 			if (cache.TryGetValue ("System.Private.CoreLib", out corlib))
 				return corlib.MainModule.GetType (ns, name);
 

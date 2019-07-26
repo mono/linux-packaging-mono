@@ -9,7 +9,7 @@ namespace System.Security.Cryptography
     /// <summary>
     /// Provides support for computing a hash or HMAC value incrementally across several segments.
     /// </summary>
-    public sealed class IncrementalHash : IDisposable
+    public sealed partial class IncrementalHash : IDisposable
     {
         private const int NTE_BAD_ALGID = unchecked((int)0x80090008);
 
@@ -225,5 +225,24 @@ namespace System.Security.Cryptography
 
             throw new CryptographicException(NTE_BAD_ALGID);
         }
+
+#if MONO
+        public void AppendData(ReadOnlySpan<byte> data) => AppendData(data.ToArray());
+
+        public bool TryGetHashAndReset(Span<byte> destination, out int bytesWritten)
+        {
+            if (_disposed)
+                throw new ObjectDisposedException(typeof(IncrementalHash).Name);
+
+            byte[] hash = GetHashAndReset();
+            if (hash.AsSpan().TryCopyTo(destination))
+            {
+                bytesWritten = hash.Length;
+                return true;
+            }
+            bytesWritten = 0;
+            return false;
+        }
+#endif
     }
 }

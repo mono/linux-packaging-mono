@@ -516,6 +516,7 @@ common_sources = \
 	ee.h \
 	mini-runtime.h
 
+# keep in sync with mcs/class/Mono.Runtime.Tests
 test_sources = 			\
 	basic-calls.cs 		\
 	basic-long.cs 		\
@@ -781,40 +782,40 @@ GENMDESC_OPTS=
 
 GENMDESC_PRG=python $(srcdir)/genmdesc.py $(target_define) $(srcdir)
 
-cpu-wasm.h: mini-ops.h cpu-wasm.md
+cpu-wasm.h: mini-ops.h cpu-wasm.md $(srcdir)/genmdesc.py
 	$(GENMDESC_PRG) cpu-wasm.h wasm_desc $(srcdir)/cpu-wasm.md
 
-cpu-x86.h: mini-ops.h cpu-x86.md
+cpu-x86.h: mini-ops.h cpu-x86.md $(srcdir)/genmdesc.py
 	$(GENMDESC_PRG) cpu-x86.h x86_desc $(srcdir)/cpu-x86.md
 
-cpu-amd64.h: mini-ops.h cpu-amd64.md
+cpu-amd64.h: mini-ops.h cpu-amd64.md $(srcdir)/genmdesc.py
 	$(GENMDESC_PRG) cpu-amd64.h amd64_desc $(srcdir)/cpu-amd64.md
 
-cpu-ppc.h: mini-ops.h cpu-ppc.md
+cpu-ppc.h: mini-ops.h cpu-ppc.md $(srcdir)/genmdesc.py
 	$(GENMDESC_PRG) cpu-ppc.h ppcg4 $(srcdir)/cpu-ppc.md
 
-cpu-ppc64.h: mini-ops.h cpu-ppc64.md
+cpu-ppc64.h: mini-ops.h cpu-ppc64.md $(srcdir)/genmdesc.py
 	$(GENMDESC_PRG) cpu-ppc64.h ppc64_cpu_desc $(srcdir)/cpu-ppc64.md
 
-cpu-arm.h: mini-ops.h cpu-arm.md
+cpu-arm.h: mini-ops.h cpu-arm.md $(srcdir)/genmdesc.py
 	$(GENMDESC_PRG) cpu-arm.h arm_cpu_desc $(srcdir)/cpu-arm.md
 
-cpu-arm64.h: mini-ops.h cpu-arm64.md
+cpu-arm64.h: mini-ops.h cpu-arm64.md $(srcdir)/genmdesc.py
 	$(GENMDESC_PRG) cpu-arm64.h arm64_cpu_desc $(srcdir)/cpu-arm64.md
 
-cpu-sparc.h: mini-ops.h cpu-sparc.md
+cpu-sparc.h: mini-ops.h cpu-sparc.md $(srcdir)/genmdesc.py
 	$(GENMDESC_PRG) cpu-sparc.h sparc_desc $(srcdir)/cpu-sparc.md
 
-cpu-s390x.h: mini-ops.h cpu-s390x.md
+cpu-s390x.h: mini-ops.h cpu-s390x.md $(srcdir)/genmdesc.py
 	$(GENMDESC_PRG) cpu-s390x.h s390x_cpu_desc $(srcdir)/cpu-s390x.md
 
-cpu-mips.h: mini-ops.h cpu-mips.md
+cpu-mips.h: mini-ops.h cpu-mips.md $(srcdir)/genmdesc.py
 	$(GENMDESC_PRG) cpu-mips.h mips_desc $(srcdir)/cpu-mips.md
 
-cpu-riscv32.h: cpu-riscv32.md
+cpu-riscv32.h: cpu-riscv32.md $(srcdir)/genmdesc.py
 	$(GENMDESC_PRG) cpu-riscv32.h riscv32_cpu_desc $(srcdir)/cpu-riscv32.md
 
-cpu-riscv64.h: cpu-riscv64.md
+cpu-riscv64.h: cpu-riscv64.md $(srcdir)/genmdesc.py
 	$(GENMDESC_PRG) cpu-riscv64.h riscv64_cpu_desc $(srcdir)/cpu-riscv64.md
 
 testi: mono test.exe
@@ -911,15 +912,20 @@ FULLAOT_LIBS_UNIVERSAL = \
 
 FULLAOT_LIBS_DISABLED =
 
-if FULL_AOT_TESTS
 # Skip aoting the tests that aren't compiled 
 # on the full aot profiles because they're skipped
 # on mobile profiles
+if FULL_AOT_TESTS
+FULLAOT_LIBS_DISABLED += \
+	Mono.Posix.dll \
+	System.Configuration.dll
+else
+if FULL_AOT_INTERP_TESTS
 FULLAOT_LIBS_DISABLED += \
 	Mono.Posix.dll \
 	System.Configuration.dll
 endif
-
+endif
 
 FULLAOT_LIBS = $(filter-out $(FULLAOT_LIBS_DISABLED),$(FULLAOT_LIBS_UNIVERSAL))
 
@@ -956,9 +962,9 @@ llvmonly_regtests = $(fullaot_regtests) gshared.exe
 llvmonlycheck: mono $(llvmonly_regtests)
 	rm -rf fullaot-tmp
 	mkdir fullaot-tmp
-	$(MAKE) fullaot-libs AOT_FLAGS="llvmonly,$(MONO_FULLAOT_ADDITIONAL_ARGS)$(INVARIANT_AOT_OPTIONS)"
+	$(MAKE) fullaot-libs AOT_FLAGS="llvmonly,clangxx=clang++-6.0,$(MONO_FULLAOT_ADDITIONAL_ARGS)$(INVARIANT_AOT_OPTIONS)"
 	cp $(llvmonly_regtests) $(fullaot_testing_deps) fullaot-tmp/
-	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper  $(MOBILE_RUNTIME_ARG) --aot=llvmonly fullaot-tmp/{$(fullaot_testing_deps_commas),*.exe} || exit 1
+	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper  $(MOBILE_RUNTIME_ARG) --aot=llvmonly,clangxx=clang++-6.0 fullaot-tmp/{$(fullaot_testing_deps_commas),*.exe} || exit 1
 	ln -s $$PWD/mono fullaot-tmp/
 	for i in $(llvmonly_regtests); do echo $$i; MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper $(MOBILE_RUNTIME_ARG) --llvmonly fullaot-tmp/$$i --exclude '!BITCODE' || exit 1; done
 

@@ -746,12 +746,6 @@ mono_arch_init (void)
 
 	if (!mono_aot_only)
 		bp_trampoline = mini_get_breakpoint_trampoline ();
-
-	mono_aot_register_jit_icall ("mono_x86_throw_exception", mono_x86_throw_exception);
-	mono_aot_register_jit_icall ("mono_x86_throw_corlib_exception", mono_x86_throw_corlib_exception);
-#if defined (MONO_ARCH_GSHAREDVT_SUPPORTED)
-	mono_aot_register_jit_icall ("mono_x86_start_gsharedvt_call", mono_x86_start_gsharedvt_call);
-#endif
 }
 
 /*
@@ -1732,7 +1726,9 @@ x86_align_and_patch (MonoCompile *cfg, guint8 *code, guint32 patch_type, gconstp
 
 	if (cfg->abs_patches) {
 		jinfo = (MonoJumpInfo*)g_hash_table_lookup (cfg->abs_patches, data);
-		if (jinfo && jinfo->type == MONO_PATCH_INFO_JIT_ICALL_ADDR)
+		if (jinfo && (jinfo->type == MONO_PATCH_INFO_JIT_ICALL_ADDR
+				|| jinfo->type == MONO_PATCH_INFO_TRAMPOLINE_FUNC_ADDR
+				|| jinfo->type == MONO_PATCH_INFO_SPECIFIC_TRAMPOLINE_LAZY_FETCH_ADDR))
 			needs_paddings = FALSE;
 	}
 
@@ -3161,8 +3157,8 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 		case OP_THROW: {
 			x86_alu_reg_imm (code, X86_SUB, X86_ESP, MONO_ARCH_FRAME_ALIGNMENT - 4);
 			x86_push_reg (code, ins->sreg1);
-			code = emit_call (cfg, code, MONO_PATCH_INFO_JIT_ICALL, 
-							  (gpointer)"mono_arch_throw_exception");
+			code = emit_call (cfg, code, MONO_PATCH_INFO_JIT_ICALL_ID,
+							  GUINT_TO_POINTER (MONO_JIT_ICALL_mono_arch_throw_exception));
 			ins->flags |= MONO_INST_GC_CALLSITE;
 			ins->backend.pc_offset = code - cfg->native_code;
 			break;
@@ -3170,8 +3166,8 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 		case OP_RETHROW: {
 			x86_alu_reg_imm (code, X86_SUB, X86_ESP, MONO_ARCH_FRAME_ALIGNMENT - 4);
 			x86_push_reg (code, ins->sreg1);
-			code = emit_call (cfg, code, MONO_PATCH_INFO_JIT_ICALL, 
-							  (gpointer)"mono_arch_rethrow_exception");
+			code = emit_call (cfg, code, MONO_PATCH_INFO_JIT_ICALL_ID,
+							  GUINT_TO_POINTER (MONO_JIT_ICALL_mono_arch_rethrow_exception));
 			ins->flags |= MONO_INST_GC_CALLSITE;
 			ins->backend.pc_offset = code - cfg->native_code;
 			break;
@@ -4835,7 +4831,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 
 			x86_test_membase_imm (code, ins->sreg1, 0, 1);
 			br[0] = code; x86_branch8 (code, X86_CC_EQ, 0, FALSE);
-			code = emit_call (cfg, code, MONO_PATCH_INFO_JIT_ICALL, "mono_threads_state_poll");
+			code = emit_call (cfg, code, MONO_PATCH_INFO_JIT_ICALL_ID, GUINT_TO_POINTER (MONO_JIT_ICALL_mono_threads_state_poll));
 			x86_patch (br [0], code);
 
 			break;
@@ -4898,11 +4894,13 @@ mono_arch_patch_code_new (MonoCompile *cfg, MonoDomain *domain, guint8 *code, Mo
 	case MONO_PATCH_INFO_ABS:
 	case MONO_PATCH_INFO_METHOD:
 	case MONO_PATCH_INFO_METHOD_JUMP:
-	case MONO_PATCH_INFO_JIT_ICALL:
+	case MONO_PATCH_INFO_JIT_ICALL_ID:
 	case MONO_PATCH_INFO_BB:
 	case MONO_PATCH_INFO_LABEL:
 	case MONO_PATCH_INFO_RGCTX_FETCH:
 	case MONO_PATCH_INFO_JIT_ICALL_ADDR:
+	case MONO_PATCH_INFO_TRAMPOLINE_FUNC_ADDR:
+	case MONO_PATCH_INFO_SPECIFIC_TRAMPOLINE_LAZY_FETCH_ADDR:
 		x86_patch (ip, (unsigned char*)target);
 		break;
 	case MONO_PATCH_INFO_NONE:
@@ -5336,8 +5334,8 @@ mono_arch_emit_exceptions (MonoCompile *cfg)
 				}
 
 				x86_push_imm (code, m_class_get_type_token (exc_class) - MONO_TOKEN_TYPE_DEF);
-				patch_info->data.name = "mono_arch_throw_corlib_exception";
-				patch_info->type = MONO_PATCH_INFO_JIT_ICALL;
+				patch_info->data.jit_icall_id = MONO_JIT_ICALL_mono_arch_throw_corlib_exception;
+				patch_info->type = MONO_PATCH_INFO_JIT_ICALL_ID;
 				patch_info->ip.i = code - cfg->native_code;
 				x86_call_code (code, 0);
 				x86_push_imm (buf, (code - cfg->native_code) - throw_ip);
@@ -6169,7 +6167,7 @@ mono_arch_decompose_long_opts (MonoCompile *cfg, MonoInst *long_ins)
 
 		MONO_INST_NEW (cfg, ins, OP_PSHUFLED);
 		ins->dreg = long_ins->dreg;
-		ins->sreg1 = long_ins->dreg;;
+		ins->sreg1 = long_ins->dreg;
 		ins->inst_c0 = 0x44; /*Magic number for swizzling (X,Y,X,Y)*/
 		ins->klass = long_ins->klass;
 		ins->type = STACK_VTYPE;
@@ -6389,4 +6387,18 @@ CallInfo*
 mono_arch_get_call_info (MonoMemPool *mp, MonoMethodSignature *sig)
 {
 	return get_call_info (mp, sig);
+}
+
+gpointer
+mono_arch_load_function (MonoJitICallId jit_icall_id)
+{
+	gpointer target = NULL;
+	switch (jit_icall_id) {
+#undef MONO_AOT_ICALL
+#define MONO_AOT_ICALL(x) case MONO_JIT_ICALL_ ## x: target = (gpointer)x; break;
+	MONO_AOT_ICALL (mono_x86_start_gsharedvt_call)
+	MONO_AOT_ICALL (mono_x86_throw_corlib_exception)
+	MONO_AOT_ICALL (mono_x86_throw_exception)
+	}
+	return target;
 }

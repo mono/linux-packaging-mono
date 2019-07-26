@@ -376,6 +376,37 @@ namespace System.Numerics
         [Intrinsic]
         public unsafe Vector(T[] values) : this(values, 0) { }
 
+#if netcoreapp || MONO // this ctor was copied from CoreFX-master (NS2.1)
+        /// <summary>
+        /// Constructs a vector from the given span. The span must contain at least Vector'T.Count elements.
+        /// </summary>
+        public Vector(Span<T> values)
+            : this()
+        {
+            if ((typeof(T) == typeof(byte))
+                || (typeof(T) == typeof(sbyte))
+                || (typeof(T) == typeof(ushort))
+                || (typeof(T) == typeof(short))
+                || (typeof(T) == typeof(uint))
+                || (typeof(T) == typeof(int))
+                || (typeof(T) == typeof(ulong))
+                || (typeof(T) == typeof(long))
+                || (typeof(T) == typeof(float))
+                || (typeof(T) == typeof(double)))
+            {
+                if (values.Length < Count)
+                {
+                    throw new IndexOutOfRangeException(SR.Format(SR.Arg_InsufficientNumberOfElements, Vector<T>.Count, nameof(values)));
+                }
+                this = Unsafe.ReadUnaligned<Vector<T>>(ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(values)));
+            }
+            else
+            {
+                throw new NotSupportedException(SR.Arg_TypeNotSupported);
+            }
+        }
+#endif
+
         /// <summary>
         /// Constructs a vector from the given array, starting from the given index.
         /// The array must contain at least Vector'T.Count from the given index.

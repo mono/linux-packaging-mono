@@ -31,6 +31,7 @@ namespace NUnit.Framework.Internal
     /// other selected parameters needed for constructing
     /// a parameterized test case.
     /// </summary>
+    [System.Serializable]
     public class ParameterSet : ITestCaseData, IApplyToTest
     {
         #region Instance Fields

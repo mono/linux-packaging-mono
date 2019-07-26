@@ -396,7 +396,12 @@ namespace System.IO
         /// </summary>
         private bool MatchPattern(ReadOnlySpan<char> relativePath)
         {
+#if MONO
+            if (relativePath.IsWhiteSpace())
+                return false;
+#endif
             ReadOnlySpan<char> name = IO.Path.GetFileName(relativePath);
+
             if (name.Length == 0)
                 return false;
 

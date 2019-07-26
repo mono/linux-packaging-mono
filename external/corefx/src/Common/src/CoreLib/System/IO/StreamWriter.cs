@@ -232,6 +232,68 @@ namespace System.IO
             }
         }
 
+#if MONO // Copied from CoreFX-master (NS2.1)
+        public override ValueTask DisposeAsync()
+        {
+#if __MonoCS__
+            return GetType() != typeof(StreamWriter) ? base.DisposeAsync() : new ValueTask(DisposeAsyncCore());
+#else
+            return GetType() != typeof(StreamWriter) ? base.DisposeAsync() : DisposeAsyncCore();
+#endif
+        }
+
+#if __MonoCS__
+        private async Task DisposeAsyncCore()
+#else
+        private async ValueTask DisposeAsyncCore()
+#endif
+        {
+            // Same logic as in Dispose(), but with async flushing.
+            Debug.Assert(GetType() == typeof(StreamWriter));
+            try
+            {
+                if (_stream != null)
+                {
+                    await FlushAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                CloseStreamFromDispose(disposing: true);
+            }
+            GC.SuppressFinalize(this);
+        }
+
+        private void CloseStreamFromDispose(bool disposing)
+        {
+            // Dispose of our resources if this StreamWriter is closable. 
+            if (!LeaveOpen && _stream != null)
+            {
+                try
+                {
+                    // Attempt to close the stream even if there was an IO error from Flushing.
+                    // Note that Stream.Close() can potentially throw here (may or may not be
+                    // due to the same Flush error). In this case, we still need to ensure 
+                    // cleaning up internal resources, hence the finally block.  
+                    if (disposing)
+                    {
+                        _stream.Close();
+                    }
+                }
+                finally
+                {
+                    _stream = null;
+                    _byteBuffer = null;
+                    _charBuffer = null;
+                    _encoding = null;
+                    _encoder = null;
+                    _charLen = 0;
+                    base.Dispose(disposing);
+                }
+            }
+        }
+#endif
+
         public override void Flush()
         {
             CheckAsyncTaskInProgress();

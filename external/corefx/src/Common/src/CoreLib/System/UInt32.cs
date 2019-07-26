@@ -15,9 +15,9 @@ namespace System
 #if !MONO
     [TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
 #endif
-    public struct UInt32 : IComparable, IConvertible, IFormattable, IComparable<UInt32>, IEquatable<UInt32>, ISpanFormattable
+    public readonly struct UInt32 : IComparable, IConvertible, IFormattable, IComparable<UInt32>, IEquatable<UInt32>, ISpanFormattable
     {
-        private uint m_value; // Do not rename (binary serialization)
+        private readonly uint m_value; // Do not rename (binary serialization)
 
         public const uint MaxValue = (uint)0xffffffff;
         public const uint MinValue = 0U;

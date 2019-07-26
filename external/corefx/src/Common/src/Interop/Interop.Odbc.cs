@@ -94,19 +94,15 @@ internal static partial class Interop
         //            SQLSMALLINT *StringLength, SQLPOINTER NumericAttribute);
         // #endif
 
-        [DllImport(Interop.Libraries.Odbc32)]
+        [DllImport(Interop.Libraries.Odbc32, CharSet = CharSet.Unicode)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLColumnsW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */string CatalogName,
             /*SQLSMALLINT*/Int16 NameLen1,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */string SchemaName,
             /*SQLSMALLINT*/Int16 NameLen2,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */string TableName,
             /*SQLSMALLINT*/Int16 NameLen3,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */string ColumnName,
             /*SQLSMALLINT*/Int16 NameLen4);
 
@@ -118,7 +114,6 @@ internal static partial class Interop
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLDriverConnectW(
             /*SQLHDBC*/OdbcConnectionHandle hdbc,
             /*SQLHWND*/IntPtr hwnd,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */string               connectionstring,
             /*SQLSMALLINT*/Int16 cbConnectionstring,
             /*SQLCHAR* */IntPtr connectionstringout,
@@ -135,7 +130,6 @@ internal static partial class Interop
         [DllImport(Interop.Libraries.Odbc32, CharSet = CharSet.Unicode)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLExecDirectW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */string   StatementText,
             /*SQLINTEGER*/Int32 TextLength);
 
@@ -200,7 +194,6 @@ internal static partial class Interop
            /*SQLHANDLE*/   OdbcHandle Handle,
            /*SQLSMALLINT*/ Int16 RecNumber,
            /*SQLSMALLINT*/ Int16 DiagIdentifier,
-           [MarshalAs(UnmanagedType.LPWStr)]
            /*SQLPOINTER*/  StringBuilder    rchState,
            /*SQLSMALLINT*/ Int16 BufferLength,
            /*SQLSMALLINT* */ out Int16 StringLength);
@@ -252,43 +245,39 @@ internal static partial class Interop
         [DllImport(Interop.Libraries.Odbc32, CharSet = CharSet.Unicode)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLPrepareW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */string   StatementText,
             /*SQLINTEGER*/Int32 TextLength);
 
         [DllImport(Interop.Libraries.Odbc32, CharSet = CharSet.Unicode)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLPrimaryKeysW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */string CatalogName,
             /*SQLSMALLINT*/Int16 NameLen1,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */ string SchemaName,
             /*SQLSMALLINT*/Int16 NameLen2,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */string TableName,
             /*SQLSMALLINT*/Int16 NameLen3);
 
         [DllImport(Interop.Libraries.Odbc32, CharSet = CharSet.Unicode)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLProcedureColumnsW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
-            [In, MarshalAs(UnmanagedType.LPWStr)] /*SQLCHAR* */ string CatalogName,
+            /*SQLCHAR* */ string CatalogName,
             /*SQLSMALLINT*/Int16 NameLen1,
-            [In, MarshalAs(UnmanagedType.LPWStr)] /*SQLCHAR* */ string SchemaName,
+            /*SQLCHAR* */ string SchemaName,
             /*SQLSMALLINT*/Int16 NameLen2,
-            [In, MarshalAs(UnmanagedType.LPWStr)] /*SQLCHAR* */ string ProcName,
+            /*SQLCHAR* */ string ProcName,
             /*SQLSMALLINT*/Int16 NameLen3,
-            [In, MarshalAs(UnmanagedType.LPWStr)] /*SQLCHAR* */ string ColumnName,
+            /*SQLCHAR* */ string ColumnName,
             /*SQLSMALLINT*/Int16 NameLen4);
 
-        [DllImport(Interop.Libraries.Odbc32)]
+        [DllImport(Interop.Libraries.Odbc32, CharSet = CharSet.Unicode)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLProceduresW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
-            [In, MarshalAs(UnmanagedType.LPWStr)] /*SQLCHAR* */ string CatalogName,
+            /*SQLCHAR* */ string CatalogName,
             /*SQLSMALLINT*/Int16 NameLen1,
-            [In, MarshalAs(UnmanagedType.LPWStr)] /*SQLCHAR* */ string SchemaName,
+            /*SQLCHAR* */ string SchemaName,
             /*SQLSMALLINT*/Int16 NameLen2,
-            [In, MarshalAs(UnmanagedType.LPWStr)] /*SQLCHAR* */ string ProcName,
+            /*SQLCHAR* */ string ProcName,
             /*SQLSMALLINT*/Int16 NameLen3);
 
         [DllImport(Interop.Libraries.Odbc32)]
@@ -359,13 +348,10 @@ internal static partial class Interop
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLSpecialColumnsW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
             /*SQLUSMALLINT*/ODBC32.SQL_SPECIALCOLS IdentifierType,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */string CatalogName,
             /*SQLSMALLINT*/Int16 NameLen1,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */string SchemaName,
             /*SQLSMALLINT*/Int16 NameLen2,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */string TableName,
             /*SQLSMALLINT*/Int16 NameLen3,
             /*SQLUSMALLINT*/ODBC32.SQL_SCOPE Scope,
@@ -374,31 +360,24 @@ internal static partial class Interop
         [DllImport(Interop.Libraries.Odbc32, CharSet = CharSet.Unicode)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLStatisticsW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */string CatalogName,
             /*SQLSMALLINT*/Int16 NameLen1,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */string SchemaName,
             /*SQLSMALLINT*/Int16 NameLen2,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */string TableName,
             /*SQLSMALLINT*/Int16 NameLen3,
             /*SQLUSMALLINT*/Int16 Unique,
             /*SQLUSMALLINT*/Int16 Reserved);
 
-        [DllImport(Interop.Libraries.Odbc32)]
+        [DllImport(Interop.Libraries.Odbc32, CharSet = CharSet.Unicode)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLTablesW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */string CatalogName,
             /*SQLSMALLINT*/Int16 NameLen1,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */string SchemaName,
             /*SQLSMALLINT*/Int16 NameLen2,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */string TableName,
             /*SQLSMALLINT*/Int16 NameLen3,
-            [In, MarshalAs(UnmanagedType.LPWStr)]
             /*SQLCHAR* */string TableType,
             /*SQLSMALLINT*/Int16 NameLen4);
     }
