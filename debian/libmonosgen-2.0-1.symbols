@@ -120,6 +120,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_class_get_namespace@Base 4.1.0.1738
  mono_class_get_nested_types@Base 4.1.0.1738
  mono_class_get_nesting_type@Base 4.1.0.1738
+ mono_class_get_nullable_param@Base 6.4.0.137
  mono_class_get_parent@Base 4.1.0.1738
  mono_class_get_properties@Base 4.1.0.1738
  mono_class_get_property_from_name@Base 4.1.0.1738
@@ -136,6 +137,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_class_is_assignable_from@Base 4.1.0.1738
  mono_class_is_delegate@Base 4.1.0.1738
  mono_class_is_enum@Base 4.1.0.1738
+ mono_class_is_nullable@Base 6.4.0.137
  mono_class_is_subclass_of@Base 4.1.0.1738
  mono_class_is_valid_enum@Base 4.1.0.1738
  mono_class_is_valuetype@Base 4.1.0.1738
@@ -233,6 +235,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_debug_lookup_method@Base 4.1.0.1738
  mono_debug_lookup_method_addresses@Base 4.1.0.1738
  mono_debug_lookup_source_location@Base 4.1.0.1738
+ mono_debug_method_lookup_location@Base 6.4.0.137
  mono_debug_open_image_from_memory@Base 4.1.0.1738
  mono_debug_open_mono_symbols@Base 4.1.0.1738
  mono_debug_print_stack_frame@Base 4.1.0.1738
@@ -328,6 +331,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_field_static_set_value@Base 4.1.0.1738
  mono_file_map@Base 4.1.0.1738
  mono_file_map_close@Base 4.1.0.1738
+ mono_file_map_error@Base 6.4.0.137
  mono_file_map_fd@Base 4.1.0.1738
  mono_file_map_fileio@Base 4.1.0.1738
  mono_file_map_open@Base 4.1.0.1738
@@ -930,6 +934,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_set_is_debugger_attached@Base 4.1.0.1738
  mono_set_rootdir@Base 4.1.0.1738
  mono_set_signal_chaining@Base 4.1.0.1738
+ mono_set_use_llvm@Base 6.4.0.137
  mono_setmmapjit@Base 6.0.0.172
  mono_sha1_final@Base 4.1.0.1738
  mono_sgen_mono_ilgen_init@Base 5.12.0.220
@@ -1056,6 +1061,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_type_get_type@Base 4.1.0.1738
  mono_type_get_underlying_type@Base 4.1.0.1738
  mono_type_is_byref@Base 4.1.0.1738
+ mono_type_is_generic_parameter@Base 6.4.0.137
  mono_type_is_pointer@Base 4.1.0.1738
  mono_type_is_primitive@Base 4.9.0.1707
  mono_type_is_reference@Base 4.1.0.1738

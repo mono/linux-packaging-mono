@@ -1,7 +1,10 @@
+ mini_exception_id_by_name@Base 6.4.0.137
  mini_get_underlying_type@Base 5.14.0.87
  mini_is_gsharedvt_klass@Base 5.14.0.87
  mini_is_gsharedvt_variable_klass@Base 5.14.0.87
+ mini_is_gsharedvt_variable_signature@Base 6.4.0.137
  mini_is_gsharedvt_variable_type@Base 5.14.0.87
+ mini_method_is_default_method@Base 6.4.0.137
  mini_native_type_replace_type@Base 5.14.0.87
  mini_type_is_hfa@Base 5.14.0.87
  mini_type_is_vtype@Base 5.14.0.87
@@ -15,6 +18,7 @@
  mono_alloc_ireg_ref@Base 5.14.0.87
  mono_alloc_lreg@Base 5.14.0.87
  mono_alloc_preg@Base 5.14.0.87
+ mono_aot_can_specialize@Base 6.4.0.137
  mono_aot_get_direct_call_symbol@Base 5.14.0.87
  mono_aot_get_got_offset@Base 5.14.0.87
  mono_aot_get_mangled_method_name@Base 5.14.0.87
