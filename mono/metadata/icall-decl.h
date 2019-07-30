@@ -76,7 +76,6 @@ typedef enum {
 // grep ICALL_EXPORT | sort | uniq
 ICALL_EXPORT MonoAssemblyName* ves_icall_System_Reflection_AssemblyName_GetNativeName (MonoAssembly*);
 ICALL_EXPORT MonoBoolean ves_icall_RuntimeTypeHandle_is_subclass_of (MonoType*, MonoType*);
-ICALL_EXPORT MonoBoolean ves_icall_System_Buffer_BlockCopyInternal (MonoArray*, gint32, MonoArray*, gint32, gint32);
 ICALL_EXPORT MonoBoolean ves_icall_System_Environment_GetIs64BitOperatingSystem (void);
 ICALL_EXPORT MonoBoolean ves_icall_System_Environment_get_HasShutdownStarted (void);
 ICALL_EXPORT MonoBoolean ves_icall_System_GCHandle_CheckCurrentDomain (guint32 gchandle);
@@ -154,7 +153,6 @@ ICALL_EXPORT float ves_icall_System_MathF_ScaleB (float, gint32);
 ICALL_EXPORT float ves_icall_System_MathF_FusedMultiplyAdd (float, float, float);
 #endif
 ICALL_EXPORT gint ves_icall_System_Runtime_CompilerServices_RuntimeHelpers_GetOffsetToStringData (void);
-ICALL_EXPORT gint32 ves_icall_System_Buffer_ByteLengthInternal (MonoArray*);
 ICALL_EXPORT gint32 ves_icall_System_Environment_get_ProcessorCount (void);
 ICALL_EXPORT gint32 ves_icall_System_Environment_get_TickCount (void);
 #if ENABLE_NETCORE
@@ -165,7 +163,6 @@ ICALL_EXPORT gint64 ves_icall_System_Diagnostics_Process_GetProcessData (int, gi
 ICALL_EXPORT gint64 ves_icall_System_Diagnostics_Stopwatch_GetTimestamp (void);
 ICALL_EXPORT gint64 ves_icall_System_GC_GetTotalMemory (MonoBoolean forceCollection);
 ICALL_EXPORT gint64 ves_icall_System_Threading_Timer_GetTimeMonotonic (void);
-ICALL_EXPORT gint8 ves_icall_System_Buffer_GetByteInternal (MonoArray*, gint32);
 ICALL_EXPORT gpointer ves_icall_System_GCHandle_GetAddrOfPinnedObject (guint32 handle);
 ICALL_EXPORT int ves_icall_Interop_Sys_DoubleToString (double, char*, char*, int);
 ICALL_EXPORT int ves_icall_System_Environment_get_Platform (void);
@@ -178,7 +175,6 @@ ICALL_EXPORT void ves_icall_Mono_Runtime_RegisterReportingForNativeLib (const ch
 ICALL_EXPORT void ves_icall_System_Array_GetGenericValueImpl (MonoArray*, guint32, gpointer);
 ICALL_EXPORT void ves_icall_System_Array_SetGenericValueImpl (MonoArray*, guint32, gpointer);
 ICALL_EXPORT void ves_icall_System_Buffer_MemcpyInternal (gpointer dest, gconstpointer src, gint32 count);
-ICALL_EXPORT void ves_icall_System_Buffer_SetByteInternal (MonoArray*, gint32, gint8);
 ICALL_EXPORT void ves_icall_System_Environment_Exit (int);
 ICALL_EXPORT void ves_icall_System_GCHandle_FreeHandle (guint32 handle);
 ICALL_EXPORT void ves_icall_System_GC_InternalCollect (int generation);
