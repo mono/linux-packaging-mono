@@ -149,9 +149,9 @@ am__libMonoPosixHelper_la_SOURCES_DIST = errno.c map.c map.h mph.h \
 	sys-statvfs.c sys-time.c sys-uio.c sys-uio.h sys-utsname.c \
 	sys-wait.c sys-xattr.c syslog.c time.c unistd.c utime.c \
 	x-struct-str.c zlib-helper.c adler32.c compress.c crc32.c \
-	uncompr.c deflate.c trees.c zutil.c inflate.c infback.c \
-	inftrees.c inffast.c crc32.h deflate.h inffast.h inffixed.h \
-	inflate.h inftrees.h trees.h zconf.h zlib.h zutil.h \
+	uncompr.c deflate.c gzguts.h trees.c zutil.c inflate.c \
+	infback.c inftrees.c inffast.c crc32.h deflate.h inffast.h \
+	inffixed.h inflate.h inftrees.h trees.h zconf.h zlib.h zutil.h \
 	minizip/crypt.h minizip/ioapi.c minizip/ioapi.h \
 	minizip/unzip.c minizip/unzip.h minizip/zip.c minizip/zip.h
 am__objects_1 = errno.lo map.lo signal.lo stdio.lo string.lo stdlib.lo
@@ -602,6 +602,7 @@ ZLIB_SOURCES = \
 	crc32.c		\
 	uncompr.c	\
 	deflate.c	\
+	gzguts.h	\
 	trees.c		\
 	zutil.c		\
 	inflate.c	\

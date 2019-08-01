@@ -1702,6 +1702,7 @@ namespace Mono.Unix.Native
         O_DIRECTORY = 65536,
         O_EXCL = 128,
         O_LARGEFILE = 32768,
+        O_NOATIME = 262144,
         O_NOCTTY = 256,
         O_NOFOLLOW = 131072,
         O_NONBLOCK = 2048,
