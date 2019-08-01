@@ -186,12 +186,7 @@ ves_icall_mono_string_to_utf8_impl (MonoStringHandle str, MonoError *error)
 MonoStringHandle
 ves_icall_string_new_wrapper_impl (const char *text, MonoError *error)
 {
-	if (text) {
-		MonoString *s = mono_string_new_checked (mono_domain_get (), text, error);
-		return_val_if_nok (error, NULL_HANDLE_STRING);
-		return MONO_HANDLE_NEW (MonoString, s);
-	}
-	return NULL_HANDLE_STRING;
+	return text ? mono_string_new_handle (mono_domain_get (), text, error) : NULL_HANDLE_STRING;
 }
 
 void
@@ -582,11 +577,9 @@ mono_string_from_byvalwstr_impl (const gunichar2 *data, int max_len, MonoError *
 		return NULL_HANDLE_STRING;
 
 	// FIXME Check max_len while scanning data? mono_string_from_byvalstr does.
-	int len = g_utf16_len (data);
+	const int len = g_utf16_len (data);
 
-	MonoString *res = mono_string_new_utf16_checked (mono_domain_get (), data, MIN (len, max_len), error);
-	return_val_if_nok (error, NULL_HANDLE_STRING);
-	return MONO_HANDLE_NEW (MonoString, res);
+	return mono_string_new_utf16_handle (mono_domain_get (), data, MIN (len, max_len), error);
 }
 
 gpointer
@@ -3295,9 +3288,10 @@ mono_emit_marshal (EmitMarshalContext *m, int argnum, MonoType *t,
 #endif
 
 #if !defined(DISABLE_COM)
-		if (spec && (spec->native == MONO_NATIVE_IUNKNOWN ||
+		if ((spec && (spec->native == MONO_NATIVE_IUNKNOWN ||
 			spec->native == MONO_NATIVE_IDISPATCH ||
-			spec->native == MONO_NATIVE_INTERFACE))
+			spec->native == MONO_NATIVE_INTERFACE)) ||
+			(t->type == MONO_TYPE_CLASS && mono_cominterop_is_interface(t->data.klass)))
 			return mono_cominterop_emit_marshal_com_interface (m, argnum, t, spec, conv_arg, conv_arg_type, action);
 		if (spec && (spec->native == MONO_NATIVE_SAFEARRAY) && 
 			(spec->data.safearray_data.elem_type == MONO_VARIANT_VARIANT) && 
@@ -5544,10 +5538,11 @@ ves_icall_System_Runtime_InteropServices_Marshal_ReAllocCoTaskMem (gpointer ptr,
 	return res;
 }
 
-void*
-ves_icall_System_Runtime_InteropServices_Marshal_UnsafeAddrOfPinnedArrayElement (MonoArray *arrayobj, int index)
+gpointer
+ves_icall_System_Runtime_InteropServices_Marshal_UnsafeAddrOfPinnedArrayElement (MonoArrayHandle arrayobj, int index, MonoError *error)
 {
-	return mono_array_addr_with_size_fast (arrayobj, mono_array_element_size (arrayobj->obj.vtable->klass), index);
+	int esize = mono_array_element_size (mono_handle_class (arrayobj));
+	return mono_array_addr_with_size_fast (MONO_HANDLE_RAW (arrayobj), esize, index);
 }
 
 MonoDelegateHandle
