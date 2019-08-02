@@ -750,4 +750,11 @@ DLLEXPORT int32_t SystemNative_GetPeerID(intptr_t socket, uid_t* euid);
 */
 DLLEXPORT int32_t SystemNative_LockFileRegion(intptr_t fd, int64_t offset, int64_t length, int16_t lockType);
 
+/**
+* Creates a symbolic link at "linkPath", pointing at "target".
+* "target" may or may not exist (dangling symbolic links are valid filesystem objects)
+* Returns 0 on success; otherwise, returns -1 and errno is set.
+*/
+DLLEXPORT int32_t SystemNative_Symlink(const char* target, const char* linkPath);
+
 END_EXTERN_C
