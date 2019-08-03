@@ -142,8 +142,9 @@ libmonomath_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libmonomath_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o \
 	$@
 libmonoutils_la_DEPENDENCIES = mono-math-c.lo
-am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
-	mono-os-wait-win32.c mono-os-semaphore-win32.c mono-md5.c \
+am__libmonoutils_la_SOURCES_DIST = os-event-unix.c \
+	mono-os-semaphore-win32.c mono-os-wait-win32.c \
+	mono-windows-thread-name.c os-event-win32.c mono-md5.c \
 	mono-sha1.c mono-logger.c mono-logger-internals.h \
 	mono-codeman.c dlmalloc.h dlmalloc.c mono-counters.c \
 	mono-compiler.h mono-complex.h mono-dl.c mono-dl-windows.c \
@@ -204,9 +205,11 @@ am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 	mono-hwcap-sparc.c mono-hwcap-s390x.c mono-hwcap-riscv.c \
 	mono-hwcap-wasm.c mono-hwcap-cross.c
 @HOST_WIN32_FALSE@am__objects_1 = libmonoutils_la-os-event-unix.lo
-@HOST_WIN32_TRUE@am__objects_2 = libmonoutils_la-os-event-win32.lo \
+@HOST_WIN32_TRUE@am__objects_2 =  \
+@HOST_WIN32_TRUE@	libmonoutils_la-mono-os-semaphore-win32.lo \
 @HOST_WIN32_TRUE@	libmonoutils_la-mono-os-wait-win32.lo \
-@HOST_WIN32_TRUE@	libmonoutils_la-mono-os-semaphore-win32.lo
+@HOST_WIN32_TRUE@	libmonoutils_la-mono-windows-thread-name.lo \
+@HOST_WIN32_TRUE@	libmonoutils_la-os-event-win32.lo
 @HOST_WIN32_FALSE@am__objects_3 = $(am__objects_1)
 @HOST_WIN32_TRUE@am__objects_3 = $(am__objects_2)
 am__objects_4 = $(am__objects_3) libmonoutils_la-mono-md5.lo \
@@ -726,9 +729,10 @@ noinst_LTLIBRARIES = \
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS) $(LLVM_CFLAGS)
 @ENABLE_DTRACE_TRUE@BUILT_SOURCES = mono-dtrace.h
 @HOST_WIN32_TRUE@win32_sources = \
-@HOST_WIN32_TRUE@	os-event-win32.c \
+@HOST_WIN32_TRUE@	mono-os-semaphore-win32.c \
 @HOST_WIN32_TRUE@	mono-os-wait-win32.c \
-@HOST_WIN32_TRUE@	mono-os-semaphore-win32.c
+@HOST_WIN32_TRUE@	mono-windows-thread-name.c \
+@HOST_WIN32_TRUE@	os-event-win32.c
 
 @HOST_WIN32_FALSE@platform_sources = $(unix_sources)
 @HOST_WIN32_TRUE@platform_sources = $(win32_sources)
@@ -1090,6 +1094,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-utility-thread.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-utils-debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-value-hash.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-windows-thread-name.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-monobitset.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-networking-fallback.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-networking-missing.Plo@am__quote@
@@ -1139,12 +1144,12 @@ libmonoutils_la-os-event-unix.lo: os-event-unix.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-os-event-unix.lo `test -f 'os-event-unix.c' || echo '$(srcdir)/'`os-event-unix.c
 
-libmonoutils_la-os-event-win32.lo: os-event-win32.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-os-event-win32.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-os-event-win32.Tpo -c -o libmonoutils_la-os-event-win32.lo `test -f 'os-event-win32.c' || echo '$(srcdir)/'`os-event-win32.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-os-event-win32.Tpo $(DEPDIR)/libmonoutils_la-os-event-win32.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='os-event-win32.c' object='libmonoutils_la-os-event-win32.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoutils_la-mono-os-semaphore-win32.lo: mono-os-semaphore-win32.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-os-semaphore-win32.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-os-semaphore-win32.Tpo -c -o libmonoutils_la-mono-os-semaphore-win32.lo `test -f 'mono-os-semaphore-win32.c' || echo '$(srcdir)/'`mono-os-semaphore-win32.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mono-os-semaphore-win32.Tpo $(DEPDIR)/libmonoutils_la-mono-os-semaphore-win32.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-os-semaphore-win32.c' object='libmonoutils_la-mono-os-semaphore-win32.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-os-event-win32.lo `test -f 'os-event-win32.c' || echo '$(srcdir)/'`os-event-win32.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-os-semaphore-win32.lo `test -f 'mono-os-semaphore-win32.c' || echo '$(srcdir)/'`mono-os-semaphore-win32.c
 
 libmonoutils_la-mono-os-wait-win32.lo: mono-os-wait-win32.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-os-wait-win32.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-os-wait-win32.Tpo -c -o libmonoutils_la-mono-os-wait-win32.lo `test -f 'mono-os-wait-win32.c' || echo '$(srcdir)/'`mono-os-wait-win32.c
@@ -1153,12 +1158,19 @@ libmonoutils_la-mono-os-wait-win32.lo: mono-os-wait-win32.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-os-wait-win32.lo `test -f 'mono-os-wait-win32.c' || echo '$(srcdir)/'`mono-os-wait-win32.c
 
-libmonoutils_la-mono-os-semaphore-win32.lo: mono-os-semaphore-win32.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-os-semaphore-win32.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-os-semaphore-win32.Tpo -c -o libmonoutils_la-mono-os-semaphore-win32.lo `test -f 'mono-os-semaphore-win32.c' || echo '$(srcdir)/'`mono-os-semaphore-win32.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mono-os-semaphore-win32.Tpo $(DEPDIR)/libmonoutils_la-mono-os-semaphore-win32.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-os-semaphore-win32.c' object='libmonoutils_la-mono-os-semaphore-win32.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoutils_la-mono-windows-thread-name.lo: mono-windows-thread-name.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-windows-thread-name.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-windows-thread-name.Tpo -c -o libmonoutils_la-mono-windows-thread-name.lo `test -f 'mono-windows-thread-name.c' || echo '$(srcdir)/'`mono-windows-thread-name.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mono-windows-thread-name.Tpo $(DEPDIR)/libmonoutils_la-mono-windows-thread-name.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-windows-thread-name.c' object='libmonoutils_la-mono-windows-thread-name.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-os-semaphore-win32.lo `test -f 'mono-os-semaphore-win32.c' || echo '$(srcdir)/'`mono-os-semaphore-win32.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-windows-thread-name.lo `test -f 'mono-windows-thread-name.c' || echo '$(srcdir)/'`mono-windows-thread-name.c
+
+libmonoutils_la-os-event-win32.lo: os-event-win32.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-os-event-win32.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-os-event-win32.Tpo -c -o libmonoutils_la-os-event-win32.lo `test -f 'os-event-win32.c' || echo '$(srcdir)/'`os-event-win32.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-os-event-win32.Tpo $(DEPDIR)/libmonoutils_la-os-event-win32.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='os-event-win32.c' object='libmonoutils_la-os-event-win32.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-os-event-win32.lo `test -f 'os-event-win32.c' || echo '$(srcdir)/'`os-event-win32.c
 
 libmonoutils_la-mono-md5.lo: mono-md5.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-md5.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-md5.Tpo -c -o libmonoutils_la-mono-md5.lo `test -f 'mono-md5.c' || echo '$(srcdir)/'`mono-md5.c
