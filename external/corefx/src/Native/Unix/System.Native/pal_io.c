@@ -1451,3 +1451,8 @@ int32_t SystemNative_LockFileRegion(intptr_t fd, int64_t offset, int64_t length,
     while ((ret = fcntl (ToFileDescriptor(fd), F_SETLK, &lockArgs)) < 0 && errno == EINTR);
     return ret;
 }
+
+int32_t SystemNative_Symlink(const char* target, const char* linkPath)
+{
+    return symlink(target, linkPath);
+}

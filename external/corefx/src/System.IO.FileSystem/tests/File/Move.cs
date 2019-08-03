@@ -4,6 +4,7 @@
 
 using Xunit;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace System.IO.Tests
 {
@@ -172,6 +173,22 @@ namespace System.IO.Tests
             Assert.True(File.Exists(testFileDest2));
             Assert.False(File.Exists(testFileDest1));
             Assert.False(File.Exists(testFileSource.FullName));
+        }
+
+        [DllImport("libc", SetLastError = true)]
+        private static extern int symlink(string target, string linkpath);
+
+        [Fact]
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
+        public void DanglingSymlinkMove()
+        {
+            string dangling_symlink = GetTestFileName();
+            string missing_target = GetTestFileName();
+            string dangling_symlink_new_location = GetTestFileName();
+            Assert.False(File.Exists(missing_target));
+            Assert.Equal(symlink(missing_target, dangling_symlink), 0);
+            Move(dangling_symlink, dangling_symlink_new_location);
+            Assert.True(File.Exists(dangling_symlink_new_location)); // File.Exists returns true for dangling symlinks
         }
 
         [Fact]

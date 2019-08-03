@@ -637,6 +637,7 @@ namespace System
                 }
                 catch (ArgumentException) { }
                 catch (InvalidTimeZoneException) { }
+
                 try
                 {
                     return new TimeZoneInfo(rawData, id, dstDisabled: true); // create a TimeZoneInfo instance from the TZif data w/o DST support
@@ -644,7 +645,6 @@ namespace System
                 catch (ArgumentException) { }
                 catch (InvalidTimeZoneException) { }
             }
-
             return null;
         }
 
@@ -912,7 +912,7 @@ namespace System
                 index++;
             }
 
-            if (index == 0)
+            if (rulesList.Count == 0 && index < dts.Length)
             {
                 TZifType transitionType = TZif_GetEarlyDateTransitionType(transitionTypes);
                 DateTime endTransitionDate = dts[index];
@@ -929,6 +929,12 @@ namespace System
                         default(TransitionTime),
                         baseUtcDelta,
                         noDaylightTransitions: true);
+
+                if (!IsValidAdjustmentRuleOffest(timeZoneBaseUtcOffset, r))
+                {
+                    NormalizeAdjustmentRuleOffset(timeZoneBaseUtcOffset, ref r);
+                }
+
                 rulesList.Add(r);
             }
             else if (index < dts.Length)
@@ -966,6 +972,12 @@ namespace System
                         default(TransitionTime),
                         baseUtcDelta,
                         noDaylightTransitions: true);
+
+                if (!IsValidAdjustmentRuleOffest(timeZoneBaseUtcOffset, r))
+                {
+                    NormalizeAdjustmentRuleOffset(timeZoneBaseUtcOffset, ref r);
+                }
+
                 rulesList.Add(r);
             }
             else
@@ -978,8 +990,14 @@ namespace System
                 if (!string.IsNullOrEmpty(futureTransitionsPosixFormat))
                 {
                     AdjustmentRule r = TZif_CreateAdjustmentRuleForPosixFormat(futureTransitionsPosixFormat, startTransitionDate, timeZoneBaseUtcOffset);
+
                     if (r != null)
                     {
+                        if (!IsValidAdjustmentRuleOffest(timeZoneBaseUtcOffset, r))
+                        {
+                            NormalizeAdjustmentRuleOffset(timeZoneBaseUtcOffset, ref r);
+                        }
+
                         rulesList.Add(r);
                     }
                 }
@@ -1000,6 +1018,12 @@ namespace System
                         default(TransitionTime),
                         baseUtcDelta,
                         noDaylightTransitions: true);
+
+                    if (!IsValidAdjustmentRuleOffest(timeZoneBaseUtcOffset, r))
+                    {
+                        NormalizeAdjustmentRuleOffset(timeZoneBaseUtcOffset, ref r);
+                    }
+
                     rulesList.Add(r);
                 }
             }

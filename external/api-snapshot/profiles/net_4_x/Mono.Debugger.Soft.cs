@@ -254,6 +254,7 @@ namespace Mono.Debugger.Soft
         public System.Reflection.FieldAttributes Attributes { get { throw null; } }
         public Mono.Debugger.Soft.TypeMirror DeclaringType { get { throw null; } }
         public Mono.Debugger.Soft.TypeMirror FieldType { get { throw null; } }
+        public int FixedSize { get { throw null; } }
         public string FullName { get { throw null; } }
         public bool IsAssembly { get { throw null; } }
         public bool IsFamily { get { throw null; } }

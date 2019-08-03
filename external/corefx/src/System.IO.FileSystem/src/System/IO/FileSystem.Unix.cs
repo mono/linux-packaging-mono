@@ -12,6 +12,32 @@ namespace System.IO
     {
         internal const int DefaultBufferSize = 4096;
 
+        private static bool CopyDanglingSymlink(string sourceFullPath, string destFullPath)
+        {
+            // Check if the source is a dangling symlink. In those cases, we just want to copy the link
+            Interop.Sys.FileStatus ignored;
+            if (! (Interop.Sys.Stat(sourceFullPath, out ignored) < 0 &&
+                Interop.Sys.LStat(sourceFullPath, out ignored) == 0))
+            {
+                return false;
+            }
+
+            Interop.ErrorInfo errorInfo;
+            // get the target of the symlink
+            string linkTarget = Interop.Sys.ReadLink(sourceFullPath);
+            if (linkTarget == null)
+            {
+                errorInfo = Interop.Sys.GetLastErrorInfo();
+                throw Interop.GetExceptionForIoErrno(errorInfo, sourceFullPath);
+            }
+
+            if (Interop.Sys.Symlink(linkTarget, destFullPath) == 0)
+                return true;
+
+            errorInfo = Interop.Sys.GetLastErrorInfo();
+            throw Interop.GetExceptionForIoErrno(errorInfo, destFullPath);
+        }
+
         public static void CopyFile(string sourceFullPath, string destFullPath, bool overwrite)
         {
             // The destination path may just be a directory into which the file should be copied.
@@ -20,6 +46,9 @@ namespace System.IO
             {
                 destFullPath = Path.Combine(destFullPath, Path.GetFileName(sourceFullPath));
             }
+
+            if (CopyDanglingSymlink(sourceFullPath, destFullPath))
+                return;
 
             // Copy the contents of the file from the source to the destination, creating the destination in the process
             using (var src = new FileStream(sourceFullPath, FileMode.Open, FileAccess.Read, FileShare.Read, DefaultBufferSize, FileOptions.None))
@@ -31,6 +60,9 @@ namespace System.IO
 
         private static void LinkOrCopyFile (string sourceFullPath, string destFullPath)
         {
+            if (CopyDanglingSymlink(sourceFullPath, destFullPath))
+                return;
+
             if (Interop.Sys.Link(sourceFullPath, destFullPath) >= 0)
                 return;
 
