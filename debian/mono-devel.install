@@ -1,4 +1,5 @@
 debian/tmp/usr/bin/al
+debian/tmp/usr/bin/aprofutil
 debian/tmp/usr/bin/caspol
 debian/tmp/usr/bin/cccheck
 debian/tmp/usr/bin/ccrewrite
@@ -46,6 +47,8 @@ debian/tmp/usr/bin/wsdl
 debian/tmp/usr/bin/xsd
 debian/tmp/usr/lib/mono/4.5/al.exe*
 debian/tmp/usr/lib/mono/4.5/al.pdb
+debian/tmp/usr/lib/mono/4.5/aprofutil.exe*
+debian/tmp/usr/lib/mono/4.5/aprofutil.pdb
 debian/tmp/usr/lib/mono/4.5/browsercaps-updater.exe*
 debian/tmp/usr/lib/mono/4.5/browsercaps-updater.pdb
 debian/tmp/usr/lib/mono/4.5/caspol.exe*
