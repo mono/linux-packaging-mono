@@ -29,7 +29,10 @@ namespace Mono.Documentation
 			                    .Select (d => new {
 									Path = d.Substring (frameworkPath.Length + slashOffset, d.Length - frameworkPath.Length - slashOffset),
 									Name = Path.GetFileName(d)
-								}).ToArray();
+								})
+                                .Where (d => !d.Name.Equals ("dependencies", StringComparison.OrdinalIgnoreCase))
+                                .OrderBy(d => d.Name)
+                                .ToArray();
 
 			foreach (var d in data)
 				Console.WriteLine (d.Name);

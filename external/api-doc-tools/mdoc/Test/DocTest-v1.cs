@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-/// <summary>Namespace Test: [<see cref="N:Mono.DocTest" />]</summary>
+/// <summary>Namespace Test: [<see cref="N:Mono.DocTest" />] <see href="http://www.mono-project.com/">Mono Project</see></summary>
 /// <remarks><c>T:NoNamespace</c></remarks>
 public class NoNamespace {}
 
@@ -392,7 +392,7 @@ namespace Mono.DocTest {
 		public void Default (int a = 1, int b = 2) {}
 
 		/// <remarks><c>M:Mono.DocTest.Widget.Default(System.String,System.Char)</c></remarks>
-		public void Default (string a = "a", char b = 'b') {}
+		public void Default (string a = "a", char b = default(char)) {}
 
 		/// <remarks><c>M:Mono.DocTest.Widget.Dynamic0(System.Object,System.Object)</c></remarks>
 		public dynamic Dynamic0 (dynamic a, dynamic b) {return a + b;}
