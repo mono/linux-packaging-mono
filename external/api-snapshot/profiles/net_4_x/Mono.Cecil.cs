@@ -447,7 +447,7 @@ namespace Mono.Cecil
         public GenericParameter(Mono.Cecil.IGenericParameterProvider owner) : base (default(string), default(string)) { }
         public GenericParameter(string name, Mono.Cecil.IGenericParameterProvider owner) : base (default(string), default(string)) { }
         public Mono.Cecil.GenericParameterAttributes Attributes { get { throw null; } set { } }
-        public Mono.Collections.Generic.Collection<Mono.Cecil.TypeReference> Constraints { get { throw null; } }
+        public Mono.Collections.Generic.Collection<Mono.Cecil.GenericParameterConstraint> Constraints { get { throw null; } }
         public override bool ContainsGenericParameter { get { throw null; } }
         public Mono.Collections.Generic.Collection<Mono.Cecil.CustomAttribute> CustomAttributes { get { throw null; } }
         public Mono.Cecil.MethodReference DeclaringMethod { get { throw null; } }
@@ -483,6 +483,14 @@ namespace Mono.Cecil
         ReferenceTypeConstraint = (ushort)4,
         SpecialConstraintMask = (ushort)28,
         VarianceMask = (ushort)3,
+    }
+    public sealed partial class GenericParameterConstraint : Mono.Cecil.ICustomAttributeProvider, Mono.Cecil.IMetadataTokenProvider
+    {
+        public GenericParameterConstraint(Mono.Cecil.TypeReference constraintType) { }
+        public Mono.Cecil.TypeReference ConstraintType { get { throw null; } set { } }
+        public Mono.Collections.Generic.Collection<Mono.Cecil.CustomAttribute> CustomAttributes { get { throw null; } }
+        public bool HasCustomAttributes { get { throw null; } }
+        public Mono.Cecil.MetadataToken MetadataToken { get { throw null; } set { } }
     }
     public enum GenericParameterType
     {
