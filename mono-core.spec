@@ -1111,6 +1111,7 @@ Mono development tools.
 
 %files -n mono-devel
 %defattr(-, root, root)
+%{_bindir}/aprofutil
 %{_bindir}/caspol
 %{_bindir}/ccrewrite
 %{_bindir}/cccheck
@@ -1218,6 +1219,8 @@ Mono development tools.
 %{_prefix}/lib/mono/4.5/Mono.Debugger.Soft.dll
 %{_prefix}/lib/mono/4.5/Mono.CodeContracts.dll
 %{_prefix}/lib/mono/4.5/PEAPI.dll
+%{_prefix}/lib/mono/4.5/aprofutil.exe*
+%{_prefix}/lib/mono/4.5/aprofutil.pdb
 %{_prefix}/lib/mono/4.5/caspol.exe*
 %{_prefix}/lib/mono/4.5/caspol.pdb
 %{_prefix}/lib/mono/4.5/cccheck.exe*
