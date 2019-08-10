@@ -110,7 +110,8 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = mono-uninstalled.pc
+CONFIG_CLEAN_FILES = runtime/bin/mono-hang-watchdog \
+	mono-uninstalled.pc
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -171,9 +172,10 @@ ETAGS = etags
 CTAGS = ctags
 CSCOPE = cscope
 am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
-	$(srcdir)/mono-uninstalled.pc.in COPYING.LIB NEWS compile \
-	config.guess config.rpath config.sub install-sh ltmain.sh \
-	missing mkinstalldirs
+	$(srcdir)/mono-uninstalled.pc.in \
+	$(top_srcdir)/runtime/bin/mono-hang-watchdog.in COPYING.LIB \
+	NEWS compile config.guess config.rpath config.sub install-sh \
+	ltmain.sh missing mkinstalldirs
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -517,7 +519,7 @@ EXTRA_DIST = \
 	external		\
 	mcs/class/referencesource
 
-DISTCHECK_CONFIGURE_FLAGS = EXTERNAL_MCS=false EXTERNAL_RUNTIME=false
+DISTCHECK_CONFIGURE_FLAGS = EXTERNAL_RUNTIME=false
 pkgconfigdir = $(libdir)/pkgconfig
 noinst_DATA = mono-uninstalled.pc
 DISTCLEANFILES = mono-uninstalled.pc
@@ -576,6 +578,8 @@ $(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
+runtime/bin/mono-hang-watchdog: $(top_builddir)/config.status $(top_srcdir)/runtime/bin/mono-hang-watchdog.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 mono-uninstalled.pc: $(top_builddir)/config.status $(srcdir)/mono-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 

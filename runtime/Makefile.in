@@ -432,6 +432,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 tmpinst = _tmpinst
 noinst_SCRIPTS = mono-wrapper monodis-wrapper
+EXTRA_DIST = bin/mono-hang-watchdog.in
 etctmp = etc
 
 # This is needed at least to build configure --with-runtime-preset=fullaot.
@@ -462,9 +463,6 @@ TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/csc
 VERIFY_TESTS_FILTER = System.Runtime.CompilerServices.Unsafe.dll \
 	$(am__append_17) Xunit.NetCore.Extensions.dll $(am__append_18)
 CLEANFILES = etc/mono/config
-
-# the 'cygnus' option also disables the default 'distdir:' target, which we _do_ want
-MYDISTFILES = $(DIST_COMMON)
 all: all-am
 
 .SUFFIXES:
@@ -515,6 +513,37 @@ ctags CTAGS:
 
 cscope cscopelist:
 
+
+distdir: $(DISTFILES)
+	@srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*]/\\\\&/g'`; \
+	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's/[].[^$$\\*]/\\\\&/g'`; \
+	list='$(DISTFILES)'; \
+	  dist_files=`for file in $$list; do echo $$file; done | \
+	  sed -e "s|^$$srcdirstrip/||;t" \
+	      -e "s|^$$topsrcdirstrip/|$(top_builddir)/|;t"`; \
+	case $$dist_files in \
+	  */*) $(MKDIR_P) `echo "$$dist_files" | \
+			   sed '/\//!d;s|^|$(distdir)/|;s,/[^/]*$$,,' | \
+			   sort -u` ;; \
+	esac; \
+	for file in $$dist_files; do \
+	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
+	  if test -d $$d/$$file; then \
+	    dir=`echo "/$$file" | sed -e 's,/[^/]*$$,,'`; \
+	    if test -d "$(distdir)/$$file"; then \
+	      find "$(distdir)/$$file" -type d ! -perm -700 -exec chmod u+rwx {} \;; \
+	    fi; \
+	    if test -d $(srcdir)/$$file && test $$d != $(srcdir); then \
+	      cp -fpR $(srcdir)/$$file "$(distdir)$$dir" || exit 1; \
+	      find "$(distdir)/$$file" -type d ! -perm -700 -exec chmod u+rwx {} \;; \
+	    fi; \
+	    cp -fpR $$d/$$file "$(distdir)$$dir" || exit 1; \
+	  else \
+	    test -f "$(distdir)/$$file" \
+	    || cp -p $$d/$$file "$(distdir)/$$file" \
+	    || exit 1; \
+	  fi; \
+	done
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) check-local
 check: check-am
@@ -831,12 +860,6 @@ $(tmpinst)/bin/al: $(tmpinst)/bin/mono Makefile
 
 test-support-files: $(TEST_SUPPORT_FILES)
 	@:
-distdir: $(MYDISTFILES)
-	rm -fr $(distdir)
-	mkdir $(distdir)
-	test -z '$(MYDISTFILES)' || for file in ''$(MYDISTFILES); do \
-	  cp -p $$file $(distdir) ; done
-	find $(distdir) -type f -exec chmod a+r {} ';'
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
