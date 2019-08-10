@@ -4,7 +4,7 @@
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-AC_INIT(mono, [6.7.0.48],
+AC_INIT(mono, [6.7.0.99],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -6075,6 +6075,7 @@ AC_CONFIG_FILES([po/mcs/Makefile.in])
 AC_CONFIG_FILES([acceptance-tests/microbench-perf.sh],[chmod +x acceptance-tests/microbench-perf.sh])
 AC_CONFIG_FILES([runtime/mono-wrapper],[chmod +x runtime/mono-wrapper])
 AC_CONFIG_FILES([runtime/monodis-wrapper],[chmod +x runtime/monodis-wrapper])
+AC_CONFIG_FILES([runtime/bin/mono-hang-watchdog],[chmod +x runtime/bin/mono-hang-watchdog])
 
 AC_CONFIG_COMMANDS([runtime/etc/mono/1.0/machine.config],
 [   depth=../../../..
@@ -6746,6 +6747,7 @@ tools/Makefile
 tools/locale-builder/Makefile
 tools/sgen/Makefile
 tools/pedump/Makefile
+tools/mono-hang-watchdog/Makefile
 runtime/Makefile
 msvc/Makefile
 po/Makefile
@@ -6821,9 +6823,7 @@ fi
     echo "sysconfdir=$sysconfdir" >> $mcs_topdir/build/config.make
     echo 'mono_libdir=${exec_prefix}/lib' >> $mcs_topdir/build/config.make
     echo "mono_build_root=$mono_build_root" >> $mcs_topdir/build/config.make
-    echo 'IL_FLAGS = /debug' >> $mcs_topdir/build/config.make
     echo "RUNTIME = $mono_build_root/runtime/mono-wrapper" >> $mcs_topdir/build/config.make
-    echo "ILDISASM = $mono_build_root/runtime/monodis-wrapper" >> $mcs_topdir/build/config.make
     echo "JAY_CFLAGS = $JAY_CFLAGS" >> $mcs_topdir/build/config.make
     echo "VERSION = $VERSION" >> $mcs_topdir/build/config.make
 

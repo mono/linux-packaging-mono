@@ -5122,7 +5122,7 @@ ves_icall_System_Reflection_Assembly_load_with_partial_name (MonoStringHandle mn
 	name = mono_string_handle_to_utf8 (mname, error);
 	goto_if_nok (error, leave);
 	MonoAssembly *res;
-	res = mono_assembly_load_with_partial_name_internal (name, &status);
+	res = mono_assembly_load_with_partial_name_internal (name, mono_domain_default_alc (mono_domain_get ()), &status);
 
 	g_free (name);
 
@@ -6382,7 +6382,7 @@ void
 ves_icall_Mono_Runtime_EnableCrashReportingLog (const char *directory, MonoError *error)
 {
 #ifndef DISABLE_CRASH_REPORTING
-	mono_summarize_set_timeline_dir (directory);
+	mono_threads_summarize_init (directory);
 #endif
 }
 
