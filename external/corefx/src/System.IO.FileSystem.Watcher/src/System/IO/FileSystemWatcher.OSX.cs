@@ -437,7 +437,7 @@ namespace System.IO
                         ReadOnlySpan<char> relativePath = ReadOnlySpan<char>.Empty;
                         if (!path.Equals(_fullDirectory, StringComparison.OrdinalIgnoreCase)
                             && path.Length >= _fullDirectory.Length
-                            && _fullDirectory.AsSpan().Equals(path.Slice(_fullDirectory.Length), StringComparison.OrdinalIgnoreCase))
+                            && _fullDirectory.AsSpan().Equals(path.Slice(0, _fullDirectory.Length), StringComparison.OrdinalIgnoreCase))
                         {
                             // Remove the root directory to get the relative path
                             relativePath = path.Slice(_fullDirectory.Length);
