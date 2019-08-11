@@ -483,7 +483,7 @@ namespace System.IO
                                 // Remove the base directory prefix and add the paired event to the list of 
                                 // events to skip and notify the user of the rename
                                 if (events[pairedId].Span.Length >= _fullDirectory.Length
-                                    && ((ReadOnlySpan<char>) events[pairedId].Span).Equals(_fullDirectory.AsSpan(0, events[pairedId].Span.Length), StringComparison.OrdinalIgnoreCase))
+                                    && _fullDirectory.AsSpan().Equals(events[pairedId].Span.Slice(0, _fullDirectory.Length), StringComparison.OrdinalIgnoreCase))
                                 {
                                     ReadOnlySpan<char> newPathRelativeName = events[pairedId].Span.Slice(_fullDirectory.Length);
                                     watcher.NotifyRenameEventArgs(WatcherChangeTypes.Renamed, newPathRelativeName, relativePath);
