@@ -1,3 +1,9 @@
+mono (6.4.0.165-0xamarin1) preview; urgency=medium
+
+  * New release - mono-6.4.0.165.tar.xz
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sun, 11 Aug 2019 09:05:45 +0000
+
 mono (6.4.0.163-0xamarin1) preview; urgency=medium
 
   * New release - mono-6.4.0.163.tar.xz
