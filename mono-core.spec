@@ -1168,6 +1168,7 @@ Mono development tools.
 %{_libdir}/pkgconfig/mono.pc
 %{_libdir}/pkgconfig/xbuild12.pc
 %{_mandir}/man1/al.1%ext_man
+%{_mandir}/man1/aprofutil.1%ext_man
 %{_mandir}/man1/ccrewrite.1%ext_man
 %{_mandir}/man1/cccheck.1%ext_man
 %{_mandir}/man1/cert2spc.1%ext_man
