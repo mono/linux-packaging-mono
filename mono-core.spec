@@ -273,6 +273,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_bindir}/mono
 %{_bindir}/mono-boehm
 %{_bindir}/mono-configuration-crypto
+%{_bindir}/mono-hang-watchdog
 %if %sgen == yes
 %{_bindir}/mono-sgen
 %endif
