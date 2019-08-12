@@ -1,5 +1,10 @@
 #!/bin/sh -e
 
+# Work around for gacutil needing /etc/mono/config >= 5.20
+if [ -e /etc/mono/config.dpkg-new ]; then
+	mv /etc/mono/config.dpkg-new /etc/mono/config
+fi
+
 # On upgrades we need to repopulate the GAC and framework paths
 # to accomodate any changes in layout
 #
