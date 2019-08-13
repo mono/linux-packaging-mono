@@ -204,9 +204,6 @@ debug_enter (InterpFrame *frame, int *tracing)
 #else
 
 int mono_interp_traceopt = 0;
-static void debug_enter (InterpFrame *frame, int *tracing)
-{
-}
 #define DEBUG_LEAVE()
 
 #endif
@@ -4773,8 +4770,8 @@ interp_exec_method_full (InterpFrame *frame, ThreadContext *context, FrameClause
 			field = (MonoClassField*)imethod->data_items[* (guint16 *)(ip + 1)];
 			ip += 2;
 #ifndef DISABLE_REMOTING
+			gpointer tmp;
 			if (mono_object_is_transparent_proxy (o)) {
-				gpointer tmp;
 				MonoClass *klass = ((MonoTransparentProxy*)o)->remote_class->proxy_class;
 
 				addr = (char*)mono_load_remote_field_checked (o, klass, field, &tmp, error);
@@ -4800,8 +4797,8 @@ interp_exec_method_full (InterpFrame *frame, ThreadContext *context, FrameClause
 	
 			ip += 2;
 #ifndef DISABLE_REMOTING
+			gpointer tmp;
 			if (mono_object_is_transparent_proxy (o)) {
-				gpointer tmp;
 				MonoClass *klass = ((MonoTransparentProxy*)o)->remote_class->proxy_class;
 				addr = (char*)mono_load_remote_field_checked (o, klass, field, &tmp, error);
 				mono_error_cleanup (error); /* FIXME: don't swallow the error */
@@ -5731,9 +5728,9 @@ interp_exec_method_full (InterpFrame *frame, ThreadContext *context, FrameClause
 
 			if (clause_args && clause_index == clause_args->exit_clause)
 				goto exit_frame;
-			while (sp > frame->stack) {
-				--sp;
-			}
+			g_assert (sp >= frame->stack);
+			sp = frame->stack;
+
 			if (frame->finally_ips) {
 				ip = (const guint16*)frame->finally_ips->data;
 				frame->finally_ips = g_slist_remove (frame->finally_ips, ip);
@@ -5750,9 +5747,8 @@ interp_exec_method_full (InterpFrame *frame, ThreadContext *context, FrameClause
 		MINT_IN_CASE(MINT_LEAVE_S)
 		MINT_IN_CASE(MINT_LEAVE_CHECK)
 		MINT_IN_CASE(MINT_LEAVE_S_CHECK) {
-			while (sp > frame->stack) {
-				--sp;
-			}
+			g_assert (sp >= frame->stack);
+			sp = frame->stack;
 			frame->ip = ip;
 
 			if (*ip == MINT_LEAVE_S_CHECK || *ip == MINT_LEAVE_CHECK) {
