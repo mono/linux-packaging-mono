@@ -660,9 +660,9 @@ glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 # dynamic linker will have trouble resolving everything. On iOS, the story
 # is similar to Android when running in the simulator.
 @HOST_ANDROID_TRUE@libmono_dep = $(top_builddir)/mono/mini/$(LIBMONO_LA)
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@zlib_dep = 
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@zlib_dep = 
 # The log profiler uses zlib for output compression when available.
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@zlib_dep = -lz
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_TRUE@zlib_dep = -lz
 @HAVE_STATIC_ZLIB_TRUE@zlib_dep = $(STATIC_ZLIB_PATH)
 
 # We build a separate, static version of each profiler for use on targets

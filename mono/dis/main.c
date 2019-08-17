@@ -863,7 +863,7 @@ dis_method_list (const char *klass_name, MonoImage *m, guint32 start, guint32 en
 		if (container) {
 			ERROR_DECL (error);
 			mono_metadata_load_generic_param_constraints_checked (m, MONO_TOKEN_METHOD_DEF | (i + 1), container, error);
-			g_assert (mono_error_ok (error)); /*FIXME don't swallow the error message*/
+			g_assert (is_ok (error)); /*FIXME don't swallow the error message*/
 		} else {
 			container = type_container;
 		}
@@ -1206,7 +1206,7 @@ dis_type (MonoImage *m, int n, int is_nested, int forward)
 	if (container) {
 		ERROR_DECL (error);
 		mono_metadata_load_generic_param_constraints_checked (m, MONO_TOKEN_TYPE_DEF | (n + 1), container, error);
-		g_assert (mono_error_ok (error)); /*FIXME don't swallow the error message*/
+		g_assert (is_ok (error)); /*FIXME don't swallow the error message*/
 	}
 
 	esname = get_escaped_name (name);
@@ -1634,7 +1634,8 @@ disassemble_file (const char *file)
 		/* FIXME: is this call necessary? */
 		/* FIXME: if it's necessary, can it be refonly instead? */
 		MonoAssemblyLoadRequest req;
-		mono_assembly_request_prepare (&req, sizeof (req), MONO_ASMCTX_DEFAULT, mono_domain_default_alc (mono_domain_get ()));
+		mono_assembly_request_prepare_load (&req, MONO_ASMCTX_DEFAULT, mono_domain_default_alc (mono_domain_get ()));
+
 		mono_assembly_request_load_from (img, file, &req, &status);
 	}
 
@@ -1782,9 +1783,9 @@ sort_filter_elems (void)
 
 	for (item = filter_list; item; item = item->next) {
 		ifilter = (ImageFilter *)item->data;
-		qsort (ifilter->types.elems, ifilter->types.count, sizeof (int), int_cmp);
-		qsort (ifilter->fields.elems, ifilter->fields.count, sizeof (int), int_cmp);
-		qsort (ifilter->methods.elems, ifilter->methods.count, sizeof (int), int_cmp);
+		mono_qsort (ifilter->types.elems, ifilter->types.count, sizeof (int), int_cmp);
+		mono_qsort (ifilter->fields.elems, ifilter->fields.count, sizeof (int), int_cmp);
+		mono_qsort (ifilter->methods.elems, ifilter->methods.count, sizeof (int), int_cmp);
 	}
 }
 
@@ -1927,7 +1928,7 @@ monodis_preload (MonoAssemblyLoadContext *alc,
 
 	if (assemblies_path && assemblies_path [0] != NULL) {
 		MonoAssemblyOpenRequest req;
-		mono_assembly_request_prepare (&req.request, sizeof (req), refonly ? MONO_ASMCTX_REFONLY : MONO_ASMCTX_DEFAULT, alc);
+		mono_assembly_request_prepare_open (&req, refonly ? MONO_ASMCTX_REFONLY : MONO_ASMCTX_DEFAULT, alc);
 
 		result = real_load (assemblies_path, aname->culture, aname->name, &req);
 	}

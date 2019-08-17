@@ -164,11 +164,11 @@ am__objects_2 = dirent.lo fcntl.lo fstab.lo grp.lo macros.lo nl.lo \
 @HOST_WIN32_TRUE@am__objects_3 = $(am__objects_1)
 am__objects_4 = adler32.lo compress.lo crc32.lo uncompr.lo deflate.lo \
 	trees.lo zutil.lo inflate.lo infback.lo inftrees.lo inffast.lo
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@am__objects_5 =  \
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@	zlib-helper.lo \
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@	$(am__objects_4)
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@am__objects_5 =  \
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@	zlib-helper.lo
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@am__objects_5 =  \
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@	zlib-helper.lo \
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@	$(am__objects_4)
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_TRUE@am__objects_5 =  \
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_TRUE@	zlib-helper.lo
 @HAVE_STATIC_ZLIB_TRUE@am__objects_5 = zlib-helper.lo
 am__dirstamp = $(am__leading_dot)dirstamp
 am__objects_6 = minizip/ioapi.lo minizip/unzip.lo minizip/zip.lo
@@ -621,11 +621,11 @@ ZLIB_SOURCES = \
 	zlib.h  	\
 	zutil.h
 
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@Z_SOURCE = zlib-helper.c $(ZLIB_SOURCES)
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@Z_SOURCE = zlib-helper.c
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@Z_SOURCE = zlib-helper.c $(ZLIB_SOURCES)
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_TRUE@Z_SOURCE = zlib-helper.c
 @HAVE_STATIC_ZLIB_TRUE@Z_SOURCE = zlib-helper.c
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@Z_LIBS = 
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@Z_LIBS = -lz
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@Z_LIBS = 
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_TRUE@Z_LIBS = -lz
 @HAVE_STATIC_ZLIB_TRUE@Z_LIBS = $(STATIC_ZLIB_PATH)
 libMonoPosixHelper_la_SOURCES = \
 	$(MPH_SOURCE)				\
