@@ -139,10 +139,11 @@ am__DEPENDENCIES_1 =
 @SUPPORT_SGEN_TRUE@	$(top_builddir)/mono/sgen/libmonosgen.la
 am__DEPENDENCIES_3 = $(metadata_lib) $(am__DEPENDENCIES_2) \
 	$(top_builddir)/mono/utils/libmonoutils.la $(glib_libs)
+@HAVE_STATIC_ZLIB_TRUE@@HAVE_SYS_ZLIB_FALSE@am__DEPENDENCIES_4 = $(am__DEPENDENCIES_1)
 monodis_DEPENDENCIES = libmonodismain_a-dump.$(OBJEXT) \
 	libmonodismain_a-main.$(OBJEXT) \
 	libmonodismain_a-declsec.$(OBJEXT) libmonodis.a \
-	$(am__DEPENDENCIES_3) $(glib_libs)
+	$(am__DEPENDENCIES_3) $(glib_libs) $(am__DEPENDENCIES_4)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -547,6 +548,9 @@ libmonodismain_a_SOURCES = \
 	declsec.h
 
 monodis_SOURCES = 
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@Z_LIBS = 
+@HAVE_STATIC_ZLIB_TRUE@@HAVE_SYS_ZLIB_FALSE@Z_LIBS = $(STATIC_ZLIB_PATH)
+@HAVE_SYS_ZLIB_TRUE@Z_LIBS = -lz
 monodis_LDADD = \
 	libmonodismain_a-dump.$(OBJEXT)	\
 	libmonodismain_a-main.$(OBJEXT)	\
@@ -555,7 +559,8 @@ monodis_LDADD = \
 	$(runtime_lib)			\
 	$(LLVM_LIBS)			\
 	$(LLVM_LDFLAGS)			\
-	$(glib_libs)
+	$(glib_libs)			\
+	$(Z_LIBS)
 
 @HOST_DARWIN_TRUE@monodis_LDFLAGS = -framework CoreFoundation -framework Foundation
 man_MANS = monodis.1

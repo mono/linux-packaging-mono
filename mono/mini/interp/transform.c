@@ -857,7 +857,7 @@ jit_call_supported (MonoMethod *method, MonoMethodSignature *sig)
 	if (mono_aot_only && m_class_get_image (method->klass)->aot_module && !(method->iflags & METHOD_IMPL_ATTRIBUTE_SYNCHRONIZED)) {
 		ERROR_DECL (error);
 		gpointer addr = mono_jit_compile_method_jit_only (method, error);
-		if (addr && mono_error_ok (error))
+		if (addr && is_ok (error))
 			return TRUE;
 	}
 
@@ -908,7 +908,7 @@ interp_generate_bie_throw (TransformData *td)
 {
 	MonoJitICallInfo *info = &mono_get_jit_icall_info ()->mono_throw_bad_image;
 
-	interp_add_ins (td, MINT_ICALL_PP_V);
+	interp_add_ins (td, MINT_ICALL_V_V);
 	td->last_ins->data [0] = get_data_item_index (td, (gpointer)info->func);
 }
 

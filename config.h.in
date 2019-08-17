@@ -963,6 +963,9 @@
 /* struct statfs.f_fstypename */
 #undef HAVE_STATFS_FSTYPENAME
 
+/* Use static zlib */
+#undef HAVE_STATIC_ZLIB
+
 /* Define to 1 if you have the `statvfs' function. */
 #undef HAVE_STATVFS
 
@@ -1233,7 +1236,7 @@
 /* Define to 1 if you have the <sys/xattr.h> header file. */
 #undef HAVE_SYS_XATTR_H
 
-/* Have system zlib */
+/* Use OS-provided zlib */
 #undef HAVE_SYS_ZLIB
 
 /* tcgetattr */
@@ -1334,9 +1337,6 @@
 
 /* Define to 1 if you have the `writev' function. */
 #undef HAVE_WRITEV
-
-/* Have system zlib */
-#undef HAVE_ZLIB
 
 /* ... */
 #undef HOST_AMD64
