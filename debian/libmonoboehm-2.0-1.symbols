@@ -1488,7 +1488,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_thread_set_coop_aware@Base 6.5.0.345
  mono_thread_set_main@Base 4.1.0.1738
  mono_thread_set_manage_callback@Base 4.1.0.1738
- mono_thread_set_name_internal@Base 5.13.0.273
+ mono_thread_set_name@Base 6.7.0.200
  mono_thread_stop@Base 4.1.0.1738
  mono_threads_assert_gc_safe_region@Base 4.3.3.735
  mono_threads_assert_gc_unsafe_region@Base 4.3.3.735
