@@ -604,7 +604,8 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 AM_CPPFLAGS = \
 	-DSUPPRESSION_DIR=\""$(datadir)/mono-$(API_VER)/mono/profiler"\" \
 	-I$(top_srcdir) \
-	$(GLIB_CFLAGS)
+	$(GLIB_CFLAGS) \
+	$(SHARED_CFLAGS)
 
 glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@vtune_libs = \

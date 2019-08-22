@@ -195,7 +195,8 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	aot-compiler.c aot-runtime.c aot-runtime-wasm.c \
 	wasm_m2n_invoke.g.h graph.c mini-codegen.c mini-exceptions.c \
 	mini-trampolines.c branch-opts.c mini-generic-sharing.c \
-	simd-methods.h tasklets.c tasklets.h simd-intrinsics.c \
+	simd-methods.h simd-methods-netcore.h tasklets.c tasklets.h \
+	simd-intrinsics.c simd-intrinsics-netcore.c \
 	mini-native-types.c mini-unwind.h unwind.c image-writer.h \
 	image-writer.c dwarfwriter.h dwarfwriter.c mini-gc.h mini-gc.c \
 	debugger-agent.h debugger-engine.h debugger-agent-stubs.c \
@@ -238,6 +239,7 @@ am__objects_2 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-mini-exceptions.lo libmini_la-mini-trampolines.lo \
 	libmini_la-branch-opts.lo libmini_la-mini-generic-sharing.lo \
 	libmini_la-tasklets.lo libmini_la-simd-intrinsics.lo \
+	libmini_la-simd-intrinsics-netcore.lo \
 	libmini_la-mini-native-types.lo libmini_la-unwind.lo \
 	libmini_la-image-writer.lo libmini_la-dwarfwriter.lo \
 	libmini_la-mini-gc.lo libmini_la-debugger-agent-stubs.lo \
@@ -850,7 +852,7 @@ AM_CFLAGS = \
 	$(JEMALLOC_CFLAGS)	\
 	$(PLATFORM_CFLAGS) $(ARCH_CFLAGS) $(SHARED_CFLAGS)
 
-AM_CXXFLAGS = $(LLVM_CXXFLAGS) $(GLIB_CFLAGS)
+AM_CXXFLAGS = -I$(top_srcdir) $(LLVM_CXXFLAGS) $(GLIB_CFLAGS)
 # The mingw math.h has "extern inline" functions that dont appear in libs, so
 # optimisation is required to actually inline them
 @HOST_WIN32_TRUE@PLATFORM_CFLAGS = -O
@@ -1104,9 +1106,11 @@ common_sources = \
 	branch-opts.c		\
 	mini-generic-sharing.c	\
 	simd-methods.h		\
+	simd-methods-netcore.h	\
 	tasklets.c		\
 	tasklets.h		\
 	simd-intrinsics.c	\
+	simd-intrinsics-netcore.c	\
 	mini-native-types.c \
 	mini-unwind.h		\
 	unwind.c		\
@@ -1620,6 +1624,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-x86.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-seq-points.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-simd-intrinsics-netcore.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-simd-intrinsics.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-ssa.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tasklets.Plo@am__quote@
@@ -1906,6 +1911,13 @@ libmini_la-simd-intrinsics.lo: simd-intrinsics.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='simd-intrinsics.c' object='libmini_la-simd-intrinsics.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-simd-intrinsics.lo `test -f 'simd-intrinsics.c' || echo '$(srcdir)/'`simd-intrinsics.c
+
+libmini_la-simd-intrinsics-netcore.lo: simd-intrinsics-netcore.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-simd-intrinsics-netcore.lo -MD -MP -MF $(DEPDIR)/libmini_la-simd-intrinsics-netcore.Tpo -c -o libmini_la-simd-intrinsics-netcore.lo `test -f 'simd-intrinsics-netcore.c' || echo '$(srcdir)/'`simd-intrinsics-netcore.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-simd-intrinsics-netcore.Tpo $(DEPDIR)/libmini_la-simd-intrinsics-netcore.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='simd-intrinsics-netcore.c' object='libmini_la-simd-intrinsics-netcore.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-simd-intrinsics-netcore.lo `test -f 'simd-intrinsics-netcore.c' || echo '$(srcdir)/'`simd-intrinsics-netcore.c
 
 libmini_la-mini-native-types.lo: mini-native-types.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-native-types.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-native-types.Tpo -c -o libmini_la-mini-native-types.lo `test -f 'mini-native-types.c' || echo '$(srcdir)/'`mini-native-types.c

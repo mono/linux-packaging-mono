@@ -3178,6 +3178,26 @@ mono_interp_enum_hasflag (stackval* sp, MonoClass* klass)
 	sp->data.i = (a_val & b_val) == b_val;
 }
 
+static MONO_NEVER_INLINE int
+mono_interp_box_nullable (InterpFrame* frame, const guint16* ip, stackval* sp, MonoError* error)
+{
+	InterpMethod* const imethod = frame->imethod;
+	MonoClass* const c = (MonoClass*)imethod->data_items [* (guint16 *)(ip + 1)];
+
+	int size = mono_class_value_size (c, NULL);
+
+	guint16 offset = * (guint16 *)(ip + 2);
+	gboolean pop_vt_sp = !(offset & BOX_NOT_CLEAR_VT_SP);
+	offset &= ~BOX_NOT_CLEAR_VT_SP;
+
+	sp [-1 - offset].data.o = mono_nullable_box (sp [-1 - offset].data.p, c, error);
+	mono_error_cleanup (error); /* FIXME: don't swallow the error */
+
+	size = ALIGN_TO (size, MINT_VT_ALIGNMENT);
+
+	return pop_vt_sp ? size : 0;
+}
+
 /*
  * If EXIT_AT_FINALLY is not -1, exit after exiting the finally clause with that index.
  * If BASE_FRAME is not NULL, copy arguments/locals from BASE_FRAME.
@@ -4627,6 +4647,10 @@ main_loop:
 			MINT_IN_BREAK;
 		}
 		MINT_IN_CASE(MINT_NEWOBJ_FAST) {
+
+			MonoVTable *vtable = (MonoVTable*) imethod->data_items [*(guint16*)(ip + 3)];
+			INIT_VTABLE (vtable);
+
 			MonoObject* o = NULL; // See the comment about GC safety above.
 			guint16 param_count;
 			guint16 imethod_index = *(guint16*) (ip + 1);
@@ -4639,9 +4663,6 @@ main_loop:
 				sp -= param_count;
 				memmove (sp + 1 + is_inlined, sp, param_count * sizeof (stackval));
 			}
-
-			MonoVTable *vtable = (MonoVTable*) imethod->data_items [*(guint16*)(ip + 3)];
-			INIT_VTABLE (vtable);
 
 			frame_objref (frame) = mono_gc_alloc_obj (vtable, m_class_get_instance_size (vtable->klass));
 			if (G_UNLIKELY (!frame_objref (frame))) {
@@ -5097,11 +5118,11 @@ main_loop:
 
 		MINT_IN_CASE(MINT_LDSFLD_VT) {
 			MonoVTable *vtable = (MonoVTable*) imethod->data_items [*(guint16*)(ip + 1)];
-			gpointer addr = imethod->data_items [*(guint16*)(ip + 2)];
-			int const i32 = READ32 (ip + 3);
 			INIT_VTABLE (vtable);
 			sp->data.p = vt_sp;
 
+			gpointer addr = imethod->data_items [*(guint16*)(ip + 2)];
+			int const i32 = READ32 (ip + 3);
 			memcpy (vt_sp, addr, i32);
 			vt_sp += ALIGN_TO (i32, MINT_VT_ALIGNMENT);
 			ip += 5;
@@ -5110,8 +5131,8 @@ main_loop:
 		}
 
 #define LDTSFLD(datamem, fieldtype) { \
-	guint32 offset = READ32(ip + 1); \
 	MonoInternalThread *thread = mono_thread_internal_current (); \
+	guint32 offset = READ32 (ip + 1); \
 	gpointer addr = ((char*)thread->static_data [offset & 0x3f]) + (offset >> 6); \
 	sp[0].data.datamem = *(fieldtype*)addr; \
 	ip += 3; \
@@ -5129,9 +5150,9 @@ main_loop:
 		MINT_IN_CASE(MINT_LDTSFLD_P) LDTSFLD(p, gpointer); MINT_IN_BREAK;
 
 		MINT_IN_CASE(MINT_LDSSFLD) {
-			MonoClassField *field = (MonoClassField*)imethod->data_items [* (guint16 *)(ip + 1)];
 			guint32 offset = READ32(ip + 2);
 			gpointer addr = mono_get_special_static_data (offset);
+			MonoClassField *field = (MonoClassField*)imethod->data_items [* (guint16 *)(ip + 1)];
 			stackval_from_data (field->type, sp, addr, FALSE);
 			ip += 4;
 			++sp;
@@ -5170,9 +5191,9 @@ main_loop:
 
 		MINT_IN_CASE(MINT_STSFLD_VT) {
 			MonoVTable *vtable = (MonoVTable*) imethod->data_items [*(guint16*)(ip + 1)];
-			gpointer addr = imethod->data_items [*(guint16*)(ip + 2)];
-			int const i32 = READ32 (ip + 3);
 			INIT_VTABLE (vtable);
+			int const i32 = READ32 (ip + 3);
+			gpointer addr = imethod->data_items [*(guint16*)(ip + 2)];
 
 			memcpy (addr, sp [-1].data.vt, i32);
 			vt_sp -= ALIGN_TO (i32, MINT_VT_ALIGNMENT);
@@ -5182,8 +5203,8 @@ main_loop:
 		}
 
 #define STTSFLD(datamem, fieldtype) { \
-	guint32 offset = READ32(ip + 1); \
 	MonoInternalThread *thread = mono_thread_internal_current (); \
+	guint32 offset = READ32 (ip + 1); \
 	gpointer addr = ((char*)thread->static_data [offset & 0x3f]) + (offset >> 6); \
 	sp--; \
 	*(fieldtype*)addr = sp[0].data.datamem; \
@@ -5202,9 +5223,9 @@ main_loop:
 		MINT_IN_CASE(MINT_STTSFLD_O) STTSFLD(p, gpointer); MINT_IN_BREAK;
 
 		MINT_IN_CASE(MINT_STSSFLD) {
-			MonoClassField *field = (MonoClassField*)imethod->data_items [* (guint16 *)(ip + 1)];
 			guint32 offset = READ32(ip + 2);
 			gpointer addr = mono_get_special_static_data (offset);
+			MonoClassField *field = (MonoClassField*)imethod->data_items [* (guint16 *)(ip + 1)];
 			--sp;
 			stackval_to_data (field->type, sp, addr, FALSE);
 			ip += 4;
@@ -5332,26 +5353,12 @@ main_loop:
 			ip += 3;
 			MINT_IN_BREAK;
 		}
-		MINT_IN_CASE(MINT_BOX_NULLABLE) {
-			MonoClass* const c = (MonoClass*)imethod->data_items [* (guint16 *)(ip + 1)];
+		MINT_IN_CASE(MINT_BOX_NULLABLE)
 
-			int size = mono_class_value_size (c, NULL);
-
-			guint16 offset = * (guint16 *)(ip + 2);
-			gboolean pop_vt_sp = !(offset & BOX_NOT_CLEAR_VT_SP);
-			offset &= ~BOX_NOT_CLEAR_VT_SP;
-
-			sp [-1 - offset].data.o = mono_nullable_box (sp [-1 - offset].data.p, c, error);
-			mono_error_cleanup (error); /* FIXME: don't swallow the error */
-
-			size = ALIGN_TO (size, MINT_VT_ALIGNMENT);
-
-			if (pop_vt_sp)
-				vt_sp -= size;
-
+			vt_sp -= mono_interp_box_nullable (frame, ip, sp, error);
 			ip += 3;
 			MINT_IN_BREAK;
-		}
+
 		MINT_IN_CASE(MINT_NEWARR) {
 			MonoVTable *vtable = (MonoVTable*)imethod->data_items[*(guint16 *)(ip + 1)];
 			sp [-1].data.o = (MonoObject*) mono_array_new_specific_checked (vtable, sp [-1].data.i, error);
@@ -5433,13 +5440,12 @@ main_loop:
 		}
 		MINT_IN_CASE(MINT_LDELEMA_FAST) {
 			/* No bounds, one direction */
-			gint32 size = READ32 (ip + 1);
-			gint32 index = sp [-1].data.i;
-
 			MonoArray *ao = (MonoArray*)sp [-2].data.o;
 			NULL_CHECK (ao);
+			gint32 const index = sp [-1].data.i;
 			if (index >= ao->max_length)
 				THROW_EX (mono_get_exception_index_out_of_range (), ip);
+			gint32 const size = READ32 (ip + 1);
 			sp [-2].data.p = mono_array_addr_with_size_fast (ao, size, index);
 			ip += 3;
 			sp --;
