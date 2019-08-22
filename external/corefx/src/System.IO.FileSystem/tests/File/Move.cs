@@ -182,11 +182,11 @@ namespace System.IO.Tests
         [PlatformSpecific(TestPlatforms.AnyUnix)]
         public void DanglingSymlinkMove()
         {
-            string dangling_symlink = GetTestFileName();
-            string missing_target = GetTestFileName();
-            string dangling_symlink_new_location = GetTestFileName();
+            string dangling_symlink = GetTestFilePath();
+            string missing_target = GetTestFilePath();
+            string dangling_symlink_new_location = GetTestFilePath();
             Assert.False(File.Exists(missing_target));
-            Assert.Equal(symlink(missing_target, dangling_symlink), 0);
+            Assert.Equal(0, symlink(missing_target, dangling_symlink));
             Move(dangling_symlink, dangling_symlink_new_location);
             Assert.True(File.Exists(dangling_symlink_new_location)); // File.Exists returns true for dangling symlinks
         }
