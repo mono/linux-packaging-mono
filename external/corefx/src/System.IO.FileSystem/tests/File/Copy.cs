@@ -49,6 +49,7 @@ namespace System.IO.Tests
             Assert.Throws<IOException>(() => Copy(testFile, testFile));
         }
 
+#if !MONOTOUCH_TV // symlink() on a TVOS device always returns EPERM
         [DllImport("libc", SetLastError = true)]
         private static extern int symlink(string target, string linkpath);
 
@@ -64,6 +65,7 @@ namespace System.IO.Tests
             Copy(dangling_symlink, dangling_symlink_new_location);
             Assert.True(File.Exists(dangling_symlink_new_location)); // File.Exists returns true for dangling symlinks
         }
+#endif
 
         [Fact]
         [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "CoreFX FileStream not yet imported")]
