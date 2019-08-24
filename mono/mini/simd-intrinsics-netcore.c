@@ -239,6 +239,7 @@ emit_xcompare (MonoCompile *cfg, MonoClass *klass, MonoType *etype, MonoInst *ar
 
 	ins = emit_simd_ins (cfg, klass, is_fp ? OP_XCOMPARE_FP : OP_XCOMPARE, arg1->dreg, arg2->dreg);
 	ins->inst_c0 = CMP_EQ;
+	ins->inst_c1 = etype->type;
 	return ins;
 }
 
@@ -362,7 +363,7 @@ emit_sys_numerics_vector_t (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSig
 		}
 		return ins;
 	case SN_op_Explicit:
-		return emit_simd_ins (cfg, klass, OP_XMOVE, args [0]->dreg, -1);
+		return emit_simd_ins (cfg, klass, OP_XCAST, args [0]->dreg, -1);
 	case SN_op_Addition:
 	case SN_op_Subtraction:
 	case SN_op_Division:
