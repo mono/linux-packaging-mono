@@ -1,5 +1,6 @@
  mini_exception_id_by_name@Base 6.3.0.560
  mini_get_underlying_type@Base 5.15.0.231
+ mini_ins_info@Base 6.7.0.380
  mini_is_gsharedvt_klass@Base 5.15.0.231
  mini_is_gsharedvt_variable_klass@Base 5.15.0.231
  mini_is_gsharedvt_variable_signature@Base 6.3.0.788
@@ -52,6 +53,7 @@
  mono_inst_name@Base 5.15.0.231
  mono_is_power_of_two@Base 5.15.0.231
  mono_ji_type_to_string@Base 5.15.0.231
+ mono_jit_compile_method@Base 6.7.0.380
  mono_llvm_check_method_supported@Base 5.15.0.231
  mono_llvm_cleanup@Base 5.15.0.231
  mono_llvm_create_aot_module@Base 5.15.0.231
@@ -69,6 +71,7 @@
  mono_marshal_find_nonzero_bit_offset@Base 5.15.0.231
  mono_marshal_get_aot_init_wrapper@Base 6.1.0.686
  mono_marshal_get_aot_init_wrapper_name@Base 6.1.0.686
+ mono_marshal_get_llvm_func_wrapper@Base 6.7.0.380
  mono_marshal_get_wrapper_info@Base 5.21.0.116
  mono_opcode_to_cond@Base 5.15.0.231
  mono_print_ins@Base 6.3.0.788
