@@ -5089,6 +5089,7 @@ namespace System.IO.Compression
         protected override void Dispose(bool disposing) { }
         public override int EndRead(System.IAsyncResult asyncResult) { throw null; }
         public override void EndWrite(System.IAsyncResult asyncResult) { }
+        ~DeflateStream() { }
         public override void Flush() { }
         public override int Read(byte[] array, int offset, int count) { throw null; }
         public override long Seek(long offset, System.IO.SeekOrigin origin) { throw null; }
