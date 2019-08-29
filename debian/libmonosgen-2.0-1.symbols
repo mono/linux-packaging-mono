@@ -1041,6 +1041,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_unicode_from_external@Base 4.1.0.1738
  mono_unicode_to_external@Base 4.1.0.1738
  mono_upgrade_remote_class_wrapper@Base 4.1.0.1738
+ mono_use_fast_math@Base 6.7.0.448
  mono_use_interpreter@Base 4.9.0.1707
  mono_use_llvm@Base 4.1.0.1738
  mono_utf8_from_external@Base 4.1.0.1738
