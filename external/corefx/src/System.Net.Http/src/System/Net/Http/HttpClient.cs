@@ -666,8 +666,12 @@ namespace System.Net.Http
             }
             else
             {
+#if MONO
+                if (!request.RequestUri.IsAbsoluteUri || request.RequestUri.Scheme == Uri.UriSchemeFile && request.RequestUri.OriginalString.StartsWith ("/", StringComparison.Ordinal))
+#else
                 // If the request Uri is an absolute Uri, just use it. Otherwise try to combine it with the base Uri.
                 if (!request.RequestUri.IsAbsoluteUri)
+#endif
                 {
                     if (_baseAddress == null)
                     {

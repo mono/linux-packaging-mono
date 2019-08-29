@@ -4569,7 +4569,7 @@ prepare_run_main (MonoMethod *method, int argc, char *argv[])
 		gchar *basename = g_path_get_basename (argv [0]);
 		gchar *fullpath = g_build_filename (m_class_get_image (method->klass)->assembly->basedir,
 						    basename,
-						    NULL);
+						    (const char*)NULL);
 
 		utf8_fullpath = mono_utf8_from_external (fullpath);
 		if(utf8_fullpath == NULL) {
@@ -5094,7 +5094,7 @@ prepare_thread_to_exec_main (MonoDomain *domain, MonoMethod *method)
 		}
 
 		if (domain->setup->configuration_file == NULL) {
-			str = g_strconcat (assembly->image->name, ".config", NULL);
+			str = g_strconcat (assembly->image->name, ".config", (const char*)NULL);
 			MonoString *config_file = mono_string_new_checked (domain, str, error);
 			mono_error_assert_ok (error);
 			MONO_OBJECT_SETREF_INTERNAL (domain->setup, configuration_file, config_file);
@@ -9148,14 +9148,6 @@ mono_get_addr_from_ftnptr (gpointer descr)
 	return callbacks.get_addr_from_ftnptr (descr);
 }	
 
-gunichar2 *
-mono_string_chars_internal (MonoString *s)
-{
-	// MONO_REQ_GC_UNSAFE_MODE; //FIXME too much trouble for now
-
-	return s->chars;
-}
-
 /**
  * mono_string_chars:
  * \param s a \c MonoString
@@ -9165,14 +9157,6 @@ mono_unichar2*
 mono_string_chars (MonoString *s)
 {
 	MONO_EXTERNAL_ONLY (mono_unichar2*, mono_string_chars_internal (s));
-}
-
-int
-mono_string_length_internal (MonoString *s)
-{
-	MONO_REQ_GC_UNSAFE_MODE;
-
-	return s->length;
 }
 
 /**
