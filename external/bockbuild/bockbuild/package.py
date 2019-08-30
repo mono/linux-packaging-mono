@@ -44,10 +44,11 @@ class Package:
         # fat binary parameters. On a 64-bit Darwin profile (m64 = True)
         # each package must decide if it will a) perform a multi-arch (64/32) build
         # b) request two builds that are lipoed at the end or c) request a 32-bit
-        # build only.
+        # build only or d) request a 64-bit build only.
 
         self.needs_lipo = False
         self.m32_only = False
+        self.m64_only = False
         self.build_dependency = False
         self.dont_clean = False
         self.needs_build = None
@@ -513,6 +514,8 @@ class Package:
                 self.copy_side_by_side(
                     stagedir_x32, package_stage, 'bin', '32', '64')
             elif arch == 'toolchain':
+                package_stage = self.do_build('darwin-64')
+            elif self.m64_only:
                 package_stage = self.do_build('darwin-64')
             elif self.m32_only:
                 package_stage = self.do_build('darwin-32')
