@@ -91,7 +91,6 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 subdir = mono/eglib
-SUBDIRS =
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
 	$(top_srcdir)/m4/ax_append_flag.m4 \
@@ -254,6 +253,7 @@ am__define_uniq_tagged_files = \
   done | $(am__uniquify_input)`
 ETAGS = etags
 CTAGS = ctags
+DIST_SUBDIRS = $(SUBDIRS)
 am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/eglib-config.h.in \
 	$(top_srcdir)/depcomp $(top_srcdir)/mk/common.mk \
 	$(top_srcdir)/mkinstalldirs
@@ -556,10 +556,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
-
-# FIXME
-#SUBDIRS = test
-DIST_SUBDIRS = test
+SUBDIRS = . test
 noinst_LTLIBRARIES = libeglib.la
 AM_CFLAGS = $(WERROR_CFLAGS)
 win_files = \

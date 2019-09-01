@@ -34,6 +34,7 @@
 #include <mono/utils/w32api.h>
 #include <mono/utils/mono-os-wait.h>
 #include "external-only.h"
+#include "icall-decl.h"
 
 /*
  * Pull the list of opcodes
@@ -90,19 +91,19 @@ static int array_size = 16;
 
 /* MonoThreadsSync status helpers */
 
-static inline guint32
+static guint32
 mon_status_get_owner (guint32 status)
 {
 	return status & OWNER_MASK;
 }
 
-static inline guint32
+static guint32
 mon_status_set_owner (guint32 status, guint32 owner)
 {
 	return (status & ENTRY_COUNT_MASK) | owner;
 }
 
-static inline gint32
+static gint32
 mon_status_get_entry_count (guint32 status)
 {
 	gint32 entry_count = (gint32)((status & ENTRY_COUNT_MASK) >> ENTRY_COUNT_SHIFT);
@@ -110,13 +111,13 @@ mon_status_get_entry_count (guint32 status)
 	return entry_count - zero;
 }
 
-static inline guint32
+static guint32
 mon_status_init_entry_count (guint32 status)
 {
 	return (status & OWNER_MASK) | ENTRY_COUNT_ZERO;
 }
 
-static inline guint32
+static guint32
 mon_status_add_entry_count (guint32 status, int val)
 {
 	if (val > 0)
@@ -125,7 +126,7 @@ mon_status_add_entry_count (guint32 status, int val)
 		return status - ((-val) << ENTRY_COUNT_SHIFT);
 }
 
-static inline gboolean
+static gboolean
 mon_status_have_waiters (guint32 status)
 {
 	return status & ENTRY_COUNT_WAITERS;
@@ -133,26 +134,26 @@ mon_status_have_waiters (guint32 status)
 
 /* LockWord helpers */
 
-static inline MonoThreadsSync*
+static MonoThreadsSync*
 lock_word_get_inflated_lock (LockWord lw)
 {
 	lw.lock_word &= (~LOCK_WORD_STATUS_MASK);
 	return lw.sync;
 }
 
-static inline gboolean
+static gboolean
 lock_word_is_inflated (LockWord lw)
 {
 	return lw.lock_word & LOCK_WORD_INFLATED;
 }
 
-static inline gboolean
+static gboolean
 lock_word_has_hash (LockWord lw)
 {
 	return lw.lock_word & LOCK_WORD_HAS_HASH;
 }
 
-static inline LockWord
+static LockWord
 lock_word_set_has_hash (LockWord lw)
 {
 	LockWord nlw;
@@ -160,26 +161,26 @@ lock_word_set_has_hash (LockWord lw)
 	return nlw;
 }
 
-static inline gboolean
+static gboolean
 lock_word_is_free (LockWord lw)
 {
 	return !lw.lock_word;
 }
 
-static inline gboolean
+static gboolean
 lock_word_is_flat (LockWord lw)
 {
 	/* Return whether the lock is flat or free */
 	return (lw.lock_word & LOCK_WORD_STATUS_MASK) == LOCK_WORD_FLAT;
 }
 
-static inline gint32
+static gint32
 lock_word_get_hash (LockWord lw)
 {
 	return (gint32) (lw.lock_word >> LOCK_WORD_HASH_SHIFT);
 }
 
-static inline gint32
+static gint32
 lock_word_get_nest (LockWord lw)
 {
 	if (lock_word_is_free (lw))
@@ -188,39 +189,39 @@ lock_word_get_nest (LockWord lw)
 	return ((lw.lock_word & LOCK_WORD_NEST_MASK) >> LOCK_WORD_NEST_SHIFT) + 1;
 }
 
-static inline gboolean
+static gboolean
 lock_word_is_nested (LockWord lw)
 {
 	return lw.lock_word & LOCK_WORD_NEST_MASK;
 }
 
-static inline gboolean
+static gboolean
 lock_word_is_max_nest (LockWord lw)
 {
 	return (lw.lock_word & LOCK_WORD_NEST_MASK) == LOCK_WORD_NEST_MASK;
 }
 
-static inline LockWord
+static LockWord
 lock_word_increment_nest (LockWord lw)
 {
 	lw.lock_word += 1 << LOCK_WORD_NEST_SHIFT;
 	return lw;
 }
 
-static inline LockWord
+static LockWord
 lock_word_decrement_nest (LockWord lw)
 {
 	lw.lock_word -= 1 << LOCK_WORD_NEST_SHIFT;
 	return lw;
 }
 
-static inline gint32
+static gint32
 lock_word_get_owner (LockWord lw)
 {
 	return lw.lock_word >> LOCK_WORD_OWNER_SHIFT;
 }
 
-static inline LockWord
+static LockWord
 lock_word_new_thin_hash (gint32 hash)
 {
 	LockWord lw;
@@ -229,7 +230,7 @@ lock_word_new_thin_hash (gint32 hash)
 	return lw;
 }
 
-static inline LockWord
+static LockWord
 lock_word_new_inflated (MonoThreadsSync *mon)
 {
 	LockWord lw;
@@ -238,7 +239,7 @@ lock_word_new_inflated (MonoThreadsSync *mon)
 	return lw;
 }
 
-static inline LockWord
+static LockWord
 lock_word_new_flat (gint32 owner)
 {
 	LockWord lw;
@@ -561,6 +562,7 @@ int
 mono_object_hash_internal (MonoObject* obj)
 {
 #ifdef HAVE_MOVING_COLLECTOR
+
 	LockWord lw;
 	unsigned int hash;
 	if (!obj)
@@ -619,13 +621,22 @@ mono_object_hash_internal (MonoObject* obj)
 	mono_memory_write_barrier ();
 	obj->synchronisation = lw.sync;
 	return hash;
+
 #else
+
 /*
  * Wang's address-based hash function:
  *   http://www.concentric.net/~Ttwang/tech/addrhash.htm
  */
 	return (GPOINTER_TO_UINT (obj) >> MONO_OBJECT_ALIGNMENT_SHIFT) * 2654435761u;
 #endif
+
+}
+
+int
+mono_object_hash_icall (MonoObjectHandle obj, MonoError* error)
+{
+	return mono_object_hash_internal (MONO_HANDLE_RAW (obj));
 }
 
 /*
@@ -637,6 +648,7 @@ mono_object_hash_internal (MonoObject* obj)
 int
 mono_object_hash (MonoObject* obj)
 {
+	// FIXME slow?
 	MONO_EXTERNAL_ONLY (int, mono_object_hash_internal (obj));
 }
 
@@ -782,7 +794,7 @@ signal_monitor (gpointer mon_untyped)
 /* If allow_interruption==TRUE, the method will be interrupted if abort or suspend
  * is requested. In this case it returns -1.
  */ 
-static inline gint32 
+static gint32
 mono_monitor_try_enter_inflated (MonoObject *obj, guint32 ms, gboolean allow_interruption, guint32 id)
 {
 	LockWord lw;
@@ -969,7 +981,7 @@ retry_contended:
  * If allow_interruption == TRUE, the method will be interrupted if abort or suspend
  * is requested. In this case it returns -1.
  */
-static inline gint32
+static gint32
 mono_monitor_try_enter_internal (MonoObject *obj, guint32 ms, gboolean allow_interruption)
 {
 	LockWord lw;
@@ -1062,6 +1074,7 @@ mono_monitor_enter_internal (MonoObject *obj)
 gboolean
 mono_monitor_enter (MonoObject *obj)
 {
+	// FIXME slow?
 	MONO_EXTERNAL_ONLY (gboolean, mono_monitor_enter_internal (obj));
 }
 
