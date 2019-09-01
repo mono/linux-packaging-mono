@@ -89,7 +89,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-noinst_PROGRAMS = test-eglib$(EXEEXT) assertf$(EXEEXT)
+@DISABLE_EXECUTABLES_FALSE@@HOST_WIN32_FALSE@noinst_PROGRAMS = test-eglib$(EXEEXT) \
+@DISABLE_EXECUTABLES_FALSE@@HOST_WIN32_FALSE@	assertf$(EXEEXT)
 subdir = mono/eglib/test
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -395,7 +396,7 @@ XINERAMA = @XINERAMA@
 XMKMF = @XMKMF@
 ZLIB_CFLAGS = @ZLIB_CFLAGS@
 abs_builddir = @abs_builddir@
-abs_srcdir = @abs_srcdir@
+abs_srcdir = $(abspath $(srcdir))
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
 ac_ct_AR = @ac_ct_AR@
@@ -736,6 +737,7 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) check-local
 check: check-am
 all-am: Makefile $(PROGRAMS)
 installdirs:
@@ -849,11 +851,11 @@ test-bundle-am: test-bundle-local
 
 uninstall-am:
 
-.MAKE: install-am install-strip
+.MAKE: check-am install-am install-strip
 
-.PHONY: CTAGS GTAGS TAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-noinstPROGRAMS cscopelist-am ctags \
-	ctags-am distclean distclean-compile distclean-generic \
+.PHONY: CTAGS GTAGS TAGS all all-am check check-am check-local clean \
+	clean-generic clean-libtool clean-noinstPROGRAMS cscopelist-am \
+	ctags ctags-am distclean distclean-compile distclean-generic \
 	distclean-libtool distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
@@ -869,14 +871,15 @@ uninstall-am:
 .PRECIOUS: Makefile
 
 
-# Something amiss with subdirs ordering?
-../libeglib.la: ../goutput.c # etc
-	$(MAKE)  -C .. $(@F)
-
-run-eglib: all
-	srcdir=`readlink -f $(srcdir)` ./test-eglib
+@DISABLE_EXECUTABLES_TRUE@run-eglib:
+# FIXME: Various unit tests are broken on Win32, see https://github.com/mono/mono/issues/16576
+@DISABLE_EXECUTABLES_FALSE@@HOST_WIN32_TRUE@run-eglib:
+@DISABLE_EXECUTABLES_FALSE@@HOST_WIN32_FALSE@run-eglib:
+@DISABLE_EXECUTABLES_FALSE@@HOST_WIN32_FALSE@	srcdir="$(abs_srcdir)" ./test-eglib
 
 run-both: run-eglib
+
+check-local: run-both
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

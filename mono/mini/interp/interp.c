@@ -98,7 +98,7 @@ typedef struct {
 	InterpFrame *base_frame;
 } FrameClauseArgs;
 
-static inline void
+static void
 init_frame (InterpFrame *frame, InterpFrame *parent_frame, InterpMethod *rmethod, stackval *method_args, stackval *method_retval)
 {
 	frame->parent = parent_frame;
@@ -3324,10 +3324,8 @@ main_loop:
 			++ip;
 			MINT_IN_BREAK;
 		MINT_IN_CASE(MINT_NOP)
-			++ip;
-			MINT_IN_BREAK;
 		MINT_IN_CASE(MINT_NIY)
-			g_error ("mint_niy: instruction not implemented yet.  This shouldn't happen.");
+			g_assert_not_reached ();
 			MINT_IN_BREAK;
 		MINT_IN_CASE(MINT_BREAK)
 			++ip;
@@ -5213,7 +5211,7 @@ main_loop:
 
 			memcpy (addr, sp [-1].data.vt, i32);
 			vt_sp -= ALIGN_TO (i32, MINT_VT_ALIGNMENT);
-			ip += 4;
+			ip += 5;
 			--sp;
 			MINT_IN_BREAK;
 		}
