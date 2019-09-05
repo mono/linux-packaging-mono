@@ -162,13 +162,11 @@ export MONO_CPU_ARCH="armv7l-thumb"
 export MONO_CPU_ARCH="armv5el"
 %endif
 # distro specific configure options
-%if %llvm == yes
-export PATH=/usr/lib/mono/llvm/bin:$PATH
-%endif
 %configure \
   --with-sgen=%{sgen} \
 %if %llvm == yes
   --enable-loadedllvm \
+  --with-llvm=/usr/lib/mono/llvm/ \
 %endif
 %ifarch ppc
  --with-sigaltstack=no \
