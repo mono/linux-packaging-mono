@@ -677,6 +677,8 @@ MINI_OP(OP_RPOW,     "rpow", FREG, FREG, FREG)
 MINI_OP(OP_FMAX,     "fmax", FREG, FREG, FREG)
 MINI_OP(OP_FMIN,     "fmin", FREG, FREG, FREG)
 MINI_OP(OP_FPOW,     "fpow", FREG, FREG, FREG)
+MINI_OP(OP_RCOPYSIGN,"rcopysign", FREG, FREG, FREG)
+MINI_OP(OP_FCOPYSIGN,"fcopysign", FREG, FREG, FREG)
 
 /* opcodes most architecture have */
 MINI_OP(OP_ADC,     "adc", IREG, IREG, IREG)
@@ -720,6 +722,15 @@ MINI_OP(OP_FLOOR,   "floor", FREG, FREG, NONE)
 MINI_OP3(OP_FMA,     "fma", FREG, FREG, FREG, FREG)
 MINI_OP(OP_SINF,     "sinf", FREG, FREG, NONE)
 MINI_OP(OP_COSF,     "cosf", FREG, FREG, NONE)
+MINI_OP(OP_EXPF,     "expf", FREG, FREG, NONE)
+MINI_OP(OP_EXP,      "exp", FREG, FREG, NONE)
+MINI_OP(OP_LOG,      "log", FREG, FREG, NONE)
+MINI_OP(OP_LOG2,     "log2", FREG, FREG, NONE)
+MINI_OP(OP_LOG2F,    "log2f", FREG, FREG, NONE)
+MINI_OP(OP_LOG10,    "log10", FREG, FREG, NONE)
+MINI_OP(OP_LOG10F,   "log10f", FREG, FREG, NONE)
+MINI_OP(OP_TRUNC,    "trunc", FREG, FREG, NONE)
+MINI_OP(OP_TRUNCF,   "truncf", FREG, FREG, NONE)
 MINI_OP(OP_ABSF,     "absf", FREG, FREG, NONE)
 MINI_OP(OP_SQRTF,    "sqrtf", FREG, FREG, NONE)
 MINI_OP(OP_CEILF,    "ceilf", FREG, FREG, NONE)
@@ -742,6 +753,7 @@ MINI_OP(OP_STRLEN, "strlen", IREG, IREG, NONE)
 MINI_OP(OP_NEWARR, "newarr", IREG, IREG, NONE)
 /* Load a readonly length field from [sreg1+inst_imm] */
 MINI_OP(OP_LDLEN, "ldlen", IREG, IREG, NONE)
+/* inst_p0 is the exception name to throw or NULL */
 MINI_OP(OP_BOUNDS_CHECK, "bounds_check", NONE, IREG, IREG)
 /* type checks */
 MINI_OP(OP_ISINST, "isinst", IREG, IREG, NONE)
@@ -1375,6 +1387,13 @@ MINI_OP(OP_XCOMPARE_FP, "xcompare_fp", XREG, XREG, XREG)
 /* Binary op, inst_c0 contains the operation */
 MINI_OP(OP_XBINOP, "xbinop", XREG, XREG, XREG)
 MINI_OP(OP_XCAST, "xcast", XREG, XREG, NONE)
+/* Extract element of vector */
+/* The index is assumed to be in range */
+MINI_OP(OP_XEXTRACT_I32, "xextract_i32", IREG, XREG, IREG)
+MINI_OP(OP_XEXTRACT_I64, "xextract_i64", LREG, XREG, IREG)
+MINI_OP(OP_XEXTRACT_R8, "xextract_r8", FREG, XREG, IREG)
+/* Return an R4 */
+MINI_OP(OP_XEXTRACT_R4, "xextract_r4", FREG, XREG, IREG)
 
 MINI_OP(OP_LZCNT32, "lzcnt32", IREG, IREG, NONE)
 MINI_OP(OP_LZCNT64, "lzcnt64", LREG, LREG, NONE)
