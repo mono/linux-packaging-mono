@@ -854,6 +854,7 @@ typedef struct {
 	void (*mono_summarize_unmanaged_stack) (MonoThreadSummary *out);
 	void (*mono_summarize_exception) (MonoException *exc, MonoThreadSummary *out);
 	void (*mono_register_native_library) (const char *module_path, const char *module_name);
+	void (*mono_allow_all_native_libraries) (void);
 } MonoRuntimeExceptionHandlingCallbacks;
 
 MONO_COLD void mono_set_pending_exception (MonoException *exc);
@@ -2208,18 +2209,6 @@ mono_runtime_exec_main_checked (MonoMethod *method, MonoArray *args, MonoError *
 int
 mono_runtime_try_exec_main (MonoMethod *method, MonoArray *args, MonoObject **exc);
 
-ICALL_EXPORT
-void
-ves_icall_ModuleBuilder_WriteToFile (MonoReflectionModuleBuilder *mb, gpointer file);
-
-ICALL_EXPORT
-void
-ves_icall_ModuleBuilder_build_metadata (MonoReflectionModuleBuilder *mb);
-
-ICALL_EXPORT
-MonoArray*
-ves_icall_CustomAttributeBuilder_GetBlob (MonoReflectionAssembly *assembly, MonoObject *ctor, MonoArray *ctorArgs, MonoArray *properties, MonoArray *propValues, MonoArray *fields, MonoArray* fieldValues);
-
 MonoAssembly*
 mono_try_assembly_resolve_handle (MonoAssemblyLoadContext *alc, MonoStringHandle fname, MonoAssembly *requesting, gboolean refonly, MonoError *error);
 
@@ -2401,7 +2390,7 @@ void
 mono_gc_wbarrier_arrayref_copy_internal (void* dest_ptr, const void* src_ptr, int count);
 
 void
-mono_gc_wbarrier_generic_store_internal (void* ptr, MonoObject* value);
+mono_gc_wbarrier_generic_store_internal (void volatile* ptr, MonoObject* value);
 
 void
 mono_gc_wbarrier_generic_store_atomic_internal (void *ptr, MonoObject *value);

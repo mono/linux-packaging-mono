@@ -2415,6 +2415,7 @@ mono_opcode_to_cond (int opcode)
 	case OP_IBGE_UN:
 	case OP_LBGE_UN:
 	case OP_FBGE_UN:
+	case OP_COND_EXC_GE_UN:
 	case OP_CMOV_IGE_UN:
 	case OP_CMOV_LGE_UN:
 		return CMP_GE_UN;
@@ -2707,6 +2708,8 @@ mini_exception_id_by_name (const char *name)
 		return MONO_EXC_ARRAY_TYPE_MISMATCH;
 	if (strcmp (name, "ArgumentException") == 0)
 		return MONO_EXC_ARGUMENT;
+	if (strcmp (name, "ArgumentOutOfRangeException") == 0)
+		return MONO_EXC_ARGUMENT_OUT_OF_RANGE;
 	g_error ("Unknown intrinsic exception %s\n", name);
 	return -1;
 }
