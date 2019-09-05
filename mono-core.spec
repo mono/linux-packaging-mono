@@ -168,6 +168,9 @@ export MONO_CPU_ARCH="armv5el"
 %if %llvm == yes
 export PATH=/usr/lib/mono/llvm/bin:$PATH
 %endif
+%if 0%{?rhel} <= 7
+export CMAKE=/usr/bin/cmake3
+%endif
 %configure \
   --with-sgen=%{sgen} \
 %if %llvm == yes
