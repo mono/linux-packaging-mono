@@ -1080,6 +1080,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  monoeg_g_array_set_size@Base 5.7.0.181
  monoeg_g_array_sized_new@Base 5.7.0.181
  monoeg_g_ascii_strdown@Base 5.7.0.181
+ monoeg_g_ascii_strdown_no_alloc@Base 6.7.0.562
  monoeg_g_ascii_strncasecmp@Base 5.7.0.181
  monoeg_g_ascii_tolower@Base 5.7.0.181
  monoeg_g_ascii_xdigit_value@Base 5.7.0.181
