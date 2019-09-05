@@ -41,11 +41,7 @@ BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  bison
 BuildRequires:  which
-%if 0%{?rhel} >= 8
 BuildRequires:  cmake
-%else
-BuildRequires:  cmake3
-%endif
 BuildRequires:  gettext
 BuildRequires:  fdupes
 BuildRequires:  gcc-c++
