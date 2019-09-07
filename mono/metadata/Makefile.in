@@ -202,21 +202,20 @@ am__libmonoruntime_support_la_SOURCES_DIST = empty.c \
 	../../support/trees.c ../../support/trees.h \
 	../../support/zconf.h ../../support/zlib.h \
 	../../support/zutil.c ../../support/zutil.h
-am__dirstamp = $(am__leading_dot)dirstamp
-@ENABLE_MONOTOUCH_TRUE@am__objects_1 = ../../support/libmonoruntime_support_la-zlib-helper.lo
-@ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@am__objects_2 = ../../support/libmonoruntime_support_la-nl.lo \
-@ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@	../../support/libmonoruntime_support_la-zlib-helper.lo
+@ENABLE_MONOTOUCH_TRUE@am__objects_1 = libmonoruntime_support_la-zlib-helper.lo
+@ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@am__objects_2 = libmonoruntime_support_la-nl.lo \
+@ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@	libmonoruntime_support_la-zlib-helper.lo
 am__objects_3 = libmonoruntime_support_la-empty.lo $(am__objects_1) \
 	$(am__objects_2)
-am__objects_4 = ../../support/libmonoruntime_support_la-adler32.lo \
-	../../support/libmonoruntime_support_la-crc32.lo \
-	../../support/libmonoruntime_support_la-deflate.lo \
-	../../support/libmonoruntime_support_la-infback.lo \
-	../../support/libmonoruntime_support_la-inffast.lo \
-	../../support/libmonoruntime_support_la-inflate.lo \
-	../../support/libmonoruntime_support_la-inftrees.lo \
-	../../support/libmonoruntime_support_la-trees.lo \
-	../../support/libmonoruntime_support_la-zutil.lo
+am__objects_4 = libmonoruntime_support_la-adler32.lo \
+	libmonoruntime_support_la-crc32.lo \
+	libmonoruntime_support_la-deflate.lo \
+	libmonoruntime_support_la-infback.lo \
+	libmonoruntime_support_la-inffast.lo \
+	libmonoruntime_support_la-inflate.lo \
+	libmonoruntime_support_la-inftrees.lo \
+	libmonoruntime_support_la-trees.lo \
+	libmonoruntime_support_la-zutil.lo
 @HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@am__objects_5 =  \
 @HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@	$(am__objects_4)
 am_libmonoruntime_support_la_OBJECTS = $(am__objects_3) \
@@ -1454,45 +1453,6 @@ libmono-ilgen.la: $(libmono_ilgen_la_OBJECTS) $(libmono_ilgen_la_DEPENDENCIES) $
 
 libmonoruntime-config.la: $(libmonoruntime_config_la_OBJECTS) $(libmonoruntime_config_la_DEPENDENCIES) $(EXTRA_libmonoruntime_config_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK)  $(libmonoruntime_config_la_OBJECTS) $(libmonoruntime_config_la_LIBADD) $(LIBS)
-../../support/$(am__dirstamp):
-	@$(MKDIR_P) ../../support
-	@: > ../../support/$(am__dirstamp)
-../../support/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) ../../support/$(DEPDIR)
-	@: > ../../support/$(DEPDIR)/$(am__dirstamp)
-../../support/libmonoruntime_support_la-zlib-helper.lo:  \
-	../../support/$(am__dirstamp) \
-	../../support/$(DEPDIR)/$(am__dirstamp)
-../../support/libmonoruntime_support_la-nl.lo:  \
-	../../support/$(am__dirstamp) \
-	../../support/$(DEPDIR)/$(am__dirstamp)
-../../support/libmonoruntime_support_la-adler32.lo:  \
-	../../support/$(am__dirstamp) \
-	../../support/$(DEPDIR)/$(am__dirstamp)
-../../support/libmonoruntime_support_la-crc32.lo:  \
-	../../support/$(am__dirstamp) \
-	../../support/$(DEPDIR)/$(am__dirstamp)
-../../support/libmonoruntime_support_la-deflate.lo:  \
-	../../support/$(am__dirstamp) \
-	../../support/$(DEPDIR)/$(am__dirstamp)
-../../support/libmonoruntime_support_la-infback.lo:  \
-	../../support/$(am__dirstamp) \
-	../../support/$(DEPDIR)/$(am__dirstamp)
-../../support/libmonoruntime_support_la-inffast.lo:  \
-	../../support/$(am__dirstamp) \
-	../../support/$(DEPDIR)/$(am__dirstamp)
-../../support/libmonoruntime_support_la-inflate.lo:  \
-	../../support/$(am__dirstamp) \
-	../../support/$(DEPDIR)/$(am__dirstamp)
-../../support/libmonoruntime_support_la-inftrees.lo:  \
-	../../support/$(am__dirstamp) \
-	../../support/$(DEPDIR)/$(am__dirstamp)
-../../support/libmonoruntime_support_la-trees.lo:  \
-	../../support/$(am__dirstamp) \
-	../../support/$(DEPDIR)/$(am__dirstamp)
-../../support/libmonoruntime_support_la-zutil.lo:  \
-	../../support/$(am__dirstamp) \
-	../../support/$(DEPDIR)/$(am__dirstamp)
 
 libmonoruntime-support.la: $(libmonoruntime_support_la_OBJECTS) $(libmonoruntime_support_la_DEPENDENCIES) $(EXTRA_libmonoruntime_support_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmonoruntime_support_la_LINK)  $(libmonoruntime_support_la_OBJECTS) $(libmonoruntime_support_la_LIBADD) $(LIBS)
@@ -1505,23 +1465,10 @@ libmonoruntimesgen.la: $(libmonoruntimesgen_la_OBJECTS) $(libmonoruntimesgen_la_
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
-	-rm -f ../../support/*.$(OBJEXT)
-	-rm -f ../../support/*.lo
 
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@../../support/$(DEPDIR)/libmonoruntime_support_la-adler32.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@../../support/$(DEPDIR)/libmonoruntime_support_la-crc32.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@../../support/$(DEPDIR)/libmonoruntime_support_la-deflate.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@../../support/$(DEPDIR)/libmonoruntime_support_la-infback.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@../../support/$(DEPDIR)/libmonoruntime_support_la-inffast.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@../../support/$(DEPDIR)/libmonoruntime_support_la-inflate.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@../../support/$(DEPDIR)/libmonoruntime_support_la-inftrees.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@../../support/$(DEPDIR)/libmonoruntime_support_la-nl.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@../../support/$(DEPDIR)/libmonoruntime_support_la-trees.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@../../support/$(DEPDIR)/libmonoruntime_support_la-zlib-helper.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@../../support/$(DEPDIR)/libmonoruntime_support_la-zutil.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_icall_table_la-icall-table.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_ilgen_la-marshal-ilgen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_ilgen_la-method-builder-ilgen.Plo@am__quote@
@@ -1638,7 +1585,18 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-w32socket-unix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-w32socket-win32.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-w32socket.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_support_la-adler32.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_support_la-crc32.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_support_la-deflate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_support_la-empty.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_support_la-infback.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_support_la-inffast.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_support_la-inflate.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_support_la-inftrees.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_support_la-nl.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_support_la-trees.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_support_la-zlib-helper.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_support_la-zutil.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-abi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-appdomain.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-assembly-load-context.Plo@am__quote@
@@ -1756,25 +1714,22 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-w32socket.Plo@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
-@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
-@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
-@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
-@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
@@ -1821,82 +1776,82 @@ libmonoruntime_support_la-empty.lo: empty.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_support_la-empty.lo `test -f 'empty.c' || echo '$(srcdir)/'`empty.c
 
-../../support/libmonoruntime_support_la-zlib-helper.lo: ../../support/zlib-helper.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT ../../support/libmonoruntime_support_la-zlib-helper.lo -MD -MP -MF ../../support/$(DEPDIR)/libmonoruntime_support_la-zlib-helper.Tpo -c -o ../../support/libmonoruntime_support_la-zlib-helper.lo `test -f '../../support/zlib-helper.c' || echo '$(srcdir)/'`../../support/zlib-helper.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../support/$(DEPDIR)/libmonoruntime_support_la-zlib-helper.Tpo ../../support/$(DEPDIR)/libmonoruntime_support_la-zlib-helper.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/zlib-helper.c' object='../../support/libmonoruntime_support_la-zlib-helper.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_support_la-zlib-helper.lo: ../../support/zlib-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_support_la-zlib-helper.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_support_la-zlib-helper.Tpo -c -o libmonoruntime_support_la-zlib-helper.lo `test -f '../../support/zlib-helper.c' || echo '$(srcdir)/'`../../support/zlib-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_support_la-zlib-helper.Tpo $(DEPDIR)/libmonoruntime_support_la-zlib-helper.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/zlib-helper.c' object='libmonoruntime_support_la-zlib-helper.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o ../../support/libmonoruntime_support_la-zlib-helper.lo `test -f '../../support/zlib-helper.c' || echo '$(srcdir)/'`../../support/zlib-helper.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_support_la-zlib-helper.lo `test -f '../../support/zlib-helper.c' || echo '$(srcdir)/'`../../support/zlib-helper.c
 
-../../support/libmonoruntime_support_la-nl.lo: ../../support/nl.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT ../../support/libmonoruntime_support_la-nl.lo -MD -MP -MF ../../support/$(DEPDIR)/libmonoruntime_support_la-nl.Tpo -c -o ../../support/libmonoruntime_support_la-nl.lo `test -f '../../support/nl.c' || echo '$(srcdir)/'`../../support/nl.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../support/$(DEPDIR)/libmonoruntime_support_la-nl.Tpo ../../support/$(DEPDIR)/libmonoruntime_support_la-nl.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/nl.c' object='../../support/libmonoruntime_support_la-nl.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_support_la-nl.lo: ../../support/nl.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_support_la-nl.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_support_la-nl.Tpo -c -o libmonoruntime_support_la-nl.lo `test -f '../../support/nl.c' || echo '$(srcdir)/'`../../support/nl.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_support_la-nl.Tpo $(DEPDIR)/libmonoruntime_support_la-nl.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/nl.c' object='libmonoruntime_support_la-nl.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o ../../support/libmonoruntime_support_la-nl.lo `test -f '../../support/nl.c' || echo '$(srcdir)/'`../../support/nl.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_support_la-nl.lo `test -f '../../support/nl.c' || echo '$(srcdir)/'`../../support/nl.c
 
-../../support/libmonoruntime_support_la-adler32.lo: ../../support/adler32.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT ../../support/libmonoruntime_support_la-adler32.lo -MD -MP -MF ../../support/$(DEPDIR)/libmonoruntime_support_la-adler32.Tpo -c -o ../../support/libmonoruntime_support_la-adler32.lo `test -f '../../support/adler32.c' || echo '$(srcdir)/'`../../support/adler32.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../support/$(DEPDIR)/libmonoruntime_support_la-adler32.Tpo ../../support/$(DEPDIR)/libmonoruntime_support_la-adler32.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/adler32.c' object='../../support/libmonoruntime_support_la-adler32.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_support_la-adler32.lo: ../../support/adler32.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_support_la-adler32.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_support_la-adler32.Tpo -c -o libmonoruntime_support_la-adler32.lo `test -f '../../support/adler32.c' || echo '$(srcdir)/'`../../support/adler32.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_support_la-adler32.Tpo $(DEPDIR)/libmonoruntime_support_la-adler32.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/adler32.c' object='libmonoruntime_support_la-adler32.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o ../../support/libmonoruntime_support_la-adler32.lo `test -f '../../support/adler32.c' || echo '$(srcdir)/'`../../support/adler32.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_support_la-adler32.lo `test -f '../../support/adler32.c' || echo '$(srcdir)/'`../../support/adler32.c
 
-../../support/libmonoruntime_support_la-crc32.lo: ../../support/crc32.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT ../../support/libmonoruntime_support_la-crc32.lo -MD -MP -MF ../../support/$(DEPDIR)/libmonoruntime_support_la-crc32.Tpo -c -o ../../support/libmonoruntime_support_la-crc32.lo `test -f '../../support/crc32.c' || echo '$(srcdir)/'`../../support/crc32.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../support/$(DEPDIR)/libmonoruntime_support_la-crc32.Tpo ../../support/$(DEPDIR)/libmonoruntime_support_la-crc32.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/crc32.c' object='../../support/libmonoruntime_support_la-crc32.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_support_la-crc32.lo: ../../support/crc32.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_support_la-crc32.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_support_la-crc32.Tpo -c -o libmonoruntime_support_la-crc32.lo `test -f '../../support/crc32.c' || echo '$(srcdir)/'`../../support/crc32.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_support_la-crc32.Tpo $(DEPDIR)/libmonoruntime_support_la-crc32.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/crc32.c' object='libmonoruntime_support_la-crc32.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o ../../support/libmonoruntime_support_la-crc32.lo `test -f '../../support/crc32.c' || echo '$(srcdir)/'`../../support/crc32.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_support_la-crc32.lo `test -f '../../support/crc32.c' || echo '$(srcdir)/'`../../support/crc32.c
 
-../../support/libmonoruntime_support_la-deflate.lo: ../../support/deflate.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT ../../support/libmonoruntime_support_la-deflate.lo -MD -MP -MF ../../support/$(DEPDIR)/libmonoruntime_support_la-deflate.Tpo -c -o ../../support/libmonoruntime_support_la-deflate.lo `test -f '../../support/deflate.c' || echo '$(srcdir)/'`../../support/deflate.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../support/$(DEPDIR)/libmonoruntime_support_la-deflate.Tpo ../../support/$(DEPDIR)/libmonoruntime_support_la-deflate.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/deflate.c' object='../../support/libmonoruntime_support_la-deflate.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_support_la-deflate.lo: ../../support/deflate.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_support_la-deflate.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_support_la-deflate.Tpo -c -o libmonoruntime_support_la-deflate.lo `test -f '../../support/deflate.c' || echo '$(srcdir)/'`../../support/deflate.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_support_la-deflate.Tpo $(DEPDIR)/libmonoruntime_support_la-deflate.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/deflate.c' object='libmonoruntime_support_la-deflate.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o ../../support/libmonoruntime_support_la-deflate.lo `test -f '../../support/deflate.c' || echo '$(srcdir)/'`../../support/deflate.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_support_la-deflate.lo `test -f '../../support/deflate.c' || echo '$(srcdir)/'`../../support/deflate.c
 
-../../support/libmonoruntime_support_la-infback.lo: ../../support/infback.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT ../../support/libmonoruntime_support_la-infback.lo -MD -MP -MF ../../support/$(DEPDIR)/libmonoruntime_support_la-infback.Tpo -c -o ../../support/libmonoruntime_support_la-infback.lo `test -f '../../support/infback.c' || echo '$(srcdir)/'`../../support/infback.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../support/$(DEPDIR)/libmonoruntime_support_la-infback.Tpo ../../support/$(DEPDIR)/libmonoruntime_support_la-infback.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/infback.c' object='../../support/libmonoruntime_support_la-infback.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_support_la-infback.lo: ../../support/infback.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_support_la-infback.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_support_la-infback.Tpo -c -o libmonoruntime_support_la-infback.lo `test -f '../../support/infback.c' || echo '$(srcdir)/'`../../support/infback.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_support_la-infback.Tpo $(DEPDIR)/libmonoruntime_support_la-infback.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/infback.c' object='libmonoruntime_support_la-infback.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o ../../support/libmonoruntime_support_la-infback.lo `test -f '../../support/infback.c' || echo '$(srcdir)/'`../../support/infback.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_support_la-infback.lo `test -f '../../support/infback.c' || echo '$(srcdir)/'`../../support/infback.c
 
-../../support/libmonoruntime_support_la-inffast.lo: ../../support/inffast.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT ../../support/libmonoruntime_support_la-inffast.lo -MD -MP -MF ../../support/$(DEPDIR)/libmonoruntime_support_la-inffast.Tpo -c -o ../../support/libmonoruntime_support_la-inffast.lo `test -f '../../support/inffast.c' || echo '$(srcdir)/'`../../support/inffast.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../support/$(DEPDIR)/libmonoruntime_support_la-inffast.Tpo ../../support/$(DEPDIR)/libmonoruntime_support_la-inffast.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/inffast.c' object='../../support/libmonoruntime_support_la-inffast.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_support_la-inffast.lo: ../../support/inffast.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_support_la-inffast.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_support_la-inffast.Tpo -c -o libmonoruntime_support_la-inffast.lo `test -f '../../support/inffast.c' || echo '$(srcdir)/'`../../support/inffast.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_support_la-inffast.Tpo $(DEPDIR)/libmonoruntime_support_la-inffast.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/inffast.c' object='libmonoruntime_support_la-inffast.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o ../../support/libmonoruntime_support_la-inffast.lo `test -f '../../support/inffast.c' || echo '$(srcdir)/'`../../support/inffast.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_support_la-inffast.lo `test -f '../../support/inffast.c' || echo '$(srcdir)/'`../../support/inffast.c
 
-../../support/libmonoruntime_support_la-inflate.lo: ../../support/inflate.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT ../../support/libmonoruntime_support_la-inflate.lo -MD -MP -MF ../../support/$(DEPDIR)/libmonoruntime_support_la-inflate.Tpo -c -o ../../support/libmonoruntime_support_la-inflate.lo `test -f '../../support/inflate.c' || echo '$(srcdir)/'`../../support/inflate.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../support/$(DEPDIR)/libmonoruntime_support_la-inflate.Tpo ../../support/$(DEPDIR)/libmonoruntime_support_la-inflate.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/inflate.c' object='../../support/libmonoruntime_support_la-inflate.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_support_la-inflate.lo: ../../support/inflate.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_support_la-inflate.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_support_la-inflate.Tpo -c -o libmonoruntime_support_la-inflate.lo `test -f '../../support/inflate.c' || echo '$(srcdir)/'`../../support/inflate.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_support_la-inflate.Tpo $(DEPDIR)/libmonoruntime_support_la-inflate.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/inflate.c' object='libmonoruntime_support_la-inflate.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o ../../support/libmonoruntime_support_la-inflate.lo `test -f '../../support/inflate.c' || echo '$(srcdir)/'`../../support/inflate.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_support_la-inflate.lo `test -f '../../support/inflate.c' || echo '$(srcdir)/'`../../support/inflate.c
 
-../../support/libmonoruntime_support_la-inftrees.lo: ../../support/inftrees.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT ../../support/libmonoruntime_support_la-inftrees.lo -MD -MP -MF ../../support/$(DEPDIR)/libmonoruntime_support_la-inftrees.Tpo -c -o ../../support/libmonoruntime_support_la-inftrees.lo `test -f '../../support/inftrees.c' || echo '$(srcdir)/'`../../support/inftrees.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../support/$(DEPDIR)/libmonoruntime_support_la-inftrees.Tpo ../../support/$(DEPDIR)/libmonoruntime_support_la-inftrees.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/inftrees.c' object='../../support/libmonoruntime_support_la-inftrees.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_support_la-inftrees.lo: ../../support/inftrees.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_support_la-inftrees.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_support_la-inftrees.Tpo -c -o libmonoruntime_support_la-inftrees.lo `test -f '../../support/inftrees.c' || echo '$(srcdir)/'`../../support/inftrees.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_support_la-inftrees.Tpo $(DEPDIR)/libmonoruntime_support_la-inftrees.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/inftrees.c' object='libmonoruntime_support_la-inftrees.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o ../../support/libmonoruntime_support_la-inftrees.lo `test -f '../../support/inftrees.c' || echo '$(srcdir)/'`../../support/inftrees.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_support_la-inftrees.lo `test -f '../../support/inftrees.c' || echo '$(srcdir)/'`../../support/inftrees.c
 
-../../support/libmonoruntime_support_la-trees.lo: ../../support/trees.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT ../../support/libmonoruntime_support_la-trees.lo -MD -MP -MF ../../support/$(DEPDIR)/libmonoruntime_support_la-trees.Tpo -c -o ../../support/libmonoruntime_support_la-trees.lo `test -f '../../support/trees.c' || echo '$(srcdir)/'`../../support/trees.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../support/$(DEPDIR)/libmonoruntime_support_la-trees.Tpo ../../support/$(DEPDIR)/libmonoruntime_support_la-trees.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/trees.c' object='../../support/libmonoruntime_support_la-trees.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_support_la-trees.lo: ../../support/trees.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_support_la-trees.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_support_la-trees.Tpo -c -o libmonoruntime_support_la-trees.lo `test -f '../../support/trees.c' || echo '$(srcdir)/'`../../support/trees.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_support_la-trees.Tpo $(DEPDIR)/libmonoruntime_support_la-trees.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/trees.c' object='libmonoruntime_support_la-trees.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o ../../support/libmonoruntime_support_la-trees.lo `test -f '../../support/trees.c' || echo '$(srcdir)/'`../../support/trees.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_support_la-trees.lo `test -f '../../support/trees.c' || echo '$(srcdir)/'`../../support/trees.c
 
-../../support/libmonoruntime_support_la-zutil.lo: ../../support/zutil.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT ../../support/libmonoruntime_support_la-zutil.lo -MD -MP -MF ../../support/$(DEPDIR)/libmonoruntime_support_la-zutil.Tpo -c -o ../../support/libmonoruntime_support_la-zutil.lo `test -f '../../support/zutil.c' || echo '$(srcdir)/'`../../support/zutil.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../support/$(DEPDIR)/libmonoruntime_support_la-zutil.Tpo ../../support/$(DEPDIR)/libmonoruntime_support_la-zutil.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/zutil.c' object='../../support/libmonoruntime_support_la-zutil.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_support_la-zutil.lo: ../../support/zutil.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_support_la-zutil.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_support_la-zutil.Tpo -c -o libmonoruntime_support_la-zutil.lo `test -f '../../support/zutil.c' || echo '$(srcdir)/'`../../support/zutil.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_support_la-zutil.Tpo $(DEPDIR)/libmonoruntime_support_la-zutil.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/zutil.c' object='libmonoruntime_support_la-zutil.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o ../../support/libmonoruntime_support_la-zutil.lo `test -f '../../support/zutil.c' || echo '$(srcdir)/'`../../support/zutil.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_support_la-zutil.lo `test -f '../../support/zutil.c' || echo '$(srcdir)/'`../../support/zutil.c
 
 libmonoruntime_la-console-unix.lo: console-unix.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-console-unix.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-console-unix.Tpo -c -o libmonoruntime_la-console-unix.lo `test -f 'console-unix.c' || echo '$(srcdir)/'`console-unix.c
@@ -3485,7 +3440,6 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
-	-rm -rf ../../support/.libs ../../support/_libs
 install-libmonoruntimeincludeHEADERS: $(libmonoruntimeinclude_HEADERS)
 	@$(NORMAL_INSTALL)
 	@list='$(libmonoruntimeinclude_HEADERS)'; test -n "$(libmonoruntimeincludedir)" || list=; \
@@ -3626,8 +3580,6 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
-	-rm -f ../../support/$(DEPDIR)/$(am__dirstamp)
-	-rm -f ../../support/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -3638,7 +3590,7 @@ clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
 	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf ../../support/$(DEPDIR) ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -3684,7 +3636,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf ../../support/$(DEPDIR) ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
