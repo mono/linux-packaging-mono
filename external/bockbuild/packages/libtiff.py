@@ -7,7 +7,18 @@ class LibTiffPackage (Package):
                          sources=[
                              'http://download.osgeo.org/libtiff/tiff-%{version}.tar.gz',
                          ])
+        self.sources.extend([
+            'patches/tiff/patch-tiffconf.diff',
+            'patches/tiff/patch-tif_config.diff'
+        ])
 
-        self.needs_lipo = True
+    def build(self):
+        if Package.profile.name == 'darwin':
+            Package.configure(self)
+            for p in range(1, len(self.local_sources)):
+                self.sh('patch -p0 < "%{local_sources[' + str(p) + ']}"')
+            Package.make(self)
+        else:
+            Package.build(self)
 
 LibTiffPackage()
