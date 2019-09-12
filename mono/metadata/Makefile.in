@@ -279,9 +279,9 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	security-core-clr.c security-core-clr.h security-manager.c \
 	security-manager.h string-icalls.c string-icalls.h sysmath.c \
 	tabledefs.h threads.c threads-types.h threadpool.c \
-	threadpool.h threadpool-worker.h threadpool-io.c \
-	threadpool-io.h verify.c verify-internals.h wrapper-types.h \
-	dynamic-image-internals.h dynamic-stream.c \
+	threadpool.h threadpool-netcore.c threadpool-worker.h \
+	threadpool-io.c threadpool-io.h verify.c verify-internals.h \
+	wrapper-types.h dynamic-image-internals.h dynamic-stream.c \
 	dynamic-stream-internals.h reflection-cache.h \
 	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
@@ -369,6 +369,7 @@ am__objects_11 = $(am__objects_10) libmonoruntime_la-appdomain.lo \
 	libmonoruntime_la-string-icalls.lo \
 	libmonoruntime_la-sysmath.lo libmonoruntime_la-threads.lo \
 	libmonoruntime_la-threadpool.lo \
+	libmonoruntime_la-threadpool-netcore.lo \
 	libmonoruntime_la-threadpool-io.lo libmonoruntime_la-verify.lo \
 	libmonoruntime_la-dynamic-stream.lo \
 	libmonoruntime_la-file-mmap-posix.lo \
@@ -456,9 +457,9 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	security-core-clr.c security-core-clr.h security-manager.c \
 	security-manager.h string-icalls.c string-icalls.h sysmath.c \
 	tabledefs.h threads.c threads-types.h threadpool.c \
-	threadpool.h threadpool-worker.h threadpool-io.c \
-	threadpool-io.h verify.c verify-internals.h wrapper-types.h \
-	dynamic-image-internals.h dynamic-stream.c \
+	threadpool.h threadpool-netcore.c threadpool-worker.h \
+	threadpool-io.c threadpool-io.h verify.c verify-internals.h \
+	wrapper-types.h dynamic-image-internals.h dynamic-stream.c \
 	dynamic-stream-internals.h reflection-cache.h \
 	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
@@ -563,6 +564,7 @@ am__objects_22 = $(am__objects_21) libmonoruntimesgen_la-appdomain.lo \
 	libmonoruntimesgen_la-sysmath.lo \
 	libmonoruntimesgen_la-threads.lo \
 	libmonoruntimesgen_la-threadpool.lo \
+	libmonoruntimesgen_la-threadpool-netcore.lo \
 	libmonoruntimesgen_la-threadpool-io.lo \
 	libmonoruntimesgen_la-verify.lo \
 	libmonoruntimesgen_la-dynamic-stream.lo \
@@ -1248,6 +1250,7 @@ common_sources = \
 	threads-types.h		\
 	threadpool.c	\
 	threadpool.h	\
+	threadpool-netcore.c	\
 	threadpool-worker.h	\
 	threadpool-io.c	\
 	threadpool-io.h	\
@@ -1556,6 +1559,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-string-icalls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-sysmath.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-threadpool-io.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-threadpool-netcore.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-threadpool-worker-default.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-threadpool-worker-wasm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-threadpool.Plo@am__quote@
@@ -1683,6 +1687,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-string-icalls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sysmath.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-threadpool-io.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-threadpool-netcore.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-threadpool-worker-default.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-threadpool-worker-wasm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-threadpool.Plo@am__quote@
@@ -2426,6 +2431,13 @@ libmonoruntime_la-threadpool.lo: threadpool.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool.c' object='libmonoruntime_la-threadpool.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-threadpool.lo `test -f 'threadpool.c' || echo '$(srcdir)/'`threadpool.c
+
+libmonoruntime_la-threadpool-netcore.lo: threadpool-netcore.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-threadpool-netcore.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-threadpool-netcore.Tpo -c -o libmonoruntime_la-threadpool-netcore.lo `test -f 'threadpool-netcore.c' || echo '$(srcdir)/'`threadpool-netcore.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-threadpool-netcore.Tpo $(DEPDIR)/libmonoruntime_la-threadpool-netcore.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool-netcore.c' object='libmonoruntime_la-threadpool-netcore.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-threadpool-netcore.lo `test -f 'threadpool-netcore.c' || echo '$(srcdir)/'`threadpool-netcore.c
 
 libmonoruntime_la-threadpool-io.lo: threadpool-io.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-threadpool-io.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-threadpool-io.Tpo -c -o libmonoruntime_la-threadpool-io.lo `test -f 'threadpool-io.c' || echo '$(srcdir)/'`threadpool-io.c
@@ -3203,6 +3215,13 @@ libmonoruntimesgen_la-threadpool.lo: threadpool.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool.c' object='libmonoruntimesgen_la-threadpool.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-threadpool.lo `test -f 'threadpool.c' || echo '$(srcdir)/'`threadpool.c
+
+libmonoruntimesgen_la-threadpool-netcore.lo: threadpool-netcore.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-threadpool-netcore.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-threadpool-netcore.Tpo -c -o libmonoruntimesgen_la-threadpool-netcore.lo `test -f 'threadpool-netcore.c' || echo '$(srcdir)/'`threadpool-netcore.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-threadpool-netcore.Tpo $(DEPDIR)/libmonoruntimesgen_la-threadpool-netcore.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool-netcore.c' object='libmonoruntimesgen_la-threadpool-netcore.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-threadpool-netcore.lo `test -f 'threadpool-netcore.c' || echo '$(srcdir)/'`threadpool-netcore.c
 
 libmonoruntimesgen_la-threadpool-io.lo: threadpool-io.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-threadpool-io.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-threadpool-io.Tpo -c -o libmonoruntimesgen_la-threadpool-io.lo `test -f 'threadpool-io.c' || echo '$(srcdir)/'`threadpool-io.c

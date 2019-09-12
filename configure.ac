@@ -4,7 +4,7 @@
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-AC_INIT(mono, [6.7.0.598],
+AC_INIT(mono, [6.7.0.626],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -1361,6 +1361,7 @@ elif test x$with_runtime_preset = xnetcore; then
    mono_feature_disable_com='yes'
    mono_feature_disable_gac='yes'
    mono_feature_disable_perfcounters='yes'
+   mono_feature_disable_attach='yes'
    disable_mono_native=yes
    support_boehm=no
 elif test x$with_runtime_preset = xnet_4_x; then
