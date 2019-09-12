@@ -19,6 +19,7 @@
  mono_alloc_ireg_ref@Base 5.15.0.231
  mono_alloc_lreg@Base 5.15.0.231
  mono_alloc_preg@Base 5.15.0.231
+ mono_aot_can_enter_interp@Base 6.7.0.626
  mono_aot_can_specialize@Base 6.3.0.560
  mono_aot_get_direct_call_symbol@Base 5.15.0.231
  mono_aot_get_got_offset@Base 5.15.0.231
