@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace System.Linq
 {
@@ -212,6 +213,63 @@ namespace System.Linq
 
 
         private static ILookup<string, MethodInfo> s_seqMethods;
+
+        [PreserveDependency ("Aggregate`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Aggregate`2", "System.Linq.Enumerable")]
+        [PreserveDependency ("Aggregate`3", "System.Linq.Enumerable")]
+        [PreserveDependency ("All`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Any`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Append`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Average", "System.Linq.Enumerable")]
+        [PreserveDependency ("Average`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Cast`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Concat`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Contains`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Count`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("DefaultIfEmpty`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Distinct`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("ElementAt`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("ElementAtOrDefault`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Except`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("First`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("FirstOrDefault`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("GroupBy`2", "System.Linq.Enumerable")]
+        [PreserveDependency ("GroupBy`3", "System.Linq.Enumerable")]
+        [PreserveDependency ("GroupBy`4", "System.Linq.Enumerable")]
+        [PreserveDependency ("GroupJoin`4", "System.Linq.Enumerable")]
+        [PreserveDependency ("Intersect`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Join`4", "System.Linq.Enumerable")]
+        [PreserveDependency ("Last`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("LastOrDefault`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("LongCount`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Max`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Max`2", "System.Linq.Enumerable")]
+        [PreserveDependency ("Min`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Min`2", "System.Linq.Enumerable")]
+        [PreserveDependency ("OfType`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("OrderBy`2", "System.Linq.Enumerable")]
+        [PreserveDependency ("OrderByDescending`2", "System.Linq.Enumerable")]
+        [PreserveDependency ("Prepend`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Reverse`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Select`2", "System.Linq.Enumerable")]
+        [PreserveDependency ("SelectMany`2", "System.Linq.Enumerable")]
+        [PreserveDependency ("SelectMany`3", "System.Linq.Enumerable")]
+        [PreserveDependency ("SequenceEqual`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Single`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("SingleOrDefault`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Skip`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("SkipLast`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("SkipWhile`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Sum", "System.Linq.Enumerable")]
+        [PreserveDependency ("Sum`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Take`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("TakeLast`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("TakeWhile`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("ThenBy`2", "System.Linq.Enumerable")]
+        [PreserveDependency ("ThenByDescending`2", "System.Linq.Enumerable")]
+        [PreserveDependency ("Union`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Where`1", "System.Linq.Enumerable")]
+        [PreserveDependency ("Zip`3", "System.Linq.Enumerable")]
         private static MethodInfo FindEnumerableMethod(string name, ReadOnlyCollection<Expression> args, params Type[] typeArgs)
         {
             if (s_seqMethods == null)
