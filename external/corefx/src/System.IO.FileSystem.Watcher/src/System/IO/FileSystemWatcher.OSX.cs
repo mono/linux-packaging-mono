@@ -280,6 +280,8 @@ namespace System.IO
                     finally 
                     {
                         StaticWatcherRunLoopManager.UnscheduleFromRunLoop(_eventStream);
+                        _eventStream.Close();
+                        _eventStream = null;
                     }
                 }
             }
