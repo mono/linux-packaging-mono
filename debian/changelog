@@ -1,3 +1,9 @@
+mono (6.4.0.194-0xamarin2) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sat, 14 Sep 2019 08:58:58 +0000
+
 mono (6.4.0.194-0xamarin1) preview; urgency=medium
 
   * New release - mono-6.4.0.194.tar.xz
