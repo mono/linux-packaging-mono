@@ -269,13 +269,13 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	mono-hash.h mono-conc-hash.c mono-conc-hash.h mono-mlist.c \
 	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
 	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
-	mono-route.h monitor.h normalization-tables.h \
-	number-formatter.h number-ms.h object.c object-forward.h \
-	object-internals.h opcodes.c property-bag.h property-bag.c \
-	w32socket.c w32socket.h w32socket-internals.h w32process.c \
-	w32process.h w32process-internals.h profiler.c \
-	profiler-private.h profiler-legacy.h rand.h rand.c remoting.h \
-	remoting.c runtime.c runtime.h mono-security.c security.h \
+	monitor.h normalization-tables.h number-formatter.h \
+	number-ms.h object.c object-forward.h object-internals.h \
+	opcodes.c property-bag.h property-bag.c w32socket.c \
+	w32socket.h w32socket-internals.h w32process.c w32process.h \
+	w32process-internals.h profiler.c profiler-private.h \
+	profiler-legacy.h rand.h rand.c remoting.h remoting.c \
+	runtime.c runtime.h mono-security.c security.h \
 	security-core-clr.c security-core-clr.h security-manager.c \
 	security-manager.h string-icalls.c string-icalls.h sysmath.c \
 	tabledefs.h threads.c threads-types.h threadpool.c \
@@ -447,13 +447,13 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	mono-hash.h mono-conc-hash.c mono-conc-hash.h mono-mlist.c \
 	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
 	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
-	mono-route.h monitor.h normalization-tables.h \
-	number-formatter.h number-ms.h object.c object-forward.h \
-	object-internals.h opcodes.c property-bag.h property-bag.c \
-	w32socket.c w32socket.h w32socket-internals.h w32process.c \
-	w32process.h w32process-internals.h profiler.c \
-	profiler-private.h profiler-legacy.h rand.h rand.c remoting.h \
-	remoting.c runtime.c runtime.h mono-security.c security.h \
+	monitor.h normalization-tables.h number-formatter.h \
+	number-ms.h object.c object-forward.h object-internals.h \
+	opcodes.c property-bag.h property-bag.c w32socket.c \
+	w32socket.h w32socket-internals.h w32process.c w32process.h \
+	w32process-internals.h profiler.c profiler-private.h \
+	profiler-legacy.h rand.h rand.c remoting.h remoting.c \
+	runtime.c runtime.h mono-security.c security.h \
 	security-core-clr.c security-core-clr.h security-manager.c \
 	security-manager.h string-icalls.c string-icalls.h sysmath.c \
 	tabledefs.h threads.c threads-types.h threadpool.c \
@@ -1210,7 +1210,6 @@ common_sources = \
 	mono-perfcounters-def.h	\
 	mono-ptr-array.h	\
 	mono-route.c		\
-	mono-route.h		\
 	monitor.h		\
 	normalization-tables.h	\
 	number-formatter.h	\
