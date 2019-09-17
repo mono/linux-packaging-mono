@@ -5012,8 +5012,11 @@ namespace System
         int System.IComparable.CompareTo(object obj) { throw null; }
         public override string ToString() { throw null; }
     }
+    [System.Runtime.InteropServices.ClassInterfaceAttribute(System.Runtime.InteropServices.ClassInterfaceType.None)]
+    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._Type))]
+    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
-    public abstract partial class Type : System.Reflection.MemberInfo, System.Reflection.IReflect
+    public abstract partial class Type : System.Reflection.MemberInfo, System.Reflection.IReflect, System.Runtime.InteropServices._Type
     {
         public static readonly char Delimiter;
         public static readonly System.Type[] EmptyTypes;
@@ -5209,6 +5212,10 @@ namespace System
         public static bool operator ==(System.Type left, System.Type right) { throw null; }
         public static bool operator !=(System.Type left, System.Type right) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]public static System.Type ReflectionOnlyGetType(string typeName, bool throwIfNotFound, bool ignoreCase) { throw null; }
+        void System.Runtime.InteropServices._Type.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
+        void System.Runtime.InteropServices._Type.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
+        void System.Runtime.InteropServices._Type.GetTypeInfoCount(out uint pcTInfo) { throw null; }
+        void System.Runtime.InteropServices._Type.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
         public override string ToString() { throw null; }
     }
     [System.SerializableAttribute]
@@ -11484,8 +11491,11 @@ namespace System.Reflection
         Synchronized = 32,
         Unmanaged = 4,
     }
+    [System.Runtime.InteropServices.ClassInterfaceAttribute(System.Runtime.InteropServices.ClassInterfaceType.None)]
+    [System.Runtime.InteropServices.ComDefaultInterfaceAttribute(typeof(System.Runtime.InteropServices._MethodInfo))]
+    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
-    public abstract partial class MethodInfo : System.Reflection.MethodBase
+    public abstract partial class MethodInfo : System.Reflection.MethodBase, System.Runtime.InteropServices._MethodInfo
     {
         protected MethodInfo() { }
         public override System.Reflection.MemberTypes MemberType { get { throw null; } }
@@ -11502,6 +11512,11 @@ namespace System.Reflection
         public virtual System.Reflection.MethodInfo MakeGenericMethod(params System.Type[] typeArguments) { throw null; }
         public static bool operator ==(System.Reflection.MethodInfo left, System.Reflection.MethodInfo right) { throw null; }
         public static bool operator !=(System.Reflection.MethodInfo left, System.Reflection.MethodInfo right) { throw null; }
+        void System.Runtime.InteropServices._MethodInfo.GetIDsOfNames([System.Runtime.InteropServices.In]ref System.Guid riid, System.IntPtr rgszNames, uint cNames, uint lcid, System.IntPtr rgDispId) { }
+        System.Type System.Runtime.InteropServices._MethodInfo.GetType() { throw null; }
+        void System.Runtime.InteropServices._MethodInfo.GetTypeInfo(uint iTInfo, uint lcid, System.IntPtr ppTInfo) { }
+        void System.Runtime.InteropServices._MethodInfo.GetTypeInfoCount(out uint pcTInfo) { throw null; }
+        void System.Runtime.InteropServices._MethodInfo.Invoke(uint dispIdMember, [System.Runtime.InteropServices.In]ref System.Guid riid, uint lcid, short wFlags, System.IntPtr pDispParams, System.IntPtr pVarResult, System.IntPtr pExcepInfo, System.IntPtr puArgErr) { }
     }
     public static partial class MethodInfoExtensions
     {
