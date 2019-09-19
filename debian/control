@@ -2615,6 +2615,7 @@ Depends: ${misc:Depends},
          libmono-corlib4.5-cil (<< ${mono:next-upversion})
 Replaces: msbuild (<< 15.5)
 Breaks: msbuild (<< 15.5)
+Conflicts: chicken-bin
 Recommends: pkg-config
 Description: Microsoft C# compiler
  This is the Microsoft C# (C-Sharp) and VB compiler,
