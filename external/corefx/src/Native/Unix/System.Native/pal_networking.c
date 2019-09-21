@@ -816,6 +816,7 @@ static int32_t GetIPv4PacketInformation(struct cmsghdr* controlMessage, struct I
     return 1;
 }
 
+#ifdef IPV6_PKTINFO
 static int32_t GetIPv6PacketInformation(struct cmsghdr* controlMessage, struct IPPacketInformation* packetInfo)
 {
     assert(controlMessage != NULL);
@@ -834,6 +835,7 @@ static int32_t GetIPv6PacketInformation(struct cmsghdr* controlMessage, struct I
 
     return 1;
 }
+#endif
 
 static struct cmsghdr* GET_CMSG_NXTHDR(struct msghdr* mhdr, struct cmsghdr* cmsg)
 {
@@ -1474,9 +1476,11 @@ static bool TryGetPlatformSocketOption(int32_t socketOptionName, int32_t socketO
                     *optName = SO_DEBUG;
                     return true;
 
+#ifdef SO_ACCEPTCONN
                 case SocketOptionName_SO_ACCEPTCONN:
                     *optName = SO_ACCEPTCONN;
                     return true;
+#endif
 
                 case SocketOptionName_SO_REUSEADDR:
                     *optName = SO_REUSEADDR;
@@ -1638,9 +1642,11 @@ static bool TryGetPlatformSocketOption(int32_t socketOptionName, int32_t socketO
 
                 // case SocketOptionName_SO_IPV6_PROTECTION_LEVEL:
 
+#ifdef IPV6_V6ONLY
                 case SocketOptionName_SO_IPV6_V6ONLY:
                     *optName = IPV6_V6ONLY;
                     return true;
+#endif
 
 #ifdef IPV6_RECVPKTINFO
                 case SocketOptionName_SO_IP_PKTINFO:
@@ -1901,9 +1907,11 @@ static bool TryConvertProtocolTypePalToPlatform(int32_t palProtocolType, int* pl
             *platformProtocolType = IPPROTO_UDP;
             return true;
 
+#ifdef IPPROTO_ICMPV6
         case ProtocolType_PT_ICMPV6:
             *platformProtocolType = IPPROTO_ICMPV6;
             return true;
+#endif
 
         default:
             *platformProtocolType = (int)palProtocolType;

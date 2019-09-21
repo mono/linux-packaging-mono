@@ -690,6 +690,8 @@ array_set_value_impl (MonoArrayHandle arr_handle, MonoObjectHandle value_handle,
 			INVALID_CAST;
 		}
 		break;
+	default:
+		break;
 	}
 	/* If we can't do a direct copy, let's try a widening conversion. */
 
@@ -2532,6 +2534,7 @@ ves_icall_RuntimeFieldInfo_GetRawConstantValue (MonoReflectionFieldHandle rfield
 	MonoTypeEnum def_type;
 	const char *def_value;
 	MonoType *t;
+	MonoStringHandle string_handle = MONO_HANDLE_NEW (MonoString, NULL); // FIXME? Not always needed.
 
 	mono_class_init_internal (field->parent);
 
@@ -2586,13 +2589,13 @@ ves_icall_RuntimeFieldInfo_GetRawConstantValue (MonoReflectionFieldHandle rfield
 		goto_if_nok (error, return_null);
 		o_handle = MONO_HANDLE_NEW (MonoObject, o);
 		v = ((gchar *) o) + sizeof (MonoObject);
-		mono_get_constant_value_from_blob (domain, def_type, def_value, v, error);
+		(void)mono_get_constant_value_from_blob (domain, def_type, def_value, v, string_handle, error);
 		goto_if_nok (error, return_null);
 		break;
 	}
 	case MONO_TYPE_STRING:
 	case MONO_TYPE_CLASS:
-		mono_get_constant_value_from_blob (domain, def_type, def_value, &o, error);
+		(void)mono_get_constant_value_from_blob (domain, def_type, def_value, &o, string_handle, error);
 		goto_if_nok (error, return_null);
 		o_handle = MONO_HANDLE_NEW (MonoObject, o);
 		break;
@@ -4162,6 +4165,8 @@ ves_icall_System_Enum_compare_value_to (MonoObjectHandle enumHandle, MonoObjectH
 #else
 			COMPARE_ENUM_VALUES (gint32);
 #endif
+		default:
+			break;
 	}
 #undef COMPARE_ENUM_VALUES
 	/* indicates that the enum was of an unsupported underlying type */
@@ -7321,7 +7326,7 @@ mono_icall_get_machine_name (MonoError *error)
 #if !defined(DISABLE_SOCKETS)
 	MonoStringHandle result;
 	char *buf;
-	int n, i;
+	int n;
 #if defined _SC_HOST_NAME_MAX
 	n = sysconf (_SC_HOST_NAME_MAX);
 	if (n == -1)
@@ -7332,6 +7337,7 @@ mono_icall_get_machine_name (MonoError *error)
 #if defined(HAVE_GETHOSTNAME)
 	if (gethostname (buf, n) == 0){
 		buf [n] = 0;
+		int i;
 		// try truncating the string at the first dot
 		for (i = 0; i < n; i++) {
 			if (buf [i] == '.') {
@@ -8670,39 +8676,35 @@ mono_type_from_blob_type (MonoType *type, MonoTypeEnum blob_type, MonoType *real
 		type->data.klass = mono_class_from_mono_type_internal (real_type);
 }
 
-MonoObject*
-ves_icall_property_info_get_default_value (MonoReflectionProperty *property)
+MonoObjectHandle
+ves_icall_property_info_get_default_value (MonoReflectionPropertyHandle property_handle, MonoError* error)
 {
-	ERROR_DECL (error);
+	MonoReflectionProperty* property = MONO_HANDLE_RAW (property_handle);
+
 	MonoType blob_type;
 	MonoProperty *prop = property->property;
 	MonoType *type = get_property_type (prop);
-	MonoDomain *domain = mono_object_domain (property); 
+	MonoDomain *domain = mono_object_domain (property);
 	MonoTypeEnum def_type;
 	const char *def_value;
-	MonoObject *o;
 
 	mono_class_init_internal (prop->parent);
 
 	if (!(prop->attrs & PROPERTY_ATTRIBUTE_HAS_DEFAULT)) {
 		mono_error_set_invalid_operation (error, NULL);
-		mono_error_set_pending_exception (error);
-		return NULL;
+		return NULL_HANDLE;
 	}
 
 	def_value = mono_class_get_property_default_value (prop, &def_type);
 
 	mono_type_from_blob_type (&blob_type, def_type, type);
-	o = mono_get_object_from_blob (domain, &blob_type, def_value, error);
 
-	mono_error_set_pending_exception (error);
-	return o;
+	return mono_get_object_from_blob (domain, &blob_type, def_value, MONO_HANDLE_NEW (MonoString, NULL), error);
 }
 
 MonoBoolean
 ves_icall_MonoCustomAttrs_IsDefinedInternal (MonoObjectHandle obj, MonoReflectionTypeHandle attr_type, MonoError *error)
 {
-	error_init (error);
 	MonoClass *attr_class = mono_class_from_mono_type_internal (MONO_HANDLE_GETVAL (attr_type, type));
 
 	mono_class_init_checked (attr_class, error);
@@ -8739,7 +8741,6 @@ ves_icall_MonoCustomAttrs_GetCustomAttributesInternal (MonoObjectHandle obj, Mon
 MonoArrayHandle
 ves_icall_MonoCustomAttrs_GetCustomAttributesDataInternal (MonoObjectHandle obj, MonoError *error)
 {
-	error_init (error);
 	return mono_reflection_get_custom_attrs_data_checked (obj, error);
 }
 
