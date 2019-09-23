@@ -667,8 +667,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_method_header_get_num_clauses@Base 4.1.0.1738
  mono_method_print_code@Base 4.1.0.1738
  mono_method_signature@Base 4.1.0.1738
- mono_method_signature_checked@Base 4.9.0.1707
- mono_method_signature_internal@Base 5.21.0.203
+ mono_method_signature_checked_slow@Base 6.7.0.747
+ mono_method_signature_internal_slow@Base 6.7.0.747
  mono_method_verify@Base 4.1.0.1738
  mono_mlist_alloc@Base 4.1.0.1738
  mono_mlist_append@Base 4.1.0.1738
