@@ -166,6 +166,7 @@ debian/tmp/usr/bin/sgen
 debian/tmp/usr/bin/wsdl2
 debian/tmp/usr/lib/mono/4.5/Facades/
 debian/tmp/usr/lib/mono/4.0
+debian/tmp/usr/lib/mono/4.8-api
 debian/tmp/usr/lib/mono/4.7.2-api
 debian/tmp/usr/lib/mono/4.7.1-api
 debian/tmp/usr/lib/mono/4.7-api
