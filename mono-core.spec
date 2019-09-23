@@ -1199,6 +1199,7 @@ Mono development tools.
 %{_mandir}/man1/xbuild.1%ext_man
 %{_prefix}/lib/mono-source-libs
 %{_prefix}/lib/mono/4.0
+%{_prefix}/lib/mono/4.8-api
 %{_prefix}/lib/mono/4.7.2-api
 %{_prefix}/lib/mono/4.7.1-api
 %{_prefix}/lib/mono/4.7-api
