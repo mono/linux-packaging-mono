@@ -972,7 +972,7 @@
 /* struct statvfs.f_fstypename */
 #undef HAVE_STATVFS_FSTYPENAME
 
-/* struct stat.st_birthtime */
+/* struct stat.st_birthtimespec */
 #undef HAVE_STAT_BIRTHTIME
 
 /* struct stat.st_atimensec */
