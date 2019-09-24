@@ -45,6 +45,9 @@
 /* Disable desktop assembly loader semantics. */
 #undef DISABLE_DESKTOP_LOADER
 
+/* Disable GAC */
+#undef DISABLE_GAC
+
 /* Disable generics support */
 #undef DISABLE_GENERICS
 
@@ -154,6 +157,9 @@
 
 /* Enable cooperative stop-the-world garbage collection. */
 #undef ENABLE_COOP_SUSPEND
+
+/* Enable copy_stack_data feature for hybrid/cooperative suspend scenarios */
+#undef ENABLE_COPY_STACK_DATA
 
 /* Enable DTrace probes */
 #undef ENABLE_DTRACE
@@ -318,30 +324,6 @@
 /* Define to 1 if you have the <curses.h> header file. */
 #undef HAVE_CURSES_H
 
-/* Define to 1 if you have the declaration of `InterlockedAdd', and to 0 if
-   you don't. */
-#undef HAVE_DECL_INTERLOCKEDADD
-
-/* Define to 1 if you have the declaration of `InterlockedAdd64', and to 0 if
-   you don't. */
-#undef HAVE_DECL_INTERLOCKEDADD64
-
-/* Define to 1 if you have the declaration of `InterlockedCompareExchange64',
-   and to 0 if you don't. */
-#undef HAVE_DECL_INTERLOCKEDCOMPAREEXCHANGE64
-
-/* Define to 1 if you have the declaration of `InterlockedDecrement64', and to
-   0 if you don't. */
-#undef HAVE_DECL_INTERLOCKEDDECREMENT64
-
-/* Define to 1 if you have the declaration of `InterlockedExchange64', and to
-   0 if you don't. */
-#undef HAVE_DECL_INTERLOCKEDEXCHANGE64
-
-/* Define to 1 if you have the declaration of `InterlockedIncrement64', and to
-   0 if you don't. */
-#undef HAVE_DECL_INTERLOCKEDINCREMENT64
-
 /* Define to 1 if you have the declaration of `pthread_mutexattr_setprotocol',
    and to 0 if you don't. */
 #undef HAVE_DECL_PTHREAD_MUTEXATTR_SETPROTOCOL
@@ -349,10 +331,6 @@
 /* Define to 1 if you have the declaration of `strerror_r', and to 0 if you
    don't. */
 #undef HAVE_DECL_STRERROR_R
-
-/* Define to 1 if you have the declaration of `__readfsdword', and to 0 if you
-   don't. */
-#undef HAVE_DECL___READFSDWORD
 
 /* Support for the deprecated attribute */
 #undef HAVE_DEPRECATED
@@ -371,9 +349,6 @@
 
 /* Define to 1 if you have the `dl_iterate_phdr' function. */
 #undef HAVE_DL_ITERATE_PHDR
-
-/* dlopen-based dynamic loader available */
-#undef HAVE_DL_LOADER
 
 /* ECHO */
 #undef HAVE_ECHO
@@ -783,6 +758,9 @@
 /* Define to 1 if you have the <poll.h> header file. */
 #undef HAVE_POLL_H
 
+/* Define to 1 if you have the `popen' function. */
+#undef HAVE_POPEN
+
 /* posix_fadvise */
 #undef HAVE_POSIX_ADVISE
 
@@ -858,6 +836,9 @@
 
 /* Define to 1 if you have the `pwritev' function. */
 #undef HAVE_PWRITEV
+
+/* Qp2getifaddrs */
+#undef HAVE_QP2GETIFADDRS
 
 /* readdir_r */
 #undef HAVE_READDIR_R
@@ -981,6 +962,9 @@
 
 /* struct statfs.f_fstypename */
 #undef HAVE_STATFS_FSTYPENAME
+
+/* Use static zlib */
+#undef HAVE_STATIC_ZLIB
 
 /* Define to 1 if you have the `statvfs' function. */
 #undef HAVE_STATVFS
@@ -1252,7 +1236,7 @@
 /* Define to 1 if you have the <sys/xattr.h> header file. */
 #undef HAVE_SYS_XATTR_H
 
-/* Have system zlib */
+/* Use OS-provided zlib */
 #undef HAVE_SYS_ZLIB
 
 /* tcgetattr */
@@ -1353,9 +1337,6 @@
 
 /* Define to 1 if you have the `writev' function. */
 #undef HAVE_WRITEV
-
-/* Have system zlib */
-#undef HAVE_ZLIB
 
 /* ... */
 #undef HOST_AMD64
@@ -1466,6 +1447,9 @@
 
 /* The runtime is compiled for cross-compiling mode */
 #undef MONO_CROSS_COMPILE
+
+/* Does dlsym require leading underscore. */
+#undef MONO_DL_NEED_USCORE
 
 /* Disable banned functions from being used by the runtime */
 #undef MONO_INSIDE_RUNTIME

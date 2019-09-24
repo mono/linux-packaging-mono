@@ -2089,27 +2089,17 @@ mono_postprocess_patches (MonoCompile *cfg)
 	for (patch_info = cfg->patch_info; patch_info; patch_info = patch_info->next) {
 		switch (patch_info->type) {
 		case MONO_PATCH_INFO_ABS: {
-			MonoJitICallInfo *info = mono_find_jit_icall_by_addr (patch_info->data.target);
-
 			/*
-			 * Change patches of type MONO_PATCH_INFO_ABS into patches describing the 
+			 * Change patches of type MONO_PATCH_INFO_ABS into patches describing the
 			 * absolute address.
 			 */
-			if (info) {
-				patch_info->type = MONO_PATCH_INFO_JIT_ICALL_ID;
-				patch_info->data.jit_icall_id = mono_jit_icall_info_id (info);
-			}
-
-			if (patch_info->type == MONO_PATCH_INFO_ABS) {
-				if (cfg->abs_patches) {
-					MonoJumpInfo *abs_ji = (MonoJumpInfo *)g_hash_table_lookup (cfg->abs_patches, patch_info->data.target);
-					if (abs_ji) {
-						patch_info->type = abs_ji->type;
-						patch_info->data.target = abs_ji->data.target;
-					}
+			if (cfg->abs_patches) {
+				MonoJumpInfo *abs_ji = (MonoJumpInfo *)g_hash_table_lookup (cfg->abs_patches, patch_info->data.target);
+				if (abs_ji) {
+					patch_info->type = abs_ji->type;
+					patch_info->data.target = abs_ji->data.target;
 				}
 			}
-
 			break;
 		}
 		case MONO_PATCH_INFO_SWITCH: {
@@ -2132,6 +2122,21 @@ mono_postprocess_patches (MonoCompile *cfg)
 			patch_info->data.table->table = (MonoBasicBlock**)table;
 			break;
 		}
+		default:
+			/* do nothing */
+			break;
+		}
+	}
+}
+
+/* Those patches require the JitInfo of the compiled method already be in place when used */
+static void
+mono_postprocess_patches_after_ji_publish (MonoCompile *cfg)
+{
+	MonoJumpInfo *patch_info;
+
+	for (patch_info = cfg->patch_info; patch_info; patch_info = patch_info->next) {
+		switch (patch_info->type) {
 		case MONO_PATCH_INFO_METHOD_JUMP: {
 			unsigned char *ip = cfg->native_code + patch_info->ip.i;
 
@@ -3158,13 +3163,6 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 	cfg->interp = (flags & JIT_FLAG_INTERP) != 0;
 	cfg->backend = current_backend;
 
-#ifdef HOST_ANDROID
-	if (cfg->method->wrapper_type != MONO_WRAPPER_NONE) {
-		/* FIXME: Why is this needed */
-		cfg->gen_seq_points = FALSE;
-		cfg->gen_sdb_seq_points = FALSE;
-	}
-#endif
 	if (cfg->method->wrapper_type == MONO_WRAPPER_ALLOC) {
 		/* We can't have seq points inside gc critical regions */
 		cfg->gen_seq_points = FALSE;
@@ -3431,7 +3429,7 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 
 	/*We must verify the method before doing any IR generation as mono_compile_create_vars can assert.*/
 	if (mono_compile_is_broken (cfg, cfg->method, TRUE)) {
-		if (mini_get_debug_options ()->break_on_unverified)
+		if (mini_debug_options.break_on_unverified)
 			G_BREAKPOINT ();
 		return cfg;
 	}
@@ -3882,6 +3880,9 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 
 		if (cfg->method->dynamic)
 			mono_dynamic_code_hash_lookup (cfg->domain, cfg->method)->ji = cfg->jit_info;
+
+		mono_postprocess_patches_after_ji_publish (cfg);
+
 		mono_domain_unlock (cfg->domain);
 	}
 

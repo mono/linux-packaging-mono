@@ -1,17 +1,17 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">anycpu</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7DA7CD97-614F-4BCD-A2FA-B379590CEA48}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>mdoc</RootNamespace>
     <AssemblyName>mdoc</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|anycpu' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>False</Optimize>
@@ -19,17 +19,19 @@
     <DefineConstants>DEBUG;NET_4_5</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>anycpu</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <Externalconsole>True</Externalconsole>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|anycpu' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>anycpu</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <Externalconsole>True</Externalconsole>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Cecil, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
@@ -51,6 +53,67 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Compile Include="Mono.Documentation\Framework\FrameworkIndexHelper.cs" />
+    <Compile Include="Mono.Documentation\Framework\FrameworkTypeModel.cs" />
+    <Compile Include="Mono.Documentation\Framework\FrameworkNamespaceModel.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\ApplePlatformEnumFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\CppFormatters\CppWinRtMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\FSharpFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\JsFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\JsMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\JsUsageFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\FSharpFullMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\FSharpMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\FSharpUsageFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\CppFormatters\CppWinRtFullMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\CppFormatters\CppCxFullMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\CppFormatters\CppFullMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\CppFormatters\CppCxMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\CSharpMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\SlashDocCSharpMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\MsxdocSlashDocMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\StandardFlagsEnumFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\DefaultAttributeValueFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\AttributeValueFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\VBFullMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\VBMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\ResolvedTypeInfo.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\FileNameMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\SlashDocMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\DocTypeMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\DocTypeFullMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\CppFormatters\CppMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\CSharpFullMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\CSharpNativeTypeMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\ILNativeTypeMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\ILMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\ILFullMemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\DocIdFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Formatters\MemberFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\MemberFormatterState.cs" />
+    <Compile Include="Mono.Documentation\Updater\DynamicParserContext.cs" />
+    <Compile Include="Mono.Documentation\Updater\DocumentationMember.cs" />
+    <Compile Include="Mono.Documentation\Updater\EcmaDocumentationImporter.cs" />
+    <Compile Include="Mono.Documentation\Updater\MsxdocDocumentationImporter.cs" />
+    <Compile Include="Mono.Documentation\Updater\DocumentationImporter.cs" />
+    <Compile Include="Mono.Documentation\Updater\EcmaDocumentationEnumerator.cs" />
+    <Compile Include="Mono.Documentation\Updater\DocumentationEnumerator.cs" />
+    <Compile Include="Mono.Documentation\Updater\DocsNodeInfo.cs" />
+    <Compile Include="Mono.Documentation\Updater\Statistics\StatisticsCollector.cs" />
+    <Compile Include="Mono.Documentation\Updater\Statistics\StatisticsFormatter.cs" />
+    <Compile Include="Mono.Documentation\Updater\Statistics\StatisticsItem.cs" />
+    <Compile Include="Mono.Documentation\Updater\Statistics\StatisticsMetrics.cs" />
+    <Compile Include="Mono.Documentation\Updater\Statistics\StatisticsSaver.cs" />
+    <Compile Include="Mono.Documentation\Updater\Statistics\StatisticsStorage.cs" />
+    <Compile Include="Mono.Documentation\Util\ApiStyle.cs" />
+    <Compile Include="Mono.Documentation\Updater\DocUtils.cs" />
+    <Compile Include="Mono.Documentation\Util\AttachedEventDefinition.cs" />
+    <Compile Include="Mono.Documentation\Util\AttachedEntitiesHelper.cs" />
+    <Compile Include="Mono.Documentation\Util\AttachedEventReference.cs" />
+    <Compile Include="Mono.Documentation\Util\AttachedPropertyDefinition.cs" />
+    <Compile Include="Mono.Documentation\Util\AttachedPropertyReference.cs" />
+    <Compile Include="Mono.Documentation\Util\CecilExtensions.cs" />
+    <Compile Include="Mono.Documentation\Util\NativeTypeManager.cs" />
     <Compile Include="Mono.Rocks\ObjectRocks.cs" />
     <Compile Include="Mono.Rocks\StreamRocks.cs" />
     <Compile Include="Mono.Documentation\assembler.cs" />
@@ -58,12 +121,11 @@
     <Compile Include="Mono.Documentation\ecmadoc.cs" />
     <Compile Include="Mono.Documentation\mdoc.cs" />
     <Compile Include="Mono.Documentation\MdocFile.cs" />
-    <Compile Include="Mono.Documentation\monodocer.cs" />
     <Compile Include="Mono.Documentation\monodocs2html.cs" />
     <Compile Include="Mono.Documentation\monodocs2slashdoc.cs" />
     <Compile Include="Mono.Documentation\msitomsx.cs" />
     <Compile Include="Mono.Documentation\normalize.cs" />
-    <Compile Include="Mono.Documentation\validate.cs" />
+    <Compile Include="Mono.Documentation\MDocValidator.cs" />
     <Compile Include="Mono.Documentation\webdoc.cs" />
     <Compile Include="Mono.Documentation\XhtmlWriter.cs" />
     <Compile Include="Mono.Documentation\exceptions.cs" />
@@ -71,10 +133,16 @@
     <Compile Include="Mono.Documentation\frameworksbootstrapper.cs" />
     <Compile Include="Consts.cs" />
     <Compile Include="Options.cs" />
-    <Compile Include="Mono.Documentation\Frameworks\FrameworkIndex.cs" />
-    <Compile Include="Mono.Documentation\Frameworks\FrameworkEntry.cs" />
-    <Compile Include="Mono.Documentation\Frameworks\FrameworkTypeEntry.cs" />
-    <Compile Include="Mono.Documentation\Frameworks\AssemblySet.cs" />
+    <Compile Include="Mono.Documentation\Updater\Frameworks\FrameworkIndex.cs" />
+    <Compile Include="Mono.Documentation\Updater\Frameworks\FrameworkEntry.cs" />
+    <Compile Include="Mono.Documentation\Updater\Frameworks\FrameworkTypeEntry.cs" />
+    <Compile Include="Mono.Documentation\Updater\Frameworks\AssemblySet.cs" />
+    <Compile Include="Mono.Documentation\Updater\Frameworks\MDocResolver.cs" />
+    <Compile Include="Mono.Documentation\MDocUpdater.cs" />
+    <Compile Include="Mono.Documentation\Updater\Frameworks\FXUtils.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Mono.Documentation\Updater\Frameworks\MDocMetadataResolver.cs" />
+    <Compile Include="Mono.Documentation\MDocException.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\defaulttemplate.xsl">

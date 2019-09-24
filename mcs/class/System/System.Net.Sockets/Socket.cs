@@ -971,8 +971,6 @@ namespace System.Net.Sockets
 				e.socket_async_result.Complete (exc, true);
 				return false;
 			}
-
-			return true;
 		}
 
 		public static void CancelConnectAsync (SocketAsyncEventArgs e)
@@ -2951,6 +2949,15 @@ namespace System.Net.Sockets
 
 			return false;
 #endif
+		}
+
+		internal void ReplaceHandleIfNecessaryAfterFailedConnect ()
+		{
+			/*
+			 * This is called from `DualSocketMultipleConnectAsync.GetNextAddress(out Socket)`
+			 * and `SingleSocketMultipleConnectAsync.GetNextAddress(out Socket)` when using
+			 * the CoreFX version of `MultipleConnectAsync`.
+			 */
 		}
 	}
 }

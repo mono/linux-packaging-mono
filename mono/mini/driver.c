@@ -23,6 +23,7 @@
 #endif
 
 #include <mono/metadata/assembly-internals.h>
+#include <mono/metadata/image-internals.h>
 #include <mono/metadata/loader.h>
 #include <mono/metadata/tabledefs.h>
 #include <mono/metadata/class.h>
@@ -1352,10 +1353,15 @@ static void main_thread_handler (gpointer user_data)
 
 		/* Treat the other arguments as assemblies to compile too */
 		for (i = 0; i < main_args->argc; ++i) {
-			assembly = mono_domain_assembly_open (main_args->domain, main_args->argv [i]);
+			assembly = mono_domain_assembly_open_internal (main_args->domain, mono_domain_default_alc (main_args->domain), main_args->argv [i]);
 			if (!assembly) {
-				fprintf (stderr, "Can not open image %s\n", main_args->argv [i]);
-				exit (1);
+				if (mono_is_problematic_file (main_args->argv [i])) {
+					fprintf (stderr, "Info: AOT of problematic assembly %s skipped. This is expected.\n", main_args->argv [i]);
+					continue;
+				} else {
+					fprintf (stderr, "Can not open image %s\n", main_args->argv [i]);
+					exit (1);
+				}
 			}
 			/* Check that the assembly loaded matches the filename */
 			{
@@ -1382,7 +1388,7 @@ static void main_thread_handler (gpointer user_data)
 			}
 		}
 	} else {
-		assembly = mono_domain_assembly_open (main_args->domain, main_args->file);
+		assembly = mono_domain_assembly_open_internal (main_args->domain, mono_domain_default_alc (main_args->domain), main_args->file);
 		if (!assembly){
 			fprintf (stderr, "Can not open image %s\n", main_args->file);
 			exit (1);
@@ -2578,8 +2584,9 @@ mono_main (int argc, char* argv[])
 
 	MonoAssemblyOpenRequest open_req;
 	mono_assembly_request_prepare (&open_req.request, sizeof (open_req), MONO_ASMCTX_DEFAULT);
+	open_req.request.alc = mono_domain_default_alc (mono_get_root_domain ());
 	assembly = mono_assembly_request_open (aname, &open_req, &open_status);
-	if (!assembly) {
+	if (!assembly && !mono_compile_aot) {
 		fprintf (stderr, "Cannot open assembly '%s': %s.\n", aname, mono_image_strerror (open_status));
 		mini_cleanup (domain);
 		return 2;

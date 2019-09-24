@@ -18,6 +18,7 @@ add masterdoc support?
   <xs:attribute name="modified" type="xs:boolean" />
   <xs:attribute name="argnames" type="xs:string" />
   <xs:attribute name="cref" type="xs:string" />
+  <xs:attribute name="href" type="xs:string" />
   <xs:attribute name="Deprecated" type="xs:boolean" />
   <xs:attribute name="FullName" type="xs:string" />
   <xs:attribute name="FullNameSP" type="xs:string" />
@@ -31,6 +32,7 @@ add masterdoc support?
   <xs:attribute name="location" type="xs:string" />
   <xs:attribute name="Maintainer" type="xs:string" />
   <xs:attribute name="MemberName" type="xs:string" />
+  <xs:attribute name="ExplicitInterfaceMemberName" type="xs:string" />
   <xs:attribute name="name" type="xs:string" />
   <xs:attribute name="Name" type="xs:string" />
   <xs:attribute name="namespace" type="xs:string" />
@@ -42,11 +44,16 @@ add masterdoc support?
   <xs:attribute name="src" type="xs:string" />
   <xs:attribute name="subset" type="xs:string" />
   <xs:attribute name="Value" type="xs:string" />
+  <xs:attribute name="Usage" type="xs:string" />
   <xs:attribute name="version" type="xs:string" />
   <xs:attribute name="tool" type="xs:string" />
   <xs:attribute name="type" type="xs:string" />
   <xs:attribute name="Type" type="xs:string" />
   <xs:attribute name="TypeParamName" type="xs:string" />
+  <xs:attribute name="overwrite" type="xs:boolean" />
+  <xs:attribute name="supported" type="xs:boolean"/>
+  <xs:attribute name="FrameworkAlternate" type="xs:string"/>
+  <xs:attribute name="Index" type="xs:integer"/>
 
   <!-- define simple elements -->
   <xs:element name="AssemblyName" type="xs:string" />
@@ -73,6 +80,7 @@ add masterdoc support?
   <xs:element name="pre" />
   <xs:element name="ReturnType" type="xs:string" />
   <xs:element name="TypeExcluded" type="xs:string" />
+  <xs:element name="InterfaceMember" type="xs:string" />
 
   <!-- define complex elements -->
   <xs:element name="altcompliant">
@@ -111,6 +119,7 @@ add masterdoc support?
         <xs:element ref="ExcludedTypeName" minOccurs="0" />
         <xs:element ref="ExcludedLibraryName" minOccurs="0" />
       </xs:sequence>
+      <xs:attribute name="FrameworkAlternate" use="optional" />
     </xs:complexType>
   </xs:element>
 
@@ -292,6 +301,16 @@ add masterdoc support?
 	  <xs:enumeration value="recipe" />
     </xs:restriction>
   </xs:simpleType>
+  
+  <xs:attribute name="memberScope">
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="all"/>
+        <xs:enumeration value="static"/>
+        <xs:enumeration value="instance"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:attribute>
 
   <xs:element name="related">
     <xs:complexType mixed="true">
@@ -345,6 +364,7 @@ add masterdoc support?
         <xs:element ref="typeparamref" />
       </xs:choice>
       <xs:attribute ref="cref" />
+      <xs:attribute ref="overwrite" />
     </xs:complexType>
   </xs:element>
 
@@ -450,6 +470,8 @@ add masterdoc support?
     <xs:complexType>
       <xs:attribute ref="Language" />
       <xs:attribute ref="Value" />
+      <xs:attribute ref="Usage" />
+      <xs:attribute name="FrameworkAlternate" use="optional" />
     </xs:complexType>
   </xs:element>
 
@@ -465,6 +487,7 @@ add masterdoc support?
       <xs:sequence>
         <xs:element ref="MemberSignature" minOccurs="1" maxOccurs="unbounded" />
         <xs:element ref="MemberType" maxOccurs="1" />
+        <xs:element ref="Implements" minOccurs="0" maxOccurs="1" />
         <xs:element ref="AssemblyInfo" minOccurs="0" maxOccurs="1" />
         <xs:element ref="Attributes" minOccurs="0" maxOccurs="1" />
         <xs:element ref="ReturnValue" minOccurs="0" maxOccurs="1" />
@@ -477,6 +500,7 @@ add masterdoc support?
         <xs:element ref="Link" minOccurs="0" maxOccurs="1" />
       </xs:sequence>
       <xs:attribute ref="MemberName" />
+      <xs:attribute ref="ExplicitInterfaceMemberName" />
       <xs:attribute ref="Deprecated" />
     </xs:complexType>
   </xs:element>
@@ -586,6 +610,7 @@ add masterdoc support?
       </xs:choice>
       <xs:attribute ref="preserve-mono" />
       <xs:attribute ref="name" use="required" />
+      <xs:attribute ref="overwrite" />
     </xs:complexType>
   </xs:element>
 
@@ -603,6 +628,8 @@ add masterdoc support?
       <xs:attribute ref="Name" />
       <xs:attribute ref="Type" />
       <xs:attribute ref="RefType" />
+      <xs:attribute name="Index" use="optional" />
+      <xs:attribute name="FrameworkAlternate" use="optional" />
     </xs:complexType>
   </xs:element>
 
@@ -625,6 +652,7 @@ add masterdoc support?
         <xs:element ref="typeparamref" />
       </xs:choice>
       <xs:attribute ref="cref" />
+      <xs:attribute ref="overwrite" />
     </xs:complexType>
   </xs:element>
 
@@ -656,6 +684,7 @@ add masterdoc support?
         <xs:element ref="attribution" />
       </xs:choice>
       <xs:attribute ref="preserve-mono" />
+      <xs:attribute ref="overwrite" />
     </xs:complexType>
   </xs:element>
 
@@ -686,6 +715,7 @@ add masterdoc support?
         <xs:element ref="attribution" />
       </xs:choice>
       <xs:attribute ref="preserve-mono" />
+      <xs:attribute ref="overwrite" />
     </xs:complexType>
   </xs:element>
 
@@ -695,14 +725,28 @@ add masterdoc support?
         <xs:element ref="ReturnType" minOccurs="0" maxOccurs="1" />
         <xs:element ref="Attributes" minOccurs="0" />
       </xs:sequence>
+      <xs:attribute ref="RefType" />
     </xs:complexType>
   </xs:element>
 
-  <xs:element name="see">
+  <xs:element name="Implements">
     <xs:complexType>
-      <xs:attribute ref="cref" />
-      <xs:attribute ref="langword"  />
-      <xs:attribute ref="qualify"  />
+      <xs:sequence>
+        <xs:element ref="InterfaceMember" minOccurs="1" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+ <xs:element name="see">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute ref="cref" />
+          <xs:attribute ref="href" />
+          <xs:attribute ref="langword"  />
+          <xs:attribute ref="qualify"  />
+        </xs:extension>
+      </xs:simpleContent>
     </xs:complexType>
   </xs:element>
 
@@ -773,6 +817,7 @@ add masterdoc support?
         <xs:element ref="attribution" />
       </xs:choice>
       <xs:attribute ref="preserve-mono" />
+      <xs:attribute ref="overwrite" />
     </xs:complexType>
   </xs:element>
 
@@ -811,15 +856,17 @@ add masterdoc support?
           <xs:element ref="whitespace" />
         </xs:choice>
     </xs:complexType>
-  </xs:element>
+  </xs:element> 
 
   <xs:element name="theta" />
 
   <xs:element name="threadsafe">
     <xs:complexType>
      <xs:sequence>
-       <xs:element ref="para" minOccurs="1" maxOccurs="unbounded" />
+       <xs:element ref="para" minOccurs="0" maxOccurs="unbounded" />
      </xs:sequence>
+    <xs:attribute ref="supported" />
+    <xs:attribute ref="memberScope" />
     </xs:complexType>
   </xs:element>
 
@@ -885,6 +932,7 @@ add masterdoc support?
         <xs:element ref="typeparamref" />
       </xs:choice>
       <xs:attribute ref="name" use="required" />
+      <xs:attribute ref="overwrite" />
     </xs:complexType>
   </xs:element>
 
@@ -909,6 +957,8 @@ add masterdoc support?
         <xs:element ref="Constraints" />
       </xs:choice>
       <xs:attribute ref="Name" use="required" />
+      <xs:attribute name="Index" use="optional" />
+      <xs:attribute name="FrameworkAlternate" use="optional" />
     </xs:complexType>
   </xs:element>
 
@@ -925,8 +975,10 @@ add masterdoc support?
   <xs:element name="TypeSignature">
     <xs:complexType>
       <xs:attribute ref="Language" use="required" />
-      <xs:attribute ref="Value" use="required" />
+      <xs:attribute ref="Value"/>
+      <xs:attribute ref="Usage"/>
       <xs:attribute ref="Maintainer" />
+      <xs:attribute name="FrameworkAlternate" use="optional" />
     </xs:complexType>
   </xs:element>
 
@@ -951,6 +1003,7 @@ add masterdoc support?
         <xs:element ref="example" />
         <xs:element ref="list" />
       </xs:choice>
+      <xs:attribute ref="overwrite" />
     </xs:complexType>
   </xs:element>
 

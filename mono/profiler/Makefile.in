@@ -95,7 +95,11 @@ target_triplet = @target@
 subdir = mono/profiler
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
+	$(top_srcdir)/m4/ax_append_flag.m4 \
+	$(top_srcdir)/m4/ax_append_link_flags.m4 \
 	$(top_srcdir)/m4/ax_check_compile_flag.m4 \
+	$(top_srcdir)/m4/ax_check_link_flag.m4 \
+	$(top_srcdir)/m4/ax_require_defined.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
@@ -139,7 +143,7 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
 	"$(DESTDIR)$(suppressiondir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libmono_profiler_aot_static_la_LIBADD =
-am_libmono_profiler_aot_static_la_OBJECTS = aot.lo
+am_libmono_profiler_aot_static_la_OBJECTS = aot.lo helper.lo
 libmono_profiler_aot_static_la_OBJECTS =  \
 	$(am_libmono_profiler_aot_static_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -159,7 +163,7 @@ libmono_profiler_aot_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @HOST_ANDROID_TRUE@	$(top_builddir)/mono/mini/$(LIBMONO_LA)
 libmono_profiler_aot_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(glib_libs)
-am_libmono_profiler_aot_la_OBJECTS = aot.lo
+am_libmono_profiler_aot_la_OBJECTS = aot.lo helper.lo
 libmono_profiler_aot_la_OBJECTS =  \
 	$(am_libmono_profiler_aot_la_OBJECTS)
 libmono_profiler_aot_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -191,7 +195,8 @@ libmono_profiler_coverage_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_coverage_la_rpath = -rpath \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 libmono_profiler_log_static_la_LIBADD =
-am_libmono_profiler_log_static_la_OBJECTS = log.lo log-args.lo
+am_libmono_profiler_log_static_la_OBJECTS = log.lo log-args.lo \
+	helper.lo
 libmono_profiler_log_static_la_OBJECTS =  \
 	$(am_libmono_profiler_log_static_la_OBJECTS)
 libmono_profiler_log_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -204,7 +209,7 @@ am__DEPENDENCIES_2 =
 @HAVE_STATIC_ZLIB_TRUE@am__DEPENDENCIES_3 = $(am__DEPENDENCIES_2)
 libmono_profiler_log_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(glib_libs) $(am__DEPENDENCIES_3)
-am_libmono_profiler_log_la_OBJECTS = log.lo log-args.lo
+am_libmono_profiler_log_la_OBJECTS = log.lo log-args.lo helper.lo
 libmono_profiler_log_la_OBJECTS =  \
 	$(am_libmono_profiler_log_la_OBJECTS)
 libmono_profiler_log_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -435,7 +440,6 @@ MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_CXXLD = @MONO_CXXLD@
-MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
 MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
@@ -469,6 +473,7 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+ODBC = @ODBC@
 ORDER = @ORDER@
 OS = @OS@
 OTOOL = @OTOOL@
@@ -513,6 +518,7 @@ XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XINERAMA = @XINERAMA@
 XMKMF = @XMKMF@
+ZLIB_CFLAGS = @ZLIB_CFLAGS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -597,7 +603,8 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 AM_CPPFLAGS = \
 	-DSUPPRESSION_DIR=\""$(datadir)/mono-$(API_VER)/mono/profiler"\" \
 	-I$(top_srcdir) \
-	$(GLIB_CFLAGS)
+	$(GLIB_CFLAGS) \
+	$(SHARED_CFLAGS)
 
 glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@vtune_libs = \
@@ -653,24 +660,24 @@ glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 # dynamic linker will have trouble resolving everything. On iOS, the story
 # is similar to Android when running in the simulator.
 @HOST_ANDROID_TRUE@libmono_dep = $(top_builddir)/mono/mini/$(LIBMONO_LA)
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@zlib_dep = 
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@zlib_dep = 
 # The log profiler uses zlib for output compression when available.
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@zlib_dep = -lz
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_TRUE@zlib_dep = -lz
 @HAVE_STATIC_ZLIB_TRUE@zlib_dep = $(STATIC_ZLIB_PATH)
 
 # We build a separate, static version of each profiler for use on targets
 # which do not support dynamic linking (e.g. iOS). We still want to build
 # the shared version on those targets since it's useful for e.g. simulator
 # builds.
-libmono_profiler_aot_la_SOURCES = aot.c
+libmono_profiler_aot_la_SOURCES = aot.c helper.c
 libmono_profiler_aot_la_LIBADD = $(libmono_dep) $(glib_libs)
 libmono_profiler_aot_la_LDFLAGS = $(prof_ldflags)
-libmono_profiler_aot_static_la_SOURCES = aot.c
+libmono_profiler_aot_static_la_SOURCES = aot.c helper.c
 libmono_profiler_aot_static_la_LDFLAGS = -static
-libmono_profiler_log_la_SOURCES = log.c log-args.c
+libmono_profiler_log_la_SOURCES = log.c log-args.c helper.c
 libmono_profiler_log_la_LIBADD = $(libmono_dep) $(glib_libs) $(zlib_dep)
 libmono_profiler_log_la_LDFLAGS = $(prof_ldflags)
-libmono_profiler_log_static_la_SOURCES = log.c log-args.c
+libmono_profiler_log_static_la_SOURCES = log.c log-args.c helper.c
 libmono_profiler_log_static_la_LDFLAGS = -static
 libmono_profiler_coverage_la_SOURCES = coverage.c
 libmono_profiler_coverage_la_LIBADD = $(libmono_dep) $(glib_libs)
@@ -703,6 +710,7 @@ MCS = $(TOOLS_RUNTIME) $(CSC) -lib:$(CLASS) -unsafe -nologo -noconfig -nowarn:01
 EXTRA_DIST = \
 	log.h \
 	aot.h \
+	helper.h \
 	$(PLOG_TESTS_SRC) \
 	ptestrunner.pl \
 	$(suppression_DATA)
@@ -862,6 +870,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aot.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/coverage.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/helper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_profiler_vtune_la-vtune.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_profiler_vtune_static_la-vtune.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/log-args.Plo@am__quote@

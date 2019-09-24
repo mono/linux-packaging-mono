@@ -30,6 +30,10 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#if FULL_AOT_INTERP && DISABLE_COM
+#define FULL_AOT_RUNTIME
+#endif
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -62,7 +66,7 @@ namespace System.Runtime.InteropServices
 		{
 #if !MOBILE || WINAOT
 			if (pUnk == IntPtr.Zero)
-				throw new ArgumentException ("Value cannot be null.", "pUnk");
+				throw new ArgumentNullException ("pUnk");
 			return AddRefInternal (pUnk);
 #else
 			throw new NotImplementedException ();
@@ -935,7 +939,7 @@ namespace System.Runtime.InteropServices
 		{
 #if !MOBILE || WINAOT
 			if (pUnk == IntPtr.Zero)
-				throw new ArgumentException ("Value cannot be null.", "pUnk");
+				throw new ArgumentNullException ("pUnk");
 			return QueryInterfaceInternal (pUnk, ref iid, out ppv);
 #else
 			throw new NotImplementedException ();
@@ -1108,7 +1112,7 @@ namespace System.Runtime.InteropServices
 		{
 #if !MOBILE || WINAOT
 			if (pUnk == IntPtr.Zero)
-				throw new ArgumentException ("Value cannot be null.", "pUnk");
+				throw new ArgumentNullException ("pUnk");
 
 			return ReleaseInternal (pUnk);
 #else

@@ -92,7 +92,11 @@ target_triplet = @target@
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
+	$(top_srcdir)/m4/ax_append_flag.m4 \
+	$(top_srcdir)/m4/ax_append_link_flags.m4 \
 	$(top_srcdir)/m4/ax_check_compile_flag.m4 \
+	$(top_srcdir)/m4/ax_check_link_flag.m4 \
+	$(top_srcdir)/m4/ax_require_defined.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
@@ -106,7 +110,8 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = mono-uninstalled.pc
+CONFIG_CLEAN_FILES = runtime/bin/mono-hang-watchdog \
+	mono-uninstalled.pc
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -167,9 +172,10 @@ ETAGS = etags
 CTAGS = ctags
 CSCOPE = cscope
 am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
-	$(srcdir)/mono-uninstalled.pc.in COPYING.LIB NEWS compile \
-	config.guess config.rpath config.sub install-sh ltmain.sh \
-	missing mkinstalldirs
+	$(srcdir)/mono-uninstalled.pc.in \
+	$(top_srcdir)/runtime/bin/mono-hang-watchdog.in COPYING.LIB \
+	NEWS compile config.guess config.rpath config.sub install-sh \
+	ltmain.sh missing mkinstalldirs
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -324,7 +330,6 @@ MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_CXXLD = @MONO_CXXLD@
-MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
 MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
@@ -358,6 +363,7 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+ODBC = @ODBC@
 ORDER = @ORDER@
 OS = @OS@
 OTOOL = @OTOOL@
@@ -402,6 +408,7 @@ XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XINERAMA = @XINERAMA@
 XMKMF = @XMKMF@
+ZLIB_CFLAGS = @ZLIB_CFLAGS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -495,7 +502,9 @@ MONOTOUCH_SUBDIRS = $(libgc_dir) mono
 @ENABLE_MSVC_TRUE@build_without_msvc = 
 @ENABLE_NETCORE_FALSE@update_submodules = update_submodules
 @ENABLE_NETCORE_TRUE@update_submodules = 
-SUBDIRS = $(build_with_msvc) mk po $(libgc_dir) llvm mono $(ikvm_native_dir) support data runtime scripts man samples $(tools_dir) $(build_without_msvc) $(docs_dir) acceptance-tests
+@ENABLE_NETCORE_FALSE@SUBDIRS = $(build_with_msvc) mk po $(libgc_dir) llvm mono $(ikvm_native_dir) support data runtime scripts man samples $(tools_dir) $(build_without_msvc) $(docs_dir) acceptance-tests
+@ENABLE_NETCORE_TRUE@SUBDIRS = mk llvm mono runtime netcore
+
 # Keep in sync with SUBDIRS
 DIST_SUBDIRS = $(build_with_msvc) m4 mk po $(libgc_dir) llvm mono ikvm-native support data runtime scripts man samples tools $(build_without_msvc) docs acceptance-tests netcore
 EXTRA_DIST = \
@@ -568,6 +577,8 @@ $(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
+runtime/bin/mono-hang-watchdog: $(top_builddir)/config.status $(top_srcdir)/runtime/bin/mono-hang-watchdog.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 mono-uninstalled.pc: $(top_builddir)/config.status $(srcdir)/mono-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 

@@ -86,6 +86,7 @@
 #include <mono/utils/w32api.h>
 #include <mono/utils/mono-errno.h>
 #include <mono/utils/mono-error-internals.h>
+#include <mono/utils/mono-threads-coop.h>
 #include "object-internals.h"
 #include "icall-decl.h"
 
@@ -99,6 +100,7 @@
 /* define LOGDEBUG(...) g_message(__VA_ARGS__)  */
 
 /* The process' environment strings */
+#if defined (HAVE_FORK) && defined (HAVE_EXECVE)
 #if defined(__APPLE__)
 #if defined (TARGET_OSX)
 /* Apple defines this in crt_externs.h but doesn't provide that header for 
@@ -117,6 +119,7 @@ static char *mono_environ[1] = { NULL };
 G_BEGIN_DECLS
 extern char **environ;
 G_END_DECLS
+#endif
 #endif
 
 typedef enum {
@@ -726,7 +729,7 @@ get_process_foreach_callback (MonoW32Handle *handle_data, gpointer user_data)
 }
 
 HANDLE
-ves_icall_System_Diagnostics_Process_GetProcess_internal (guint32 pid)
+ves_icall_System_Diagnostics_Process_GetProcess_internal (guint32 pid, MonoError *error)
 {
 	GetProcessForeachData foreach_data;
 	gpointer handle;
@@ -906,82 +909,64 @@ mono_w32process_try_get_modules (gpointer handle, gpointer *modules, guint32 siz
 	return TRUE;
 }
 
-guint32
-mono_w32process_module_get_filename (gpointer handle, gpointer module, gunichar2 *basename, guint32 size)
+gunichar2 *
+mono_w32process_module_get_filename (gpointer handle, gpointer module, guint32 *len)
 {
-	gint pid, len;
-	gsize bytes;
+	gint pid;
+	gsize bytes = 0;
 	gchar *path;
 	gunichar2 *proc_path;
 
-	size *= sizeof (gunichar2); /* adjust for unicode characters */
+	mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER_PROCESS, "%s: Getting module file name, process handle %p module %p " G_GUINT32_FORMAT,
+	            __func__, handle, module);
 
-	if (basename == NULL || size == 0)
-		return 0;
+	*len = 0;
 
 	pid = mono_w32process_get_pid (handle);
+	if (pid == 0)
+		return NULL;
 
 	path = mono_w32process_get_path (pid);
 	if (path == NULL)
-		return 0;
+		return NULL;
 
 	proc_path = mono_unicode_from_external (path, &bytes);
+
+	*len = bytes / sizeof (gunichar2);
+
 	g_free (path);
-
-	if (proc_path == NULL)
-		return 0;
-
-	len = (bytes / 2);
-
-	/* Add the terminator */
-	bytes += 2;
-
-	if (size < bytes) {
-		mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER_PROCESS, "%s: Size %" G_GUINT32_FORMAT " smaller than needed (%zd); truncating", __func__, size, bytes);
-		memcpy (basename, proc_path, size);
-	} else {
-		mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER_PROCESS, "%s: Size %" G_GUINT32_FORMAT " larger than needed (%zd)", __func__, size, bytes);
-		memcpy (basename, proc_path, bytes);
-	}
-
-	g_free (proc_path);
-
-	return len;
+	return proc_path;
 }
 
-guint32
-mono_w32process_module_get_name (gpointer handle, gpointer module, gunichar2 *basename, guint32 size)
+gunichar2 *
+mono_w32process_module_get_name (gpointer handle, gpointer module, guint32 *len)
 {
 	MonoW32Handle *handle_data;
 	MonoW32HandleProcess *process_handle;
 	pid_t pid;
 	gunichar2 *procname;
 	char *procname_ext = NULL;
-	glong len;
-	gsize bytes;
+	gsize bytes = 0;
 	GSList *mods = NULL, *mods_iter;
 	MonoW32ProcessModule *found_module;
 	char *pname = NULL;
 
-	mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER_PROCESS, "%s: Getting module base name, process handle %p module %p basename %p size %" G_GUINT32_FORMAT,
-		   __func__, handle, module, basename, size);
+	mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER_PROCESS, "%s: Getting module base name, process handle %p module %p " G_GUINT32_FORMAT,
+		   __func__, handle, module);
 
-	size = size * sizeof (gunichar2); /* adjust for unicode characters */
-
-	if (basename == NULL || size == 0)
-		return 0;
+	*len = 0;
 
 	if (!mono_w32handle_lookup_and_ref (handle, &handle_data)) {
 		mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER_PROCESS, "%s: unknown handle %p", __func__, handle);
 		mono_w32error_set_last (ERROR_INVALID_HANDLE);
-		return 0;
+		return NULL;
 	}
 
 	if (handle_data->type != MONO_W32TYPE_PROCESS) {
 		mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER_PROCESS, "%s: unknown process handle %p", __func__, handle);
 		mono_w32error_set_last (ERROR_INVALID_HANDLE);
 		mono_w32handle_unref (handle_data);
-		return 0;
+		return NULL;
 	}
 
 	process_handle = (MonoW32HandleProcess*) handle_data->specific;
@@ -1036,35 +1021,19 @@ mono_w32process_module_get_name (gpointer handle, gpointer module, gunichar2 *ba
 			/* bugger */
 			g_free (procname_ext);
 			mono_w32handle_unref (handle_data);
-			return 0;
+			return NULL;
 		}
 
-		len = (bytes / 2);
+		*len = bytes / sizeof (gunichar2);
 
-		/* Add the terminator */
-		bytes += 2;
-
-		if (size < bytes) {
-			mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER_PROCESS, "%s: Size %" G_GUINT32_FORMAT " smaller than needed (%zd); truncating", __func__, size, bytes);
-
-			memcpy (basename, procname, size);
-		} else {
-			mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER_PROCESS, "%s: Size %" G_GUINT32_FORMAT " larger than needed (%zd)",
-				   __func__, size, bytes);
-
-			memcpy (basename, procname, bytes);
-		}
-
-		g_free (procname);
 		g_free (procname_ext);
-
 		mono_w32handle_unref (handle_data);
-		return len;
+		return procname;
 	}
 
 	mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER_PROCESS, "%s: Can't find procname_ext %p", __func__, handle);
 	mono_w32handle_unref (handle_data);
-	return 0;
+	return NULL;
 }
 
 gboolean
@@ -2050,6 +2019,7 @@ ves_icall_System_Diagnostics_Process_ShellExecuteEx_internal (MonoW32ProcessStar
 		 * On Linux, try: xdg-open, the FreeDesktop standard way of doing it,
 		 * if that fails, try to use gnome-open, then kfmclient
 		 */
+		MONO_ENTER_GC_SAFE;
 		handler = g_find_program_in_path ("xdg-open");
 		if (handler != NULL)
 			handler_needswait = TRUE;
@@ -2060,7 +2030,6 @@ ves_icall_System_Diagnostics_Process_ShellExecuteEx_internal (MonoW32ProcessStar
 				if (handler == NULL){
 					handler_utf16 = (gunichar2 *) -1;
 					ret = FALSE;
-					goto done;
 				} else {
 					/* kfmclient needs exec argument */
 					char *old = handler;
@@ -2069,6 +2038,10 @@ ves_icall_System_Diagnostics_Process_ShellExecuteEx_internal (MonoW32ProcessStar
 					g_free (old);
 				}
 			}
+		}
+		MONO_EXIT_GC_SAFE;
+		if (ret == FALSE){
+			goto done;
 		}
 #endif
 		handler_utf16 = g_utf8_to_utf16 (handler, -1, NULL, NULL, NULL);
@@ -2100,6 +2073,7 @@ ves_icall_System_Diagnostics_Process_ShellExecuteEx_internal (MonoW32ProcessStar
 			gint32 exitcode;
 			MonoW32HandleWaitRet waitret;
 			waitret = process_wait ((MonoW32Handle*)process_info->process_handle, MONO_INFINITE_WAIT, NULL);
+			(void)waitret;
 			mono_get_exit_code_process (process_info->process_handle, &exitcode);
 			if (exitcode != 0)
 				ret = FALSE;
@@ -2217,33 +2191,44 @@ exit:
 }
 
 /* Returns an array of pids */
-MonoArray *
-ves_icall_System_Diagnostics_Process_GetProcesses_internal (void)
+MonoArrayHandle
+ves_icall_System_Diagnostics_Process_GetProcesses_internal (MonoError *error)
 {
-	ERROR_DECL (error);
-	MonoArray *procs;
-	gpointer *pidarray;
-	int i, count;
+	int count = 0;
+	guint32 *raw = 0;
+	gpointer *pidarray = 0;
+	MonoArrayHandle procs = NULL_HANDLE_ARRAY;
 
+	// FIXME mono_process_list should probably return array of int
+	// as all of the users of the elements truncate to that.
+
+	MONO_ENTER_GC_SAFE;
 	pidarray = mono_process_list (&count);
+	MONO_EXIT_GC_SAFE;
 	if (!pidarray) {
 		mono_error_set_not_supported (error, "This system does not support EnumProcesses");
-		mono_error_set_pending_exception (error);
-		return NULL;
+		goto exit;
 	}
-	procs = mono_array_new_checked (mono_domain_get (), mono_get_int32_class (), count, error);
-	if (mono_error_set_pending_exception (error)) {
-		g_free (pidarray);
-		return NULL;
+	procs = mono_array_new_handle (mono_domain_get (), mono_get_int32_class (), count, error);
+	if (!is_ok (error)) {
+		procs = NULL_HANDLE_ARRAY;
+		goto exit;
 	}
-	if (sizeof (guint32) == sizeof (gpointer)) {
-		memcpy (mono_array_addr_internal (procs, guint32, 0), pidarray, count * sizeof (gint32));
-	} else {
-		for (i = 0; i < count; ++i)
-			*(mono_array_addr_internal (procs, guint32, i)) = GPOINTER_TO_UINT (pidarray [i]);
-	}
-	g_free (pidarray);
 
+	MONO_ENTER_NO_SAFEPOINTS;
+
+	raw = mono_array_addr_internal (MONO_HANDLE_RAW (procs), guint32, 0);
+	if (sizeof (guint32) == sizeof (gpointer)) {
+		memcpy (raw, pidarray, count * sizeof (gint32));
+	} else {
+		for (int i = 0; i < count; ++i)
+			raw [i] = GPOINTER_TO_UINT (pidarray [i]);
+	}
+
+	MONO_EXIT_NO_SAFEPOINTS;
+
+exit:
+	g_free (pidarray);
 	return procs;
 }
 
@@ -3334,7 +3319,7 @@ big_up (gconstpointer datablock, guint32 size)
 #endif
 
 gboolean
-mono_w32process_get_fileversion_info (gunichar2 *filename, gpointer *data)
+mono_w32process_get_fileversion_info (const gunichar2 *filename, gpointer *data)
 {
 	gpointer file_map;
 	gpointer versioninfo;

@@ -71,7 +71,7 @@ TOOLS_RUNTIME = MONO_PATH=$(mcs_topdir)/class/lib/build $(top_builddir)/runtime/
 INTERP_RUNTIME = $(MINI_RUNTIME) --interpreter
 RUNTIME_AOTCHECK = MONO_PATH="$(CLASS)$(PLATFORM_PATH_SEPARATOR)." $(RUNTIME_EXECUTABLE)
 
-MCS = CSC_SDK_PATH_DISABLED= $(TOOLS_RUNTIME) $(CSC) -langversion:7.2 -nostdlib -unsafe -nowarn:0162 -nologo -noconfig -r:$(CLASS)/mscorlib.dll -r:$(CLASS)/System.dll -r:$(CLASS)/System.Core.dll
+MCS = CSC_SDK_PATH_DISABLED= $(TOOLS_RUNTIME) --clr-memory-model $(CSC) -langversion:7.2 -nostdlib -unsafe -nowarn:0162 -nologo -noconfig -r:$(CLASS)/mscorlib.dll -r:$(CLASS)/System.dll -r:$(CLASS)/System.Core.dll
 ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 
 AM_CFLAGS = \
@@ -248,6 +248,8 @@ mono_boehm_LDADD = \
 	$(MONO_LIB)		\
 	$(glib_libs)		\
 	$(LLVMMONOF)		\
+	$(LIBICONV)		\
+	$(Z_LIBS)		\
 	-lm			\
 	$(MONO_DTRACE_OBJECT)
 
@@ -259,6 +261,8 @@ mono_sgen_LDADD = \
 	$(MONO_SGEN_LIB)	\
 	$(glib_libs)		\
 	$(LLVMMONOF)		\
+	$(LIBICONV)		\
+	$(Z_LIBS)		\
 	-lm			\
 	$(MONO_DTRACE_OBJECT)
 
@@ -384,6 +388,7 @@ darwin_sources = \
 
 windows_sources = \
 	mini-windows.c \
+	mini-windows-tls-callback.c \
 	mini-windows.h \
 	mini-windows-dllmain.c \
 	mini-windows-dlldac.c
@@ -858,25 +863,34 @@ richeck: mono $(regtests)
 mixedcheck: mono mixed.exe
 	$(MINI_RUNTIME) --interp=jit=JitClass mixed.exe
 
-if ARM
 check-seq-points:
-else
-check-seq-points: mono $(regtests)
+
+# This test is fragile so disabled by default.
+# single_imm_size support is incomplete.
+# __declspec (thread) support breaks it.
+# See https://github.com/mono/mono/pull/15599#issuecomment-509444313.
+# See https://github.com/mono/mono/pull/15567.
+# It was already previously disabled for ARM.
+check-seq-points-force: mono $(regtests)
 	rm -f TestResult-op_il_seq_point.xml
 	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $(DEFAULT_PROFILE) $$i || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
 	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $(DEFAULT_PROFILE) $$i --aot || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
 	$(srcdir)/test_op_il_seq_point_headerfooter.sh
-endif
 
 gctest: mono gc-test.exe
 	MONO_DEBUG_OPTIONS=clear-nursery-at-gc $(MINI_RUNTIME) --regression gc-test.exe
 
 LLVM_AOT_RUNTIME_OPTS=$(if $(LLVM),--llvm,)
+if AMD64
+LLVM_AOT_COMPILER_OPTS=$(if $(LLVM),"=llvmllc=-mcpu=generic -mattr=+sse3",)
+else
+LLVM_AOT_COMPILER_OPTS=
+endif
 GSHAREDVT_RUNTIME_OPTS=$(if $(GSHAREDVT),-O=gsharedvt,)
 
 aotcheck: mono $(regtests)
 	rm -rf *.exe.so *.exe.dylib *.exe.dylib.dSYM
-	$(MINI_RUNTIME) $(LLVM_AOT_RUNTIME_OPTS) --aot $(regtests) || exit 1
+	$(MINI_RUNTIME) $(LLVM_AOT_RUNTIME_OPTS) --aot$(LLVM_AOT_COMPILER_OPTS) $(regtests) || exit 1
 	for i in $(regtests); do $(RUNTIME_AOTCHECK) --regression $$i || exit 1; done
 	rm -rf *.exe.so *.exe.dylib *.exe.dylib.dSYM
 

@@ -155,6 +155,9 @@ typedef struct {
 	int kind;
 	MonoContext ctx; /* valid if kind == DEBUGGER_INVOKE || kind == INTERP_EXIT_WITH_CTX */
 	gpointer interp_exit_data; /* valid if kind == INTERP_EXIT || kind == INTERP_EXIT_WITH_CTX */
+#if defined (_MSC_VER)
+	gboolean interp_exit_label_set;
+#endif
 } MonoLMFExt;
 
 typedef void (*MonoFtnPtrEHCallback) (guint32 gchandle);
@@ -240,6 +243,11 @@ typedef struct MonoDebugOptions {
 
 	// Internal testing feature.
 	gboolean test_tailcall_require;
+
+	/*
+	 * Use the the stricter clr memory model.
+	 */
+	gboolean clr_memory_model;
 
 	/*
 	 * Internal testing feature
@@ -416,8 +424,12 @@ MONO_API int         mono_regression_test_step      (int verbose_level, const ch
 
 
 void                   mono_interp_stub_init         (void);
-void                   mini_install_interp_callbacks (MonoEECallbacks *cbs);
-MonoEECallbacks*       mini_get_interp_callbacks     (void);
+void                   mini_install_interp_callbacks (const MonoEECallbacks *cbs);
+
+extern const
+MonoEECallbacks*       mono_interp_callbacks_pointer;
+
+#define mini_get_interp_callbacks() (mono_interp_callbacks_pointer)
 
 typedef struct _MonoDebuggerCallbacks MonoDebuggerCallbacks;
 

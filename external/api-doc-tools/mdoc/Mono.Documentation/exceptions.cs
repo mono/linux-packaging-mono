@@ -32,6 +32,7 @@ using System.Linq;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Mono.Documentation.Updater;
 
 namespace Mono.Documentation {
 
@@ -51,7 +52,7 @@ namespace Mono.Documentation {
 		}
 
 		public TypeReference Exception { get; private set; }
-		internal  HashSet<MemberReference>  Sources;
+		public  HashSet<MemberReference>  Sources;
 	}
 
 
@@ -84,9 +85,10 @@ namespace Mono.Documentation {
 						// so we can't do anything further.
 						return new ExceptionSources[0];
 					}
-					throw new NotSupportedException (string.Format (
-								"Unable to resolve member {0}::{1}.",
-								member.DeclaringType.FullName, member.Name));
+                    return new ExceptionSources[0];
+					//throw new NotSupportedException (string.Format (
+					//			"Unable to resolve member {0}::{1}.",
+					//			member.DeclaringType.FullName, member.Name));
 				}
 				string memberDecl = xdoc.GetDeclaration (member);
 				Dictionary<string, ExceptionSources> e;

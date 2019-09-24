@@ -91,7 +91,11 @@ target_triplet = @target@
 subdir = mono
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
+	$(top_srcdir)/m4/ax_append_flag.m4 \
+	$(top_srcdir)/m4/ax_append_link_flags.m4 \
 	$(top_srcdir)/m4/ax_check_compile_flag.m4 \
+	$(top_srcdir)/m4/ax_check_link_flag.m4 \
+	$(top_srcdir)/m4/ax_require_defined.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
@@ -299,7 +303,6 @@ MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_CXXLD = @MONO_CXXLD@
-MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
 MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
@@ -333,6 +336,7 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+ODBC = @ODBC@
 ORDER = @ORDER@
 OS = @OS@
 OTOOL = @OTOOL@
@@ -377,6 +381,7 @@ XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XINERAMA = @XINERAMA@
 XMKMF = @XMKMF@
+ZLIB_CFLAGS = @ZLIB_CFLAGS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -462,9 +467,10 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @BTLS_TRUE@btls_dirs = btls
 @ENABLE_NETCORE_TRUE@btls_dirs = 
 @MONO_NATIVE_TRUE@native_dirs = native
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_FALSE@SUBDIRS = $(btls_dirs) eglib arch utils cil $(sgen_dirs) metadata mini dis tests unit-tests benchmark profiler $(native_dirs)
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@SUBDIRS = $(btls_dirs) eglib arch utils $(sgen_dirs) metadata mini profiler $(native_dirs)
-@CROSS_COMPILING_TRUE@SUBDIRS = $(btls_dirs) eglib arch utils cil $(sgen_dirs) metadata mini dis profiler $(native_dirs)
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_FALSE@SUBDIRS = $(btls_dirs) eglib arch utils cil $(sgen_dirs) metadata mini dis tests unit-tests benchmark profiler $(native_dirs)
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@SUBDIRS = $(btls_dirs) eglib arch utils $(sgen_dirs) metadata mini profiler $(native_dirs)
+@CROSS_COMPILING_TRUE@@ENABLE_NETCORE_FALSE@SUBDIRS = $(btls_dirs) eglib arch utils cil $(sgen_dirs) metadata mini dis profiler $(native_dirs)
+@ENABLE_NETCORE_TRUE@SUBDIRS = eglib arch utils sgen metadata mini profiler
 DIST_SUBDIRS = btls native eglib arch utils cil $(sgen_dirs) metadata mini dis tests unit-tests benchmark profiler
 all: all-recursive
 
@@ -790,27 +796,27 @@ uninstall-am:
 .PRECIOUS: Makefile
 
 
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@monotouch-do-build:
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@	@list='$(SUBDIRS)'; for subdir in $$list; do \
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@	  case "x$$subdir" in \
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@		xmetadata ) target="monotouch-do-build" ;; \
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@		xmini ) target="monotouch-do-build" ;; \
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@		* ) target="all" ;; \
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@	  esac; \
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@	  echo "Making $$target in $$subdir"; \
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$target); \
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@    done;
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@monotouch-do-build:
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	@list='$(SUBDIRS)'; for subdir in $$list; do \
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	  case "x$$subdir" in \
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@		xmetadata ) target="monotouch-do-build" ;; \
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@		xmini ) target="monotouch-do-build" ;; \
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@		* ) target="all" ;; \
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	  esac; \
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	  echo "Making $$target in $$subdir"; \
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$target); \
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@    done;
 
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@monotouch-do-clean:
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@	@list='$(SUBDIRS)'; for subdir in $$list; do \
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@	  case "x$$subdir" in \
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@		xmetadata ) target="monotouch-do-clean" ;; \
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@		xmini ) target="monotouch-do-clean" ;; \
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@		* ) target="clean" ;; \
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@	  esac; \
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@	  echo "Making $$target in $$subdir"; \
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$target); \
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@    done;
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@monotouch-do-clean:
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	@list='$(SUBDIRS)'; for subdir in $$list; do \
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	  case "x$$subdir" in \
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@		xmetadata ) target="monotouch-do-clean" ;; \
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@		xmini ) target="monotouch-do-clean" ;; \
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@		* ) target="clean" ;; \
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	  esac; \
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	  echo "Making $$target in $$subdir"; \
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$target); \
+@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@    done;
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

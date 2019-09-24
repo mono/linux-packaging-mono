@@ -205,6 +205,13 @@ Last this was checked was June-2017.
 
 Apple is at 106.
 Android is at 133.
+
+Haiku starts numbering at 0x8000_7000 (like HRESULT on Win32) for POSIX errno,
+but errors from BeAPI or custom user libraries could be lower or higher.
+(Technically, this is C and old POSIX compliant, but not new POSIX compliant.)
+The big problem with this is that it effectively means errors start at a
+negative offset. As such, disable the whole strerror caching mechanism.
+
 */
 #define MONO_ERRNO_MAX 200
 #define str(s) #s
@@ -213,6 +220,14 @@ Android is at 133.
 static pthread_mutex_t strerror_lock = PTHREAD_MUTEX_INITIALIZER;
 #endif
 
+#if defined(__HAIKU__)
+const gchar *
+g_strerror (gint errnum)
+{
+	/* returns a const char* on Haiku */
+	return strerror(errnum);
+}
+#else
 static char *error_messages [MONO_ERRNO_MAX];
 
 const gchar *
@@ -271,31 +286,34 @@ g_strerror (gint errnum)
 	}
 	return error_messages [errnum];
 }
+#endif
 
 gchar *
 g_strconcat (const gchar *first, ...)
 {
 	va_list args;
-	size_t total = 0;
 	char *s, *ret;
 	g_return_val_if_fail (first != NULL, NULL);
 
-	total += strlen (first);
+	size_t len = strlen (first);
 	va_start (args, first);
 	for (s = va_arg (args, char *); s != NULL; s = va_arg(args, char *)){
-		total += strlen (s);
+		len += strlen (s);
 	}
 	va_end (args);
 	
-	ret = g_malloc (total + 1);
+	ret = (char*)g_malloc (len + 1);
 	if (ret == NULL)
 		return NULL;
 
-	ret [total] = 0;
-	strcpy (ret, first);
+	ret [len] = 0;
+	len = strlen (first);
+	memcpy (ret, first, len);
 	va_start (args, first);
+	first = ret; // repurpose first as cursor
 	for (s = va_arg (args, char *); s != NULL; s = va_arg(args, char *)){
-		strcat (ret, s);
+		first += len;
+		memcpy ((char*)first, s, len = strlen (s));
 	}
 	va_end (args);
 
@@ -512,7 +530,7 @@ g_strjoin (const gchar *separator, ...)
 	if (slen > 0 && len > 0)
 		len -= slen;
 
-	res = g_malloc (len + 1);
+	res = (char*)g_malloc (len + 1);
 	va_start (args, separator);
 	s = va_arg (args, char *);
 	r = g_stpcpy (res, s);
@@ -1068,4 +1086,12 @@ g_utf16_len (const gunichar2 *a)
 		++length;
 	return length;
 #endif
+}
+
+gsize
+g_strnlen (const char* s, gsize n)
+{
+	gsize i;
+	for (i = 0; i < n && s [i]; ++i) ;
+	return i;
 }

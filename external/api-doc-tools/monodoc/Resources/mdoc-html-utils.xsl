@@ -455,10 +455,10 @@
 			<!-- return value (comes out "" where not applicable/available) -->
 			<xsl:choose>
 			<xsl:when test="@MemberName='op_Implicit'">
-				<xsl:text>implicit operator</xsl:text>
+				<xsl:text></xsl:text>
 			</xsl:when>
 			<xsl:when test="@MemberName='op_Explicit'">
-				<xsl:text>explicit operator</xsl:text>
+				<xsl:text></xsl:text>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:apply-templates select="ReturnValue/ReturnType" mode="typelink">
@@ -991,7 +991,7 @@
 		<!-- if this is a generic type parameter, don't make a link but italicize it and give it a tooltip instead -->
 		<xsl:when test="count($ThisType/TypeParameters/TypeParameter[@Name=$type] | 
 				$ThisType/TypeParameters/TypeParameter[child::text()=$type] |
-				ancestor::Member/Docs/typeparam[@name=$type]) = 1">
+				ancestor::Member/Docs/typeparam[@name=$type]) = 1 or $nested = 1">
 			<!-- note that we check if it is a generic type using /Type/TypeParameters because that will have type parameters declared in an outer class if this is a nested class, but then we get the tooltip text from the type parameters documented in this file -->
 			<i title="{$ThisType/Docs/typeparam[@name=$type] | ancestor::Member/Docs/typeparam[@name=$type]}"><xsl:value-of select="$type"/></i>
 		</xsl:when>
@@ -1002,6 +1002,7 @@
 			<xsl:call-template name="maketypelink">
 				<xsl:with-param name="type" select="ancestor::Members/BaseTypeArgument[@TypeParamName=$type]"/>
 				<xsl:with-param name="wrt" select="$wrt"/>
+				<xsl:with-param name="nested" select="1"/>
 			</xsl:call-template>
 		</xsl:when>
 		
@@ -1671,6 +1672,14 @@
 
 	<xsl:template match="see[@langword]">
 		<tt><xsl:value-of select="@langword"/></tt>
+	</xsl:template>
+	<xsl:template match="see[@href]">
+		<a>
+			<xsl:attribute name="href">
+				<xsl:value-of select="@href"/>
+			</xsl:attribute>
+			<xsl:value-of select="."/>
+		</a>
 	</xsl:template>
 	
 	<xsl:template name="GetInheritedMembers">
@@ -2738,7 +2747,6 @@ SkipGenericArgument: invalid type substring '<xsl:value-of select="$s" />'
 
 		<xsl:if test="contains($Sig, ' static ')">static </xsl:if>
 		<xsl:if test="contains($Sig, ' abstract ')">abstract </xsl:if>
-		<xsl:if test="contains($Sig, ' operator ')">operator </xsl:if>
 
 		<xsl:if test="contains($Sig, ' const ')">const </xsl:if>
 		<xsl:if test="contains($Sig, ' readonly ')">readonly </xsl:if>
@@ -2756,8 +2764,8 @@ SkipGenericArgument: invalid type substring '<xsl:value-of select="$s" />'
 			<xsl:if test="contains($Sig, ' checked ')">checked </xsl:if>
 			<xsl:if test="contains($Sig, ' unsafe ')">unsafe </xsl:if>
 			<xsl:if test="contains($Sig, ' volatile ')">volatile </xsl:if>
-			<xsl:if test="contains($Sig, ' explicit ')">explicit </xsl:if>
-			<xsl:if test="contains($Sig, ' implicit ')">implicit </xsl:if>
+			<xsl:if test="contains($Sig, ' explicit ')">explicit operator</xsl:if>
+			<xsl:if test="contains($Sig, ' implicit ')">implicit operator</xsl:if>
 		</xsl:if>
 
 		<xsl:if test="$typetype">
