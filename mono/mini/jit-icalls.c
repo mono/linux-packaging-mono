@@ -852,9 +852,21 @@ mono_ldtoken_wrapper_generic_shared (MonoImage *image, int token, MonoMethod *me
 guint64
 mono_fconv_u8 (double v)
 {
+#if defined(TARGET_X86) || defined(TARGET_AMD64)
+	const double two63 = 2147483648.0 * 4294967296.0;
+	if (v < two63) {
+		return (gint64)v;
+	} else {
+		return (gint64)(v - two63) + ((guint64)1 << 63);
+	}
+#else
+	if (mono_isinf (v) || mono_isnan (v))
+		return 0;
 	return (guint64)v;
+#endif
 }
 
+#ifdef MONO_ARCH_EMULATE_FCONV_TO_U8
 guint64
 mono_fconv_u8_2 (double v)
 {
@@ -869,8 +881,20 @@ mono_fconv_u8_2 (double v)
 guint64
 mono_rconv_u8 (float v)
 {
+#if defined(TARGET_X86) || defined(TARGET_AMD64)
+	const float two63 = 2147483648.0 * 4294967296.0;
+	if (v < two63) {
+		return (gint64)v;
+	} else {
+		return (gint64)(v - two63) + ((guint64)1 << 63);
+	}
+#else
+	if (mono_isinf (v) || mono_isnan (v))
+		return 0;
 	return (guint64)v;
+#endif
 }
+#endif
 
 #ifdef MONO_ARCH_EMULATE_FCONV_TO_I8
 gint64
@@ -889,6 +913,7 @@ mono_fconv_u4 (double v)
 	return (guint32)v;
 }
 
+#ifdef MONO_ARCH_EMULATE_FCONV_TO_U4
 guint32
 mono_fconv_u4_2 (double v)
 {
@@ -899,6 +924,15 @@ mono_fconv_u4_2 (double v)
 	// wrappers are only produced for one of them, breaking FullAOT.
 	return mono_fconv_u4 (v);
 }
+
+guint32
+mono_rconv_u4 (float v)
+{
+	if (mono_isinf (v) || mono_isnan (v))
+		return 0;
+	return (guint32) v;
+}
+#endif
 
 gint64
 mono_fconv_ovf_i8 (double v)
@@ -948,6 +982,12 @@ mono_fconv_ovf_u8 (double v)
 	return res;
 }
 
+guint64
+mono_fconv_ovf_u8_un (double v)
+{
+	return mono_fconv_ovf_u8 (v);
+}
+
 #ifdef MONO_ARCH_EMULATE_FCONV_TO_I8
 gint64
 mono_rconv_i8 (float v)
@@ -983,6 +1023,12 @@ mono_rconv_ovf_u8 (float v)
 		return 0;
 	}
 	return res;
+}
+
+guint64
+mono_rconv_ovf_u8_un (float v)
+{
+	return mono_rconv_ovf_u8 (v);
 }
 
 #ifdef MONO_ARCH_EMULATE_LCONV_TO_R8
@@ -1154,7 +1200,7 @@ mono_object_castclass_unbox (MonoObject *obj, MonoClass *klass)
 	MonoJitTlsData *jit_tls = NULL;
 	MonoClass *oklass;
 
-	if (mini_get_debug_options ()->better_cast_details) {
+	if (mini_debug_options.better_cast_details) {
 		jit_tls = mono_tls_get_jit_tls ();
 		jit_tls->class_cast_from = NULL;
 	}
@@ -1170,7 +1216,7 @@ mono_object_castclass_unbox (MonoObject *obj, MonoClass *klass)
 	if (mono_error_set_pending_exception (error))
 		return NULL;
 
-	if (mini_get_debug_options ()->better_cast_details) {
+	if (mini_debug_options.better_cast_details) {
 		jit_tls->class_cast_from = oklass;
 		jit_tls->class_cast_to = klass;
 	}
@@ -1188,7 +1234,7 @@ mono_object_castclass_with_cache (MonoObject *obj, MonoClass *klass, gpointer *c
 	MonoJitTlsData *jit_tls = NULL;
 	gpointer cached_vtable, obj_vtable;
 
-	if (mini_get_debug_options ()->better_cast_details) {
+	if (mini_debug_options.better_cast_details) {
 		jit_tls = mono_tls_get_jit_tls ();
 		jit_tls->class_cast_from = NULL;
 	}
@@ -1209,7 +1255,7 @@ mono_object_castclass_with_cache (MonoObject *obj, MonoClass *klass, gpointer *c
 	if (mono_error_set_pending_exception (error))
 		return NULL;
 
-	if (mini_get_debug_options ()->better_cast_details) {
+	if (mini_debug_options.better_cast_details) {
 		jit_tls->class_cast_from = obj->vtable->klass;
 		jit_tls->class_cast_to = klass;
 	}

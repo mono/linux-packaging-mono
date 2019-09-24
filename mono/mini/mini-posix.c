@@ -429,7 +429,7 @@ mono_runtime_posix_install_handlers (void)
 
 	sigset_t signal_set;
 	sigemptyset (&signal_set);
-	if (mini_get_debug_options ()->handle_sigint) {
+	if (mini_debug_options.handle_sigint) {
 		add_signal_handler (SIGINT, mono_sigint_signal_handler, SA_RESTART);
 		sigaddset (&signal_set, SIGINT);
 	}
@@ -481,7 +481,7 @@ mono_runtime_install_handlers (void)
 void
 mono_runtime_cleanup_handlers (void)
 {
-	if (mini_get_debug_options ()->handle_sigint)
+	if (mini_debug_options.handle_sigint)
 		remove_signal_handler (SIGINT);
 
 	remove_signal_handler (SIGFPE);
@@ -579,7 +579,7 @@ clock_init (MonoProfilerSampleMode mode)
 	 * makes very little sense as we can only use nanosleep () to sleep on
 	 * real time.
 	 */
-#ifdef HAVE_CLOCK_NANOSLEEP
+#if defined(HAVE_CLOCK_NANOSLEEP) && !defined(__PASE__)
 		struct timespec ts = { 0 };
 
 		/*
@@ -619,7 +619,7 @@ clock_get_time_ns (void)
 static void
 clock_sleep_ns_abs (guint64 ns_abs)
 {
-#ifdef HAVE_CLOCK_NANOSLEEP
+#if defined(HAVE_CLOCK_NANOSLEEP) && !defined(__PASE__)
 	int ret;
 	struct timespec then;
 
@@ -693,7 +693,7 @@ sampling_thread_func (gpointer unused)
 
 	MonoString *name = mono_string_new_checked (mono_get_root_domain (), "Profiler Sampler", error);
 	mono_error_assert_ok (error);
-	mono_thread_set_name_internal (thread, name, FALSE, FALSE, error);
+	mono_thread_set_name_internal (thread, name, MonoSetThreadNameFlag_None, error);
 	mono_error_assert_ok (error);
 
 	mono_thread_info_set_flags (MONO_THREAD_INFO_FLAGS_NO_GC | MONO_THREAD_INFO_FLAGS_NO_SAMPLE);
@@ -906,37 +906,6 @@ dump_memory_around_ip (MonoContext *mctx)
 }
 
 static void
-print_process_map (void)
-{
-#ifdef __linux__
-	FILE *fp = fopen ("/proc/self/maps", "r");
-	char line [256];
-
-	if (fp == NULL) {
-		mono_runtime_printf_err ("no /proc/self/maps, not on linux?\n");
-		return;
-	}
-
-	mono_runtime_printf_err ("/proc/self/maps:");
-	const int max_lines = 25;
-	int i = 0;
-
-	while (fgets (line, sizeof (line), fp) && i++ < max_lines) {
-		// strip newline
-		size_t len = strlen (line);
-		if (len > 0 && line [len - 1] == '\n')
-			line [len - 1] = '\0';
-
-		mono_runtime_printf_err ("%s", line);
-	}
-
-	fclose (fp);
-#else
-	/* do nothing */
-#endif
-}
-
-static void
 assert_printer_callback (void)
 {
 	mono_dump_native_crash_info ("SIGABRT", NULL, NULL);
@@ -984,7 +953,7 @@ dump_native_stacktrace (const char *signal, MonoContext *mctx)
 	}
 
 #if !defined(HOST_WIN32) && defined(HAVE_SYS_SYSCALL_H) && (defined(SYS_fork) || HAVE_FORK)
-	if (!mini_get_debug_options ()->no_gdb_backtrace) {
+	if (!mini_debug_options.no_gdb_backtrace) {
 		/* From g_spawn_command_line_sync () in eglib */
 		pid_t pid;
 		int status;
@@ -1153,8 +1122,6 @@ dump_native_stacktrace (const char *signal, MonoContext *mctx)
 void
 mono_dump_native_crash_info (const char *signal, MonoContext *mctx, MONO_SIG_HANDLER_INFO_TYPE *info)
 {
-	print_process_map ();
-
 	dump_native_stacktrace (signal, mctx);
 
 	dump_memory_around_ip (mctx);
@@ -1206,7 +1173,7 @@ native_stack_with_gdb (pid_t crashed_pid, const char **argv, int commands, char*
 	g_async_safe_fprintf (commands, "attach %ld\n", (long) crashed_pid);
 	g_async_safe_fprintf (commands, "info threads\n");
 	g_async_safe_fprintf (commands, "thread apply all bt\n");
-	if (mini_get_debug_options ()->verbose_gdb) {
+	if (mini_debug_options.verbose_gdb) {
 		for (int i = 0; i < 32; ++i) {
 			g_async_safe_fprintf (commands, "info registers\n");
 			g_async_safe_fprintf (commands, "info frame\n");
@@ -1234,7 +1201,7 @@ native_stack_with_lldb (pid_t crashed_pid, const char **argv, int commands, char
 	g_async_safe_fprintf (commands, "process attach --pid %ld\n", (long) crashed_pid);
 	g_async_safe_fprintf (commands, "thread list\n");
 	g_async_safe_fprintf (commands, "thread backtrace all\n");
-	if (mini_get_debug_options ()->verbose_gdb) {
+	if (mini_debug_options.verbose_gdb) {
 		for (int i = 0; i < 32; ++i) {
 			g_async_safe_fprintf (commands, "reg read\n");
 			g_async_safe_fprintf (commands, "frame info\n");

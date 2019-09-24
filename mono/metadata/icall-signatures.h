@@ -49,6 +49,7 @@
 // mono_icall_sig_ptr_ptr
 // mono_icall_sig_uint16_double
 // mono_icall_sig_uint32_double
+// mono_icall_sig_uint32_float
 // mono_icall_sig_uint8_double
 // mono_icall_sig_ulong_double
 // mono_icall_sig_ulong_float
@@ -130,13 +131,19 @@
 // mono_icall_sig_void_object_ptr_int32_int32
 // mono_icall_sig_void_object_ptr_ptr_ptr
 // mono_icall_sig_void_ptr_int_int_object
+// mono_icall_sig_void_ptr_ptr_ptr_ptr
+// mono_icall_sig_ptr_ptr_ptr_ptr_ptr
 // mono_icall_sig_int_int_int_ptr_ptr_ptr
 // mono_icall_sig_int_ptr_int_int_ptr_object
 // mono_icall_sig_object_ptr_int_int_int_int
 // mono_icall_sig_object_ptr_ptr_ptr_ptr_ptr
 // mono_icall_sig_ptr_ptr_int32_ptr_ptr_ptrref
 // mono_icall_sig_void_ptr_ptr_int32_ptr_ptrref
+// mono_icall_sig_void_ptr_ptr_ptr_ptr_ptr
+// mono_icall_sig_ptr_ptr_ptr_ptr_ptr_ptr
 // mono_icall_sig_int32_ptr_ptr_ptr_ptr_ptr_int32
+// mono_icall_sig_void_ptr_ptr_ptr_ptr_ptr_ptr
+// mono_icall_sig_ptr_ptr_ptr_ptr_ptr_ptr_ptr
 // mono_icall_sig_void_ptr_ptr_int32_ptr_ptrref_ptr_ptrref
 
 #define ICALL_SIGS				\
@@ -167,6 +174,7 @@ ICALL_SIG (2, (ptr, object))			\
 ICALL_SIG (2, (ptr, ptr))			\
 ICALL_SIG (2, (uint16, double))			\
 ICALL_SIG (2, (uint32, double))			\
+ICALL_SIG (2, (uint32, float))			\
 ICALL_SIG (2, (uint8, double))			\
 ICALL_SIG (2, (ulong, double))			\
 ICALL_SIG (2, (ulong, float))			\
@@ -248,13 +256,19 @@ ICALL_SIG (5, (ptr, ptr, ptr, ptrref, ptrref))	\
 ICALL_SIG (5, (void, object, ptr, int32, int32)) 	\
 ICALL_SIG (5, (void, object, ptr, ptr, ptr))		\
 ICALL_SIG (5, (void, ptr, int, int, object))		\
+ICALL_SIG (5, (void, ptr, ptr, ptr, ptr))	\
+ICALL_SIG (5, (ptr, ptr, ptr, ptr, ptr))	\
 ICALL_SIG (6, (int, int, int, ptr, ptr, ptr))		\
 ICALL_SIG (6, (int, ptr, int, int, ptr, object))	\
 ICALL_SIG (6, (object, ptr, int, int, int, int))	\
 ICALL_SIG (6, (object, ptr, ptr, ptr, ptr, ptr))	\
 ICALL_SIG (6, (ptr, ptr, int32, ptr, ptr, ptrref))	\
 ICALL_SIG (6, (void, ptr, ptr, int32, ptr, ptrref))	\
+ICALL_SIG (6, (void, ptr, ptr, ptr, ptr, ptr))	\
+ICALL_SIG (6, (ptr, ptr, ptr, ptr, ptr, ptr))	\
 ICALL_SIG (7, (int32, ptr, ptr, ptr, ptr, ptr, int32))	\
+ICALL_SIG (7, (void, ptr, ptr, ptr, ptr, ptr, ptr))	\
+ICALL_SIG (7, (ptr, ptr, ptr, ptr, ptr, ptr, ptr))	\
 ICALL_SIG (8, (void, ptr, ptr, int32, ptr, ptrref, ptr, ptrref)) 	\
 
 // ICALL_SIG_NAME: mono_icall_sig pasted with its parameters with underscores between each.

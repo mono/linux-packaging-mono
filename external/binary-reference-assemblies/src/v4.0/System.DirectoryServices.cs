@@ -272,6 +272,7 @@ namespace System.DirectoryServices
         public DirectorySearcher(string filter) { }
         public DirectorySearcher(string filter, string[] propertiesToLoad) { }
         public DirectorySearcher(string filter, string[] propertiesToLoad, System.DirectoryServices.SearchScope scope) { }
+        public bool Asynchronous { get { throw null; } set { } }
         [System.ComponentModel.DefaultValueAttribute(true)]
         [System.DirectoryServices.DSDescriptionAttribute("The cacheability of results.")]
         public bool CacheResults { get { throw null; } set { } }

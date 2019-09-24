@@ -354,7 +354,7 @@ worker_callback (void)
 
 		MonoString *thread_name = mono_string_new_checked (mono_get_root_domain (), "Thread Pool Worker", error);
 		mono_error_assert_ok (error);
-		mono_thread_set_name_internal (thread, thread_name, FALSE, TRUE, error);
+		mono_thread_set_name_internal (thread, thread_name, MonoSetThreadNameFlag_Reset, error);
 		mono_error_assert_ok (error);
 
 		mono_thread_clear_and_set_state (thread,
@@ -513,7 +513,7 @@ mono_threadpool_end_invoke (MonoAsyncResult *ares, MonoArray **out_args, MonoObj
 gboolean
 mono_threadpool_remove_domain_jobs (MonoDomain *domain, int timeout)
 {
-	gint64 end;
+	gint64 end = 0;
 	ThreadPoolDomain *tpdomain;
 	gboolean ret;
 

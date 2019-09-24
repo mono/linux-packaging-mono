@@ -69,7 +69,7 @@ mono_lazy_initialize (mono_lazy_init_t *lazy_init, void (*initialize) (void))
 	// and ahead of the call to initialize.
 	//
 	// Recall that barriers come in pairs.
-	// One barrier is in mono_atomic_cas_i32 below..
+	// One barrier is in mono_atomic_cas_i32 below.
 	// This is the other.
 	//
 	// A common case of initializing a pointer, that
@@ -103,8 +103,9 @@ mono_lazy_initialize (mono_lazy_init_t *lazy_init, void (*initialize) (void))
 	     || mono_atomic_cas_i32 (lazy_init, MONO_LAZY_INIT_STATUS_INITIALIZING, MONO_LAZY_INIT_STATUS_NOT_INITIALIZED)
 	         != MONO_LAZY_INIT_STATUS_NOT_INITIALIZED
 	) {
+		// FIXME: This is not coop-friendly.
 		while (*lazy_init == MONO_LAZY_INIT_STATUS_INITIALIZING)
-			mono_thread_info_yield (); // FIXME: This is not coop-friendly.
+			mono_thread_info_yield ();
 
 		g_assert (mono_atomic_load_i32 (lazy_init) >= MONO_LAZY_INIT_STATUS_INITIALIZED);
 

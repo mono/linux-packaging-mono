@@ -67,6 +67,7 @@ DECL_OFFSET(MonoClass, parent)
 DECL_OFFSET(MonoClass, rank)
 DECL_OFFSET(MonoClass, sizes)
 DECL_OFFSET(MonoClass, supertypes)
+DECL_OFFSET(MonoClass, class_kind)
 
 DECL_OFFSET(MonoVTable, klass)
 DECL_OFFSET(MonoVTable, max_interface_id)
@@ -134,6 +135,8 @@ DECL_OFFSET(MonoThreadsSync, nest)
 DECL_OFFSET(MonoProfilerCallContext, method)
 DECL_OFFSET(MonoProfilerCallContext, return_value)
 DECL_OFFSET(MonoProfilerCallContext, args)
+
+DECL_OFFSET(MonoError, init)
 
 #ifdef HAVE_SGEN_GC
 DECL_OFFSET(SgenClientThreadInfo, in_critical_region)

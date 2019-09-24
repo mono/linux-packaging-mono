@@ -94,7 +94,11 @@ target_triplet = @target@
 subdir = mono/native
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
+	$(top_srcdir)/m4/ax_append_flag.m4 \
+	$(top_srcdir)/m4/ax_append_link_flags.m4 \
 	$(top_srcdir)/m4/ax_check_compile_flag.m4 \
+	$(top_srcdir)/m4/ax_check_link_flag.m4 \
+	$(top_srcdir)/m4/ax_require_defined.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
@@ -242,6 +246,7 @@ am__objects_7 = libmono_native_compat_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo \
 	$(am__objects_6)
 am__objects_8 = $(am__objects_2) $(am__objects_6)
+@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_HAIKU_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_3)
 @MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_3)
 @MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_4)
 @MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_3)
@@ -366,6 +371,7 @@ am__objects_16 = libmono_native_unified_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo \
 	$(am__objects_15)
 am__objects_17 = $(am__objects_11) $(am__objects_15)
+@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_HAIKU_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_12)
 @MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_12)
 @MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_13)
 @MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_12)
@@ -486,6 +492,7 @@ am__objects_25 = libmono_native_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo \
 	$(am__objects_24)
 am__objects_26 = $(am__objects_20) $(am__objects_24)
+@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_HAIKU_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_21)
 @MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_21)
 @MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_22)
 @MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_21)
@@ -734,7 +741,6 @@ MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_CXXLD = @MONO_CXXLD@
-MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
 MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
@@ -768,6 +774,7 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+ODBC = @ODBC@
 ORDER = @ORDER@
 OS = @OS@
 OTOOL = @OTOOL@
@@ -812,6 +819,7 @@ XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XINERAMA = @XINERAMA@
 XMKMF = @XMKMF@
+ZLIB_CFLAGS = @ZLIB_CFLAGS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -950,6 +958,7 @@ ios_sources = pal-icalls.h pal-icalls.c \
 linux_sources = $(unix_sources)
 aix_sources = $(unix_sources)
 freebsd_sources = $(unix_sources)
+haiku_sources = $(unix_sources)
 android_sources = \
 	pal-android.h \
 	pal-android.c \
@@ -980,7 +989,8 @@ gss_sources = \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.h
 
-EXTRA_libmono_native_la_SOURCES = $(common_sources) $(macos_sources) $(ios_sources) $(linux_sources) $(aix_sources) $(freebsd) $(unix_sources) $(gss_sources)
+EXTRA_libmono_native_la_SOURCES = $(common_sources) $(macos_sources) $(ios_sources) $(linux_sources) $(aix_sources) $(freebsd_sources) $(haiku_sources) $(unix_sources) $(gss_sources)
+@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_HAIKU_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(haiku_sources)
 @MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(freebsd_sources)
 @MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(android_sources)
 @MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(aix_sources)

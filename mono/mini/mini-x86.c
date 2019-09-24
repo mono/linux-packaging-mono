@@ -58,11 +58,6 @@ static gpointer ss_trampoline;
 /* The breakpoint trampoline */
 static gpointer bp_trampoline;
 
-/* This mutex protects architecture specific caches */
-#define mono_mini_arch_lock() mono_os_mutex_lock (&mini_arch_mutex)
-#define mono_mini_arch_unlock() mono_os_mutex_unlock (&mini_arch_mutex)
-static mono_mutex_t mini_arch_mutex;
-
 #define ARGS_OFFSET 8
 
 #ifdef TARGET_WIN32
@@ -742,8 +737,6 @@ mono_arch_cpu_init (void)
 void
 mono_arch_init (void)
 {
-	mono_os_mutex_init_recursive (&mini_arch_mutex);
-
 	if (!mono_aot_only)
 		bp_trampoline = mini_get_breakpoint_trampoline ();
 }
@@ -754,7 +747,6 @@ mono_arch_init (void)
 void
 mono_arch_cleanup (void)
 {
-	mono_os_mutex_destroy (&mini_arch_mutex);
 }
 
 /*
@@ -1727,7 +1719,6 @@ x86_align_and_patch (MonoCompile *cfg, guint8 *code, guint32 patch_type, gconstp
 	if (cfg->abs_patches) {
 		jinfo = (MonoJumpInfo*)g_hash_table_lookup (cfg->abs_patches, data);
 		if (jinfo && (jinfo->type == MONO_PATCH_INFO_JIT_ICALL_ADDR
-				|| jinfo->type == MONO_PATCH_INFO_TRAMPOLINE_FUNC_ADDR
 				|| jinfo->type == MONO_PATCH_INFO_SPECIFIC_TRAMPOLINE_LAZY_FETCH_ADDR))
 			needs_paddings = FALSE;
 	}
@@ -2172,7 +2163,7 @@ mono_arch_have_fast_tls (void)
 	static gboolean inited = FALSE;
 	guint32 *ins;
 
-	if (mini_get_debug_options ()->use_fallback_tls)
+	if (mini_debug_options.use_fallback_tls)
 		return FALSE;
 	if (inited)
 		return have_fast_tls;
@@ -2192,7 +2183,7 @@ mono_arch_have_fast_tls (void)
 #elif defined(TARGET_ANDROID)
 	return FALSE;
 #else
-	if (mini_get_debug_options ()->use_fallback_tls)
+	if (mini_debug_options.use_fallback_tls)
 		return FALSE;
 	return TRUE;
 #endif
@@ -2293,6 +2284,29 @@ emit_setup_lmf (MonoCompile *cfg, guint8 *code, gint32 lmf_offset, int cfa_offse
 
 	return code;
 }
+
+#ifdef TARGET_WIN32
+
+#define TEB_LAST_ERROR_OFFSET 0x34
+
+static guint8*
+emit_get_last_error (guint8* code, int dreg)
+{
+	/* Threads last error value is located in TEB_LAST_ERROR_OFFSET. */
+	x86_prefix (code, X86_FS_PREFIX);
+	x86_mov_reg_mem (code, dreg, TEB_LAST_ERROR_OFFSET, sizeof (guint32));
+	return code;
+}
+
+#else
+
+static guint8*
+emit_get_last_error (guint8* code, int dreg)
+{
+	g_assert_not_reached ();
+}
+
+#endif
 
 /* benchmark and set based on cpu */
 #define LOOP_ALIGNMENT 8
@@ -3082,12 +3096,11 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			case OP_VCALL:
 			case OP_VCALL2:
 			case OP_VOIDCALL:
-			case OP_CALL:
-				if (ins->flags & MONO_INST_HAS_METHOD)
-					code = emit_call (cfg, code, MONO_PATCH_INFO_METHOD, call->method);
-				else
-					code = emit_call (cfg, code, MONO_PATCH_INFO_ABS, call->fptr);
+			case OP_CALL: {
+				const MonoJumpInfoTarget patch = mono_call_to_patch (call);
+				code = emit_call (cfg, code, patch.type, patch.target);
 				break;
+			}
 			case OP_FCALL_REG:
 			case OP_LCALL_REG:
 			case OP_VCALL_REG:
@@ -4858,6 +4871,9 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			x86_mov_membase_reg (code, ins->sreg1, MONO_STRUCT_OFFSET (MonoContext, esi), X86_ESI, sizeof (target_mgreg_t));
 			x86_mov_membase_reg (code, ins->sreg1, MONO_STRUCT_OFFSET (MonoContext, edi), X86_EDI, sizeof (target_mgreg_t));
 			break;
+		case OP_GET_LAST_ERROR:
+			code = emit_get_last_error (code, ins->dreg);
+			break;
 		default:
 			g_warning ("unknown opcode %s\n", mono_inst_name (ins->opcode));
 			g_assert_not_reached ();
@@ -4899,7 +4915,6 @@ mono_arch_patch_code_new (MonoCompile *cfg, MonoDomain *domain, guint8 *code, Mo
 	case MONO_PATCH_INFO_LABEL:
 	case MONO_PATCH_INFO_RGCTX_FETCH:
 	case MONO_PATCH_INFO_JIT_ICALL_ADDR:
-	case MONO_PATCH_INFO_TRAMPOLINE_FUNC_ADDR:
 	case MONO_PATCH_INFO_SPECIFIC_TRAMPOLINE_LAZY_FETCH_ADDR:
 		x86_patch (ip, (unsigned char*)target);
 		break;
@@ -5389,11 +5404,6 @@ mono_arch_finish_init (void)
 	} else {
 		g_free (mono_no_tls);
 	}
-}
-
-void
-mono_arch_free_jit_tls_data (MonoJitTlsData *tls)
-{
 }
 
 // Linear handler, the bsearch head compare is shorter

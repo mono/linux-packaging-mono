@@ -437,7 +437,6 @@ mono_decompose_opcode (MonoCompile *cfg, MonoInst *ins)
 	case OP_FCONV_TO_OVF_U1_UN:
 	case OP_FCONV_TO_OVF_U2_UN:
 	case OP_FCONV_TO_OVF_U4_UN:
-	case OP_FCONV_TO_OVF_U8_UN:
 	case OP_FCONV_TO_OVF_I_UN:
 	case OP_FCONV_TO_OVF_U_UN:
 		mono_cfg_set_exception_invalid_program (cfg, g_strdup_printf ("float conv.ovf.un opcodes not supported."));
@@ -1250,7 +1249,13 @@ mono_decompose_vtype_opts (MonoCompile *cfg)
 					g_assert (ins->klass);
 
 					EMIT_NEW_VARLOADA_VREG (cfg, dest, ins->dreg, m_class_get_byval_arg (ins->klass));
-					mini_emit_initobj (cfg, dest, NULL, ins->klass);
+
+					if (m_class_get_image (ins->klass) == mono_defaults.corlib && !strcmp (m_class_get_name (ins->klass), "MonoError")) {
+						// Used in icall wrappers, optimize initialization
+						MONO_EMIT_NEW_STORE_MEMBASE_IMM (cfg, OP_STOREI4_MEMBASE_IMM, dest->dreg, MONO_STRUCT_OFFSET (MonoError, init), 0);
+					} else {
+						mini_emit_initobj (cfg, dest, NULL, ins->klass);
+					}
 					
 					if (cfg->compute_gc_maps) {
 						MonoInst *tmp;
@@ -1811,7 +1816,7 @@ mono_decompose_soft_float (MonoCompile *cfg)
 					MONO_INST_NEW (cfg, iargs [1], OP_ARG);
 					iargs [1]->dreg = ins->sreg2;
 
-					call = mono_emit_native_call (cfg, mono_icall_get_wrapper (info), info->sig, iargs);
+					call = mono_emit_jit_icall_id (cfg, mono_jit_icall_info_id (info), iargs);
 
 					MONO_INST_NEW (cfg, cmp, OP_ICOMPARE_IMM);
 					cmp->sreg1 = call->dreg;
@@ -1851,7 +1856,7 @@ mono_decompose_soft_float (MonoCompile *cfg)
 					MONO_INST_NEW (cfg, iargs [1], OP_ARG);
 					iargs [1]->dreg = ins->sreg2;
 
-					call = mono_emit_native_call (cfg, mono_icall_get_wrapper (info), info->sig, iargs);
+					call = mono_emit_jit_icall_id (cfg, mono_jit_icall_info_id (info), iargs);
 
 					MONO_EMIT_NEW_BIALU_IMM (cfg, OP_ICOMPARE_IMM, -1, call->dreg, 1);
 					MONO_EMIT_NEW_UNALU (cfg, OP_ICEQ, ins->dreg, -1);

@@ -1891,7 +1891,7 @@ check_usable (MonoAssembly *assembly, MonoAotFileInfo *info, guint8 *blob, char 
 		msg = g_strdup_printf ("not compiled with --aot=llvm");
 		usable = FALSE;
 	}
-	if (mini_get_debug_options ()->mdb_optimizations && !(info->flags & MONO_AOT_FILE_FLAG_DEBUG) && !full_aot && !interp) {
+	if (mini_debug_options.mdb_optimizations && !(info->flags & MONO_AOT_FILE_FLAG_DEBUG) && !full_aot && !interp) {
 		msg = g_strdup_printf ("not compiled for debugging");
 		usable = FALSE;
 	}
@@ -1939,6 +1939,11 @@ get_call_table_entry (void *table, int index)
 	guint32 ins;
 	gint32 offset;
 
+	ins_addr = (guint32 *)table + (index * 2);
+	if ((guint32) *ins_addr == (guint32 ) 0xe51ff004) { // ldr pc, =<label>
+		return *((char **) (ins_addr + 1));
+	}
+
 	ins_addr = (guint32*)table + index;
 	ins = *ins_addr;
 	if ((ins >> ARMCOND_SHIFT) == ARMCOND_NV) {
@@ -1946,6 +1951,8 @@ get_call_table_entry (void *table, int index)
 		offset = (((int)(((ins & 0xffffff) << 1) | ((ins >> 24) & 0x1))) << 7) >> 7;
 		return (char*)ins_addr + (offset * 2) + 8 + 1;
 	} else {
+		g_assert ((ins >> ARMCOND_SHIFT) == ARMCOND_AL);
+		/* bl */
 		offset = (((int)ins & 0xffffff) << 8) >> 8;
 		return (char*)ins_addr + (offset * 4) + 8;
 	}
@@ -2790,7 +2797,7 @@ compute_llvm_code_range (MonoAotModule *amodule, guint8 **code_start, guint8 **c
 			addr = get_method (i);
 			gsize val = (gsize)addr;
 			if (val) {
-				g_assert (val > prev);
+				//g_assert (val > prev);
 				if (val < min)
 					min = val;
 				else if (val > max)
@@ -3881,7 +3888,6 @@ decode_patch (MonoAotModule *aot_module, MonoMemPool *mp, MonoJumpInfo *ji, guin
 	case MONO_PATCH_INFO_SPECIFIC_TRAMPOLINE_LAZY_FETCH_ADDR:
 		ji->data.uindex = decode_value (p, &p);
 		break;
-	case MONO_PATCH_INFO_TRAMPOLINE_FUNC_ADDR:
 	case MONO_PATCH_INFO_CASTCLASS_CACHE:
 		ji->data.index = decode_value (p, &p);
 		break;
@@ -3986,8 +3992,6 @@ decode_patch (MonoAotModule *aot_module, MonoMemPool *mp, MonoJumpInfo *ji, guin
 	}
 	case MONO_PATCH_INFO_GC_SAFE_POINT_FLAG:
 		break;
-	case MONO_PATCH_INFO_GET_TLS_TRAMP:
-	case MONO_PATCH_INFO_SET_TLS_TRAMP:
 	case MONO_PATCH_INFO_AOT_JIT_INFO:
 		ji->data.index = decode_value (p, &p);
 		break;
@@ -4177,6 +4181,7 @@ load_method (MonoDomain *domain, MonoAotModule *amodule, MonoImage *image, MonoM
 
 	if (mini_debug_options.aot_skip_set && !(method && method->wrapper_type)) {
 		gint32 methods_aot = mono_atomic_load_i32 (&mono_jit_stats.methods_aot);
+		methods_aot += mono_atomic_load_i32 (&mono_jit_stats.methods_aot_llvm);
 		if (methods_aot == mini_debug_options.aot_skip) {
 			if (!method) {
 				method = mono_get_method_checked (image, token, NULL, NULL, error);
@@ -4197,6 +4202,7 @@ load_method (MonoDomain *domain, MonoAotModule *amodule, MonoImage *image, MonoM
 
 	if (mono_last_aot_method != -1) {
 		gint32 methods_aot = mono_atomic_load_i32 (&mono_jit_stats.methods_aot);
+		methods_aot += mono_atomic_load_i32 (&mono_jit_stats.methods_aot_llvm);
 		if (methods_aot >= mono_last_aot_method)
 			return NULL;
 		else if (methods_aot == mono_last_aot_method - 1) {
@@ -4260,7 +4266,10 @@ load_method (MonoDomain *domain, MonoAotModule *amodule, MonoImage *image, MonoM
 
 	amodule_lock (amodule);
 
-	mono_atomic_inc_i32 (&mono_jit_stats.methods_aot);
+	if (is_llvm_code (amodule, code))
+		mono_atomic_inc_i32 (&mono_jit_stats.methods_aot_llvm);
+	else
+		mono_atomic_inc_i32 (&mono_jit_stats.methods_aot);
 
 	if (method && method->wrapper_type)
 		g_hash_table_insert (amodule->method_to_code, method, code);
@@ -4608,7 +4617,7 @@ init_method (MonoAotModule *amodule, guint32 method_index, MonoMethod *method, M
 		mono_mempool_destroy (mp);
 	}
 
-	if (mini_get_debug_options ()->load_aot_jit_info_eagerly)
+	if (mini_debug_options.load_aot_jit_info_eagerly)
 		jinfo = mono_aot_find_jit_info (domain, amodule->assembly->image, code);
 
 	gboolean inited_ok;
@@ -4722,7 +4731,7 @@ mono_aot_get_method (MonoDomain *domain, MonoMethod *method, MonoError *error)
 		method_index = mono_metadata_token_index (method->token) - 1;
 
 		if (amodule->llvm_code_start) {
-			/* Needed by mono_aot_init_gshared_method_this () */
+			/* Needed by mini_llvm_init_gshared_method_this () */
 			/* orig_method is a random instance but it is enough to make init_method () work */
 			amodule_lock (amodule);
 			g_hash_table_insert (amodule->extra_methods, GUINT_TO_POINTER (method_index), orig_method);
@@ -5109,16 +5118,19 @@ mono_aot_plt_resolve (gpointer aot_module, guint32 plt_info_offset, guint8 *code
 	 * patches, so have to translate between the two.
 	 * FIXME: Clean this up, but how ?
 	 */
-	if (ji.type == MONO_PATCH_INFO_ABS || ji.type == MONO_PATCH_INFO_JIT_ICALL_ID
+	if (ji.type == MONO_PATCH_INFO_ABS
+		|| ji.type == MONO_PATCH_INFO_JIT_ICALL_ID
 		|| ji.type == MONO_PATCH_INFO_ICALL_ADDR
-		|| ji.type == MONO_PATCH_INFO_TRAMPOLINE_FUNC_ADDR || ji.type == MONO_PATCH_INFO_SPECIFIC_TRAMPOLINE_LAZY_FETCH_ADDR
-		|| ji.type == MONO_PATCH_INFO_JIT_ICALL_ADDR || ji.type == MONO_PATCH_INFO_RGCTX_FETCH) {
+		|| ji.type == MONO_PATCH_INFO_SPECIFIC_TRAMPOLINE_LAZY_FETCH_ADDR
+		|| ji.type == MONO_PATCH_INFO_JIT_ICALL_ADDR
+		|| ji.type == MONO_PATCH_INFO_RGCTX_FETCH) {
 		/* These should already have a function descriptor */
 #ifdef PPC_USES_FUNCTION_DESCRIPTOR
 		/* Our function descriptors have a 0 environment, gcc created ones don't */
 		if (ji.type != MONO_PATCH_INFO_JIT_ICALL_ID
-				&& ji.type != MONO_PATCH_INFO_JIT_ICALL_ADDR && ji.type != MONO_PATCH_INFO_ICALL_ADDR
-				&& ji.type != MONO_PATCH_INFO_TRAMPOLINE_FUNC_ADDR && ji.type != MONO_PATCH_INFO_SPECIFIC_TRAMPOLINE_LAZY_FETCH_ADDR)
+				&& ji.type != MONO_PATCH_INFO_JIT_ICALL_ADDR
+				&& ji.type != MONO_PATCH_INFO_ICALL_ADDR
+				&& ji.type != MONO_PATCH_INFO_SPECIFIC_TRAMPOLINE_LAZY_FETCH_ADDR)
 			g_assert (((gpointer*)target) [2] == 0);
 #endif
 		/* Empty */
@@ -5351,9 +5363,7 @@ load_function_full (MonoAotModule *amodule, const char *name, MonoTrampInfo **ou
 			 * When this code is executed, the runtime may not be initalized yet, so
 			 * resolve the patch info by hand.
 			 */
-			if (ji->type == MONO_PATCH_INFO_TRAMPOLINE_FUNC_ADDR) {
-				target = (gpointer)mono_get_trampoline_func ((MonoTrampolineType)ji->data.index);
-			} else if (ji->type == MONO_PATCH_INFO_SPECIFIC_TRAMPOLINE_LAZY_FETCH_ADDR) {
+			if (ji->type == MONO_PATCH_INFO_SPECIFIC_TRAMPOLINE_LAZY_FETCH_ADDR) {
 				target = mono_create_specific_trampoline (GUINT_TO_POINTER (ji->data.uindex), MONO_TRAMPOLINE_RGCTX_LAZY_FETCH, mono_get_root_domain (), NULL);
 				target = mono_create_ftnptr_malloc ((guint8 *)target);
 			} else if (ji->type == MONO_PATCH_INFO_JIT_ICALL_ADDR) {
@@ -5389,9 +5399,7 @@ load_function_full (MonoAotModule *amodule, const char *name, MonoTrampInfo **ou
 				case MONO_JIT_ICALL_generic_trampoline_delegate:
 				case MONO_JIT_ICALL_generic_trampoline_generic_virtual_remoting:
 				case MONO_JIT_ICALL_generic_trampoline_vcall:
-					g_assert (0); // FIXME replace MONO_PATCH_INFO_TRAMPOLINE_FUNC_ADDR with MONO_PATCH_INFO_JIT_ICALL_ADDR.
-					g_static_assert (MONO_TRAMPOLINE_JIT == 0);
-					target = (gpointer)mono_get_trampoline_func ((MonoTrampolineType)(jit_icall_id - MONO_JIT_ICALL_generic_trampoline_jit));
+					target = (gpointer)mono_get_trampoline_func (mono_jit_icall_id_to_trampoline_type (jit_icall_id));
 					break;
 				default:
 					target = mono_arch_load_function (jit_icall_id);
@@ -6269,21 +6277,6 @@ mono_aot_find_method_index (MonoMethod *method)
 
 void
 mono_aot_init_llvm_method (gpointer aot_module, guint32 method_index)
-{
-}
-
-void
-mono_aot_init_gshared_method_this (gpointer aot_module, guint32 method_index, MonoObject *this)
-{
-}
-
-void
-mono_aot_init_gshared_method_mrgctx (gpointer aot_module, guint32 method_index, MonoMethodRuntimeGenericContext *rgctx)
-{
-}
-
-void
-mono_aot_init_gshared_method_vtable (gpointer aot_module, guint32 method_index, MonoVTable *vtable)
 {
 }
 

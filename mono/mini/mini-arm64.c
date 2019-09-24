@@ -241,7 +241,7 @@ mono_arch_init (void)
 
 	mono_arm_gsharedvt_init ();
 
-#if defined(TARGET_IOS)
+#if defined(TARGET_IOS) || defined(TARGET_WATCHOS)
 	ios_abi = TRUE;
 #endif
 }
@@ -1009,11 +1009,6 @@ mono_arch_patch_code_new (MonoCompile *cfg, MonoDomain *domain, guint8 *code, Mo
 }
 
 void
-mono_arch_free_jit_tls_data (MonoJitTlsData *tls)
-{
-}
-
-void
 mono_arch_flush_register_windows (void)
 {
 }
@@ -1244,17 +1239,28 @@ add_param (CallInfo *cinfo, ArgInfo *ainfo, MonoType *t)
 	case MONO_TYPE_U2:
 		add_general (cinfo, ainfo, 2, FALSE);
 		break;
+#ifdef MONO_ARCH_ILP32
+	case MONO_TYPE_I:
+#endif
 	case MONO_TYPE_I4:
 		add_general (cinfo, ainfo, 4, TRUE);
 		break;
+#ifdef MONO_ARCH_ILP32
+	case MONO_TYPE_U:
+	case MONO_TYPE_PTR:
+	case MONO_TYPE_FNPTR:
+	case MONO_TYPE_OBJECT:
+#endif
 	case MONO_TYPE_U4:
 		add_general (cinfo, ainfo, 4, FALSE);
 		break;
+#ifndef MONO_ARCH_ILP32
 	case MONO_TYPE_I:
 	case MONO_TYPE_U:
 	case MONO_TYPE_PTR:
 	case MONO_TYPE_FNPTR:
 	case MONO_TYPE_OBJECT:
+#endif
 	case MONO_TYPE_U8:
 	case MONO_TYPE_I8:
 		add_general (cinfo, ainfo, 8, FALSE);
@@ -1433,7 +1439,7 @@ arg_set_val (CallContext *ccontext, ArgInfo *ainfo, gpointer src)
 void
 mono_arch_set_native_call_context_args (CallContext *ccontext, gpointer frame, MonoMethodSignature *sig)
 {
-	MonoEECallbacks *interp_cb = mini_get_interp_callbacks ();
+	const MonoEECallbacks *interp_cb = mini_get_interp_callbacks ();
 	CallInfo *cinfo = get_call_info (NULL, sig);
 	gpointer storage;
 	ArgInfo *ainfo;
@@ -1481,7 +1487,7 @@ mono_arch_set_native_call_context_args (CallContext *ccontext, gpointer frame, M
 void
 mono_arch_set_native_call_context_ret (CallContext *ccontext, gpointer frame, MonoMethodSignature *sig)
 {
-	MonoEECallbacks *interp_cb;
+	const MonoEECallbacks *interp_cb;
 	CallInfo *cinfo;
 	gpointer storage;
 	ArgInfo *ainfo;
@@ -1513,7 +1519,7 @@ mono_arch_set_native_call_context_ret (CallContext *ccontext, gpointer frame, Mo
 void
 mono_arch_get_native_call_context_args (CallContext *ccontext, gpointer frame, MonoMethodSignature *sig)
 {
-	MonoEECallbacks *interp_cb = mini_get_interp_callbacks ();
+	const MonoEECallbacks *interp_cb = mini_get_interp_callbacks ();
 	CallInfo *cinfo = get_call_info (NULL, sig);
 	gpointer storage;
 	ArgInfo *ainfo;
@@ -1546,7 +1552,7 @@ mono_arch_get_native_call_context_args (CallContext *ccontext, gpointer frame, M
 void
 mono_arch_get_native_call_context_ret (CallContext *ccontext, gpointer frame, MonoMethodSignature *sig)
 {
-	MonoEECallbacks *interp_cb;
+	const MonoEECallbacks *interp_cb;
 	CallInfo *cinfo;
 	ArgInfo *ainfo;
 	gpointer storage;
@@ -3355,7 +3361,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 
 				arm_ldrx (code, ARMREG_IP1, info_var->inst_basereg, info_var->inst_offset);
 				/* Add the offset */
-				val = ((offset / 4) * sizeof (guint8*)) + MONO_STRUCT_OFFSET (SeqPointInfo, bp_addrs);
+				val = ((offset / 4) * sizeof (target_mgreg_t)) + MONO_STRUCT_OFFSET (SeqPointInfo, bp_addrs);
 				/* Load the info->bp_addrs [offset], which is either 0 or the address of the bp trampoline */
 				code = emit_ldrx (code, ARMREG_IP1, ARMREG_IP1, val);
 				/* Skip the load if its 0 */
@@ -4324,14 +4330,14 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 		case OP_LCALL:
 		case OP_FCALL:
 		case OP_RCALL:
-		case OP_VCALL2:
+		case OP_VCALL2: {
+
 			call = (MonoCallInst*)ins;
-			if (ins->flags & MONO_INST_HAS_METHOD)
-				code = emit_call (cfg, code, MONO_PATCH_INFO_METHOD, call->method);
-			else
-				code = emit_call (cfg, code, MONO_PATCH_INFO_ABS, call->fptr);
+			const MonoJumpInfoTarget patch = mono_call_to_patch (call);
+			code = emit_call (cfg, code, patch.type, patch.target);
 			code = emit_move_return_value (cfg, code, ins);
 			break;
+		}
 		case OP_VOIDCALL_REG:
 		case OP_CALL_REG:
 		case OP_LCALL_REG:

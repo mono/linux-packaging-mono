@@ -92,7 +92,11 @@ target_triplet = @target@
 subdir = support
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
+	$(top_srcdir)/m4/ax_append_flag.m4 \
+	$(top_srcdir)/m4/ax_append_link_flags.m4 \
 	$(top_srcdir)/m4/ax_check_compile_flag.m4 \
+	$(top_srcdir)/m4/ax_check_link_flag.m4 \
+	$(top_srcdir)/m4/ax_require_defined.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
@@ -145,9 +149,9 @@ am__libMonoPosixHelper_la_SOURCES_DIST = errno.c map.c map.h mph.h \
 	sys-statvfs.c sys-time.c sys-uio.c sys-uio.h sys-utsname.c \
 	sys-wait.c sys-xattr.c syslog.c time.c unistd.c utime.c \
 	x-struct-str.c zlib-helper.c adler32.c compress.c crc32.c \
-	uncompr.c deflate.c trees.c zutil.c inflate.c infback.c \
-	inftrees.c inffast.c crc32.h deflate.h inffast.h inffixed.h \
-	inflate.h inftrees.h trees.h zconf.h zlib.h zutil.h \
+	uncompr.c deflate.c gzguts.h trees.c zutil.c inflate.c \
+	infback.c inftrees.c inffast.c crc32.h deflate.h inffast.h \
+	inffixed.h inflate.h inftrees.h trees.h zconf.h zlib.h zutil.h \
 	minizip/crypt.h minizip/ioapi.c minizip/ioapi.h \
 	minizip/unzip.c minizip/unzip.h minizip/zip.c minizip/zip.h
 am__objects_1 = errno.lo map.lo signal.lo stdio.lo string.lo stdlib.lo
@@ -160,11 +164,11 @@ am__objects_2 = dirent.lo fcntl.lo fstab.lo grp.lo macros.lo nl.lo \
 @HOST_WIN32_TRUE@am__objects_3 = $(am__objects_1)
 am__objects_4 = adler32.lo compress.lo crc32.lo uncompr.lo deflate.lo \
 	trees.lo zutil.lo inflate.lo infback.lo inftrees.lo inffast.lo
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@am__objects_5 =  \
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@	zlib-helper.lo \
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@	$(am__objects_4)
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@am__objects_5 =  \
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@	zlib-helper.lo
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@am__objects_5 =  \
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@	zlib-helper.lo \
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@	$(am__objects_4)
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_TRUE@am__objects_5 =  \
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_TRUE@	zlib-helper.lo
 @HAVE_STATIC_ZLIB_TRUE@am__objects_5 = zlib-helper.lo
 am__dirstamp = $(am__leading_dot)dirstamp
 am__objects_6 = minizip/ioapi.lo minizip/unzip.lo minizip/zip.lo
@@ -363,7 +367,6 @@ MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_CXXLD = @MONO_CXXLD@
-MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
 MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
@@ -397,6 +400,7 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+ODBC = @ODBC@
 ORDER = @ORDER@
 OS = @OS@
 OTOOL = @OTOOL@
@@ -441,6 +445,7 @@ XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XINERAMA = @XINERAMA@
 XMKMF = @XMKMF@
+ZLIB_CFLAGS = @ZLIB_CFLAGS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -528,6 +533,7 @@ top_srcdir = @top_srcdir@
 @BUILD_SUPPORT_TRUE@	$(SUPPORT)
 
 AM_CPPFLAGS = \
+	@ZLIB_CFLAGS@				\
 	$(GLIB_CFLAGS)				\
 	-I$(top_srcdir)
 
@@ -596,6 +602,7 @@ ZLIB_SOURCES = \
 	crc32.c		\
 	uncompr.c	\
 	deflate.c	\
+	gzguts.h	\
 	trees.c		\
 	zutil.c		\
 	inflate.c	\
@@ -613,11 +620,11 @@ ZLIB_SOURCES = \
 	zlib.h  	\
 	zutil.h
 
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@Z_SOURCE = zlib-helper.c $(ZLIB_SOURCES)
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@Z_SOURCE = zlib-helper.c
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@Z_SOURCE = zlib-helper.c $(ZLIB_SOURCES)
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_TRUE@Z_SOURCE = zlib-helper.c
 @HAVE_STATIC_ZLIB_TRUE@Z_SOURCE = zlib-helper.c
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_FALSE@Z_LIBS = 
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_ZLIB_TRUE@Z_LIBS = -lz
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@Z_LIBS = 
+@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_TRUE@Z_LIBS = -lz
 @HAVE_STATIC_ZLIB_TRUE@Z_LIBS = $(STATIC_ZLIB_PATH)
 libMonoPosixHelper_la_SOURCES = \
 	$(MPH_SOURCE)				\
