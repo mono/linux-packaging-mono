@@ -1,3 +1,14 @@
+mono (6.6.0.97-0xamarin2) preview; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [382ad37] Refreshed symbols [8c01f4d] Add missing man page [fca61fa]
+    Add aprofutil [28e2223] Add watchdog
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Wed, 25 Sep 2019 13:59:40 +0000
+
 mono (6.6.0.97-0xamarin1) preview; urgency=medium
 
   * New release - mono-6.6.0.97.tar.xz
