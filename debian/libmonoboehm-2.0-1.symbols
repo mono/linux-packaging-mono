@@ -656,18 +656,6 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_class_value_size@Base 4.1.0.1738
  mono_class_vtable@Base 4.1.0.1738
  mono_cli_rva_image_map@Base 4.1.0.1738
- mono_code_manager_cleanup@Base 4.1.0.1738
- mono_code_manager_commit@Base 4.1.0.1738
- mono_code_manager_destroy@Base 4.1.0.1738
- mono_code_manager_init@Base 4.1.0.1738
- mono_code_manager_install_callbacks@Base 4.9.0.1707
- mono_code_manager_invalidate@Base 4.1.0.1738
- mono_code_manager_new@Base 4.1.0.1738
- mono_code_manager_new_dynamic@Base 4.1.0.1738
- mono_code_manager_reserve@Base 4.1.0.1738
- mono_code_manager_reserve_align@Base 4.1.0.1738
- mono_code_manager_set_read_only@Base 4.1.0.1738
- mono_code_manager_size@Base 4.1.0.1738
  mono_compile_method@Base 4.1.0.1738
  mono_conc_hashtable_destroy@Base 4.1.0.1738
  mono_conc_hashtable_foreach@Base 4.1.0.1738
@@ -1423,6 +1411,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_runtime_set_main_args@Base 4.1.0.1738
  mono_runtime_set_pending_exception@Base 5.12.0.220
  mono_runtime_set_shutting_down@Base 4.1.0.1738
+ mono_runtime_try_invoke@Base 6.6.0.97
  mono_security_core_clr_get_options@Base 4.1.0.1738
  mono_security_core_clr_require_elevated_permissions@Base 4.1.0.1738
  mono_security_core_clr_set_options@Base 4.1.0.1738
@@ -1497,6 +1486,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_thread_detach@Base 4.1.0.1738
  mono_thread_detach_if_exiting@Base 4.1.0.1738
  mono_thread_exit@Base 4.1.0.1738
+ mono_thread_get_coop_aware@Base 6.6.0.97
  mono_thread_get_main@Base 4.1.0.1738
  mono_thread_get_managed_id@Base 4.3.3.735
  mono_thread_get_name_utf8@Base 4.3.3.735
@@ -1521,6 +1511,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_thread_is_foreign@Base 4.1.0.1738
  mono_thread_manage@Base 4.1.0.1738
  mono_thread_new_init@Base 4.1.0.1738
+ mono_thread_set_coop_aware@Base 6.6.0.97
  mono_thread_set_main@Base 4.1.0.1738
  mono_thread_set_manage_callback@Base 4.1.0.1738
  mono_thread_set_name_internal@Base 5.14.0.78
@@ -1826,6 +1817,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_g_strlcpy@Base 5.8.0.22
  monoeg_g_strndup@Base 5.8.0.22
  monoeg_g_strnfill@Base 5.8.0.22
+ monoeg_g_strnlen@Base 6.6.0.97
  monoeg_g_strreverse@Base 5.8.0.22
  monoeg_g_strsplit@Base 5.8.0.22
  monoeg_g_strsplit_set@Base 5.8.0.22
