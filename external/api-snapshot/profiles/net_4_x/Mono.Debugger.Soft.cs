@@ -836,6 +836,7 @@ namespace Mono.Debugger.Soft
         public Mono.Debugger.Soft.EnumMirror CreateEnumMirror(Mono.Debugger.Soft.TypeMirror type, Mono.Debugger.Soft.PrimitiveValue value) { throw null; }
         public Mono.Debugger.Soft.ExceptionEventRequest CreateExceptionRequest(Mono.Debugger.Soft.TypeMirror exc_type) { throw null; }
         public Mono.Debugger.Soft.ExceptionEventRequest CreateExceptionRequest(Mono.Debugger.Soft.TypeMirror exc_type, bool caught, bool uncaught) { throw null; }
+        public Mono.Debugger.Soft.ExceptionEventRequest CreateExceptionRequest(Mono.Debugger.Soft.TypeMirror exc_type, bool caught, bool uncaught, bool everything_else) { throw null; }
         public Mono.Debugger.Soft.MethodEntryEventRequest CreateMethodEntryRequest() { throw null; }
         public Mono.Debugger.Soft.MethodExitEventRequest CreateMethodExitRequest() { throw null; }
         public Mono.Debugger.Soft.StepEventRequest CreateStepRequest(Mono.Debugger.Soft.ThreadMirror thread) { throw null; }
