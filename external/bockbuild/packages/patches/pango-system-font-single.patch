@@ -427,7 +427,7 @@ index bcbb173..4234bf1 100644
 
            fontset = g_hash_table_lookup (ctfontmap->fontset_hash, &key);
            if (G_LIKELY (fontset))
-@@ -1450,6 +1430,53 @@ pango_core_text_font_map_init (PangoCoreTextFontMap *ctfontmap)
+@@ -1450,6 +1430,52 @@ pango_core_text_font_map_init (PangoCoreTextFontMap *ctfontmap)
        CFRelease (dict);
      }
 
@@ -438,7 +438,6 @@ index bcbb173..4234bf1 100644
 +
 +      NSArray *fontfaces = [[NSFontManager sharedFontManager] availableMembersOfFontFamily: name];
 +      int num_faces = [fontfaces count];
-+      CFRelease (name);
 +
 +      for (int faceindex = 0; faceindex < num_faces; faceindex++)
 +        {
