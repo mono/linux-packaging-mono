@@ -9,6 +9,5 @@ class GtkSharp212ReleasePackage (Package):
                              'configure': './bootstrap-2.12 --prefix=%{package_prefix}',
                          }
                          )
-        self.make = 'make CSC=mcs'
 
 GtkSharp212ReleasePackage()

@@ -114,6 +114,7 @@ namespace Mono.Debugger.Soft
         protected abstract int TransportReceive(byte[] buf, int buf_offset, int len);
         protected abstract int TransportSend(byte[] buf, int buf_offset, int len);
         protected abstract void TransportSetTimeouts(int send_timeout, int receive_timeout);
+        protected abstract void TransportShutdown();
         public long[] Type_GetMethodsByNameFlags(long id, string name, int flags, bool ignoreCase) { throw null; }
     }
     public partial class CrashEvent : Mono.Debugger.Soft.Event
