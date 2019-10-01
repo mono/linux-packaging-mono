@@ -132,6 +132,20 @@ namespace System
             return div;
         }
 
+        internal static uint DivRem(uint a, uint b, out uint result)
+        {
+            uint div = a / b;
+            result = a - (div * b);
+            return div;
+        }
+
+        internal static ulong DivRem(ulong a, ulong b, out ulong result)
+        {
+            ulong div = a / b;
+            result = a - (div * b);
+            return div;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal Ceiling(decimal d)
         {
