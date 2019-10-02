@@ -227,6 +227,9 @@ binary-indep: build-stamp install-stamp
 	# that exclude list are programs for arch-dep packages
 	dh_install -i --list-missing -Xusr/share/man -Xusr/share/jay -Xusr/lib/libmono -Xusr/lib/libMono -Xbin/monodis -Xbin/monograph -Xbin/mono-find-provides -Xbin/mono-find-requires -Xbin/pedump -Xbin/jay
 
+	# avoid double-packaging
+	rm -f debian/tmp/mono-devel/usr/lib/mono/4.5/Facades/netstandard.*
+
 	# Late GAC
 	install -D -m 755 debian/mono.runtime-script debian/mono-gac/usr/share/cli-common/runtimes.d/mono
 

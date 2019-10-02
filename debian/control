@@ -384,6 +384,7 @@ Depends: ${misc:Depends},
          libmono-microsoft-csharp4.0-cil (= ${source:Version}),
          libmono-microsoft-visualc10.0-cil (= ${source:Version}),
          libmono-microsoft-web-infrastructure1.0-cil (= ${source:Version}),
+         libmono-netstandard2.1-cil (= ${source:Version}),
          libmono-oracle4.0-cil (= ${source:Version}),
          libmono-parallel4.0-cil (= ${source:Version}),
          libmono-peapi4.0a-cil (= ${source:Version}),
@@ -688,6 +689,21 @@ Description: Mono SMDiagnostics Library (for CLI 4.0)
  of the Windows Communication Foundation (WCF) libraries of Mono for CLI 4.0.
  The WFC stack is for building SOA-based applications.
  Its development is in early stages.
+
+Package: libmono-netstandard2.1-cil
+Architecture: all
+Depends: ${misc:Depends}, ${cli:Depends}
+Breaks: mono-devel (<< 6.7.0.819)
+Replaces: mono-devel (<< 6.7.0.819)
+Description: Mono core library (for CLI 4.5)
+ Mono is a platform for running and developing applications based on the
+ ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
+ Mono provides a complete CLR (Common Language Runtime) including compiler and
+ runtime, which can produce and execute CIL (Common Intermediate Language)
+ bytecode (aka assemblies), and a class library.
+ .
+ This package contains the NetStandard library, which allows running
+ applications built for a common subset of Mono, .NET Framework, and .NET Core
 
 Package: libmono-corlib4.5-cil
 Architecture: all
