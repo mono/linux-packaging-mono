@@ -698,6 +698,8 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_counters_register_with_size@Base 4.1.0.1738
  mono_counters_sample@Base 4.1.0.1738
  mono_cpu_count@Base 5.5.0.426
+ mono_cpu_features_disabled@Base 6.7.0.833∑
+ mono_cpu_features_enabled@Base 6.7.0.833
  mono_custom_attrs_construct@Base 4.1.0.1738
  mono_custom_attrs_free@Base 4.1.0.1738
  mono_custom_attrs_from_assembly@Base 4.1.0.1738
@@ -1017,6 +1019,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_jit_info_table_find@Base 4.1.0.1738
  mono_jit_init@Base 4.1.0.1738
  mono_jit_init_version@Base 4.1.0.1738
+ mono_jit_init_version_for_test_only@Base 6.7.0.833
  mono_jit_parse_options@Base 4.1.0.1738
  mono_jit_set_aot_mode@Base 4.1.0.1738
  mono_jit_set_aot_only@Base 4.1.0.1738
