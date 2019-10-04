@@ -309,7 +309,7 @@ binary-indep: build-stamp install-stamp
 	debian/dh_makeclilibs -p libmono-windowsbase4.0-cil -m 3.0.6 $(DH_INTERNAL_MONO_PARAM)
 	debian/dh_makeclilibs -p monodoc-base -m 3.2.1 $(DH_INTERNAL_MONO_PARAM)
 	debian/dh_makeclilibs -p libmono-cecil-private-cil -m $(UPVERSION) -l $(NEXT_UPVERSION) $(DH_INTERNAL_MONO_PARAM)
-	debian/dh_clideps -i -X/usr/lib/mono/4.0/ -X/usr/lib/mono/2.0-api/ -X/usr/lib/mono/3.5-api/ -X/usr/lib/mono/4.0-api/ -X/usr/lib/mono/4.5-api/ -X/usr/lib/mono/4.5.1-api/ -X/usr/lib/mono/4.5.2-api/ -X/usr/lib/mono/4.6-api/ -X/usr/lib/mono/4.6.1-api/ -X/usr/lib/mono/4.6.2-api/ -X/usr/lib/mono/4.7-api/ -X/usr/lib/mono/4.7.1-api/ -X/usr/lib/mono/4.7.2-api/ -X/usr/lib/mono/4.8-api/ -X/usr/lib/mono/4.5/Facades/ -l debian/tmp $(DH_INTERNAL_MONO_PARAM)
+	debian/dh_clideps -i -X/usr/lib/mono/4.0/ -X/usr/lib/mono/2.0-api/ -X/usr/lib/mono/3.5-api/ -X/usr/lib/mono/4.0-api/ -X/usr/lib/mono/4.5-api/ -X/usr/lib/mono/4.5.1-api/ -X/usr/lib/mono/4.5.2-api/ -X/usr/lib/mono/4.6-api/ -X/usr/lib/mono/4.6.1-api/ -X/usr/lib/mono/4.6.2-api/ -X/usr/lib/mono/4.7-api/ -X/usr/lib/mono/4.7.1-api/ -X/usr/lib/mono/4.7.2-api/ -X/usr/lib/mono/4.8-api/ -X/usr/lib/mono/4.5/Facades/[A-Z]* -l debian/tmp $(DH_INTERNAL_MONO_PARAM)
 	#DH_VERBOSE=1 debian/dh_clideps -i -l debian/tmp $(DH_INTERNAL_MONO_PARAM)
 	# mono-1.0/2.0-gac needs special runtime dep, to prevent circular dep (mono-runtime <-> mono-1.0/2.0-gac)
 	debian/dh_clideps -p mono-4.0-gac -r $(DH_INTERNAL_MONO_PARAM)
