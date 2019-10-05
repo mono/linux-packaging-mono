@@ -90,24 +90,24 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@CROSS_COMPILE_FALSE@@X86_TRUE@am__append_1 = mach-support-x86.c
-@AMD64_TRUE@@CROSS_COMPILE_FALSE@am__append_2 = mach-support-amd64.c
-@ARM_TRUE@@CROSS_COMPILE_FALSE@am__append_3 = mach-support-arm.c
-@ARM64_TRUE@@CROSS_COMPILE_FALSE@am__append_4 = mach-support-arm64.c
-@CROSS_COMPILE_TRUE@am__append_5 = mach-support-unknown.c
-@CROSS_COMPILE_FALSE@@X86_TRUE@am__append_6 = mono-hwcap-x86.c
-@AMD64_TRUE@@CROSS_COMPILE_FALSE@am__append_7 = mono-hwcap-x86.c
-@ARM_TRUE@@CROSS_COMPILE_FALSE@am__append_8 = mono-hwcap-arm.c
-@ARM64_TRUE@@CROSS_COMPILE_FALSE@am__append_9 = mono-hwcap-arm64.c
-@CROSS_COMPILE_FALSE@@MIPS_TRUE@am__append_10 = mono-hwcap-mips.c
-@CROSS_COMPILE_FALSE@@POWERPC_TRUE@am__append_11 = mono-hwcap-ppc.c
-@CROSS_COMPILE_FALSE@@POWERPC64_TRUE@am__append_12 = mono-hwcap-ppc.c
-@CROSS_COMPILE_FALSE@@SPARC_TRUE@am__append_13 = mono-hwcap-sparc.c
-@CROSS_COMPILE_FALSE@@SPARC64_TRUE@am__append_14 = mono-hwcap-sparc.c
-@CROSS_COMPILE_FALSE@@S390X_TRUE@am__append_15 = mono-hwcap-s390x.c
-@CROSS_COMPILE_FALSE@@RISCV_TRUE@am__append_16 = mono-hwcap-riscv.c
-@CROSS_COMPILE_FALSE@@HOST_WASM_TRUE@am__append_17 = mono-hwcap-wasm.c
-@CROSS_COMPILE_TRUE@am__append_18 = mono-hwcap-cross.c
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@X86_TRUE@am__append_1 = mach-support-x86.c
+@AMD64_TRUE@@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__append_2 = mach-support-amd64.c
+@ARM_TRUE@@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__append_3 = mach-support-arm.c
+@ARM64_TRUE@@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__append_4 = mach-support-arm64.c
+@CROSS_COMPILE_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__append_5 = mach-support-unknown.c
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@X86_TRUE@am__append_6 = mono-hwcap-x86.c
+@AMD64_TRUE@@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__append_7 = mono-hwcap-x86.c
+@ARM_TRUE@@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__append_8 = mono-hwcap-arm.c
+@ARM64_TRUE@@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__append_9 = mono-hwcap-arm64.c
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@MIPS_TRUE@am__append_10 = mono-hwcap-mips.c
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@POWERPC_TRUE@am__append_11 = mono-hwcap-ppc.c
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@POWERPC64_TRUE@am__append_12 = mono-hwcap-ppc.c
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@SPARC_TRUE@am__append_13 = mono-hwcap-sparc.c
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@SPARC64_TRUE@am__append_14 = mono-hwcap-sparc.c
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@S390X_TRUE@am__append_15 = mono-hwcap-s390x.c
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@RISCV_TRUE@am__append_16 = mono-hwcap-riscv.c
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_TRUE@am__append_17 = mono-hwcap-wasm.c
+@CROSS_COMPILE_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__append_18 = mono-hwcap-cross.c
 subdir = mono/utils
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -131,7 +131,9 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libmonomath_la_LIBADD =
-am_libmonomath_la_OBJECTS = libmonomath_la-mono-math-c.lo
+am__libmonomath_la_SOURCES_DIST = mono-math-c.c
+@ENABLE_MSVC_ONLY_FALSE@am_libmonomath_la_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@	libmonomath_la-mono-math-c.lo
 libmonomath_la_OBJECTS = $(am_libmonomath_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -141,7 +143,8 @@ libmonomath_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmonomath_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o \
 	$@
-libmonoutils_la_DEPENDENCIES = mono-math-c.lo
+@ENABLE_MSVC_ONLY_FALSE@am_libmonomath_la_rpath =
+@ENABLE_MSVC_ONLY_FALSE@libmonoutils_la_DEPENDENCIES = mono-math-c.lo
 am__libmonoutils_la_SOURCES_DIST = dlmalloc.h dlmalloc.c \
 	os-event-unix.c mono-os-semaphore-win32.c mono-os-wait-win32.c \
 	mono-windows-thread-name.c os-event-win32.c mono-md5.c \
@@ -203,117 +206,135 @@ am__libmonoutils_la_SOURCES_DIST = dlmalloc.h dlmalloc.c \
 	mono-hwcap-arm64.c mono-hwcap-mips.c mono-hwcap-ppc.c \
 	mono-hwcap-sparc.c mono-hwcap-s390x.c mono-hwcap-riscv.c \
 	mono-hwcap-wasm.c mono-hwcap-cross.c
-@HOST_WIN32_FALSE@am__objects_1 = libmonoutils_la-dlmalloc.lo \
-@HOST_WIN32_FALSE@	libmonoutils_la-os-event-unix.lo
-@HOST_WIN32_TRUE@am__objects_2 =  \
-@HOST_WIN32_TRUE@	libmonoutils_la-mono-os-semaphore-win32.lo \
-@HOST_WIN32_TRUE@	libmonoutils_la-mono-os-wait-win32.lo \
-@HOST_WIN32_TRUE@	libmonoutils_la-mono-windows-thread-name.lo \
-@HOST_WIN32_TRUE@	libmonoutils_la-os-event-win32.lo
-@HOST_WIN32_FALSE@am__objects_3 = $(am__objects_1)
-@HOST_WIN32_TRUE@am__objects_3 = $(am__objects_2)
-am__objects_4 = $(am__objects_3) libmonoutils_la-mono-md5.lo \
-	libmonoutils_la-mono-sha1.lo libmonoutils_la-mono-logger.lo \
-	libmonoutils_la-mono-codeman.lo \
-	libmonoutils_la-mono-counters.lo libmonoutils_la-mono-dl.lo \
-	libmonoutils_la-mono-dl-windows.lo \
-	libmonoutils_la-mono-dl-darwin.lo \
-	libmonoutils_la-mono-dl-posix.lo \
-	libmonoutils_la-mono-dl-wasm.lo \
-	libmonoutils_la-mono-experiments.lo \
-	libmonoutils_la-mono-log-windows.lo \
-	libmonoutils_la-mono-log-common.lo \
-	libmonoutils_la-mono-log-posix.lo \
-	libmonoutils_la-mono-log-android.lo \
-	libmonoutils_la-mono-log-darwin.lo \
-	libmonoutils_la-mono-log-flight-recorder.lo \
-	libmonoutils_la-mono-merp.lo libmonoutils_la-mono-state.lo \
-	libmonoutils_la-mono-internal-hash.lo \
-	libmonoutils_la-mono-io-portability.lo \
-	libmonoutils_la-monobitset.lo libmonoutils_la-mono-filemap.lo \
-	libmonoutils_la-mono-mmap.lo \
-	libmonoutils_la-mono-mmap-windows.lo \
-	libmonoutils_la-mono-mmap-wasm.lo \
-	libmonoutils_la-mono-os-mutex.lo \
-	libmonoutils_la-mono-flight-recorder.lo \
-	libmonoutils_la-mono-networkinterfaces.lo \
-	libmonoutils_la-mono-proclib.lo \
-	libmonoutils_la-mono-proclib-windows.lo \
-	libmonoutils_la-mono-publib.lo \
-	libmonoutils_la-mono-jemalloc.lo libmonoutils_la-mono-time.lo \
-	libmonoutils_la-strenc.lo libmonoutils_la-mono-uri.lo \
-	libmonoutils_la-mono-poll.lo libmonoutils_la-mono-path.lo \
-	libmonoutils_la-mono-stdlib.lo \
-	libmonoutils_la-mono-property-hash.lo \
-	libmonoutils_la-mono-value-hash.lo \
-	libmonoutils_la-mono-error.lo libmonoutils_la-mono-context.lo \
-	libmonoutils_la-hazard-pointer.lo \
-	libmonoutils_la-lock-free-queue.lo \
-	libmonoutils_la-lock-free-alloc.lo \
-	libmonoutils_la-lock-free-array-queue.lo \
-	libmonoutils_la-mono-linked-list-set.lo \
-	libmonoutils_la-mono-threads.lo \
-	libmonoutils_la-mono-threads-state-machine.lo \
-	libmonoutils_la-mono-threads-posix.lo \
-	libmonoutils_la-mono-threads-posix-signals.lo \
-	libmonoutils_la-mono-threads-mach.lo \
-	libmonoutils_la-mono-threads-mach-helper.lo \
-	libmonoutils_la-mono-threads-windows.lo \
-	libmonoutils_la-mono-threads-linux.lo \
-	libmonoutils_la-mono-threads-freebsd.lo \
-	libmonoutils_la-mono-threads-netbsd.lo \
-	libmonoutils_la-mono-threads-openbsd.lo \
-	libmonoutils_la-mono-threads-android.lo \
-	libmonoutils_la-mono-threads-haiku.lo \
-	libmonoutils_la-mono-threads-aix.lo \
-	libmonoutils_la-mono-threads-wasm.lo \
-	libmonoutils_la-mono-threads-coop.lo \
-	libmonoutils_la-mono-utility-thread.lo \
-	libmonoutils_la-mono-tls.lo \
-	libmonoutils_la-mono-utils-debug.lo libmonoutils_la-atomic.lo \
-	libmonoutils_la-mono-hwcap.lo libmonoutils_la-bsearch.lo \
-	libmonoutils_la-mono-conc-hashtable.lo libmonoutils_la-json.lo \
-	libmonoutils_la-networking.lo \
-	libmonoutils_la-networking-posix.lo \
-	libmonoutils_la-networking-fallback.lo \
-	libmonoutils_la-networking-missing.lo \
-	libmonoutils_la-networking-windows.lo \
-	libmonoutils_la-mono-rand.lo \
-	libmonoutils_la-mono-rand-windows.lo \
-	libmonoutils_la-memfuncs.lo libmonoutils_la-parse.lo \
-	libmonoutils_la-checked-build.lo
-@CROSS_COMPILE_FALSE@@X86_TRUE@am__objects_5 = libmonoutils_la-mach-support-x86.lo
-@AMD64_TRUE@@CROSS_COMPILE_FALSE@am__objects_6 = libmonoutils_la-mach-support-amd64.lo
-@ARM_TRUE@@CROSS_COMPILE_FALSE@am__objects_7 = libmonoutils_la-mach-support-arm.lo
-@ARM64_TRUE@@CROSS_COMPILE_FALSE@am__objects_8 = libmonoutils_la-mach-support-arm64.lo
-@CROSS_COMPILE_TRUE@am__objects_9 =  \
-@CROSS_COMPILE_TRUE@	libmonoutils_la-mach-support-unknown.lo
-@CROSS_COMPILE_FALSE@@X86_TRUE@am__objects_10 = libmonoutils_la-mono-hwcap-x86.lo
-@AMD64_TRUE@@CROSS_COMPILE_FALSE@am__objects_11 = libmonoutils_la-mono-hwcap-x86.lo
-@ARM_TRUE@@CROSS_COMPILE_FALSE@am__objects_12 = libmonoutils_la-mono-hwcap-arm.lo
-@ARM64_TRUE@@CROSS_COMPILE_FALSE@am__objects_13 = libmonoutils_la-mono-hwcap-arm64.lo
-@CROSS_COMPILE_FALSE@@MIPS_TRUE@am__objects_14 = libmonoutils_la-mono-hwcap-mips.lo
-@CROSS_COMPILE_FALSE@@POWERPC_TRUE@am__objects_15 = libmonoutils_la-mono-hwcap-ppc.lo
-@CROSS_COMPILE_FALSE@@POWERPC64_TRUE@am__objects_16 = libmonoutils_la-mono-hwcap-ppc.lo
-@CROSS_COMPILE_FALSE@@SPARC_TRUE@am__objects_17 = libmonoutils_la-mono-hwcap-sparc.lo
-@CROSS_COMPILE_FALSE@@SPARC64_TRUE@am__objects_18 = libmonoutils_la-mono-hwcap-sparc.lo
-@CROSS_COMPILE_FALSE@@S390X_TRUE@am__objects_19 = libmonoutils_la-mono-hwcap-s390x.lo
-@CROSS_COMPILE_FALSE@@RISCV_TRUE@am__objects_20 = libmonoutils_la-mono-hwcap-riscv.lo
-@CROSS_COMPILE_FALSE@@HOST_WASM_TRUE@am__objects_21 = libmonoutils_la-mono-hwcap-wasm.lo
-@CROSS_COMPILE_TRUE@am__objects_22 =  \
-@CROSS_COMPILE_TRUE@	libmonoutils_la-mono-hwcap-cross.lo
-am__objects_23 = $(am__objects_5) $(am__objects_6) $(am__objects_7) \
-	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
-	$(am__objects_11) $(am__objects_12) $(am__objects_13) \
-	$(am__objects_14) $(am__objects_15) $(am__objects_16) \
-	$(am__objects_17) $(am__objects_18) $(am__objects_19) \
-	$(am__objects_20) $(am__objects_21) $(am__objects_22)
-am_libmonoutils_la_OBJECTS = $(am__objects_4) $(am__objects_23)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_1 = libmonoutils_la-dlmalloc.lo \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoutils_la-os-event-unix.lo
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_2 = libmonoutils_la-mono-os-semaphore-win32.lo \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoutils_la-mono-os-wait-win32.lo \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoutils_la-mono-windows-thread-name.lo \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoutils_la-os-event-win32.lo
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_3 =  \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_1)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_3 =  \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_2)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_4 = $(am__objects_3) \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-md5.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-sha1.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-logger.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-codeman.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-counters.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-dl.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-dl-windows.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-dl-darwin.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-dl-posix.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-dl-wasm.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-experiments.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-log-windows.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-log-common.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-log-posix.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-log-android.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-log-darwin.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-log-flight-recorder.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-merp.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-state.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-internal-hash.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-io-portability.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-monobitset.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-filemap.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-mmap.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-mmap-windows.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-mmap-wasm.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-os-mutex.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-flight-recorder.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-networkinterfaces.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-proclib.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-proclib-windows.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-publib.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-jemalloc.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-time.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-strenc.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-uri.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-poll.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-path.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-stdlib.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-property-hash.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-value-hash.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-error.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-context.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-hazard-pointer.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-lock-free-queue.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-lock-free-alloc.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-lock-free-array-queue.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-linked-list-set.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-state-machine.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-posix.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-posix-signals.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-mach.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-mach-helper.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-windows.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-linux.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-freebsd.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-netbsd.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-openbsd.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-android.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-haiku.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-aix.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-wasm.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-coop.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-utility-thread.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-tls.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-utils-debug.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-atomic.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-hwcap.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-bsearch.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-conc-hashtable.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-json.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-networking.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-networking-posix.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-networking-fallback.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-networking-missing.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-networking-windows.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-rand.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-rand-windows.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-memfuncs.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-parse.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-checked-build.lo
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@X86_TRUE@am__objects_5 = libmonoutils_la-mach-support-x86.lo
+@AMD64_TRUE@@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__objects_6 = libmonoutils_la-mach-support-amd64.lo
+@ARM_TRUE@@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__objects_7 = libmonoutils_la-mach-support-arm.lo
+@ARM64_TRUE@@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__objects_8 = libmonoutils_la-mach-support-arm64.lo
+@CROSS_COMPILE_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_9 = libmonoutils_la-mach-support-unknown.lo
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@X86_TRUE@am__objects_10 = libmonoutils_la-mono-hwcap-x86.lo
+@AMD64_TRUE@@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__objects_11 = libmonoutils_la-mono-hwcap-x86.lo
+@ARM_TRUE@@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__objects_12 = libmonoutils_la-mono-hwcap-arm.lo
+@ARM64_TRUE@@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__objects_13 = libmonoutils_la-mono-hwcap-arm64.lo
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@MIPS_TRUE@am__objects_14 = libmonoutils_la-mono-hwcap-mips.lo
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@POWERPC_TRUE@am__objects_15 = libmonoutils_la-mono-hwcap-ppc.lo
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@POWERPC64_TRUE@am__objects_16 = libmonoutils_la-mono-hwcap-ppc.lo
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@SPARC_TRUE@am__objects_17 = libmonoutils_la-mono-hwcap-sparc.lo
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@SPARC64_TRUE@am__objects_18 = libmonoutils_la-mono-hwcap-sparc.lo
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@S390X_TRUE@am__objects_19 = libmonoutils_la-mono-hwcap-s390x.lo
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@RISCV_TRUE@am__objects_20 = libmonoutils_la-mono-hwcap-riscv.lo
+@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_TRUE@am__objects_21 = libmonoutils_la-mono-hwcap-wasm.lo
+@CROSS_COMPILE_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_22 = libmonoutils_la-mono-hwcap-cross.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_23 = $(am__objects_5) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_6) $(am__objects_7) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_8) $(am__objects_9) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_10) $(am__objects_11) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_12) $(am__objects_13) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_14) $(am__objects_15) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_16) $(am__objects_17) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_18) $(am__objects_19) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_20) $(am__objects_21) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_22)
+@ENABLE_MSVC_ONLY_FALSE@am_libmonoutils_la_OBJECTS = $(am__objects_4) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_23)
 libmonoutils_la_OBJECTS = $(am_libmonoutils_la_OBJECTS)
 libmonoutils_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmonoutils_la_CFLAGS) $(CFLAGS) $(libmonoutils_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
+@ENABLE_MSVC_ONLY_FALSE@am_libmonoutils_la_rpath =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -345,7 +366,7 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(libmonomath_la_SOURCES) $(libmonoutils_la_SOURCES)
-DIST_SOURCES = $(libmonomath_la_SOURCES) \
+DIST_SOURCES = $(am__libmonomath_la_SOURCES_DIST) \
 	$(am__libmonoutils_la_SOURCES_DIST)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
@@ -718,215 +739,218 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
-noinst_LTLIBRARIES = \
-	libmonomath.la \
-	libmonoutils.la
+@ENABLE_MSVC_ONLY_FALSE@noinst_LTLIBRARIES = \
+@ENABLE_MSVC_ONLY_FALSE@	libmonomath.la \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils.la
 
-@ENABLE_LLVM_TRUE@@INTERNAL_LLVM_FALSE@llvm_config = $(EXTERNAL_LLVM_CONFIG)
-@ENABLE_LLVM_TRUE@@INTERNAL_LLVM_TRUE@llvm_config = $(monodir)/llvm/usr/bin/llvm-config
-@ENABLE_LLVM_TRUE@llvm_api_version_from_config = $(shell $(llvm_config) --mono-api-version 2>/dev/null)
-@ENABLE_LLVM_TRUE@llvm_api_version = $(shell if [  -z "$(llvm_api_version_from_config)" ]; then echo "0"; else echo "$(llvm_api_version_from_config)"; fi)
-@ENABLE_LLVM_TRUE@LLVM_CFLAGS = -DLLVM_API_VERSION=$(llvm_api_version)
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS) $(LLVM_CFLAGS)
-@ENABLE_DTRACE_TRUE@BUILT_SOURCES = mono-dtrace.h
-@HOST_WIN32_TRUE@win32_sources = \
-@HOST_WIN32_TRUE@	mono-os-semaphore-win32.c \
-@HOST_WIN32_TRUE@	mono-os-wait-win32.c \
-@HOST_WIN32_TRUE@	mono-windows-thread-name.c \
-@HOST_WIN32_TRUE@	os-event-win32.c
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@INTERNAL_LLVM_FALSE@llvm_config = $(EXTERNAL_LLVM_CONFIG)
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@INTERNAL_LLVM_TRUE@llvm_config = $(monodir)/llvm/usr/bin/llvm-config
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@llvm_api_version_from_config = $(shell $(llvm_config) --mono-api-version 2>/dev/null)
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@llvm_api_version = $(shell if [  -z "$(llvm_api_version_from_config)" ]; then echo "0"; else echo "$(llvm_api_version_from_config)"; fi)
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@LLVM_CFLAGS = -DLLVM_API_VERSION=$(llvm_api_version)
+@ENABLE_MSVC_ONLY_FALSE@AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS) $(LLVM_CFLAGS)
+@ENABLE_DTRACE_TRUE@@ENABLE_MSVC_ONLY_FALSE@BUILT_SOURCES = mono-dtrace.h
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@win32_sources = \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	mono-os-semaphore-win32.c \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	mono-os-wait-win32.c \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	mono-windows-thread-name.c \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	os-event-win32.c
 
-@HOST_WIN32_FALSE@platform_sources = $(unix_sources)
-@HOST_WIN32_TRUE@platform_sources = $(win32_sources)
-@HOST_WIN32_FALSE@unix_sources = \
-@HOST_WIN32_FALSE@	dlmalloc.h      	\
-@HOST_WIN32_FALSE@	dlmalloc.c      	\
-@HOST_WIN32_FALSE@	os-event-unix.c
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@platform_sources = $(unix_sources)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@platform_sources = $(win32_sources)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@unix_sources = \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	dlmalloc.h      	\
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	dlmalloc.c      	\
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	os-event-unix.c
 
-monoutils_sources = \
-	$(platform_sources)	\
-	mono-md5.c		\
-	mono-sha1.c		\
-	mono-logger.c		\
-	mono-logger-internals.h	\
-	mono-codeman.c		\
-	mono-counters.c		\
-	mono-compiler.h		\
-	mono-complex.h		\
-	mono-dl.c		\
-	mono-dl-windows.c	\
-	mono-dl-darwin.c	\
-	mono-dl-posix.c		\
-	mono-dl-wasm.c	\
-	mono-dl.h		\
-	mono-dl-windows-internals.h	\
-	mono-experiments.h	\
-	mono-experiments.c	\
-	mono-log-windows.c	\
-	mono-log-common.c	\
-	mono-log-posix.c	\
-	mono-log-android.c \
-	mono-log-darwin.c \
-	mono-log-flight-recorder.c \
-	mono-merp.c	\
-	mono-merp.h	\
-	mono-state.h	\
-	mono-state.c	\
-	mono-internal-hash.c	\
-	mono-internal-hash.h	\
-	mono-io-portability.c 	\
-	mono-io-portability.h	\
-	monobitset.c		\
-	mono-filemap.c		\
-	mono-mmap.c  		\
-	mono-mmap-windows.c  		\
-	mono-mmap-wasm.c  		\
-	mono-mmap.h  		\
-	mono-mmap-internals.h	\
-	mono-mmap-windows-internals.h	\
-	mono-os-mutex.h		\
-	mono-os-mutex.c		\
-	mono-flight-recorder.h		\
-	mono-flight-recorder.c		\
-	mono-os-wait.h \
-	mono-coop-mutex.h		\
-	mono-once.h		\
-	mono-lazy-init.h		\
-	mono-networkinterfaces.c		\
-	mono-networkinterfaces.h		\
-	mono-proclib.c		\
-	mono-proclib-windows.c		\
-	mono-proclib.h		\
-	mono-proclib-windows-internals.h		\
-	mono-publib.c		\
-	mono-jemalloc.c		\
-	mono-string.h		\
-	mono-time.c  		\
-	mono-time.h  		\
-	strenc-internals.h 	\
-	strenc.h		\
-	strenc.c		\
-	mono-uri.c		\
-	mono-poll.c		\
-	mono-path.c		\
-	mono-os-semaphore.h	\
-	mono-coop-semaphore.h		\
-	mono-sigcontext.h	\
-	mono-stdlib.c 		\
-	mono-property-hash.h 	\
-	mono-property-hash.c 	\
-	mono-value-hash.h 	\
-	mono-value-hash.c 	\
-	freebsd-elf_common.h 	\
-	freebsd-elf32.h		\
-	freebsd-elf64.h		\
-	freebsd-dwarf.h 	\
-	dtrace.h			\
-	gc_wrapper.h		\
-	mono-error.c	\
-	mono-error-internals.h	\
-	monobitset.h	\
-	mono-codeman.h	\
-	mono-counters.h	\
-	mono-digest.h	\
-	mono-error.h	\
-	mono-forward-internal.h	\
-	mono-machine.h	\
-	mono-math.h	\
-	mono-membar.h	\
-	mono-path.h	\
-	mono-poll.h	\
-	mono-uri.h	\
-	mono-stdlib.h	\
-	valgrind.h	\
-	mach-support.h  \
-	memcheck.h	\
-	mono-context.c	\
-	mono-context.h	\
-	mono-stack-unwinding.h	\
-	hazard-pointer.c	\
-	hazard-pointer.h	\
-	lock-free-queue.c	\
-	lock-free-queue.h	\
-	lock-free-alloc.c	\
-	lock-free-alloc.h	\
-	lock-free-array-queue.c	\
-	lock-free-array-queue.h	\
-	mono-linked-list-set.c	\
-	mono-linked-list-set.h	\
-	mono-threads.c	\
-	mono-threads-state-machine.c	\
-	mono-threads-posix.c	\
-	mono-threads-posix-signals.c	\
-	mono-threads-mach.c	\
-	mono-threads-mach-helper.c	\
-	mono-threads-windows.c	\
-	mono-threads-linux.c	\
-	mono-threads-freebsd.c	\
-	mono-threads-netbsd.c	\
-	mono-threads-openbsd.c	\
-	mono-threads-android.c	\
-	mono-threads-haiku.c	\
-	mono-threads-aix.c	\
-	mono-threads-wasm.c	\
-	mono-threads.h	\
-	mono-threads-debug.h	\
-	mono-threads-api.h	\
-	mono-threads-coop.c	\
-	mono-threads-coop.h	\
-	mono-utility-thread.c	\
-	mono-utility-thread.h	\
-	mono-tls.h	\
-	mono-tls.c	\
-	mono-utils-debug.c \
-	mono-utils-debug.h \
-	linux_magic.h	\
-	mono-memory-model.h	\
-	atomic.h	\
-	atomic.c	\
-	mono-hwcap.h	\
-	mono-hwcap.c	\
-	mono-hwcap-vars.h	\
-	bsearch.h	\
-	bsearch.c	\
-	mono-signal-handler.h	\
-	mono-conc-hashtable.h	\
-	mono-conc-hashtable.c	\
-	json.h	\
-	json.c	\
-	networking.c	\
-	networking-posix.c	\
-	networking-fallback.c	\
-	networking-missing.c	\
-	networking-windows.c	\
-	networking.h	\
-	mono-rand.c	\
-	mono-rand-windows.c	\
-	mono-rand.h \
-	memfuncs.c \
-	memfuncs.h \
-	parse.c \
-	parse.h	\
-	checked-build.c \
-	checked-build.h \
-	os-event.h \
-	refcount.h	\
-	w32api.h	\
-	unlocked.h	\
-	ward.h
+@ENABLE_MSVC_ONLY_FALSE@monoutils_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	$(platform_sources)	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-md5.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-sha1.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-logger.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-logger-internals.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-codeman.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-counters.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-compiler.h		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-complex.h		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-dl.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-dl-windows.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-dl-darwin.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-dl-posix.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-dl-wasm.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-dl.h		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-dl-windows-internals.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-experiments.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-experiments.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-log-windows.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-log-common.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-log-posix.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-log-android.c \
+@ENABLE_MSVC_ONLY_FALSE@	mono-log-darwin.c \
+@ENABLE_MSVC_ONLY_FALSE@	mono-log-flight-recorder.c \
+@ENABLE_MSVC_ONLY_FALSE@	mono-merp.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-merp.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-state.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-state.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-internal-hash.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-internal-hash.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-io-portability.c 	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-io-portability.h	\
+@ENABLE_MSVC_ONLY_FALSE@	monobitset.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-filemap.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-mmap.c  		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-mmap-windows.c  		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-mmap-wasm.c  		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-mmap.h  		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-mmap-internals.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-mmap-windows-internals.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-os-mutex.h		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-os-mutex.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-flight-recorder.h		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-flight-recorder.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-os-wait.h \
+@ENABLE_MSVC_ONLY_FALSE@	mono-coop-mutex.h		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-once.h		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-lazy-init.h		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-networkinterfaces.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-networkinterfaces.h		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-proclib.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-proclib-windows.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-proclib.h		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-proclib-windows-internals.h		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-publib.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-jemalloc.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-string.h		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-time.c  		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-time.h  		\
+@ENABLE_MSVC_ONLY_FALSE@	strenc-internals.h 	\
+@ENABLE_MSVC_ONLY_FALSE@	strenc.h		\
+@ENABLE_MSVC_ONLY_FALSE@	strenc.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-uri.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-poll.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-path.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-os-semaphore.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-coop-semaphore.h		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-sigcontext.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-stdlib.c 		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-property-hash.h 	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-property-hash.c 	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-value-hash.h 	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-value-hash.c 	\
+@ENABLE_MSVC_ONLY_FALSE@	freebsd-elf_common.h 	\
+@ENABLE_MSVC_ONLY_FALSE@	freebsd-elf32.h		\
+@ENABLE_MSVC_ONLY_FALSE@	freebsd-elf64.h		\
+@ENABLE_MSVC_ONLY_FALSE@	freebsd-dwarf.h 	\
+@ENABLE_MSVC_ONLY_FALSE@	dtrace.h			\
+@ENABLE_MSVC_ONLY_FALSE@	gc_wrapper.h		\
+@ENABLE_MSVC_ONLY_FALSE@	mono-error.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-error-internals.h	\
+@ENABLE_MSVC_ONLY_FALSE@	monobitset.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-codeman.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-counters.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-digest.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-error.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-forward-internal.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-machine.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-math.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-membar.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-path.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-poll.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-uri.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-stdlib.h	\
+@ENABLE_MSVC_ONLY_FALSE@	valgrind.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mach-support.h  \
+@ENABLE_MSVC_ONLY_FALSE@	memcheck.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-context.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-context.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-stack-unwinding.h	\
+@ENABLE_MSVC_ONLY_FALSE@	hazard-pointer.c	\
+@ENABLE_MSVC_ONLY_FALSE@	hazard-pointer.h	\
+@ENABLE_MSVC_ONLY_FALSE@	lock-free-queue.c	\
+@ENABLE_MSVC_ONLY_FALSE@	lock-free-queue.h	\
+@ENABLE_MSVC_ONLY_FALSE@	lock-free-alloc.c	\
+@ENABLE_MSVC_ONLY_FALSE@	lock-free-alloc.h	\
+@ENABLE_MSVC_ONLY_FALSE@	lock-free-array-queue.c	\
+@ENABLE_MSVC_ONLY_FALSE@	lock-free-array-queue.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-linked-list-set.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-linked-list-set.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads-state-machine.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads-posix.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads-posix-signals.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads-mach.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads-mach-helper.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads-windows.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads-linux.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads-freebsd.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads-netbsd.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads-openbsd.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads-android.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads-haiku.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads-aix.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads-wasm.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads-debug.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads-api.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads-coop.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads-coop.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-utility-thread.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-utility-thread.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-tls.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-tls.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-utils-debug.c \
+@ENABLE_MSVC_ONLY_FALSE@	mono-utils-debug.h \
+@ENABLE_MSVC_ONLY_FALSE@	linux_magic.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-memory-model.h	\
+@ENABLE_MSVC_ONLY_FALSE@	atomic.h	\
+@ENABLE_MSVC_ONLY_FALSE@	atomic.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-hwcap.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-hwcap.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-hwcap-vars.h	\
+@ENABLE_MSVC_ONLY_FALSE@	bsearch.h	\
+@ENABLE_MSVC_ONLY_FALSE@	bsearch.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-signal-handler.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-conc-hashtable.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-conc-hashtable.c	\
+@ENABLE_MSVC_ONLY_FALSE@	json.h	\
+@ENABLE_MSVC_ONLY_FALSE@	json.c	\
+@ENABLE_MSVC_ONLY_FALSE@	networking.c	\
+@ENABLE_MSVC_ONLY_FALSE@	networking-posix.c	\
+@ENABLE_MSVC_ONLY_FALSE@	networking-fallback.c	\
+@ENABLE_MSVC_ONLY_FALSE@	networking-missing.c	\
+@ENABLE_MSVC_ONLY_FALSE@	networking-windows.c	\
+@ENABLE_MSVC_ONLY_FALSE@	networking.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-rand.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-rand-windows.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-rand.h \
+@ENABLE_MSVC_ONLY_FALSE@	memfuncs.c \
+@ENABLE_MSVC_ONLY_FALSE@	memfuncs.h \
+@ENABLE_MSVC_ONLY_FALSE@	parse.c \
+@ENABLE_MSVC_ONLY_FALSE@	parse.h	\
+@ENABLE_MSVC_ONLY_FALSE@	checked-build.c \
+@ENABLE_MSVC_ONLY_FALSE@	checked-build.h \
+@ENABLE_MSVC_ONLY_FALSE@	os-event.h \
+@ENABLE_MSVC_ONLY_FALSE@	refcount.h	\
+@ENABLE_MSVC_ONLY_FALSE@	w32api.h	\
+@ENABLE_MSVC_ONLY_FALSE@	unlocked.h	\
+@ENABLE_MSVC_ONLY_FALSE@	ward.h
 
-arch_sources = $(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4) $(am__append_5) $(am__append_6) \
-	$(am__append_7) $(am__append_8) $(am__append_9) \
-	$(am__append_10) $(am__append_11) $(am__append_12) \
-	$(am__append_13) $(am__append_14) $(am__append_15) \
-	$(am__append_16) $(am__append_17) $(am__append_18)
-libmonoutils_la_SOURCES = $(monoutils_sources) $(arch_sources)
-libmonoutils_la_CFLAGS = $(JEMALLOC_CFLAGS) @CXX_ADD_CFLAGS@
-libmonoutils_la_LDFLAGS = $(JEMALLOC_LDFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@arch_sources = $(am__append_1) $(am__append_2) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__append_3) $(am__append_4) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__append_5) $(am__append_6) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__append_7) $(am__append_8) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__append_9) $(am__append_10) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__append_11) $(am__append_12) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__append_13) $(am__append_14) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__append_15) $(am__append_16) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__append_17) $(am__append_18)
+@ENABLE_MSVC_ONLY_FALSE@libmonoutils_la_SOURCES = $(monoutils_sources) $(arch_sources)
+@ENABLE_MSVC_ONLY_FALSE@libmonoutils_la_CFLAGS = $(JEMALLOC_CFLAGS) @CXX_ADD_CFLAGS@
+@ENABLE_MSVC_ONLY_FALSE@libmonoutils_la_LDFLAGS = $(JEMALLOC_LDFLAGS)
 libmonoutilsincludedir = $(includedir)/mono-$(API_VER)/mono/utils
-libmonoutils_la_LIBADD = mono-math-c.lo
-libmonomath_la_SOURCES = mono-math-c.c
-libmonomath_la_CFLAGS = @CXX_REMOVE_CFLAGS@
+@ENABLE_MSVC_ONLY_FALSE@libmonoutils_la_LIBADD = mono-math-c.lo
+@ENABLE_MSVC_ONLY_FALSE@libmonomath_la_SOURCES = mono-math-c.c
+@ENABLE_MSVC_ONLY_FALSE@libmonomath_la_CFLAGS = @CXX_REMOVE_CFLAGS@
 
 # These are public headers.
 # They should not use glib.h, G_BEGIN_DECLS, guint, etc.
@@ -991,10 +1015,10 @@ clean-noinstLTLIBRARIES:
 	}
 
 libmonomath.la: $(libmonomath_la_OBJECTS) $(libmonomath_la_DEPENDENCIES) $(EXTRA_libmonomath_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libmonomath_la_LINK)  $(libmonomath_la_OBJECTS) $(libmonomath_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libmonomath_la_LINK) $(am_libmonomath_la_rpath) $(libmonomath_la_OBJECTS) $(libmonomath_la_LIBADD) $(LIBS)
 
 libmonoutils.la: $(libmonoutils_la_OBJECTS) $(libmonoutils_la_DEPENDENCIES) $(EXTRA_libmonoutils_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libmonoutils_la_LINK)  $(libmonoutils_la_OBJECTS) $(libmonoutils_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libmonoutils_la_LINK) $(am_libmonoutils_la_rpath) $(libmonoutils_la_OBJECTS) $(libmonoutils_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -2042,7 +2066,8 @@ distdir: $(DISTFILES)
 check-am: all-am
 check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-recursive
-all-am: Makefile $(LTLIBRARIES) $(HEADERS)
+@ENABLE_MSVC_ONLY_FALSE@all-local:
+all-am: Makefile $(LTLIBRARIES) $(HEADERS) all-local
 installdirs: installdirs-recursive
 installdirs-am:
 	for dir in "$(DESTDIR)$(libmonoutilsincludedir)"; do \
@@ -2080,10 +2105,11 @@ maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+@ENABLE_MSVC_ONLY_FALSE@clean-local:
 clean: clean-recursive
 
-clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
-	mostlyclean-am
+clean-am: clean-generic clean-libtool clean-local \
+	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -rf ./$(DEPDIR)
@@ -2162,8 +2188,8 @@ uninstall-am: uninstall-libmonoutilsincludeHEADERS
 .MAKE: $(am__recursive_targets) all check install install-am \
 	install-strip
 
-.PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am check \
-	check-am clean clean-generic clean-libtool \
+.PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am all-local \
+	check check-am clean clean-generic clean-libtool clean-local \
 	clean-noinstLTLIBRARIES cscopelist-am ctags ctags-am distclean \
 	distclean-compile distclean-generic distclean-libtool \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
@@ -2182,18 +2208,26 @@ uninstall-am: uninstall-libmonoutilsincludeHEADERS
 .PRECIOUS: Makefile
 
 
-@ENABLE_LLVM_TRUE@	if INTERNAL_LLVM 
-@ENABLE_LLVM_TRUE@		llvm_config=$(monodir)/llvm/usr/bin/llvm-config
-@ENABLE_LLVM_TRUE@	else
-@ENABLE_LLVM_TRUE@		llvm_config=$(EXTERNAL_LLVM_CONFIG)
-@ENABLE_LLVM_TRUE@	endif
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@	if INTERNAL_LLVM 
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@		llvm_config=$(monodir)/llvm/usr/bin/llvm-config
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@	else
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@		llvm_config=$(EXTERNAL_LLVM_CONFIG)
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@	endif
 
-@ENABLE_LLVM_TRUE@	llvm_api_version_from_config=$(shell $(llvm_config) --mono-api-version 2>/dev/null)
-@ENABLE_LLVM_TRUE@	llvm_api_version=$(shell if [  -z "$(llvm_api_version_from_config)" ]; then echo "0"; else echo "$(llvm_api_version_from_config)"; fi)
-@ENABLE_LLVM_TRUE@	LLVM_CFLAGS=-DLLVM_API_VERSION=$(llvm_api_version)
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@	llvm_api_version_from_config=$(shell $(llvm_config) --mono-api-version 2>/dev/null)
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@	llvm_api_version=$(shell if [  -z "$(llvm_api_version_from_config)" ]; then echo "0"; else echo "$(llvm_api_version_from_config)"; fi)
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@	LLVM_CFLAGS=-DLLVM_API_VERSION=$(llvm_api_version)
 
-@ENABLE_DTRACE_TRUE@mono-dtrace.h: $(top_srcdir)/data/mono.d
-@ENABLE_DTRACE_TRUE@	$(DTRACE) $(DTRACEFLAGS) -h -s $(top_srcdir)/data/mono.d -o $@ || > $@
+@ENABLE_DTRACE_TRUE@@ENABLE_MSVC_ONLY_FALSE@mono-dtrace.h: $(top_srcdir)/data/mono.d
+@ENABLE_DTRACE_TRUE@@ENABLE_MSVC_ONLY_FALSE@	$(DTRACE) $(DTRACEFLAGS) -h -s $(top_srcdir)/data/mono.d -o $@ || > $@
+
+@ENABLE_MSVC_ONLY_TRUE@all-local:
+
+@ENABLE_MSVC_ONLY_TRUE@	make -C $(top_srcdir)/msvc libmonoutils
+
+@ENABLE_MSVC_ONLY_TRUE@clean-local:
+
+@ENABLE_MSVC_ONLY_TRUE@	make -C $(top_srcdir)/msvc clean-libmonoutils
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

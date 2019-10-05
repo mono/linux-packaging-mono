@@ -89,7 +89,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@DISABLE_EXECUTABLES_FALSE@bin_PROGRAMS = mono-hang-watchdog$(EXEEXT)
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@bin_PROGRAMS = mono-hang-watchdog$(EXEEXT)
 subdir = tools/mono-hang-watchdog
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -112,7 +112,9 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_mono_hang_watchdog_OBJECTS = mono-hang-watchdog.$(OBJEXT)
+am__mono_hang_watchdog_SOURCES_DIST = mono-hang-watchdog.c
+@ENABLE_MSVC_ONLY_FALSE@am_mono_hang_watchdog_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@	mono-hang-watchdog.$(OBJEXT)
 mono_hang_watchdog_OBJECTS = $(am_mono_hang_watchdog_OBJECTS)
 mono_hang_watchdog_LDADD = $(LDADD)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -150,7 +152,7 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(mono_hang_watchdog_SOURCES)
-DIST_SOURCES = $(mono_hang_watchdog_SOURCES)
+DIST_SOURCES = $(am__mono_hang_watchdog_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -451,8 +453,8 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CPPFLAGS = $(SHARED_CFLAGS)
-mono_hang_watchdog_SOURCES = mono-hang-watchdog.c
+@ENABLE_MSVC_ONLY_FALSE@AM_CPPFLAGS = $(SHARED_CFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@mono_hang_watchdog_SOURCES = mono-hang-watchdog.c
 all: all-am
 
 .SUFFIXES:

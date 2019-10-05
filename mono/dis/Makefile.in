@@ -90,8 +90,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@DISABLE_EXECUTABLES_FALSE@@DISABLE_LIBRARIES_FALSE@bin_PROGRAMS = monodis$(EXEEXT)
-@DISABLE_EXECUTABLES_FALSE@@DISABLE_LIBRARIES_FALSE@am__append_1 = libmonodismain.a
+@DISABLE_EXECUTABLES_FALSE@@DISABLE_LIBRARIES_FALSE@@ENABLE_MSVC_ONLY_FALSE@bin_PROGRAMS = monodis$(EXEEXT)
+@DISABLE_EXECUTABLES_FALSE@@DISABLE_LIBRARIES_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__append_1 = libmonodismain.a
 subdir = mono/dis
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -120,30 +120,40 @@ am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
 libmonodis_a_AR = $(AR) $(ARFLAGS)
 libmonodis_a_LIBADD =
-am_libmonodis_a_OBJECTS = libmonodis_a-get.$(OBJEXT) \
-	libmonodis_a-dis-cil.$(OBJEXT) libmonodis_a-util.$(OBJEXT)
+am__libmonodis_a_SOURCES_DIST = get.c get.h dis-cil.c dis-cil.h util.c \
+	util.h
+@ENABLE_MSVC_ONLY_FALSE@am_libmonodis_a_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@	libmonodis_a-get.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	libmonodis_a-dis-cil.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	libmonodis_a-util.$(OBJEXT)
 libmonodis_a_OBJECTS = $(am_libmonodis_a_OBJECTS)
 libmonodismain_a_AR = $(AR) $(ARFLAGS)
 libmonodismain_a_LIBADD =
-am_libmonodismain_a_OBJECTS = libmonodismain_a-dump.$(OBJEXT) \
-	libmonodismain_a-main.$(OBJEXT) \
-	libmonodismain_a-declsec.$(OBJEXT)
+am__libmonodismain_a_SOURCES_DIST = dump.c dump.h main.c meta.h \
+	declsec.c declsec.h
+@ENABLE_MSVC_ONLY_FALSE@am_libmonodismain_a_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@	libmonodismain_a-dump.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	libmonodismain_a-main.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	libmonodismain_a-declsec.$(OBJEXT)
 libmonodismain_a_OBJECTS = $(am_libmonodismain_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_monodis_OBJECTS =
 monodis_OBJECTS = $(am_monodis_OBJECTS)
 am__DEPENDENCIES_1 =
-@SUPPORT_SGEN_FALSE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
-@SUPPORT_SGEN_TRUE@am__DEPENDENCIES_2 =  \
-@SUPPORT_SGEN_TRUE@	$(top_builddir)/mono/sgen/libmonosgen.la
-am__DEPENDENCIES_3 = $(metadata_lib) $(am__DEPENDENCIES_2) \
-	$(top_builddir)/mono/utils/libmonoutils.la $(glib_libs)
-@HAVE_STATIC_ZLIB_TRUE@@HAVE_SYS_ZLIB_FALSE@am__DEPENDENCIES_4 = $(am__DEPENDENCIES_1)
-monodis_DEPENDENCIES = libmonodismain_a-dump.$(OBJEXT) \
-	libmonodismain_a-main.$(OBJEXT) \
-	libmonodismain_a-declsec.$(OBJEXT) libmonodis.a \
-	$(am__DEPENDENCIES_3) $(glib_libs) $(am__DEPENDENCIES_4)
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_SGEN_FALSE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_SGEN_TRUE@am__DEPENDENCIES_2 = $(top_builddir)/mono/sgen/libmonosgen.la
+@ENABLE_MSVC_ONLY_FALSE@am__DEPENDENCIES_3 = $(metadata_lib) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_2) \
+@ENABLE_MSVC_ONLY_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
+@ENABLE_MSVC_ONLY_FALSE@	$(glib_libs)
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_STATIC_ZLIB_TRUE@@HAVE_SYS_ZLIB_FALSE@am__DEPENDENCIES_4 = $(am__DEPENDENCIES_1)
+@ENABLE_MSVC_ONLY_FALSE@monodis_DEPENDENCIES =  \
+@ENABLE_MSVC_ONLY_FALSE@	libmonodismain_a-dump.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	libmonodismain_a-main.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	libmonodismain_a-declsec.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	libmonodis.a $(am__DEPENDENCIES_3) \
+@ENABLE_MSVC_ONLY_FALSE@	$(glib_libs) $(am__DEPENDENCIES_4)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -183,8 +193,8 @@ am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(libmonodis_a_SOURCES) $(libmonodismain_a_SOURCES) \
 	$(monodis_SOURCES)
-DIST_SOURCES = $(libmonodis_a_SOURCES) $(libmonodismain_a_SOURCES) \
-	$(monodis_SOURCES)
+DIST_SOURCES = $(am__libmonodis_a_SOURCES_DIST) \
+	$(am__libmonodismain_a_SOURCES_DIST) $(monodis_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -516,55 +526,58 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
-AM_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
-glib_libs = $(top_builddir)/mono/eglib/libeglib.la
-@SUPPORT_SGEN_FALSE@metadata_lib = $(top_builddir)/mono/metadata/libmonoruntime.la
-@SUPPORT_SGEN_TRUE@metadata_lib = $(top_builddir)/mono/metadata/libmonoruntimesgen.la
-@SUPPORT_SGEN_FALSE@gc_lib = $(LIBGC_STATIC_LIBS)
-@SUPPORT_SGEN_TRUE@gc_lib = $(top_builddir)/mono/sgen/libmonosgen.la
-runtime_lib = \
-	$(metadata_lib) \
-	$(gc_lib)	\
-	$(top_builddir)/mono/utils/libmonoutils.la \
-	$(glib_libs)
+@ENABLE_MSVC_ONLY_FALSE@AM_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
+@ENABLE_MSVC_ONLY_FALSE@glib_libs = $(top_builddir)/mono/eglib/libeglib.la
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_SGEN_FALSE@metadata_lib = $(top_builddir)/mono/metadata/libmonoruntime.la
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_SGEN_TRUE@metadata_lib = $(top_builddir)/mono/metadata/libmonoruntimesgen.la
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_SGEN_FALSE@gc_lib = $(LIBGC_STATIC_LIBS)
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_SGEN_TRUE@gc_lib = $(top_builddir)/mono/sgen/libmonosgen.la
+@ENABLE_MSVC_ONLY_FALSE@runtime_lib = \
+@ENABLE_MSVC_ONLY_FALSE@	$(metadata_lib) \
+@ENABLE_MSVC_ONLY_FALSE@	$(gc_lib)	\
+@ENABLE_MSVC_ONLY_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
+@ENABLE_MSVC_ONLY_FALSE@	$(glib_libs)
 
-noinst_LIBRARIES = libmonodis.a $(am__append_1)
-libmonodis_a_CFLAGS = $(CFLAGS) @CXX_ADD_CFLAGS@
-libmonodismain_a_CFLAGS = $(CFLAGS) @CXX_ADD_CFLAGS@
-libmonodis_a_SOURCES = \
-	get.c		\
-	get.h		\
-	dis-cil.c	\
-	dis-cil.h	\
-	util.c		\
-	util.h
+@ENABLE_MSVC_ONLY_FALSE@noinst_LIBRARIES = libmonodis.a \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__append_1)
+@ENABLE_MSVC_ONLY_FALSE@libmonodis_a_CFLAGS = $(CFLAGS) @CXX_ADD_CFLAGS@
+@ENABLE_MSVC_ONLY_FALSE@libmonodismain_a_CFLAGS = $(CFLAGS) @CXX_ADD_CFLAGS@
+@ENABLE_MSVC_ONLY_FALSE@libmonodis_a_SOURCES = \
+@ENABLE_MSVC_ONLY_FALSE@	get.c		\
+@ENABLE_MSVC_ONLY_FALSE@	get.h		\
+@ENABLE_MSVC_ONLY_FALSE@	dis-cil.c	\
+@ENABLE_MSVC_ONLY_FALSE@	dis-cil.h	\
+@ENABLE_MSVC_ONLY_FALSE@	util.c		\
+@ENABLE_MSVC_ONLY_FALSE@	util.h
 
-libmonodismain_a_SOURCES = \
-	dump.c		\
-	dump.h		\
-	main.c		\
-	meta.h		\
-	declsec.c	\
-	declsec.h
+@ENABLE_MSVC_ONLY_FALSE@libmonodismain_a_SOURCES = \
+@ENABLE_MSVC_ONLY_FALSE@	dump.c		\
+@ENABLE_MSVC_ONLY_FALSE@	dump.h		\
+@ENABLE_MSVC_ONLY_FALSE@	main.c		\
+@ENABLE_MSVC_ONLY_FALSE@	meta.h		\
+@ENABLE_MSVC_ONLY_FALSE@	declsec.c	\
+@ENABLE_MSVC_ONLY_FALSE@	declsec.h
 
-monodis_SOURCES = 
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@Z_LIBS = 
-@HAVE_STATIC_ZLIB_TRUE@@HAVE_SYS_ZLIB_FALSE@Z_LIBS = $(STATIC_ZLIB_PATH)
-@HAVE_SYS_ZLIB_TRUE@Z_LIBS = -lz
-monodis_LDADD = \
-	libmonodismain_a-dump.$(OBJEXT)	\
-	libmonodismain_a-main.$(OBJEXT)	\
-	libmonodismain_a-declsec.$(OBJEXT) \
-	libmonodis.a			\
-	$(runtime_lib)			\
-	$(LLVM_LIBS)			\
-	$(LLVM_LDFLAGS)			\
-	$(glib_libs)			\
-	$(Z_LIBS)
+@ENABLE_MSVC_ONLY_FALSE@monodis_SOURCES = 
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@Z_LIBS = 
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_STATIC_ZLIB_TRUE@@HAVE_SYS_ZLIB_FALSE@Z_LIBS = $(STATIC_ZLIB_PATH)
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_SYS_ZLIB_TRUE@Z_LIBS = -lz
+@ENABLE_MSVC_ONLY_FALSE@monodis_LDADD = \
+@ENABLE_MSVC_ONLY_FALSE@	libmonodismain_a-dump.$(OBJEXT)	\
+@ENABLE_MSVC_ONLY_FALSE@	libmonodismain_a-main.$(OBJEXT)	\
+@ENABLE_MSVC_ONLY_FALSE@	libmonodismain_a-declsec.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	libmonodis.a			\
+@ENABLE_MSVC_ONLY_FALSE@	$(runtime_lib)			\
+@ENABLE_MSVC_ONLY_FALSE@	$(LLVM_LIBS)			\
+@ENABLE_MSVC_ONLY_FALSE@	$(LLVM_LDFLAGS)			\
+@ENABLE_MSVC_ONLY_FALSE@	$(glib_libs)			\
+@ENABLE_MSVC_ONLY_FALSE@	$(Z_LIBS)
 
-@HOST_DARWIN_TRUE@monodis_LDFLAGS = -framework CoreFoundation -framework Foundation
-man_MANS = monodis.1
-EXTRA_DIST = $(man_MANS)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_DARWIN_TRUE@monodis_LDFLAGS = -framework CoreFoundation -framework Foundation
+@ENABLE_MSVC_ONLY_FALSE@man_MANS = monodis.1
+@ENABLE_MSVC_ONLY_FALSE@EXTRA_DIST = $(man_MANS)
+@ENABLE_MSVC_ONLY_TRUE@@SUPPORT_SGEN_FALSE@mono_bin_suffix = 
+@ENABLE_MSVC_ONLY_TRUE@@SUPPORT_SGEN_TRUE@mono_bin_suffix = sgen
 all: all-am
 
 .SUFFIXES:
@@ -919,7 +932,8 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LIBRARIES) $(PROGRAMS) $(MANS)
+@ENABLE_MSVC_ONLY_FALSE@all-local:
+all-am: Makefile $(LIBRARIES) $(PROGRAMS) $(MANS) all-local
 installdirs:
 	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
@@ -954,9 +968,10 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+@ENABLE_MSVC_ONLY_FALSE@clean-local:
 clean: clean-am
 
-clean-am: clean-binPROGRAMS clean-generic clean-libtool \
+clean-am: clean-binPROGRAMS clean-generic clean-libtool clean-local \
 	clean-noinstLIBRARIES mostlyclean-am
 
 distclean: distclean-am
@@ -1037,8 +1052,8 @@ uninstall-man: uninstall-man1
 
 .MAKE: install-am install-strip
 
-.PHONY: CTAGS GTAGS TAGS all all-am check check-am clean \
-	clean-binPROGRAMS clean-generic clean-libtool \
+.PHONY: CTAGS GTAGS TAGS all all-am all-local check check-am clean \
+	clean-binPROGRAMS clean-generic clean-libtool clean-local \
 	clean-noinstLIBRARIES cscopelist-am ctags ctags-am distclean \
 	distclean-compile distclean-generic distclean-libtool \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
@@ -1057,7 +1072,17 @@ uninstall-man: uninstall-man1
 .PRECIOUS: Makefile
 
 
-@HOST_WIN32_TRUE@export HOST_CC
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@export HOST_CC
+
+@ENABLE_MSVC_ONLY_TRUE@all-local:
+
+@ENABLE_MSVC_ONLY_TRUE@	make -C $(top_srcdir)/msvc monodis
+@ENABLE_MSVC_ONLY_TRUE@	cp -f $(mono_msvc_build_bin_dir)/monodis-$(mono_bin_suffix)$(EXEEXT) ./monodis$(EXEEXT)
+
+@ENABLE_MSVC_ONLY_TRUE@clean-local:
+
+@ENABLE_MSVC_ONLY_TRUE@	make -C $(top_srcdir)/msvc clean-monodis
+@ENABLE_MSVC_ONLY_TRUE@	rm ./monodis$(EXEEXT)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

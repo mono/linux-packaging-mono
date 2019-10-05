@@ -89,8 +89,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@ENABLE_GSS_TRUE@am__append_1 = $(gss_sources)
-@ENABLE_GSS_TRUE@am__append_2 = $(gss_sources)
+@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__append_1 = $(gss_sources)
+@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__append_2 = $(gss_sources)
 subdir = mono/native
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -142,7 +142,8 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-libmono_native_compat_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_compat_la_DEPENDENCIES =  \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_1)
 am__libmono_native_compat_la_SOURCES_DIST = pal_config.h \
 	mono-native-platform.h mono-native-platform.c \
 	../../external/corefx/src/Native/Unix/Common/pal_compiler.h \
@@ -196,65 +197,68 @@ am__libmono_native_compat_la_SOURCES_DIST = pal_config.h \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.h \
 	platform-type-compat.c
-am__objects_1 = libmono_native_compat_la-mono-native-platform.lo \
-	libmono_native_compat_la-pal_errno.lo \
-	libmono_native_compat_la-pal_maphardwaretype.lo \
-	libmono_native_compat_la-pal_memory.lo \
-	libmono_native_compat_la-pal_uid.lo \
-	libmono_native_compat_la-pal_time.lo \
-	libmono_native_compat_la-dictionary_hash.lo \
-	libmono_native_compat_la-backward_references_hq.lo \
-	libmono_native_compat_la-histogram.lo \
-	libmono_native_compat_la-memory.lo \
-	libmono_native_compat_la-entropy_encode.lo \
-	libmono_native_compat_la-compress_fragment_two_pass.lo \
-	libmono_native_compat_la-block_splitter.lo \
-	libmono_native_compat_la-encode.lo \
-	libmono_native_compat_la-cluster.lo \
-	libmono_native_compat_la-backward_references.lo \
-	libmono_native_compat_la-utf8_util.lo \
-	libmono_native_compat_la-compress_fragment.lo \
-	libmono_native_compat_la-brotli_bit_stream.lo \
-	libmono_native_compat_la-bit_cost.lo \
-	libmono_native_compat_la-static_dict.lo \
-	libmono_native_compat_la-literal_cost.lo \
-	libmono_native_compat_la-metablock.lo \
-	libmono_native_compat_la-state.lo \
-	libmono_native_compat_la-decode.lo \
-	libmono_native_compat_la-huffman.lo \
-	libmono_native_compat_la-bit_reader.lo \
-	libmono_native_compat_la-dictionary.lo
-am__objects_2 = libmono_native_compat_la-pal-icalls.lo \
-	libmono_native_compat_la-pal_io.lo \
-	libmono_native_compat_la-pal_networking.lo \
-	libmono_native_compat_la-pal_networkstatistics.lo \
-	libmono_native_compat_la-pal_tcpstate.lo \
-	libmono_native_compat_la-pal_random.lo
-am__objects_3 = $(am__objects_2)
-am__objects_4 = libmono_native_compat_la-pal-android.lo \
-	libmono_native_compat_la-pal-icalls.lo \
-	libmono_native_compat_la-pal_io.lo \
-	libmono_native_compat_la-pal_networkstatistics.lo \
-	libmono_native_compat_la-pal_random.lo
-am__objects_5 = libmono_native_compat_la-pal_gssapi.lo
-@ENABLE_GSS_TRUE@am__objects_6 = $(am__objects_5)
-am__objects_7 = libmono_native_compat_la-pal-icalls.lo \
-	libmono_native_compat_la-pal_io.lo \
-	libmono_native_compat_la-pal_networking.lo \
-	libmono_native_compat_la-pal_tcpstate.lo \
-	libmono_native_compat_la-pal_random.lo $(am__objects_6)
-am__objects_8 = $(am__objects_2) $(am__objects_6)
-@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_HAIKU_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_FALSE@am__objects_9 = $(am__objects_3)
-@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_TRUE@am__objects_9 = $(am__objects_3)
-@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_3)
-@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_4)
-@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_3)
-@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_3)
-@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_7)
-@MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_9 = $(am__objects_8)
-am_libmono_native_compat_la_OBJECTS = $(am__objects_1) \
-	$(am__objects_9) \
-	libmono_native_compat_la-platform-type-compat.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_1 = libmono_native_compat_la-mono-native-platform.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-pal_errno.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-pal_maphardwaretype.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-pal_memory.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-pal_uid.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-pal_time.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-dictionary_hash.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-backward_references_hq.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-histogram.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-memory.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-entropy_encode.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-compress_fragment_two_pass.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-block_splitter.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-encode.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-cluster.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-backward_references.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-utf8_util.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-compress_fragment.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-brotli_bit_stream.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-bit_cost.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-static_dict.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-literal_cost.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-metablock.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-state.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-decode.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-huffman.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-bit_reader.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-dictionary.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_2 = libmono_native_compat_la-pal-icalls.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-pal_io.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-pal_networking.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-pal_networkstatistics.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-pal_tcpstate.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-pal_random.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_3 = $(am__objects_2)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_4 = libmono_native_compat_la-pal-android.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-pal-icalls.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-pal_io.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-pal_networkstatistics.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-pal_random.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_5 = libmono_native_compat_la-pal_gssapi.lo
+@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_6 =  \
+@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_5)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_7 = libmono_native_compat_la-pal-icalls.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-pal_io.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-pal_networking.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-pal_tcpstate.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-pal_random.lo \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_6)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_8 = $(am__objects_2) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_6)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_HAIKU_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_FALSE@am__objects_9 = $(am__objects_3)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_TRUE@am__objects_9 = $(am__objects_3)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_3)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_4)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_3)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_3)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_7)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_9 = $(am__objects_8)
+@ENABLE_MSVC_ONLY_FALSE@am_libmono_native_compat_la_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_1) $(am__objects_9) \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-platform-type-compat.lo
 libmono_native_compat_la_OBJECTS =  \
 	$(am_libmono_native_compat_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -265,9 +269,11 @@ libmono_native_compat_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmono_native_compat_la_CFLAGS) $(CFLAGS) \
 	$(libmono_native_compat_la_LDFLAGS) $(LDFLAGS) -o $@
-@MONO_NATIVE_COMPAT_TRUE@am_libmono_native_compat_la_rpath = -rpath \
-@MONO_NATIVE_COMPAT_TRUE@	$(libdir)
-libmono_native_unified_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_COMPAT_TRUE@am_libmono_native_compat_la_rpath =  \
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_COMPAT_TRUE@	-rpath \
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_COMPAT_TRUE@	$(libdir)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_unified_la_DEPENDENCIES =  \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_1)
 am__libmono_native_unified_la_SOURCES_DIST = pal_config.h \
 	mono-native-platform.h mono-native-platform.c \
 	../../external/corefx/src/Native/Unix/Common/pal_compiler.h \
@@ -321,74 +327,79 @@ am__libmono_native_unified_la_SOURCES_DIST = pal_config.h \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.h \
 	platform-type-unified.c
-am__objects_10 = libmono_native_unified_la-mono-native-platform.lo \
-	libmono_native_unified_la-pal_errno.lo \
-	libmono_native_unified_la-pal_maphardwaretype.lo \
-	libmono_native_unified_la-pal_memory.lo \
-	libmono_native_unified_la-pal_uid.lo \
-	libmono_native_unified_la-pal_time.lo \
-	libmono_native_unified_la-dictionary_hash.lo \
-	libmono_native_unified_la-backward_references_hq.lo \
-	libmono_native_unified_la-histogram.lo \
-	libmono_native_unified_la-memory.lo \
-	libmono_native_unified_la-entropy_encode.lo \
-	libmono_native_unified_la-compress_fragment_two_pass.lo \
-	libmono_native_unified_la-block_splitter.lo \
-	libmono_native_unified_la-encode.lo \
-	libmono_native_unified_la-cluster.lo \
-	libmono_native_unified_la-backward_references.lo \
-	libmono_native_unified_la-utf8_util.lo \
-	libmono_native_unified_la-compress_fragment.lo \
-	libmono_native_unified_la-brotli_bit_stream.lo \
-	libmono_native_unified_la-bit_cost.lo \
-	libmono_native_unified_la-static_dict.lo \
-	libmono_native_unified_la-literal_cost.lo \
-	libmono_native_unified_la-metablock.lo \
-	libmono_native_unified_la-state.lo \
-	libmono_native_unified_la-decode.lo \
-	libmono_native_unified_la-huffman.lo \
-	libmono_native_unified_la-bit_reader.lo \
-	libmono_native_unified_la-dictionary.lo
-am__objects_11 = libmono_native_unified_la-pal-icalls.lo \
-	libmono_native_unified_la-pal_io.lo \
-	libmono_native_unified_la-pal_networking.lo \
-	libmono_native_unified_la-pal_networkstatistics.lo \
-	libmono_native_unified_la-pal_tcpstate.lo \
-	libmono_native_unified_la-pal_random.lo
-am__objects_12 = $(am__objects_11)
-am__objects_13 = libmono_native_unified_la-pal-android.lo \
-	libmono_native_unified_la-pal-icalls.lo \
-	libmono_native_unified_la-pal_io.lo \
-	libmono_native_unified_la-pal_networkstatistics.lo \
-	libmono_native_unified_la-pal_random.lo
-am__objects_14 = libmono_native_unified_la-pal_gssapi.lo
-@ENABLE_GSS_TRUE@am__objects_15 = $(am__objects_14)
-am__objects_16 = libmono_native_unified_la-pal-icalls.lo \
-	libmono_native_unified_la-pal_io.lo \
-	libmono_native_unified_la-pal_networking.lo \
-	libmono_native_unified_la-pal_tcpstate.lo \
-	libmono_native_unified_la-pal_random.lo $(am__objects_15)
-am__objects_17 = $(am__objects_11) $(am__objects_15)
-@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_HAIKU_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_FALSE@am__objects_18 = $(am__objects_12)
-@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_TRUE@am__objects_18 = $(am__objects_12)
-@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_12)
-@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_13)
-@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_12)
-@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_12)
-@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_16)
-@MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_18 = $(am__objects_17)
-am_libmono_native_unified_la_OBJECTS = $(am__objects_10) \
-	$(am__objects_18) \
-	libmono_native_unified_la-platform-type-unified.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_10 = libmono_native_unified_la-mono-native-platform.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-pal_errno.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-pal_maphardwaretype.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-pal_memory.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-pal_uid.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-pal_time.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-dictionary_hash.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-backward_references_hq.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-histogram.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-memory.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-entropy_encode.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-compress_fragment_two_pass.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-block_splitter.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-encode.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-cluster.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-backward_references.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-utf8_util.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-compress_fragment.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-brotli_bit_stream.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-bit_cost.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-static_dict.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-literal_cost.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-metablock.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-state.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-decode.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-huffman.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-bit_reader.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-dictionary.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_11 = libmono_native_unified_la-pal-icalls.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-pal_io.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-pal_networking.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-pal_networkstatistics.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-pal_tcpstate.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-pal_random.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_12 = $(am__objects_11)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_13 = libmono_native_unified_la-pal-android.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-pal-icalls.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-pal_io.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-pal_networkstatistics.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-pal_random.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_14 = libmono_native_unified_la-pal_gssapi.lo
+@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_15 =  \
+@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_14)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_16 = libmono_native_unified_la-pal-icalls.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-pal_io.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-pal_networking.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-pal_tcpstate.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-pal_random.lo \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_15)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_17 = $(am__objects_11) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_15)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_HAIKU_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_FALSE@am__objects_18 = $(am__objects_12)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_TRUE@am__objects_18 = $(am__objects_12)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_12)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_13)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_12)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_12)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_16)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_18 = $(am__objects_17)
+@ENABLE_MSVC_ONLY_FALSE@am_libmono_native_unified_la_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_10) $(am__objects_18) \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-platform-type-unified.lo
 libmono_native_unified_la_OBJECTS =  \
 	$(am_libmono_native_unified_la_OBJECTS)
 libmono_native_unified_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmono_native_unified_la_CFLAGS) $(CFLAGS) \
 	$(libmono_native_unified_la_LDFLAGS) $(LDFLAGS) -o $@
-@MONO_NATIVE_COMPAT_TRUE@am_libmono_native_unified_la_rpath = -rpath \
-@MONO_NATIVE_COMPAT_TRUE@	$(libdir)
-libmono_native_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_COMPAT_TRUE@am_libmono_native_unified_la_rpath =  \
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_COMPAT_TRUE@	-rpath \
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_COMPAT_TRUE@	$(libdir)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_la_DEPENDENCIES =  \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_1)
 am__libmono_native_la_SOURCES_DIST = pal_config.h \
 	mono-native-platform.h mono-native-platform.c \
 	../../external/corefx/src/Native/Unix/Common/pal_compiler.h \
@@ -442,57 +453,72 @@ am__libmono_native_la_SOURCES_DIST = pal_config.h \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c \
 	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.h \
 	platform-type.c
-am__objects_19 = libmono_native_la-mono-native-platform.lo \
-	libmono_native_la-pal_errno.lo \
-	libmono_native_la-pal_maphardwaretype.lo \
-	libmono_native_la-pal_memory.lo libmono_native_la-pal_uid.lo \
-	libmono_native_la-pal_time.lo \
-	libmono_native_la-dictionary_hash.lo \
-	libmono_native_la-backward_references_hq.lo \
-	libmono_native_la-histogram.lo libmono_native_la-memory.lo \
-	libmono_native_la-entropy_encode.lo \
-	libmono_native_la-compress_fragment_two_pass.lo \
-	libmono_native_la-block_splitter.lo \
-	libmono_native_la-encode.lo libmono_native_la-cluster.lo \
-	libmono_native_la-backward_references.lo \
-	libmono_native_la-utf8_util.lo \
-	libmono_native_la-compress_fragment.lo \
-	libmono_native_la-brotli_bit_stream.lo \
-	libmono_native_la-bit_cost.lo libmono_native_la-static_dict.lo \
-	libmono_native_la-literal_cost.lo \
-	libmono_native_la-metablock.lo libmono_native_la-state.lo \
-	libmono_native_la-decode.lo libmono_native_la-huffman.lo \
-	libmono_native_la-bit_reader.lo \
-	libmono_native_la-dictionary.lo
-am__objects_20 = libmono_native_la-pal-icalls.lo \
-	libmono_native_la-pal_io.lo \
-	libmono_native_la-pal_networking.lo \
-	libmono_native_la-pal_networkstatistics.lo \
-	libmono_native_la-pal_tcpstate.lo \
-	libmono_native_la-pal_random.lo
-am__objects_21 = $(am__objects_20)
-am__objects_22 = libmono_native_la-pal-android.lo \
-	libmono_native_la-pal-icalls.lo libmono_native_la-pal_io.lo \
-	libmono_native_la-pal_networkstatistics.lo \
-	libmono_native_la-pal_random.lo
-am__objects_23 = libmono_native_la-pal_gssapi.lo
-@ENABLE_GSS_TRUE@am__objects_24 = $(am__objects_23)
-am__objects_25 = libmono_native_la-pal-icalls.lo \
-	libmono_native_la-pal_io.lo \
-	libmono_native_la-pal_networking.lo \
-	libmono_native_la-pal_tcpstate.lo \
-	libmono_native_la-pal_random.lo $(am__objects_24)
-am__objects_26 = $(am__objects_20) $(am__objects_24)
-@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_HAIKU_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_FALSE@am__objects_27 = $(am__objects_21)
-@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_TRUE@am__objects_27 = $(am__objects_21)
-@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_21)
-@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_22)
-@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_21)
-@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_21)
-@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_25)
-@MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_27 = $(am__objects_26)
-am_libmono_native_la_OBJECTS = $(am__objects_19) $(am__objects_27) \
-	libmono_native_la-platform-type.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_19 = libmono_native_la-mono-native-platform.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal_errno.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal_maphardwaretype.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal_memory.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal_uid.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal_time.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-dictionary_hash.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-backward_references_hq.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-histogram.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-memory.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-entropy_encode.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-compress_fragment_two_pass.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-block_splitter.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-encode.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-cluster.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-backward_references.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-utf8_util.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-compress_fragment.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-brotli_bit_stream.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-bit_cost.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-static_dict.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-literal_cost.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-metablock.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-state.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-decode.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-huffman.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-bit_reader.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-dictionary.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_20 =  \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal-icalls.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal_io.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal_networking.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal_networkstatistics.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal_tcpstate.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal_random.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_21 = $(am__objects_20)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_22 =  \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal-android.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal-icalls.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal_io.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal_networkstatistics.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal_random.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_23 =  \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal_gssapi.lo
+@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_24 =  \
+@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_23)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_25 =  \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal-icalls.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal_io.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal_networking.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal_tcpstate.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal_random.lo \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_24)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_26 = $(am__objects_20) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_24)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_HAIKU_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_FALSE@am__objects_27 = $(am__objects_21)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_TRUE@am__objects_27 = $(am__objects_21)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_21)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_22)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_21)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_21)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_25)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_27 = $(am__objects_26)
+@ENABLE_MSVC_ONLY_FALSE@am_libmono_native_la_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_19) $(am__objects_27) \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-platform-type.lo
 am__EXTRA_libmono_native_la_SOURCES_DIST = pal_config.h \
 	mono-native-platform.h mono-native-platform.c \
 	../../external/corefx/src/Native/Unix/Common/pal_compiler.h \
@@ -549,8 +575,9 @@ libmono_native_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmono_native_la_CFLAGS) $(CFLAGS) \
 	$(libmono_native_la_LDFLAGS) $(LDFLAGS) -o $@
-@MONO_NATIVE_COMPAT_FALSE@am_libmono_native_la_rpath = -rpath \
-@MONO_NATIVE_COMPAT_FALSE@	$(libdir)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_COMPAT_FALSE@am_libmono_native_la_rpath =  \
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_COMPAT_FALSE@	-rpath \
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_COMPAT_FALSE@	$(libdir)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -893,136 +920,137 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@MONO_NATIVE_COMPAT_FALSE@lib_LTLIBRARIES = libmono-native.la
-@MONO_NATIVE_COMPAT_TRUE@lib_LTLIBRARIES = libmono-native-compat.la libmono-native-unified.la
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_COMPAT_FALSE@lib_LTLIBRARIES = libmono-native.la
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_COMPAT_TRUE@lib_LTLIBRARIES = libmono-native-compat.la libmono-native-unified.la
 CCLD = $(MONO_NATIVE_CC)
-common_sources = \
-	pal_config.h \
-	mono-native-platform.h \
-	mono-native-platform.c \
-	../../external/corefx/src/Native/Unix/Common/pal_compiler.h \
-	../../external/corefx/src/Native/Unix/Common/pal_safecrt.h \
-	../../external/corefx/src/Native/Unix/Common/pal_types.h \
-	../../external/corefx/src/Native/Unix/Common/pal_utilities.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_errno.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_errno.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_memory.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_memory.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_uid.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_uid.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_time.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_time.h \
-	../../external/corefx/src/Native/AnyOS/brotli/enc/dictionary_hash.c \
-	../../external/corefx/src/Native/AnyOS/brotli/enc/backward_references_hq.c \
-	../../external/corefx/src/Native/AnyOS/brotli/enc/histogram.c \
-	../../external/corefx/src/Native/AnyOS/brotli/enc/memory.c \
-	../../external/corefx/src/Native/AnyOS/brotli/enc/entropy_encode.c \
-	../../external/corefx/src/Native/AnyOS/brotli/enc/compress_fragment_two_pass.c \
-	../../external/corefx/src/Native/AnyOS/brotli/enc/block_splitter.c \
-	../../external/corefx/src/Native/AnyOS/brotli/enc/encode.c \
-	../../external/corefx/src/Native/AnyOS/brotli/enc/cluster.c \
-	../../external/corefx/src/Native/AnyOS/brotli/enc/backward_references.c \
-	../../external/corefx/src/Native/AnyOS/brotli/enc/utf8_util.c \
-	../../external/corefx/src/Native/AnyOS/brotli/enc/compress_fragment.c \
-	../../external/corefx/src/Native/AnyOS/brotli/enc/brotli_bit_stream.c \
-	../../external/corefx/src/Native/AnyOS/brotli/enc/bit_cost.c \
-	../../external/corefx/src/Native/AnyOS/brotli/enc/static_dict.c \
-	../../external/corefx/src/Native/AnyOS/brotli/enc/literal_cost.c \
-	../../external/corefx/src/Native/AnyOS/brotli/enc/metablock.c \
-	../../external/corefx/src/Native/AnyOS/brotli/dec/state.c \
-	../../external/corefx/src/Native/AnyOS/brotli/dec/decode.c \
-	../../external/corefx/src/Native/AnyOS/brotli/dec/huffman.c \
-	../../external/corefx/src/Native/AnyOS/brotli/dec/bit_reader.c \
-	../../external/corefx/src/Native/AnyOS/brotli/common/dictionary.c
+@ENABLE_MSVC_ONLY_FALSE@common_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	pal_config.h \
+@ENABLE_MSVC_ONLY_FALSE@	mono-native-platform.h \
+@ENABLE_MSVC_ONLY_FALSE@	mono-native-platform.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/Common/pal_compiler.h \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/Common/pal_safecrt.h \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/Common/pal_types.h \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/Common/pal_utilities.h \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_errno.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_errno.h \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_maphardwaretype.h \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_memory.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_memory.h \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_uid.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_uid.h \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_time.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_time.h \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/enc/dictionary_hash.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/enc/backward_references_hq.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/enc/histogram.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/enc/memory.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/enc/entropy_encode.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/enc/compress_fragment_two_pass.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/enc/block_splitter.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/enc/encode.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/enc/cluster.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/enc/backward_references.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/enc/utf8_util.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/enc/compress_fragment.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/enc/brotli_bit_stream.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/enc/bit_cost.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/enc/static_dict.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/enc/literal_cost.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/enc/metablock.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/dec/state.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/dec/decode.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/dec/huffman.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/dec/bit_reader.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/AnyOS/brotli/common/dictionary.c
 
-macos_sources = $(unix_sources) $(am__append_1)
-ios_sources = pal-icalls.h pal-icalls.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_io.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_io.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_networking.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_networking.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_random.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_random.h \
-	$(am__append_2)
-linux_sources = $(unix_sources)
-aix_sources = $(unix_sources)
-freebsd_sources = $(unix_sources)
-netbsd_sources = $(unix_sources)
-haiku_sources = $(unix_sources)
-android_sources = \
-	pal-android.h \
-	pal-android.c \
-	pal-icalls.h \
-	pal-icalls.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_io.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_io.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_random.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_random.h
+@ENABLE_MSVC_ONLY_FALSE@macos_sources = $(unix_sources) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__append_1)
+@ENABLE_MSVC_ONLY_FALSE@ios_sources = pal-icalls.h pal-icalls.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_io.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_io.h \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_networking.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_networking.h \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.h \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_random.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_random.h \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__append_2)
+@ENABLE_MSVC_ONLY_FALSE@linux_sources = $(unix_sources)
+@ENABLE_MSVC_ONLY_FALSE@aix_sources = $(unix_sources)
+@ENABLE_MSVC_ONLY_FALSE@freebsd_sources = $(unix_sources)
+@ENABLE_MSVC_ONLY_FALSE@netbsd_sources = $(unix_sources)
+@ENABLE_MSVC_ONLY_FALSE@haiku_sources = $(unix_sources)
+@ENABLE_MSVC_ONLY_FALSE@android_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	pal-android.h \
+@ENABLE_MSVC_ONLY_FALSE@	pal-android.c \
+@ENABLE_MSVC_ONLY_FALSE@	pal-icalls.h \
+@ENABLE_MSVC_ONLY_FALSE@	pal-icalls.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_io.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_io.h \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.h \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_random.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_random.h
 
-unix_sources = \
-	pal-icalls.h \
-	pal-icalls.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_io.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_io.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_networking.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_networking.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.h \
-	../../external/corefx/src/Native/Unix/System.Native/pal_random.c \
-	../../external/corefx/src/Native/Unix/System.Native/pal_random.h
+@ENABLE_MSVC_ONLY_FALSE@unix_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	pal-icalls.h \
+@ENABLE_MSVC_ONLY_FALSE@	pal-icalls.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_io.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_io.h \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_networking.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_networking.h \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.h \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.h \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_random.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_random.h
 
-gss_sources = \
-	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c \
-	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.h
+@ENABLE_MSVC_ONLY_FALSE@gss_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.c \
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Net.Security.Native/pal_gssapi.h
 
-EXTRA_libmono_native_la_SOURCES = $(common_sources) $(macos_sources) $(ios_sources) $(linux_sources) $(aix_sources) $(freebsd_sources) $(netbsd_sources) $(haiku_sources) $(unix_sources) $(gss_sources)
-@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_HAIKU_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_FALSE@platform_sources = $(haiku_sources)
-@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_TRUE@platform_sources = $(netbsd_sources)
-@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(freebsd_sources)
-@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(android_sources)
-@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(aix_sources)
-@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(linux_sources)
-@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(ios_sources)
-@MONO_NATIVE_PLATFORM_MACOS_TRUE@platform_sources = $(macos_sources)
-common_cppflags = -I$(top_srcdir) -I$(top_srcdir)/mono
-common_cflags = \
-	-I$(abs_top_srcdir)/external/corefx/src/Native/Unix/Common \
-	-I$(abs_top_srcdir)/external/corefx/src/Native/Unix/System.Native \
-	-I$(abs_top_srcdir)/external/corefx/src/Native/AnyOS/brotli/include \
-	$(GLIB_CFLAGS) \
-	$(SHARED_CFLAGS) \
-	-DBROTLI_BUILD_NO_RBIT \
-	-Wno-typedef-redefinition
+@ENABLE_MSVC_ONLY_FALSE@EXTRA_libmono_native_la_SOURCES = $(common_sources) $(macos_sources) $(ios_sources) $(linux_sources) $(aix_sources) $(freebsd_sources) $(netbsd_sources) $(haiku_sources) $(unix_sources) $(gss_sources)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_HAIKU_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_FALSE@platform_sources = $(haiku_sources)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_TRUE@platform_sources = $(netbsd_sources)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(freebsd_sources)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(android_sources)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(aix_sources)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(linux_sources)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@platform_sources = $(ios_sources)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_MACOS_TRUE@platform_sources = $(macos_sources)
+@ENABLE_MSVC_ONLY_FALSE@common_cppflags = -I$(top_srcdir) -I$(top_srcdir)/mono
+@ENABLE_MSVC_ONLY_FALSE@common_cflags = \
+@ENABLE_MSVC_ONLY_FALSE@	-I$(abs_top_srcdir)/external/corefx/src/Native/Unix/Common \
+@ENABLE_MSVC_ONLY_FALSE@	-I$(abs_top_srcdir)/external/corefx/src/Native/Unix/System.Native \
+@ENABLE_MSVC_ONLY_FALSE@	-I$(abs_top_srcdir)/external/corefx/src/Native/AnyOS/brotli/include \
+@ENABLE_MSVC_ONLY_FALSE@	$(GLIB_CFLAGS) \
+@ENABLE_MSVC_ONLY_FALSE@	$(SHARED_CFLAGS) \
+@ENABLE_MSVC_ONLY_FALSE@	-DBROTLI_BUILD_NO_RBIT \
+@ENABLE_MSVC_ONLY_FALSE@	-Wno-typedef-redefinition
 
-libmono_native_la_SOURCES = $(common_sources) $(platform_sources) platform-type.c
-libmono_native_la_CFLAGS = $(MONO_NATIVE_CFLAGS) $(common_cflags)
-libmono_native_la_CPPFLAGS = $(MONO_NATIVE_CPPFLAGS) $(common_cppflags)
-libmono_native_la_CXXFLAGS = $(MONO_NATIVE_CXXFLAGS)
-libmono_native_la_LDFLAGS = $(MONO_NATIVE_LDFLAGS)
-libmono_native_la_CCASFLAGS = $(MONO_NATIVE_CCASFLAGS)
-libmono_native_la_LIBADD = $(MONO_NATIVE_LIBADD)
-libmono_native_compat_la_SOURCES = $(common_sources) $(platform_sources) platform-type-compat.c
-libmono_native_compat_la_CFLAGS = $(MONO_NATIVE_COMPAT_CFLAGS) $(common_cflags)
-libmono_native_compat_la_CPPFLAGS = $(MONO_NATIVE_COMPAT_CPPFLAGS) $(common_cppflags)
-libmono_native_compat_la_CXXFLAGS = $(MONO_NATIVE_COMPAT_CXXFLAGS)
-libmono_native_compat_la_LDFLAGS = $(MONO_NATIVE_COMPAT_LDFLAGS)
-libmono_native_compat_la_CCASFLAGS = $(MONO_NATIVE_COMPAT_CCASFLAGS)
-libmono_native_compat_la_LIBADD = $(MONO_NATIVE_LIBADD)
-libmono_native_unified_la_SOURCES = $(common_sources) $(platform_sources) platform-type-unified.c
-libmono_native_unified_la_CFLAGS = $(MONO_NATIVE_UNIFIED_CFLAGS) $(common_cflags)
-libmono_native_unified_la_CPPFLAGS = $(MONO_NATIVE_UNIFIED_CPPFLAGS) $(common_cppflags)
-libmono_native_unified_la_CXXFLAGS = $(MONO_NATIVE_UNIFIED_CXXFLAGS)
-libmono_native_unified_la_LDFLAGS = $(MONO_NATIVE_UNIFIED_LDFLAGS)
-libmono_native_unified_la_CCASFLAGS = $(MONO_NATIVE_UNIFIED_CCASFLAGS)
-libmono_native_unified_la_LIBADD = $(MONO_NATIVE_LIBADD)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_la_SOURCES = $(common_sources) $(platform_sources) platform-type.c
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_la_CFLAGS = $(MONO_NATIVE_CFLAGS) $(common_cflags)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_la_CPPFLAGS = $(MONO_NATIVE_CPPFLAGS) $(common_cppflags)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_la_CXXFLAGS = $(MONO_NATIVE_CXXFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_la_LDFLAGS = $(MONO_NATIVE_LDFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_la_CCASFLAGS = $(MONO_NATIVE_CCASFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_la_LIBADD = $(MONO_NATIVE_LIBADD)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_compat_la_SOURCES = $(common_sources) $(platform_sources) platform-type-compat.c
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_compat_la_CFLAGS = $(MONO_NATIVE_COMPAT_CFLAGS) $(common_cflags)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_compat_la_CPPFLAGS = $(MONO_NATIVE_COMPAT_CPPFLAGS) $(common_cppflags)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_compat_la_CXXFLAGS = $(MONO_NATIVE_COMPAT_CXXFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_compat_la_LDFLAGS = $(MONO_NATIVE_COMPAT_LDFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_compat_la_CCASFLAGS = $(MONO_NATIVE_COMPAT_CCASFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_compat_la_LIBADD = $(MONO_NATIVE_LIBADD)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_unified_la_SOURCES = $(common_sources) $(platform_sources) platform-type-unified.c
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_unified_la_CFLAGS = $(MONO_NATIVE_UNIFIED_CFLAGS) $(common_cflags)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_unified_la_CPPFLAGS = $(MONO_NATIVE_UNIFIED_CPPFLAGS) $(common_cppflags)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_unified_la_CXXFLAGS = $(MONO_NATIVE_UNIFIED_CXXFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_unified_la_LDFLAGS = $(MONO_NATIVE_UNIFIED_LDFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_unified_la_CCASFLAGS = $(MONO_NATIVE_UNIFIED_CCASFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@libmono_native_unified_la_LIBADD = $(MONO_NATIVE_LIBADD)
 all: all-am
 
 .SUFFIXES:
@@ -2150,6 +2178,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+@ENABLE_MSVC_ONLY_TRUE@test-bundle-local:
 clean: clean-am
 
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
@@ -2249,9 +2278,9 @@ uninstall-am: uninstall-libLTLIBRARIES
 .PRECIOUS: Makefile
 
 
-test-bundle-local:
-	mkdir -p $(TEST_BUNDLE_PATH)
-	cp -L .libs/libmono-native$(libsuffix) $(TEST_BUNDLE_PATH)/
+@ENABLE_MSVC_ONLY_FALSE@test-bundle-local:
+@ENABLE_MSVC_ONLY_FALSE@	mkdir -p $(TEST_BUNDLE_PATH)
+@ENABLE_MSVC_ONLY_FALSE@	cp -L .libs/libmono-native$(libsuffix) $(TEST_BUNDLE_PATH)/
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

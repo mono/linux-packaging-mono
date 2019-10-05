@@ -92,23 +92,21 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@DISABLE_EXECUTABLES_FALSE@@HOST_WIN32_FALSE@bin_PROGRAMS =  \
-@DISABLE_EXECUTABLES_FALSE@@HOST_WIN32_FALSE@	$(am__EXEEXT_1) \
-@DISABLE_EXECUTABLES_FALSE@@HOST_WIN32_FALSE@	$(am__EXEEXT_2)
-@DISABLE_EXECUTABLES_FALSE@@HOST_WIN32_TRUE@bin_PROGRAMS =  \
-@DISABLE_EXECUTABLES_FALSE@@HOST_WIN32_TRUE@	$(am__EXEEXT_1) \
-@DISABLE_EXECUTABLES_FALSE@@HOST_WIN32_TRUE@	$(am__EXEEXT_2) \
-@DISABLE_EXECUTABLES_FALSE@@HOST_WIN32_TRUE@	monow$(EXEEXT)
-@DISABLE_EXECUTABLES_FALSE@noinst_PROGRAMS = mono$(EXEEXT)
-@DISABLE_INTERPRETER_TRUE@am__append_1 = $(interp_libs)
-@SUPPORT_BOEHM_TRUE@am__append_2 = main.c
-@LOADED_LLVM_TRUE@am__append_3 = libmono-llvm.la
-@ENABLE_STATIC_GCC_LIBS_TRUE@am__append_4 = -all-static
-@BITCODE_TRUE@am__append_5 = -no-undefined
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@bin_PROGRAMS = $(am__EXEEXT_1) \
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__EXEEXT_2)
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@bin_PROGRAMS = $(am__EXEEXT_1) \
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__EXEEXT_2) \
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	monow$(EXEEXT)
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@noinst_PROGRAMS = mono$(EXEEXT)
+@DISABLE_INTERPRETER_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__append_1 = $(interp_libs)
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@am__append_2 = main.c
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@am__append_3 = libmono-llvm.la
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_STATIC_GCC_LIBS_TRUE@am__append_4 = -all-static
+@BITCODE_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__append_5 = -no-undefined
 @FULL_AOT_TESTS_TRUE@am__append_6 = builtin-types.exe
-@MONO_JEMALLOC_ENABLED_TRUE@am__append_7 = $(JEMALLOC_LDFLAGS)
-@DISABLE_DEBUGGER_AGENT_TRUE@am__append_8 = $(dbg_libs)
-@DISABLE_DEBUGGER_AGENT_FALSE@am__append_9 = $(dbg_libs)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_JEMALLOC_ENABLED_TRUE@am__append_7 = $(JEMALLOC_LDFLAGS)
+@DISABLE_DEBUGGER_AGENT_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__append_8 = $(dbg_libs)
+@DISABLE_DEBUGGER_AGENT_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__append_9 = $(dbg_libs)
 
 # Skip aoting the tests that aren't compiled 
 # on the full aot profiles because they're skipped
@@ -151,8 +149,10 @@ am__v_AR_1 =
 libmain_a_AR = $(AR) $(ARFLAGS)
 libmain_a_LIBADD =
 am__libmain_a_SOURCES_DIST = main-sgen.c main.c
-@SUPPORT_BOEHM_TRUE@am__objects_1 = libmain_a-main.$(OBJEXT)
-am_libmain_a_OBJECTS = libmain_a-main-sgen.$(OBJEXT) $(am__objects_1)
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@am__objects_1 = libmain_a-main.$(OBJEXT)
+@ENABLE_MSVC_ONLY_FALSE@am_libmain_a_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@	libmain_a-main-sgen.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_1)
 libmain_a_OBJECTS = $(am_libmain_a_OBJECTS)
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -225,218 +225,278 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	tramp-x86-gsharedvt.c mini-darwin.c mini-posix.c \
 	mini-windows.c mini-windows-tls-callback.c mini-windows.h \
 	mini-windows-dllmain.c mini-windows-dlldac.c main-core.c
-am__objects_2 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
-	libmini_la-seq-points.lo libmini_la-method-to-ir.lo \
-	libmini_la-cfgdump.lo libmini_la-decompose.lo \
-	libmini_la-jit-icalls.lo libmini_la-trace.lo \
-	libmini_la-dominators.lo libmini_la-cfold.lo \
-	libmini_la-helpers.lo libmini_la-liveness.lo libmini_la-ssa.lo \
-	libmini_la-abcremoval.lo libmini_la-local-propagation.lo \
-	libmini_la-driver.lo libmini_la-debug-mini.lo \
-	libmini_la-linear-scan.lo libmini_la-aot-compiler.lo \
-	libmini_la-aot-runtime.lo libmini_la-aot-runtime-wasm.lo \
-	libmini_la-graph.lo libmini_la-mini-codegen.lo \
-	libmini_la-mini-exceptions.lo libmini_la-mini-trampolines.lo \
-	libmini_la-branch-opts.lo libmini_la-mini-generic-sharing.lo \
-	libmini_la-tasklets.lo libmini_la-simd-intrinsics.lo \
-	libmini_la-simd-intrinsics-netcore.lo \
-	libmini_la-mini-native-types.lo libmini_la-unwind.lo \
-	libmini_la-image-writer.lo libmini_la-dwarfwriter.lo \
-	libmini_la-mini-gc.lo libmini_la-debugger-agent-stubs.lo \
-	libmini_la-xdebug.lo libmini_la-alias-analysis.lo \
-	libmini_la-mini-cross-helpers.lo libmini_la-arch-stubs.lo \
-	libmini_la-type-checking.lo libmini_la-calls.lo \
-	libmini_la-lldb.lo libmini_la-memory-access.lo \
-	libmini_la-intrinsics.lo libmini_la-mini-profiler.lo \
-	libmini_la-interp-stubs.lo libmini_la-llvmonly-runtime.lo
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@am__objects_3 =  \
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm.lo \
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm-loaded.lo \
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.lo \
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	llvm-jit.lo
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@am__objects_3 = libmini_la-mini-llvm-loaded.lo
-@ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@am__objects_4 =  \
-@ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@	llvm-runtime.lo
-@ENABLE_LLVM_TRUE@am__objects_4 = llvm-runtime.lo
-am__objects_5 = libmini_la-mini-amd64.lo \
-	libmini_la-exceptions-amd64.lo libmini_la-tramp-amd64.lo \
-	libmini_la-mini-amd64-gsharedvt.lo \
-	libmini_la-tramp-amd64-gsharedvt.lo
-am__objects_6 = libmini_la-mini-arm64.lo \
-	libmini_la-exceptions-arm64.lo libmini_la-tramp-arm64.lo \
-	libmini_la-mini-arm64-gsharedvt.lo \
-	libmini_la-tramp-arm64-gsharedvt.lo
-am__objects_7 = libmini_la-mini-arm.lo libmini_la-exceptions-arm.lo \
-	libmini_la-tramp-arm.lo libmini_la-mini-arm-gsharedvt.lo \
-	libmini_la-tramp-arm-gsharedvt.lo
-am__objects_8 = libmini_la-mini-mips.lo libmini_la-exceptions-mips.lo \
-	libmini_la-tramp-mips.lo
-am__objects_9 = libmini_la-mini-ppc.lo libmini_la-exceptions-ppc.lo \
-	libmini_la-tramp-ppc.lo
-am__objects_10 = libmini_la-mini-riscv.lo \
-	libmini_la-exceptions-riscv.lo libmini_la-tramp-riscv.lo
-am__objects_11 = libmini_la-mini-s390x.lo \
-	libmini_la-exceptions-s390x.lo libmini_la-tramp-s390x.lo
-am__objects_12 = libmini_la-mini-sparc.lo \
-	libmini_la-exceptions-sparc.lo libmini_la-tramp-sparc.lo
-am__objects_13 = libmini_la-mini-wasm.lo \
-	libmini_la-mini-wasm-debugger.lo libmini_la-debugger-engine.lo \
-	libmini_la-exceptions-wasm.lo libmini_la-tramp-wasm.lo
-am__objects_14 = libmini_la-mini-x86.lo libmini_la-exceptions-x86.lo \
-	libmini_la-tramp-x86.lo libmini_la-mini-x86-gsharedvt.lo \
-	libmini_la-tramp-x86-gsharedvt.lo
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_FALSE@@X86_TRUE@am__objects_15 = $(am__objects_14)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_TRUE@am__objects_15 = $(am__objects_13)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_TRUE@am__objects_15 = $(am__objects_12)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_FALSE@@SPARC64_TRUE@am__objects_15 = $(am__objects_12)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_TRUE@am__objects_15 = $(am__objects_11)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_TRUE@am__objects_15 = $(am__objects_10)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_TRUE@am__objects_15 = $(am__objects_10)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_TRUE@am__objects_15 = $(am__objects_9)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_FALSE@@POWERPC64_TRUE@am__objects_15 = $(am__objects_9)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@MIPS_TRUE@am__objects_15 = $(am__objects_8)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@am__objects_15 = $(am__objects_7)
-@AMD64_FALSE@@ARM64_TRUE@am__objects_15 = $(am__objects_6)
-@AMD64_TRUE@am__objects_15 = $(am__objects_5)
-am__objects_16 = libmini_la-mini-darwin.lo
-am__objects_17 = libmini_la-mini-posix.lo
-am__objects_18 = libmini_la-mini-windows.lo \
-	libmini_la-mini-windows-tls-callback.lo \
-	libmini_la-mini-windows-dllmain.lo \
-	libmini_la-mini-windows-dlldac.lo
-@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_FALSE@@HOST_WIN32_TRUE@am__objects_19 = $(am__objects_18)
-@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@am__objects_19 =  \
-@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@	$(am__objects_17)
-@HOST_DARWIN_TRUE@am__objects_19 = $(am__objects_16) $(am__objects_17)
-@ENABLE_NETCORE_TRUE@am__objects_20 = libmini_la-main-core.lo
-am_libmini_la_OBJECTS = $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_15) $(am__objects_19) \
-	$(am__objects_20)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_2 = libmini_la-mini.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-runtime.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-seq-points.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-method-to-ir.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-cfgdump.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-decompose.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-jit-icalls.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-trace.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-dominators.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-cfold.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-helpers.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-liveness.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-ssa.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-abcremoval.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-local-propagation.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-driver.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-debug-mini.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-linear-scan.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-aot-compiler.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-aot-runtime.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-aot-runtime-wasm.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-graph.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-codegen.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-exceptions.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-trampolines.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-branch-opts.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-generic-sharing.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-tasklets.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-simd-intrinsics.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-simd-intrinsics-netcore.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-native-types.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-unwind.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-image-writer.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-dwarfwriter.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-gc.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-debugger-agent-stubs.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-xdebug.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-alias-analysis.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-cross-helpers.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-arch-stubs.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-type-checking.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-calls.lo libmini_la-lldb.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-memory-access.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-intrinsics.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-profiler.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-interp-stubs.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-llvmonly-runtime.lo
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@am__objects_3 = libmini_la-mini-llvm.lo \
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm-loaded.lo \
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.lo \
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@	llvm-jit.lo
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@am__objects_3 = libmini_la-mini-llvm-loaded.lo
+@ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_4 = llvm-runtime.lo
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_4 =  \
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@	llvm-runtime.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_5 = libmini_la-mini-amd64.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-exceptions-amd64.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-tramp-amd64.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-amd64-gsharedvt.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-tramp-amd64-gsharedvt.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_6 = libmini_la-mini-arm64.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-exceptions-arm64.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-tramp-arm64.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-arm64-gsharedvt.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-tramp-arm64-gsharedvt.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_7 = libmini_la-mini-arm.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-exceptions-arm.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-tramp-arm.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-arm-gsharedvt.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-tramp-arm-gsharedvt.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_8 = libmini_la-mini-mips.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-exceptions-mips.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-tramp-mips.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_9 = libmini_la-mini-ppc.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-exceptions-ppc.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-tramp-ppc.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_10 = libmini_la-mini-riscv.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-exceptions-riscv.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-tramp-riscv.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_11 = libmini_la-mini-s390x.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-exceptions-s390x.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-tramp-s390x.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_12 = libmini_la-mini-sparc.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-exceptions-sparc.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-tramp-sparc.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_13 = libmini_la-mini-wasm.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-wasm-debugger.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-debugger-engine.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-exceptions-wasm.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-tramp-wasm.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_14 = libmini_la-mini-x86.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-exceptions-x86.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-tramp-x86.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-x86-gsharedvt.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-tramp-x86-gsharedvt.lo
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@ENABLE_MSVC_ONLY_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_FALSE@@X86_TRUE@am__objects_15 = $(am__objects_14)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@ENABLE_MSVC_ONLY_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@WASM_TRUE@am__objects_15 = $(am__objects_13)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@ENABLE_MSVC_ONLY_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_TRUE@am__objects_15 = $(am__objects_12)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@ENABLE_MSVC_ONLY_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_FALSE@@SPARC64_TRUE@am__objects_15 = $(am__objects_12)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@ENABLE_MSVC_ONLY_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_FALSE@@S390X_TRUE@am__objects_15 = $(am__objects_11)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@ENABLE_MSVC_ONLY_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_FALSE@@RISCV64_TRUE@am__objects_15 = $(am__objects_10)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@ENABLE_MSVC_ONLY_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@RISCV32_TRUE@am__objects_15 = $(am__objects_10)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@ENABLE_MSVC_ONLY_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_TRUE@am__objects_15 = $(am__objects_9)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@ENABLE_MSVC_ONLY_FALSE@@MIPS_FALSE@@POWERPC64_TRUE@am__objects_15 = $(am__objects_9)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@ENABLE_MSVC_ONLY_FALSE@@MIPS_TRUE@am__objects_15 = $(am__objects_8)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_15 = $(am__objects_7)
+@AMD64_FALSE@@ARM64_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_15 = $(am__objects_6)
+@AMD64_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_15 = $(am__objects_5)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_16 = libmini_la-mini-darwin.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_17 = libmini_la-mini-posix.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_18 = libmini_la-mini-windows.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-windows-tls-callback.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-windows-dllmain.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-windows-dlldac.lo
+@ENABLE_MSVC_ONLY_FALSE@@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_FALSE@@HOST_WIN32_TRUE@am__objects_19 = $(am__objects_18)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@am__objects_19 = $(am__objects_17)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_DARWIN_TRUE@am__objects_19 =  \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_DARWIN_TRUE@	$(am__objects_16) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_DARWIN_TRUE@	$(am__objects_17)
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@am__objects_20 = libmini_la-main-core.lo
+@ENABLE_MSVC_ONLY_FALSE@am_libmini_la_OBJECTS = $(am__objects_2) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_3) $(am__objects_4) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_15) $(am__objects_19) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_20)
 libmini_la_OBJECTS = $(am_libmini_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-@SHARED_MONO_TRUE@am_libmini_la_rpath =
-@BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@libmono_dbg_la_DEPENDENCIES =  \
-@BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@	libmonosgen-2.0.la
+@ENABLE_MSVC_ONLY_FALSE@@SHARED_MONO_TRUE@am_libmini_la_rpath =
+@BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@@ENABLE_MSVC_ONLY_FALSE@libmono_dbg_la_DEPENDENCIES = libmonosgen-2.0.la
 am__libmono_dbg_la_SOURCES_DIST = debugger-agent.c \
 	debugger-state-machine.c debugger-engine.c
-@WASM_FALSE@am__objects_21 = libmono_dbg_la-debugger-engine.lo
-am_libmono_dbg_la_OBJECTS = libmono_dbg_la-debugger-agent.lo \
-	libmono_dbg_la-debugger-state-machine.lo $(am__objects_21)
+@ENABLE_MSVC_ONLY_FALSE@@WASM_FALSE@am__objects_21 = libmono_dbg_la-debugger-engine.lo
+@ENABLE_MSVC_ONLY_FALSE@am_libmono_dbg_la_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_dbg_la-debugger-agent.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_dbg_la-debugger-state-machine.lo \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_21)
 libmono_dbg_la_OBJECTS = $(am_libmono_dbg_la_OBJECTS)
 libmono_dbg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmono_dbg_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o \
 	$@
-@DISABLE_DEBUGGER_AGENT_FALSE@am_libmono_dbg_la_rpath =
-@DISABLE_DEBUGGER_AGENT_TRUE@am_libmono_dbg_la_rpath = -rpath \
-@DISABLE_DEBUGGER_AGENT_TRUE@	$(libdir)
-@BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@libmono_ee_interp_la_DEPENDENCIES =  \
-@BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@	libmonosgen-2.0.la
-am__objects_22 = libmono_ee_interp_la-interp.lo \
-	libmono_ee_interp_la-mintops.lo \
-	libmono_ee_interp_la-transform.lo
-am_libmono_ee_interp_la_OBJECTS = $(am__objects_22)
+@DISABLE_DEBUGGER_AGENT_FALSE@@ENABLE_MSVC_ONLY_FALSE@am_libmono_dbg_la_rpath =
+@DISABLE_DEBUGGER_AGENT_TRUE@@ENABLE_MSVC_ONLY_FALSE@am_libmono_dbg_la_rpath =  \
+@DISABLE_DEBUGGER_AGENT_TRUE@@ENABLE_MSVC_ONLY_FALSE@	-rpath \
+@DISABLE_DEBUGGER_AGENT_TRUE@@ENABLE_MSVC_ONLY_FALSE@	$(libdir)
+@BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@@ENABLE_MSVC_ONLY_FALSE@libmono_ee_interp_la_DEPENDENCIES = libmonosgen-2.0.la
+am__libmono_ee_interp_la_SOURCES_DIST = interp/interp.h \
+	interp/interp-internals.h interp/interp.c interp/mintops.h \
+	interp/mintops.def interp/mintops.c interp/transform.c
+@ENABLE_MSVC_ONLY_FALSE@am__objects_22 =  \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_ee_interp_la-interp.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_ee_interp_la-mintops.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmono_ee_interp_la-transform.lo
+@ENABLE_MSVC_ONLY_FALSE@am_libmono_ee_interp_la_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_22)
 libmono_ee_interp_la_OBJECTS = $(am_libmono_ee_interp_la_OBJECTS)
 libmono_ee_interp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmono_ee_interp_la_CFLAGS) $(CFLAGS) \
 	$(libmono_ee_interp_la_LDFLAGS) $(LDFLAGS) -o $@
-@DISABLE_INTERPRETER_TRUE@am_libmono_ee_interp_la_rpath = -rpath \
-@DISABLE_INTERPRETER_TRUE@	$(libdir)
+@DISABLE_INTERPRETER_TRUE@@ENABLE_MSVC_ONLY_FALSE@am_libmono_ee_interp_la_rpath =  \
+@DISABLE_INTERPRETER_TRUE@@ENABLE_MSVC_ONLY_FALSE@	-rpath \
+@DISABLE_INTERPRETER_TRUE@@ENABLE_MSVC_ONLY_FALSE@	$(libdir)
 am__DEPENDENCIES_1 =
-@LOADED_LLVM_TRUE@libmono_llvm_la_DEPENDENCIES = $(glib_libs) \
-@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@libmono_llvm_la_DEPENDENCIES =  \
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@	$(glib_libs) \
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_1) \
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_1)
 am__libmono_llvm_la_SOURCES_DIST = mini-llvm.c mini-llvm-cpp.cpp \
 	llvm-jit.cpp
-@LOADED_LLVM_TRUE@am_libmono_llvm_la_OBJECTS = mini-llvm.lo \
-@LOADED_LLVM_TRUE@	mini-llvm-cpp.lo llvm-jit.lo
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@am_libmono_llvm_la_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@	mini-llvm.lo \
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@	mini-llvm-cpp.lo \
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@	llvm-jit.lo
 libmono_llvm_la_OBJECTS = $(am_libmono_llvm_la_OBJECTS)
 libmono_llvm_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(AM_CXXFLAGS) $(CXXFLAGS) $(libmono_llvm_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
-@LOADED_LLVM_TRUE@am_libmono_llvm_la_rpath = -rpath $(libdir)
-@SUPPORT_NULLGC_FALSE@am__DEPENDENCIES_2 =  \
-@SUPPORT_NULLGC_FALSE@	$(monodir)/libgc/libmonogc.la
-am__DEPENDENCIES_3 = $(monodir)/mono/metadata/libmonoruntime.la \
-	$(monodir)/mono/utils/libmonoutils.la $(glib_libs) \
-	$(am__DEPENDENCIES_2)
-@DTRACE_G_REQUIRED_TRUE@am__DEPENDENCIES_4 =  \
-@DTRACE_G_REQUIRED_TRUE@	.libs/mono-dtrace.$(OBJEXT)
-@LOADED_LLVM_FALSE@am__DEPENDENCIES_5 = $(am__DEPENDENCIES_1) \
-@LOADED_LLVM_FALSE@	$(am__DEPENDENCIES_1)
-libmonoboehm_2_0_la_DEPENDENCIES = libmini.la $(interp_libs_with_mini) \
-	$(dbg_libs_with_mini) $(am__DEPENDENCIES_3) \
-	$(am__DEPENDENCIES_4) $(am__DEPENDENCIES_5)
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@am_libmono_llvm_la_rpath =  \
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@	-rpath $(libdir)
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_FALSE@am__DEPENDENCIES_2 = $(monodir)/libgc/libmonogc.la
+@ENABLE_MSVC_ONLY_FALSE@am__DEPENDENCIES_3 = $(monodir)/mono/metadata/libmonoruntime.la \
+@ENABLE_MSVC_ONLY_FALSE@	$(monodir)/mono/utils/libmonoutils.la \
+@ENABLE_MSVC_ONLY_FALSE@	$(glib_libs) $(am__DEPENDENCIES_2)
+@DTRACE_G_REQUIRED_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__DEPENDENCIES_4 = .libs/mono-dtrace.$(OBJEXT)
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@am__DEPENDENCIES_5 = $(am__DEPENDENCIES_1) \
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@	$(am__DEPENDENCIES_1)
+@ENABLE_MSVC_ONLY_FALSE@libmonoboehm_2_0_la_DEPENDENCIES = libmini.la \
+@ENABLE_MSVC_ONLY_FALSE@	$(interp_libs_with_mini) \
+@ENABLE_MSVC_ONLY_FALSE@	$(dbg_libs_with_mini) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_3) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_4) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_5)
 am_libmonoboehm_2_0_la_OBJECTS =
 libmonoboehm_2_0_la_OBJECTS = $(am_libmonoboehm_2_0_la_OBJECTS)
 libmonoboehm_2_0_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmonoboehm_2_0_la_CFLAGS) $(CFLAGS) \
 	$(libmonoboehm_2_0_la_LDFLAGS) $(LDFLAGS) -o $@
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@am_libmonoboehm_2_0_la_rpath = -rpath \
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	$(libdir)
-@DISABLE_EXECUTABLES_TRUE@@SUPPORT_BOEHM_TRUE@am_libmonoboehm_2_0_la_rpath =  \
-@DISABLE_EXECUTABLES_TRUE@@SUPPORT_BOEHM_TRUE@	-rpath $(libdir)
-libmonosgen_2_0_la_DEPENDENCIES = libmini.la $(interp_libs_with_mini) \
-	$(dbg_libs_with_mini) $(sgen_libs) $(am__DEPENDENCIES_4) \
-	$(am__DEPENDENCIES_5)
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@am_libmonoboehm_2_0_la_rpath = -rpath \
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	$(libdir)
+@DISABLE_EXECUTABLES_TRUE@@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@am_libmonoboehm_2_0_la_rpath = -rpath \
+@DISABLE_EXECUTABLES_TRUE@@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@	$(libdir)
+@ENABLE_MSVC_ONLY_FALSE@libmonosgen_2_0_la_DEPENDENCIES = libmini.la \
+@ENABLE_MSVC_ONLY_FALSE@	$(interp_libs_with_mini) \
+@ENABLE_MSVC_ONLY_FALSE@	$(dbg_libs_with_mini) $(sgen_libs) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_4) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_5)
 am_libmonosgen_2_0_la_OBJECTS =
 libmonosgen_2_0_la_OBJECTS = $(am_libmonosgen_2_0_la_OBJECTS)
 libmonosgen_2_0_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmonosgen_2_0_la_CFLAGS) $(CFLAGS) \
 	$(libmonosgen_2_0_la_LDFLAGS) $(LDFLAGS) -o $@
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_SGEN_TRUE@am_libmonosgen_2_0_la_rpath = -rpath \
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_SGEN_TRUE@	$(libdir)
-@DISABLE_EXECUTABLES_TRUE@@SUPPORT_SGEN_TRUE@am_libmonosgen_2_0_la_rpath =  \
-@DISABLE_EXECUTABLES_TRUE@@SUPPORT_SGEN_TRUE@	-rpath $(libdir)
-@SUPPORT_BOEHM_TRUE@am__EXEEXT_1 = mono-boehm$(EXEEXT)
-@SUPPORT_SGEN_TRUE@am__EXEEXT_2 = mono-sgen$(EXEEXT)
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@@SHARED_MONO_TRUE@@SUPPORT_SGEN_TRUE@am_libmonosgen_2_0_la_rpath = -rpath \
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@@SHARED_MONO_TRUE@@SUPPORT_SGEN_TRUE@	$(libdir)
+@DISABLE_EXECUTABLES_TRUE@@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_SGEN_TRUE@am_libmonosgen_2_0_la_rpath = -rpath \
+@DISABLE_EXECUTABLES_TRUE@@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_SGEN_TRUE@	$(libdir)
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@am__EXEEXT_1 = mono-boehm$(EXEEXT)
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_SGEN_TRUE@am__EXEEXT_2 =  \
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_SGEN_TRUE@	mono-sgen$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
 am_mono_OBJECTS =
 mono_OBJECTS = $(am_mono_OBJECTS)
 mono_LDADD = $(LDADD)
 am_mono_boehm_OBJECTS =
 mono_boehm_OBJECTS = $(am_mono_boehm_OBJECTS)
-@SUPPORT_BOEHM_TRUE@am__DEPENDENCIES_6 = libmini.la \
-@SUPPORT_BOEHM_TRUE@	$(interp_libs_with_mini) \
-@SUPPORT_BOEHM_TRUE@	$(dbg_libs_with_mini) \
-@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_3)
-@STATIC_MONO_FALSE@am__DEPENDENCIES_7 = libmonoboehm-2.0.la
-@STATIC_MONO_TRUE@am__DEPENDENCIES_7 = $(am__DEPENDENCIES_6)
-@DTRACE_G_REQUIRED_TRUE@@STATIC_MONO_TRUE@am__DEPENDENCIES_8 = mono-dtrace.$(OBJEXT)
-mono_boehm_DEPENDENCIES = libmain_a-main.$(OBJEXT) \
-	$(am__DEPENDENCIES_7) $(glib_libs) $(am__DEPENDENCIES_5) \
-	$(am__DEPENDENCIES_8)
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@am__DEPENDENCIES_6 =  \
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@	libmini.la \
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@	$(interp_libs_with_mini) \
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@	$(dbg_libs_with_mini) \
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_3)
+@ENABLE_MSVC_ONLY_FALSE@@STATIC_MONO_FALSE@am__DEPENDENCIES_7 = libmonoboehm-2.0.la
+@ENABLE_MSVC_ONLY_FALSE@@STATIC_MONO_TRUE@am__DEPENDENCIES_7 = $(am__DEPENDENCIES_6)
+@DTRACE_G_REQUIRED_TRUE@@ENABLE_MSVC_ONLY_FALSE@@STATIC_MONO_TRUE@am__DEPENDENCIES_8 = mono-dtrace.$(OBJEXT)
+@ENABLE_MSVC_ONLY_FALSE@mono_boehm_DEPENDENCIES =  \
+@ENABLE_MSVC_ONLY_FALSE@	libmain_a-main.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_7) $(glib_libs) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_5) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_8)
 mono_boehm_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_boehm_CFLAGS) \
 	$(CFLAGS) $(mono_boehm_LDFLAGS) $(LDFLAGS) -o $@
 am_mono_sgen_OBJECTS =
 mono_sgen_OBJECTS = $(am_mono_sgen_OBJECTS)
-mono_sgen_DEPENDENCIES = libmain_a-main-sgen.$(OBJEXT) \
-	$(MONO_SGEN_LIB) $(glib_libs) $(am__DEPENDENCIES_5) \
-	$(am__DEPENDENCIES_8)
+@ENABLE_MSVC_ONLY_FALSE@mono_sgen_DEPENDENCIES =  \
+@ENABLE_MSVC_ONLY_FALSE@	libmain_a-main-sgen.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	$(MONO_SGEN_LIB) $(glib_libs) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_5) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_8)
 mono_sgen_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_sgen_CFLAGS) \
 	$(CFLAGS) $(mono_sgen_LDFLAGS) $(LDFLAGS) -o $@
 am__objects_23 =
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@am_monow_OBJECTS =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__objects_23)
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@am_monow_OBJECTS =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__objects_23)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@am_monow_OBJECTS = $(am__objects_23)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@am_monow_OBJECTS = $(am__objects_23)
 monow_OBJECTS = $(am_monow_OBJECTS)
-am__DEPENDENCIES_9 = libmain_a-main-sgen.$(OBJEXT) $(MONO_SGEN_LIB) \
-	$(glib_libs) $(am__DEPENDENCIES_5) $(am__DEPENDENCIES_8)
-am__DEPENDENCIES_10 = libmain_a-main.$(OBJEXT) $(am__DEPENDENCIES_7) \
-	$(glib_libs) $(am__DEPENDENCIES_5) $(am__DEPENDENCIES_8)
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@monow_DEPENDENCIES =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__DEPENDENCIES_9)
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@monow_DEPENDENCIES =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_10)
+@ENABLE_MSVC_ONLY_FALSE@am__DEPENDENCIES_9 =  \
+@ENABLE_MSVC_ONLY_FALSE@	libmain_a-main-sgen.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	$(MONO_SGEN_LIB) $(glib_libs) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_5) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_8)
+@ENABLE_MSVC_ONLY_FALSE@am__DEPENDENCIES_10 =  \
+@ENABLE_MSVC_ONLY_FALSE@	libmain_a-main.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_7) $(glib_libs) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_5) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_8)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@monow_DEPENDENCIES = $(am__DEPENDENCIES_9)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@monow_DEPENDENCIES = $(am__DEPENDENCIES_10)
 monow_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(monow_LDFLAGS) $(LDFLAGS) -o $@
@@ -490,7 +550,7 @@ SOURCES = $(libmain_a_SOURCES) $(libmini_la_SOURCES) \
 DIST_SOURCES = $(am__libmain_a_SOURCES_DIST) \
 	$(am__libmini_la_SOURCES_DIST) \
 	$(am__libmono_dbg_la_SOURCES_DIST) \
-	$(libmono_ee_interp_la_SOURCES) \
+	$(am__libmono_ee_interp_la_SOURCES_DIST) \
 	$(am__libmono_llvm_la_SOURCES_DIST) \
 	$(libmonoboehm_2_0_la_SOURCES) $(libmonosgen_2_0_la_SOURCES) \
 	$(mono_SOURCES) $(mono_boehm_SOURCES) $(mono_sgen_SOURCES) \
@@ -807,29 +867,29 @@ monodir = $(top_builddir)
 mono = $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),mono)
 @HOST_WIN32_FALSE@PLATFORM_PATH_SEPARATOR = :
 @HOST_WIN32_TRUE@PLATFORM_PATH_SEPARATOR = ;
-@SUPPORT_NULLGC_FALSE@libgc_libs = $(monodir)/libgc/libmonogc.la
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_FALSE@libgc_libs = $(monodir)/libgc/libmonogc.la
 
 # This is needed for automake dependency generation
-@SUPPORT_NULLGC_TRUE@libgc_libs = 
-@SUPPORT_NULLGC_FALSE@libgc_static_libs = $(monodir)/libgc/libmonogc-static.la
-@SUPPORT_NULLGC_TRUE@libgc_static_libs = 
-glib_libs = $(monodir)/mono/eglib/libeglib.la
-boehm_libs = \
-	$(monodir)/mono/metadata/libmonoruntime.la	\
-	$(monodir)/mono/utils/libmonoutils.la \
-	$(glib_libs) \
-	$(libgc_libs)
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_TRUE@libgc_libs = 
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_FALSE@libgc_static_libs = $(monodir)/libgc/libmonogc-static.la
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_TRUE@libgc_static_libs = 
+@ENABLE_MSVC_ONLY_FALSE@glib_libs = $(monodir)/mono/eglib/libeglib.la
+@ENABLE_MSVC_ONLY_FALSE@boehm_libs = \
+@ENABLE_MSVC_ONLY_FALSE@	$(monodir)/mono/metadata/libmonoruntime.la	\
+@ENABLE_MSVC_ONLY_FALSE@	$(monodir)/mono/utils/libmonoutils.la \
+@ENABLE_MSVC_ONLY_FALSE@	$(glib_libs) \
+@ENABLE_MSVC_ONLY_FALSE@	$(libgc_libs)
 
-sgen_libs = \
-	$(monodir)/mono/metadata/libmonoruntimesgen.la	\
-	$(monodir)/mono/sgen/libmonosgen.la	\
-	$(monodir)/mono/utils/libmonoutils.la \
-	$(glib_libs)
+@ENABLE_MSVC_ONLY_FALSE@sgen_libs = \
+@ENABLE_MSVC_ONLY_FALSE@	$(monodir)/mono/metadata/libmonoruntimesgen.la	\
+@ENABLE_MSVC_ONLY_FALSE@	$(monodir)/mono/sgen/libmonosgen.la	\
+@ENABLE_MSVC_ONLY_FALSE@	$(monodir)/mono/utils/libmonoutils.la \
+@ENABLE_MSVC_ONLY_FALSE@	$(glib_libs)
 
-@ENABLE_LLVM_TRUE@LLVM_CFLAGS = $(LLVM_CFLAGS_INTERNAL) $(LLVM_CFLAGS_EXTERNAL)
-@ENABLE_LLVM_TRUE@LLVM_CXXFLAGS = $(LLVM_CXXFLAGS_INTERNAL) $(LLVM_CXXFLAGS_EXTERNAL)
-@ENABLE_LLVM_TRUE@LLVM_LDFLAGS = $(LLVM_LDFLAGS_INTERNAL) $(LLVM_LDFLAGS_EXTERNAL)
-@ENABLE_LLVM_TRUE@LLVM_LIBS = $(LLVM_LIBS_INTERNAL) $(LLVM_LIBS_EXTERNAL)
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@LLVM_CFLAGS = $(LLVM_CFLAGS_INTERNAL) $(LLVM_CFLAGS_EXTERNAL)
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@LLVM_CXXFLAGS = $(LLVM_CXXFLAGS_INTERNAL) $(LLVM_CXXFLAGS_EXTERNAL)
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@LLVM_LDFLAGS = $(LLVM_LDFLAGS_INTERNAL) $(LLVM_LDFLAGS_EXTERNAL)
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@LLVM_LIBS = $(LLVM_LIBS_INTERNAL) $(LLVM_LIBS_EXTERNAL)
 @FULL_AOT_TESTS_FALSE@MOBILE_RUNTIME_ARG = 
 
 # if the tests are going to run with framework assemblies compiled with
@@ -844,306 +904,316 @@ INTERP_RUNTIME = $(MINI_RUNTIME) --interpreter
 RUNTIME_AOTCHECK = MONO_PATH="$(CLASS)$(PLATFORM_PATH_SEPARATOR)." $(RUNTIME_EXECUTABLE)
 MCS = CSC_SDK_PATH_DISABLED= $(TOOLS_RUNTIME) $(CSC) -langversion:7.2 -nostdlib -unsafe -nowarn:0162 -nologo -noconfig -r:$(CLASS)/mscorlib.dll -r:$(CLASS)/System.dll -r:$(CLASS)/System.Core.dll
 ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
-AM_CFLAGS = \
-	-I$(top_srcdir) 	\
-	$(GLIB_CFLAGS)		\
-	$(LLVM_CFLAGS)		\
-	$(JEMALLOC_CFLAGS)	\
-	$(PLATFORM_CFLAGS) $(ARCH_CFLAGS) $(SHARED_CFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@AM_CFLAGS = \
+@ENABLE_MSVC_ONLY_FALSE@	-I$(top_srcdir) 	\
+@ENABLE_MSVC_ONLY_FALSE@	$(GLIB_CFLAGS)		\
+@ENABLE_MSVC_ONLY_FALSE@	$(LLVM_CFLAGS)		\
+@ENABLE_MSVC_ONLY_FALSE@	$(JEMALLOC_CFLAGS)	\
+@ENABLE_MSVC_ONLY_FALSE@	$(PLATFORM_CFLAGS) $(ARCH_CFLAGS) $(SHARED_CFLAGS)
 
-AM_CXXFLAGS = -I$(top_srcdir) $(LLVM_CXXFLAGS) $(GLIB_CFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@AM_CXXFLAGS = -I$(top_srcdir) $(LLVM_CXXFLAGS) $(GLIB_CFLAGS)
 # The mingw math.h has "extern inline" functions that dont appear in libs, so
 # optimisation is required to actually inline them
-@HOST_WIN32_TRUE@PLATFORM_CFLAGS = -O
-monoldflags = $(export_ldflags)
-monobinldflags = $(export_ldflags) $(extra_runtime_ldflags)
-@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@libmonoldflags = $(monoldflags) \
-@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	-version-info 1:0:0 \
-@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	$(am__append_5) \
-@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	$(am__append_7)
-@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@libmonoldflags = -avoid-version \
-@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(monoldflags) \
-@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(am__append_5) \
-@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(am__append_7)
-@HOST_WIN32_TRUE@libmonoldflags = -no-undefined -avoid-version \
-@HOST_WIN32_TRUE@	-Wl,--kill-at $(monoldflags) $(am__append_5) \
-@HOST_WIN32_TRUE@	$(am__append_7)
-@SUPPORT_SGEN_TRUE@sgen_binaries = mono-sgen
-@SUPPORT_SGEN_TRUE@sgen_libraries = libmonosgen-2.0.la
-@SUPPORT_SGEN_TRUE@sgen_static_libraries = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs)
-@SUPPORT_BOEHM_TRUE@boehm_libraries = libmonoboehm-2.0.la
-@SUPPORT_BOEHM_TRUE@boehm_static_libraries = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(boehm_libs)
-@SUPPORT_BOEHM_TRUE@boehm_binaries = mono-boehm
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@PLATFORM_CFLAGS = -O
+@ENABLE_MSVC_ONLY_FALSE@monoldflags = $(export_ldflags)
+@ENABLE_MSVC_ONLY_FALSE@monobinldflags = $(export_ldflags) $(extra_runtime_ldflags)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@libmonoldflags = $(monoldflags) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	-version-info \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	1:0:0 \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	$(am__append_5) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	$(am__append_7)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@libmonoldflags = -avoid-version \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(monoldflags) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(am__append_5) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(am__append_7)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@libmonoldflags =  \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	-no-undefined \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	-avoid-version \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	-Wl,--kill-at \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(monoldflags) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__append_5) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__append_7)
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_SGEN_TRUE@sgen_binaries = mono-sgen
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_SGEN_TRUE@sgen_libraries = libmonosgen-2.0.la
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_SGEN_TRUE@sgen_static_libraries = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs)
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@boehm_libraries = libmonoboehm-2.0.la
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@boehm_static_libraries = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(boehm_libs)
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@boehm_binaries = mono-boehm
 @SUPPORT_SGEN_FALSE@mono_bin_suffix = boehm
 @SUPPORT_SGEN_TRUE@mono_bin_suffix = sgen
 @SUPPORT_SGEN_FALSE@libmono_suffix = boehm
 @SUPPORT_SGEN_TRUE@libmono_suffix = sgen
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@shared_libraries = $(boehm_libraries) $(sgen_libraries)
-@DISABLE_EXECUTABLES_TRUE@shared_libraries = $(boehm_libraries) $(sgen_libraries)
-lib_LTLIBRARIES = $(shared_libraries) $(am__append_1) $(am__append_3) \
-	$(am__append_8)
-@SHARED_MONO_FALSE@mini_common_lib = 
-@SHARED_MONO_TRUE@mini_common_lib = libmini.la
-noinst_LTLIBRARIES = $(mini_common_lib) $(am__append_9)
-noinst_LIBRARIES = libmain.a
-libmain_a_SOURCES = main-sgen.c $(am__append_2)
-libmain_a_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
-@LOADED_LLVM_TRUE@libmono_llvm_la_SOURCES = mini-llvm.c mini-llvm-cpp.cpp llvm-jit.cpp
-@LOADED_LLVM_TRUE@libmono_llvm_la_LIBADD = $(glib_libs) $(LLVM_LIBS) $(LLVM_LDFLAGS)
-@HOST_DARWIN_TRUE@@LOADED_LLVM_TRUE@libmono_llvm_la_LDFLAGS = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace 
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@@SHARED_MONO_TRUE@shared_libraries = $(boehm_libraries) $(sgen_libraries)
+@DISABLE_EXECUTABLES_TRUE@@ENABLE_MSVC_ONLY_FALSE@shared_libraries = $(boehm_libraries) $(sgen_libraries)
+@ENABLE_MSVC_ONLY_FALSE@lib_LTLIBRARIES = $(shared_libraries) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__append_1) $(am__append_3) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__append_8)
+@ENABLE_MSVC_ONLY_FALSE@@SHARED_MONO_FALSE@mini_common_lib = 
+@ENABLE_MSVC_ONLY_FALSE@@SHARED_MONO_TRUE@mini_common_lib = libmini.la
+@ENABLE_MSVC_ONLY_FALSE@noinst_LTLIBRARIES = $(mini_common_lib) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__append_9)
+@ENABLE_MSVC_ONLY_FALSE@noinst_LIBRARIES = libmain.a
+@ENABLE_MSVC_ONLY_FALSE@libmain_a_SOURCES = main-sgen.c \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__append_2)
+@ENABLE_MSVC_ONLY_FALSE@libmain_a_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@libmono_llvm_la_SOURCES = mini-llvm.c mini-llvm-cpp.cpp llvm-jit.cpp
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@libmono_llvm_la_LIBADD = $(glib_libs) $(LLVM_LIBS) $(LLVM_LDFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_DARWIN_TRUE@@LOADED_LLVM_TRUE@libmono_llvm_la_LDFLAGS = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace 
 
 # we need this to prevent automake from generating a default mono_SOURCES = mono.c
-mono_SOURCES = 
-mono_boehm_SOURCES = 
-mono_boehm_CFLAGS = $(AM_CFLAGS) @CXX_REMOVE_CFLAGS@
-AM_CPPFLAGS = $(LIBGC_CPPFLAGS)
-mono_sgen_SOURCES = 
-mono_sgen_CFLAGS = $(AM_CFLAGS) @CXX_REMOVE_CFLAGS@
-@DTRACE_G_REQUIRED_FALSE@LIBMONO_DTRACE_OBJECT = 
-@DTRACE_G_REQUIRED_TRUE@LIBMONO_DTRACE_OBJECT = .libs/mono-dtrace.$(OBJEXT)
-@DTRACE_G_REQUIRED_FALSE@MONO_DTRACE_OBJECT = 
-@DTRACE_G_REQUIRED_TRUE@@STATIC_MONO_FALSE@MONO_DTRACE_OBJECT = 
-@DTRACE_G_REQUIRED_TRUE@@STATIC_MONO_TRUE@MONO_DTRACE_OBJECT = mono-dtrace.$(OBJEXT)
-@STATIC_MONO_FALSE@MONO_LIB = libmonoboehm-2.0.la
+@ENABLE_MSVC_ONLY_FALSE@mono_SOURCES = 
+@ENABLE_MSVC_ONLY_FALSE@mono_boehm_SOURCES = 
+@ENABLE_MSVC_ONLY_FALSE@mono_boehm_CFLAGS = $(AM_CFLAGS) @CXX_REMOVE_CFLAGS@
+@ENABLE_MSVC_ONLY_FALSE@AM_CPPFLAGS = $(LIBGC_CPPFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@mono_sgen_SOURCES = 
+@ENABLE_MSVC_ONLY_FALSE@mono_sgen_CFLAGS = $(AM_CFLAGS) @CXX_REMOVE_CFLAGS@
+@DTRACE_G_REQUIRED_FALSE@@ENABLE_MSVC_ONLY_FALSE@LIBMONO_DTRACE_OBJECT = 
+@DTRACE_G_REQUIRED_TRUE@@ENABLE_MSVC_ONLY_FALSE@LIBMONO_DTRACE_OBJECT = .libs/mono-dtrace.$(OBJEXT)
+@DTRACE_G_REQUIRED_FALSE@@ENABLE_MSVC_ONLY_FALSE@MONO_DTRACE_OBJECT = 
+@DTRACE_G_REQUIRED_TRUE@@ENABLE_MSVC_ONLY_FALSE@@STATIC_MONO_FALSE@MONO_DTRACE_OBJECT = 
+@DTRACE_G_REQUIRED_TRUE@@ENABLE_MSVC_ONLY_FALSE@@STATIC_MONO_TRUE@MONO_DTRACE_OBJECT = mono-dtrace.$(OBJEXT)
+@ENABLE_MSVC_ONLY_FALSE@@STATIC_MONO_FALSE@MONO_LIB = libmonoboehm-2.0.la
 
 # Link libmono into mono statically
 # This leads to higher performance, especially with TLS
-@STATIC_MONO_TRUE@MONO_LIB = $(boehm_static_libraries)
-@STATIC_MONO_FALSE@MONO_SGEN_LIB = libmonosgen-2.0.la
-@STATIC_MONO_TRUE@MONO_SGEN_LIB = $(sgen_static_libraries)
-@LOADED_LLVM_FALSE@LLVMMONOF = $(LLVM_LIBS) $(LLVM_LDFLAGS)
-@LOADED_LLVM_TRUE@LLVMMONOF = 
-mono_boehm_LDADD = \
-	libmain_a-main.$(OBJEXT) \
-	$(MONO_LIB)		\
-	$(glib_libs)		\
-	$(LLVMMONOF)		\
-	$(LIBICONV)		\
-	$(Z_LIBS)		\
-	-lm			\
-	$(MONO_DTRACE_OBJECT)
+@ENABLE_MSVC_ONLY_FALSE@@STATIC_MONO_TRUE@MONO_LIB = $(boehm_static_libraries)
+@ENABLE_MSVC_ONLY_FALSE@@STATIC_MONO_FALSE@MONO_SGEN_LIB = libmonosgen-2.0.la
+@ENABLE_MSVC_ONLY_FALSE@@STATIC_MONO_TRUE@MONO_SGEN_LIB = $(sgen_static_libraries)
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@LLVMMONOF = $(LLVM_LIBS) $(LLVM_LDFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@LLVMMONOF = 
+@ENABLE_MSVC_ONLY_FALSE@mono_boehm_LDADD = \
+@ENABLE_MSVC_ONLY_FALSE@	libmain_a-main.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	$(MONO_LIB)		\
+@ENABLE_MSVC_ONLY_FALSE@	$(glib_libs)		\
+@ENABLE_MSVC_ONLY_FALSE@	$(LLVMMONOF)		\
+@ENABLE_MSVC_ONLY_FALSE@	$(LIBICONV)		\
+@ENABLE_MSVC_ONLY_FALSE@	$(Z_LIBS)		\
+@ENABLE_MSVC_ONLY_FALSE@	-lm			\
+@ENABLE_MSVC_ONLY_FALSE@	$(MONO_DTRACE_OBJECT)
 
-mono_boehm_LDFLAGS = \
-	$(static_flags) $(monobinldflags) $(monobin_platform_ldflags) 
+@ENABLE_MSVC_ONLY_FALSE@mono_boehm_LDFLAGS = \
+@ENABLE_MSVC_ONLY_FALSE@	$(static_flags) $(monobinldflags) $(monobin_platform_ldflags) 
 
-mono_sgen_LDADD = \
-	libmain_a-main-sgen.$(OBJEXT) \
-	$(MONO_SGEN_LIB)	\
-	$(glib_libs)		\
-	$(LLVMMONOF)		\
-	$(LIBICONV)		\
-	$(Z_LIBS)		\
-	-lm			\
-	$(MONO_DTRACE_OBJECT)
+@ENABLE_MSVC_ONLY_FALSE@mono_sgen_LDADD = \
+@ENABLE_MSVC_ONLY_FALSE@	libmain_a-main-sgen.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	$(MONO_SGEN_LIB)	\
+@ENABLE_MSVC_ONLY_FALSE@	$(glib_libs)		\
+@ENABLE_MSVC_ONLY_FALSE@	$(LLVMMONOF)		\
+@ENABLE_MSVC_ONLY_FALSE@	$(LIBICONV)		\
+@ENABLE_MSVC_ONLY_FALSE@	$(Z_LIBS)		\
+@ENABLE_MSVC_ONLY_FALSE@	-lm			\
+@ENABLE_MSVC_ONLY_FALSE@	$(MONO_DTRACE_OBJECT)
 
-mono_sgen_LDFLAGS = $(static_flags) $(monobinldflags) \
-	$(monobin_platform_ldflags) $(am__append_4)
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@monow_LDADD = $(mono_sgen_LDADD)
+@ENABLE_MSVC_ONLY_FALSE@mono_sgen_LDFLAGS = $(static_flags) \
+@ENABLE_MSVC_ONLY_FALSE@	$(monobinldflags) \
+@ENABLE_MSVC_ONLY_FALSE@	$(monobin_platform_ldflags) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__append_4)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@monow_LDADD = $(mono_sgen_LDADD)
 
 # Create monow.exe, linked for the 'windows' subsystem
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@monow_LDADD = $(mono_boehm_LDADD)
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@monow_LDFLAGS = $(mono_sgen_LDFLAGS) -mwindows
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@monow_LDFLAGS = $(mono_boehm_LDFLAGS) -mwindows
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@monow_SOURCES = $(mono_sgen_SOURCES)
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@monow_SOURCES = $(mono_boehm_SOURCES)
-wasm_sources = \
-	mini-wasm.c		\
-	mini-wasm.h		\
-	mini-wasm-debugger.c	\
-	debugger-engine.c	\
-	exceptions-wasm.c	\
-	tramp-wasm.c
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@monow_LDADD = $(mono_boehm_LDADD)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@monow_LDFLAGS = $(mono_sgen_LDFLAGS) -mwindows
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@monow_LDFLAGS = $(mono_boehm_LDFLAGS) -mwindows
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@monow_SOURCES = $(mono_sgen_SOURCES)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@monow_SOURCES = $(mono_boehm_SOURCES)
+@ENABLE_MSVC_ONLY_FALSE@wasm_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	mini-wasm.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mini-wasm.h		\
+@ENABLE_MSVC_ONLY_FALSE@	mini-wasm-debugger.c	\
+@ENABLE_MSVC_ONLY_FALSE@	debugger-engine.c	\
+@ENABLE_MSVC_ONLY_FALSE@	exceptions-wasm.c	\
+@ENABLE_MSVC_ONLY_FALSE@	tramp-wasm.c
 
-x86_sources = \
-	mini-x86.c		\
-	mini-x86.h		\
-	exceptions-x86.c	\
-	tramp-x86.c	\
-	mini-x86-gsharedvt.c	\
-	tramp-x86-gsharedvt.c
+@ENABLE_MSVC_ONLY_FALSE@x86_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	mini-x86.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mini-x86.h		\
+@ENABLE_MSVC_ONLY_FALSE@	exceptions-x86.c	\
+@ENABLE_MSVC_ONLY_FALSE@	tramp-x86.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mini-x86-gsharedvt.c	\
+@ENABLE_MSVC_ONLY_FALSE@	tramp-x86-gsharedvt.c
 
-amd64_sources = \
-	mini-amd64.c		\
-	mini-amd64.h		\
-	exceptions-amd64.c	\
-	tramp-amd64.c	\
-	mini-amd64-gsharedvt.c	\
-	mini-amd64-gsharedvt.h	\
-	tramp-amd64-gsharedvt.c
+@ENABLE_MSVC_ONLY_FALSE@amd64_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	mini-amd64.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mini-amd64.h		\
+@ENABLE_MSVC_ONLY_FALSE@	exceptions-amd64.c	\
+@ENABLE_MSVC_ONLY_FALSE@	tramp-amd64.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mini-amd64-gsharedvt.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mini-amd64-gsharedvt.h	\
+@ENABLE_MSVC_ONLY_FALSE@	tramp-amd64-gsharedvt.c
 
-ppc_sources = \
-	mini-ppc.c		\
-	mini-ppc.h		\
-	exceptions-ppc.c	\
-	tramp-ppc.c
+@ENABLE_MSVC_ONLY_FALSE@ppc_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	mini-ppc.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mini-ppc.h		\
+@ENABLE_MSVC_ONLY_FALSE@	exceptions-ppc.c	\
+@ENABLE_MSVC_ONLY_FALSE@	tramp-ppc.c
 
-arm_sources = \
-	mini-arm.c		\
-	mini-arm.h		\
-	exceptions-arm.c	\
-	tramp-arm.c	\
-	mini-arm-gsharedvt.c	\
-	tramp-arm-gsharedvt.c
+@ENABLE_MSVC_ONLY_FALSE@arm_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	mini-arm.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mini-arm.h		\
+@ENABLE_MSVC_ONLY_FALSE@	exceptions-arm.c	\
+@ENABLE_MSVC_ONLY_FALSE@	tramp-arm.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mini-arm-gsharedvt.c	\
+@ENABLE_MSVC_ONLY_FALSE@	tramp-arm-gsharedvt.c
 
-arm64_sources = \
-	mini-arm64.c		\
-	mini-arm64.h		\
-	exceptions-arm64.c	\
-	tramp-arm64.c	\
-	mini-arm64-gsharedvt.c	\
-	mini-arm64-gsharedvt.h	\
-	tramp-arm64-gsharedvt.c
+@ENABLE_MSVC_ONLY_FALSE@arm64_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	mini-arm64.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mini-arm64.h		\
+@ENABLE_MSVC_ONLY_FALSE@	exceptions-arm64.c	\
+@ENABLE_MSVC_ONLY_FALSE@	tramp-arm64.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mini-arm64-gsharedvt.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mini-arm64-gsharedvt.h	\
+@ENABLE_MSVC_ONLY_FALSE@	tramp-arm64-gsharedvt.c
 
-mips_sources = \
-	mini-mips.c		\
-	mini-mips.h		\
-	exceptions-mips.c	\
-	tramp-mips.c
+@ENABLE_MSVC_ONLY_FALSE@mips_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	mini-mips.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mini-mips.h		\
+@ENABLE_MSVC_ONLY_FALSE@	exceptions-mips.c	\
+@ENABLE_MSVC_ONLY_FALSE@	tramp-mips.c
 
-sparc_sources = \
-	mini-sparc.c		\
-	mini-sparc.h		\
-	exceptions-sparc.c	\
-	tramp-sparc.c
+@ENABLE_MSVC_ONLY_FALSE@sparc_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	mini-sparc.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mini-sparc.h		\
+@ENABLE_MSVC_ONLY_FALSE@	exceptions-sparc.c	\
+@ENABLE_MSVC_ONLY_FALSE@	tramp-sparc.c
 
-s390x_sources = \
-	mini-s390x.c		\
-	mini-s390x.h		\
-	support-s390x.h		\
-	exceptions-s390x.c	\
-	tramp-s390x.c
+@ENABLE_MSVC_ONLY_FALSE@s390x_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	mini-s390x.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mini-s390x.h		\
+@ENABLE_MSVC_ONLY_FALSE@	support-s390x.h		\
+@ENABLE_MSVC_ONLY_FALSE@	exceptions-s390x.c	\
+@ENABLE_MSVC_ONLY_FALSE@	tramp-s390x.c
 
-riscv_sources = \
-	mini-riscv.c \
-	mini-riscv.h \
-	exceptions-riscv.c \
-	tramp-riscv.c
+@ENABLE_MSVC_ONLY_FALSE@riscv_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	mini-riscv.c \
+@ENABLE_MSVC_ONLY_FALSE@	mini-riscv.h \
+@ENABLE_MSVC_ONLY_FALSE@	exceptions-riscv.c \
+@ENABLE_MSVC_ONLY_FALSE@	tramp-riscv.c
 
-darwin_sources = \
-	mini-darwin.c
+@ENABLE_MSVC_ONLY_FALSE@darwin_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	mini-darwin.c
 
-windows_sources = \
-	mini-windows.c \
-	mini-windows-tls-callback.c \
-	mini-windows.h \
-	mini-windows-dllmain.c \
-	mini-windows-dlldac.c
+@ENABLE_MSVC_ONLY_FALSE@windows_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	mini-windows.c \
+@ENABLE_MSVC_ONLY_FALSE@	mini-windows-tls-callback.c \
+@ENABLE_MSVC_ONLY_FALSE@	mini-windows.h \
+@ENABLE_MSVC_ONLY_FALSE@	mini-windows-dllmain.c \
+@ENABLE_MSVC_ONLY_FALSE@	mini-windows-dlldac.c
 
-posix_sources = \
-	mini-posix.c
+@ENABLE_MSVC_ONLY_FALSE@posix_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	mini-posix.c
 
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@llvm_sources = \
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm.c		\
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm-loaded.c \
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.cpp \
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	llvm-jit.cpp
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@llvm_sources = \
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@	mini-llvm.c		\
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@	mini-llvm-loaded.c \
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.cpp \
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@	llvm-jit.cpp
 
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@llvm_sources = \
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@	mini-llvm-loaded.c
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@llvm_sources = \
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@	mini-llvm-loaded.c
 
-interp_sources = \
-	interp/interp.h	\
-	interp/interp-internals.h	\
-	interp/interp.c	\
-	interp/mintops.h	\
-	interp/mintops.def	\
-	interp/mintops.c	\
-	interp/transform.c
+@ENABLE_MSVC_ONLY_FALSE@interp_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	interp/interp.h	\
+@ENABLE_MSVC_ONLY_FALSE@	interp/interp-internals.h	\
+@ENABLE_MSVC_ONLY_FALSE@	interp/interp.c	\
+@ENABLE_MSVC_ONLY_FALSE@	interp/mintops.h	\
+@ENABLE_MSVC_ONLY_FALSE@	interp/mintops.def	\
+@ENABLE_MSVC_ONLY_FALSE@	interp/mintops.c	\
+@ENABLE_MSVC_ONLY_FALSE@	interp/transform.c
 
-interp_libs = libmono-ee-interp.la
-@DISABLE_INTERPRETER_FALSE@interp_libs_with_mini = $(interp_libs)
-@ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@llvm_runtime_sources = \
-@ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@	llvm-runtime.cpp
+@ENABLE_MSVC_ONLY_FALSE@interp_libs = libmono-ee-interp.la
+@DISABLE_INTERPRETER_FALSE@@ENABLE_MSVC_ONLY_FALSE@interp_libs_with_mini = $(interp_libs)
+@ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@@ENABLE_MSVC_ONLY_FALSE@llvm_runtime_sources = \
+@ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@@ENABLE_MSVC_ONLY_FALSE@	llvm-runtime.cpp
 
-@ENABLE_LLVM_TRUE@llvm_runtime_sources = \
-@ENABLE_LLVM_TRUE@	llvm-runtime.cpp
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@llvm_runtime_sources = \
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@	llvm-runtime.cpp
 
-@ENABLE_NETCORE_TRUE@netcore_sources = \
-@ENABLE_NETCORE_TRUE@	main-core.c
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@netcore_sources = \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@	main-core.c
 
-common_sources = \
-	mini.c			\
-	mini-runtime.c	\
-	seq-points.c	\
-	seq-points.h	\
-	ir-emit.h		\
-	method-to-ir.c		\
-	cfgdump.h		\
-	cfgdump.c		\
-	decompose.c		\
-	mini.h			\
-	version.h		\
-	optflags-def.h		\
-	jit-icalls.h 		\
-	jit-icalls.c 		\
-	trace.c			\
-	trace.h			\
-	patch-info.h		\
-	mini-ops.h		\
-	mini-arch.h		\
-	dominators.c		\
-	cfold.c			\
-	regalloc.h		\
-	helpers.c		\
-	liveness.c		\
-	ssa.c			\
-	abcremoval.c		\
-	abcremoval.h		\
-	local-propagation.c	\
-	driver.c		\
-	debug-mini.c		\
-	linear-scan.c		\
-	aot-compiler.h		\
-	aot-compiler.c		\
-	aot-runtime.c		\
-	aot-runtime-wasm.c	\
-	wasm_m2n_invoke.g.h	\
-	graph.c			\
-	mini-codegen.c		\
-	mini-exceptions.c	\
-	mini-trampolines.c  	\
-	branch-opts.c		\
-	mini-generic-sharing.c	\
-	simd-methods.h		\
-	simd-methods-netcore.h	\
-	tasklets.c		\
-	tasklets.h		\
-	simd-intrinsics.c	\
-	simd-intrinsics-netcore.c	\
-	mini-native-types.c \
-	mini-unwind.h		\
-	unwind.c		\
-	image-writer.h		\
-	image-writer.c		\
-	dwarfwriter.h		\
-	dwarfwriter.c		\
-	mini-gc.h		\
-	mini-gc.c		\
-	debugger-agent.h 	\
-	debugger-engine.h	\
-	debugger-agent-stubs.c	\
-	debugger-state-machine.h	\
-	xdebug.c			\
-	mini-llvm.h			\
-	mini-llvm-cpp.h	\
-	llvm-jit.h		\
-	alias-analysis.c	\
-	mini-cross-helpers.c \
-	arch-stubs.c		\
-	llvm-runtime.h	\
-	type-checking.c \
-	calls.c			\
-	lldb.h			\
-	lldb.c	\
-	memory-access.c	\
-	intrinsics.c \
-	mini-profiler.c	\
-	interp-stubs.c \
-	llvmonly-runtime.h \
-	llvmonly-runtime.c \
-	aot-runtime.h	\
-	ee.h \
-	mini-runtime.h
+@ENABLE_MSVC_ONLY_FALSE@common_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	mini.c			\
+@ENABLE_MSVC_ONLY_FALSE@	mini-runtime.c	\
+@ENABLE_MSVC_ONLY_FALSE@	seq-points.c	\
+@ENABLE_MSVC_ONLY_FALSE@	seq-points.h	\
+@ENABLE_MSVC_ONLY_FALSE@	ir-emit.h		\
+@ENABLE_MSVC_ONLY_FALSE@	method-to-ir.c		\
+@ENABLE_MSVC_ONLY_FALSE@	cfgdump.h		\
+@ENABLE_MSVC_ONLY_FALSE@	cfgdump.c		\
+@ENABLE_MSVC_ONLY_FALSE@	decompose.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mini.h			\
+@ENABLE_MSVC_ONLY_FALSE@	version.h		\
+@ENABLE_MSVC_ONLY_FALSE@	optflags-def.h		\
+@ENABLE_MSVC_ONLY_FALSE@	jit-icalls.h 		\
+@ENABLE_MSVC_ONLY_FALSE@	jit-icalls.c 		\
+@ENABLE_MSVC_ONLY_FALSE@	trace.c			\
+@ENABLE_MSVC_ONLY_FALSE@	trace.h			\
+@ENABLE_MSVC_ONLY_FALSE@	patch-info.h		\
+@ENABLE_MSVC_ONLY_FALSE@	mini-ops.h		\
+@ENABLE_MSVC_ONLY_FALSE@	mini-arch.h		\
+@ENABLE_MSVC_ONLY_FALSE@	dominators.c		\
+@ENABLE_MSVC_ONLY_FALSE@	cfold.c			\
+@ENABLE_MSVC_ONLY_FALSE@	regalloc.h		\
+@ENABLE_MSVC_ONLY_FALSE@	helpers.c		\
+@ENABLE_MSVC_ONLY_FALSE@	liveness.c		\
+@ENABLE_MSVC_ONLY_FALSE@	ssa.c			\
+@ENABLE_MSVC_ONLY_FALSE@	abcremoval.c		\
+@ENABLE_MSVC_ONLY_FALSE@	abcremoval.h		\
+@ENABLE_MSVC_ONLY_FALSE@	local-propagation.c	\
+@ENABLE_MSVC_ONLY_FALSE@	driver.c		\
+@ENABLE_MSVC_ONLY_FALSE@	debug-mini.c		\
+@ENABLE_MSVC_ONLY_FALSE@	linear-scan.c		\
+@ENABLE_MSVC_ONLY_FALSE@	aot-compiler.h		\
+@ENABLE_MSVC_ONLY_FALSE@	aot-compiler.c		\
+@ENABLE_MSVC_ONLY_FALSE@	aot-runtime.c		\
+@ENABLE_MSVC_ONLY_FALSE@	aot-runtime-wasm.c	\
+@ENABLE_MSVC_ONLY_FALSE@	wasm_m2n_invoke.g.h	\
+@ENABLE_MSVC_ONLY_FALSE@	graph.c			\
+@ENABLE_MSVC_ONLY_FALSE@	mini-codegen.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mini-exceptions.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mini-trampolines.c  	\
+@ENABLE_MSVC_ONLY_FALSE@	branch-opts.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mini-generic-sharing.c	\
+@ENABLE_MSVC_ONLY_FALSE@	simd-methods.h		\
+@ENABLE_MSVC_ONLY_FALSE@	simd-methods-netcore.h	\
+@ENABLE_MSVC_ONLY_FALSE@	tasklets.c		\
+@ENABLE_MSVC_ONLY_FALSE@	tasklets.h		\
+@ENABLE_MSVC_ONLY_FALSE@	simd-intrinsics.c	\
+@ENABLE_MSVC_ONLY_FALSE@	simd-intrinsics-netcore.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mini-native-types.c \
+@ENABLE_MSVC_ONLY_FALSE@	mini-unwind.h		\
+@ENABLE_MSVC_ONLY_FALSE@	unwind.c		\
+@ENABLE_MSVC_ONLY_FALSE@	image-writer.h		\
+@ENABLE_MSVC_ONLY_FALSE@	image-writer.c		\
+@ENABLE_MSVC_ONLY_FALSE@	dwarfwriter.h		\
+@ENABLE_MSVC_ONLY_FALSE@	dwarfwriter.c		\
+@ENABLE_MSVC_ONLY_FALSE@	mini-gc.h		\
+@ENABLE_MSVC_ONLY_FALSE@	mini-gc.c		\
+@ENABLE_MSVC_ONLY_FALSE@	debugger-agent.h 	\
+@ENABLE_MSVC_ONLY_FALSE@	debugger-engine.h	\
+@ENABLE_MSVC_ONLY_FALSE@	debugger-agent-stubs.c	\
+@ENABLE_MSVC_ONLY_FALSE@	debugger-state-machine.h	\
+@ENABLE_MSVC_ONLY_FALSE@	xdebug.c			\
+@ENABLE_MSVC_ONLY_FALSE@	mini-llvm.h			\
+@ENABLE_MSVC_ONLY_FALSE@	mini-llvm-cpp.h	\
+@ENABLE_MSVC_ONLY_FALSE@	llvm-jit.h		\
+@ENABLE_MSVC_ONLY_FALSE@	alias-analysis.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mini-cross-helpers.c \
+@ENABLE_MSVC_ONLY_FALSE@	arch-stubs.c		\
+@ENABLE_MSVC_ONLY_FALSE@	llvm-runtime.h	\
+@ENABLE_MSVC_ONLY_FALSE@	type-checking.c \
+@ENABLE_MSVC_ONLY_FALSE@	calls.c			\
+@ENABLE_MSVC_ONLY_FALSE@	lldb.h			\
+@ENABLE_MSVC_ONLY_FALSE@	lldb.c	\
+@ENABLE_MSVC_ONLY_FALSE@	memory-access.c	\
+@ENABLE_MSVC_ONLY_FALSE@	intrinsics.c \
+@ENABLE_MSVC_ONLY_FALSE@	mini-profiler.c	\
+@ENABLE_MSVC_ONLY_FALSE@	interp-stubs.c \
+@ENABLE_MSVC_ONLY_FALSE@	llvmonly-runtime.h \
+@ENABLE_MSVC_ONLY_FALSE@	llvmonly-runtime.c \
+@ENABLE_MSVC_ONLY_FALSE@	aot-runtime.h	\
+@ENABLE_MSVC_ONLY_FALSE@	ee.h \
+@ENABLE_MSVC_ONLY_FALSE@	mini-runtime.h
 
 
 # keep in sync with mcs/class/Mono.Runtime.Tests
@@ -1195,94 +1265,94 @@ regtests_UNIVERSAL = \
 
 regtests_DISABLED = $(am__append_6)
 regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
-@AMD64_TRUE@arch_sources = $(amd64_sources)
-@ARM64_TRUE@arch_sources = $(arm64_sources)
-@ARM_TRUE@arch_sources = $(arm_sources)
-@MIPS_TRUE@arch_sources = $(mips_sources)
-@POWERPC64_TRUE@arch_sources = $(ppc_sources)
-@POWERPC_TRUE@arch_sources = $(ppc_sources)
-@RISCV32_TRUE@arch_sources = $(riscv_sources)
-@RISCV64_TRUE@arch_sources = $(riscv_sources)
-@S390X_TRUE@arch_sources = $(s390x_sources)
-@SPARC64_TRUE@arch_sources = $(sparc_sources)
-@SPARC_TRUE@arch_sources = $(sparc_sources)
-@WASM_TRUE@arch_sources = $(wasm_sources)
-@X86_TRUE@arch_sources = $(x86_sources)
-@AMD64_TRUE@arch_built = cpu-amd64.h
-@ARM64_TRUE@arch_built = cpu-arm64.h
-@ARM_TRUE@arch_built = cpu-arm.h
-@MIPS_TRUE@arch_built = cpu-mips.h
-@POWERPC64_TRUE@arch_built = cpu-ppc64.h
-@POWERPC_TRUE@arch_built = cpu-ppc.h
-@RISCV32_TRUE@arch_built = cpu-riscv32.h
-@RISCV64_TRUE@arch_built = cpu-riscv64.h
-@S390X_TRUE@arch_built = cpu-s390x.h
-@SPARC64_TRUE@arch_built = cpu-sparc.h
-@SPARC_TRUE@arch_built = cpu-sparc.h
-@WASM_TRUE@arch_built = cpu-wasm.h
-@X86_TRUE@arch_built = cpu-x86.h
-@AMD64_TRUE@arch_define = __x86_64__
-@ARM64_TRUE@arch_define = __aarch64__
-@ARM_TRUE@arch_define = __arm__
-@MIPS_TRUE@arch_define = __mips__
-@POWERPC64_TRUE@arch_define = __ppc64__
-@POWERPC_TRUE@arch_define = __ppc__
-@RISCV32_TRUE@arch_define = __riscv
-@RISCV64_TRUE@arch_define = __riscv
-@S390X_TRUE@arch_define = __s390__
-@SPARC64_TRUE@arch_define = __sparc__
-@SPARC_TRUE@arch_define = __sparc__
-@WASM_TRUE@arch_define = __wasm__
-@X86_TRUE@arch_define = __i386__
-@AMD64_TRUE@target_define = TARGET_AMD64
-@ARM64_TRUE@target_define = TARGET_ARM64
-@ARM_TRUE@target_define = TARGET_ARM
-@MIPS_TRUE@target_define = TARGET_MIPS
-@POWERPC64_TRUE@target_define = TARGET_POWERPC
-@POWERPC_TRUE@target_define = TARGET_POWERPC
-@RISCV32_TRUE@target_define = TARGET_RISCV32
-@RISCV64_TRUE@target_define = TARGET_RISCV64
-@S390X_TRUE@target_define = TARGET_S390X
-@SPARC64_TRUE@target_define = TARGET_SPARC
-@SPARC_TRUE@target_define = TARGET_SPARC
-@WASM_TRUE@target_define = TARGET_WASM
-@X86_TRUE@target_define = TARGET_X86
-@AMD64_TRUE@ARCH_FULLAOT_EXCLUDE = 
+@AMD64_TRUE@@ENABLE_MSVC_ONLY_FALSE@arch_sources = $(amd64_sources)
+@ARM64_TRUE@@ENABLE_MSVC_ONLY_FALSE@arch_sources = $(arm64_sources)
+@ARM_TRUE@@ENABLE_MSVC_ONLY_FALSE@arch_sources = $(arm_sources)
+@ENABLE_MSVC_ONLY_FALSE@@MIPS_TRUE@arch_sources = $(mips_sources)
+@ENABLE_MSVC_ONLY_FALSE@@POWERPC64_TRUE@arch_sources = $(ppc_sources)
+@ENABLE_MSVC_ONLY_FALSE@@POWERPC_TRUE@arch_sources = $(ppc_sources)
+@ENABLE_MSVC_ONLY_FALSE@@RISCV32_TRUE@arch_sources = $(riscv_sources)
+@ENABLE_MSVC_ONLY_FALSE@@RISCV64_TRUE@arch_sources = $(riscv_sources)
+@ENABLE_MSVC_ONLY_FALSE@@S390X_TRUE@arch_sources = $(s390x_sources)
+@ENABLE_MSVC_ONLY_FALSE@@SPARC64_TRUE@arch_sources = $(sparc_sources)
+@ENABLE_MSVC_ONLY_FALSE@@SPARC_TRUE@arch_sources = $(sparc_sources)
+@ENABLE_MSVC_ONLY_FALSE@@WASM_TRUE@arch_sources = $(wasm_sources)
+@ENABLE_MSVC_ONLY_FALSE@@X86_TRUE@arch_sources = $(x86_sources)
+@AMD64_TRUE@@ENABLE_MSVC_ONLY_FALSE@arch_built = cpu-amd64.h
+@ARM64_TRUE@@ENABLE_MSVC_ONLY_FALSE@arch_built = cpu-arm64.h
+@ARM_TRUE@@ENABLE_MSVC_ONLY_FALSE@arch_built = cpu-arm.h
+@ENABLE_MSVC_ONLY_FALSE@@MIPS_TRUE@arch_built = cpu-mips.h
+@ENABLE_MSVC_ONLY_FALSE@@POWERPC64_TRUE@arch_built = cpu-ppc64.h
+@ENABLE_MSVC_ONLY_FALSE@@POWERPC_TRUE@arch_built = cpu-ppc.h
+@ENABLE_MSVC_ONLY_FALSE@@RISCV32_TRUE@arch_built = cpu-riscv32.h
+@ENABLE_MSVC_ONLY_FALSE@@RISCV64_TRUE@arch_built = cpu-riscv64.h
+@ENABLE_MSVC_ONLY_FALSE@@S390X_TRUE@arch_built = cpu-s390x.h
+@ENABLE_MSVC_ONLY_FALSE@@SPARC64_TRUE@arch_built = cpu-sparc.h
+@ENABLE_MSVC_ONLY_FALSE@@SPARC_TRUE@arch_built = cpu-sparc.h
+@ENABLE_MSVC_ONLY_FALSE@@WASM_TRUE@arch_built = cpu-wasm.h
+@ENABLE_MSVC_ONLY_FALSE@@X86_TRUE@arch_built = cpu-x86.h
+@AMD64_TRUE@@ENABLE_MSVC_ONLY_FALSE@arch_define = __x86_64__
+@ARM64_TRUE@@ENABLE_MSVC_ONLY_FALSE@arch_define = __aarch64__
+@ARM_TRUE@@ENABLE_MSVC_ONLY_FALSE@arch_define = __arm__
+@ENABLE_MSVC_ONLY_FALSE@@MIPS_TRUE@arch_define = __mips__
+@ENABLE_MSVC_ONLY_FALSE@@POWERPC64_TRUE@arch_define = __ppc64__
+@ENABLE_MSVC_ONLY_FALSE@@POWERPC_TRUE@arch_define = __ppc__
+@ENABLE_MSVC_ONLY_FALSE@@RISCV32_TRUE@arch_define = __riscv
+@ENABLE_MSVC_ONLY_FALSE@@RISCV64_TRUE@arch_define = __riscv
+@ENABLE_MSVC_ONLY_FALSE@@S390X_TRUE@arch_define = __s390__
+@ENABLE_MSVC_ONLY_FALSE@@SPARC64_TRUE@arch_define = __sparc__
+@ENABLE_MSVC_ONLY_FALSE@@SPARC_TRUE@arch_define = __sparc__
+@ENABLE_MSVC_ONLY_FALSE@@WASM_TRUE@arch_define = __wasm__
+@ENABLE_MSVC_ONLY_FALSE@@X86_TRUE@arch_define = __i386__
+@AMD64_TRUE@@ENABLE_MSVC_ONLY_FALSE@target_define = TARGET_AMD64
+@ARM64_TRUE@@ENABLE_MSVC_ONLY_FALSE@target_define = TARGET_ARM64
+@ARM_TRUE@@ENABLE_MSVC_ONLY_FALSE@target_define = TARGET_ARM
+@ENABLE_MSVC_ONLY_FALSE@@MIPS_TRUE@target_define = TARGET_MIPS
+@ENABLE_MSVC_ONLY_FALSE@@POWERPC64_TRUE@target_define = TARGET_POWERPC
+@ENABLE_MSVC_ONLY_FALSE@@POWERPC_TRUE@target_define = TARGET_POWERPC
+@ENABLE_MSVC_ONLY_FALSE@@RISCV32_TRUE@target_define = TARGET_RISCV32
+@ENABLE_MSVC_ONLY_FALSE@@RISCV64_TRUE@target_define = TARGET_RISCV64
+@ENABLE_MSVC_ONLY_FALSE@@S390X_TRUE@target_define = TARGET_S390X
+@ENABLE_MSVC_ONLY_FALSE@@SPARC64_TRUE@target_define = TARGET_SPARC
+@ENABLE_MSVC_ONLY_FALSE@@SPARC_TRUE@target_define = TARGET_SPARC
+@ENABLE_MSVC_ONLY_FALSE@@WASM_TRUE@target_define = TARGET_WASM
+@ENABLE_MSVC_ONLY_FALSE@@X86_TRUE@target_define = TARGET_X86
+@AMD64_TRUE@@ENABLE_MSVC_ONLY_FALSE@ARCH_FULLAOT_EXCLUDE = 
 
 # pick up arm_dpimacros.h
-@ARM_TRUE@ARCH_CFLAGS = -I../arch/arm
-@HOST_DARWIN_TRUE@os_sources = $(darwin_sources) $(posix_sources)
-@HOST_SIGPOSIX_TRUE@os_sources = $(posix_sources)
-@HOST_WIN32_TRUE@os_sources = $(windows_sources)
+@ARM_TRUE@@ENABLE_MSVC_ONLY_FALSE@ARCH_CFLAGS = -I../arch/arm
+@ENABLE_MSVC_ONLY_FALSE@@HOST_DARWIN_TRUE@os_sources = $(darwin_sources) $(posix_sources)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_SIGPOSIX_TRUE@os_sources = $(posix_sources)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@os_sources = $(windows_sources)
 #monobin_platform_ldflags=-sectcreate __TEXT __info_plist $(top_srcdir)/mono/mini/Info.plist -framework CoreFoundation -framework Foundation
-@HOST_DARWIN_TRUE@monobin_platform_ldflags = -framework CoreFoundation -framework Foundation
-@HOST_SIGPOSIX_TRUE@monobin_platform_ldflags = 
-@HOST_WIN32_TRUE@monobin_platform_ldflags = 
-libmono_ee_interp_la_SOURCES = $(interp_sources)
-libmono_ee_interp_la_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@ $(INTERP_CFLAGS)
-@BITCODE_TRUE@libmono_ee_interp_la_LDFLAGS = $(libmonoldflags)
-@BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@libmono_ee_interp_la_LIBADD = libmonosgen-2.0.la
-@WASM_FALSE@extra_libmono_dbg_source = debugger-engine.c
-libmono_dbg_la_SOURCES = debugger-agent.c debugger-state-machine.c $(extra_libmono_dbg_source)
-libmono_dbg_la_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
-@BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@libmono_dbg_la_LIBADD = libmonosgen-2.0.la
-dbg_libs = libmono-dbg.la
-@DISABLE_DEBUGGER_AGENT_FALSE@dbg_libs_with_mini = $(dbg_libs)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_DARWIN_TRUE@monobin_platform_ldflags = -framework CoreFoundation -framework Foundation
+@ENABLE_MSVC_ONLY_FALSE@@HOST_SIGPOSIX_TRUE@monobin_platform_ldflags = 
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@monobin_platform_ldflags = 
+@ENABLE_MSVC_ONLY_FALSE@libmono_ee_interp_la_SOURCES = $(interp_sources)
+@ENABLE_MSVC_ONLY_FALSE@libmono_ee_interp_la_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@ $(INTERP_CFLAGS)
+@BITCODE_TRUE@@ENABLE_MSVC_ONLY_FALSE@libmono_ee_interp_la_LDFLAGS = $(libmonoldflags)
+@BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@@ENABLE_MSVC_ONLY_FALSE@libmono_ee_interp_la_LIBADD = libmonosgen-2.0.la
+@ENABLE_MSVC_ONLY_FALSE@@WASM_FALSE@extra_libmono_dbg_source = debugger-engine.c
+@ENABLE_MSVC_ONLY_FALSE@libmono_dbg_la_SOURCES = debugger-agent.c debugger-state-machine.c $(extra_libmono_dbg_source)
+@ENABLE_MSVC_ONLY_FALSE@libmono_dbg_la_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
+@BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@@ENABLE_MSVC_ONLY_FALSE@libmono_dbg_la_LIBADD = libmonosgen-2.0.la
+@ENABLE_MSVC_ONLY_FALSE@dbg_libs = libmono-dbg.la
+@DISABLE_DEBUGGER_AGENT_FALSE@@ENABLE_MSVC_ONLY_FALSE@dbg_libs_with_mini = $(dbg_libs)
 
 #
 # This library is shared between mono and mono-sgen, since the code in mini/ doesn't contain
 # compile time dependencies on boehm/sgen.
 #
-libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(llvm_runtime_sources) $(arch_sources) $(os_sources) $(netcore_sources)
-libmini_la_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
-libmonoboehm_2_0_la_SOURCES = 
-libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS) @CXX_ADD_CFLAGS@
-libmonoboehm_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(boehm_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
-libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
-libmonosgen_2_0_la_SOURCES = 
-libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS) @CXX_ADD_CFLAGS@
-libmonosgen_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
-libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
+@ENABLE_MSVC_ONLY_FALSE@libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(llvm_runtime_sources) $(arch_sources) $(os_sources) $(netcore_sources)
+@ENABLE_MSVC_ONLY_FALSE@libmini_la_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
+@ENABLE_MSVC_ONLY_FALSE@libmonoboehm_2_0_la_SOURCES = 
+@ENABLE_MSVC_ONLY_FALSE@libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS) @CXX_ADD_CFLAGS@
+@ENABLE_MSVC_ONLY_FALSE@libmonoboehm_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(boehm_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
+@ENABLE_MSVC_ONLY_FALSE@libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
+@ENABLE_MSVC_ONLY_FALSE@libmonosgen_2_0_la_SOURCES = 
+@ENABLE_MSVC_ONLY_FALSE@libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS) @CXX_ADD_CFLAGS@
+@ENABLE_MSVC_ONLY_FALSE@libmonosgen_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
+@ENABLE_MSVC_ONLY_FALSE@libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
 libmonoincludedir = $(includedir)/mono-$(API_VER)/mono/jit
 
 # These are public headers.
@@ -2552,7 +2622,10 @@ check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) check-local
 check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
-all-am: Makefile $(LIBRARIES) $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
+@DISABLE_EXECUTABLES_TRUE@all-local:
+@ENABLE_MSVC_ONLY_FALSE@all-local:
+all-am: Makefile $(LIBRARIES) $(LTLIBRARIES) $(PROGRAMS) $(HEADERS) \
+		all-local
 install-binPROGRAMS: install-libLTLIBRARIES
 
 installdirs:
@@ -2678,41 +2751,55 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 .MAKE: all check check-am install install-am install-exec-am \
 	install-strip
 
-.PHONY: CTAGS GTAGS TAGS all all-am check check-am check-local clean \
-	clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
-	clean-libtool clean-local clean-noinstLIBRARIES \
-	clean-noinstLTLIBRARIES clean-noinstPROGRAMS cscopelist-am \
-	ctags ctags-am distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-binPROGRAMS \
-	install-data install-data-am install-dvi install-dvi-am \
-	install-exec install-exec-am install-exec-hook install-html \
-	install-html-am install-info install-info-am \
-	install-libLTLIBRARIES install-libmonoincludeHEADERS \
-	install-man install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am test-am \
-	test-bundle-am test-bundle-local test-local uninstall \
-	uninstall-am uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
-	uninstall-libmonoincludeHEADERS
+.PHONY: CTAGS GTAGS TAGS all all-am all-local check check-am \
+	check-local clean clean-binPROGRAMS clean-generic \
+	clean-libLTLIBRARIES clean-libtool clean-local \
+	clean-noinstLIBRARIES clean-noinstLTLIBRARIES \
+	clean-noinstPROGRAMS cscopelist-am ctags ctags-am distclean \
+	distclean-compile distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
+	install install-am install-binPROGRAMS install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-exec-hook install-html install-html-am \
+	install-info install-info-am install-libLTLIBRARIES \
+	install-libmonoincludeHEADERS install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags tags-am test-am test-bundle-am test-bundle-local \
+	test-local uninstall uninstall-am uninstall-binPROGRAMS \
+	uninstall-libLTLIBRARIES uninstall-libmonoincludeHEADERS
 
 .PRECIOUS: Makefile
 
 
-@ENABLE_LLVM_TRUE@include $(mono_build_root)/llvm/llvm_config.mk
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@include $(mono_build_root)/llvm/llvm_config.mk
 
-@ENABLE_LLVM_TRUE@$(mono_build_root)/llvm/llvm_config.mk:
-@ENABLE_LLVM_TRUE@	$(MAKE) -C $(top_builddir)/llvm $(mono_build_root)/llvm/llvm_config.mk
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@$(mono_build_root)/llvm/llvm_config.mk:
+@ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@	$(MAKE) -C $(top_builddir)/llvm $(mono_build_root)/llvm/llvm_config.mk
 
-@HOST_WIN32_TRUE@export HOST_CC
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@export HOST_CC
 
-@DISABLE_EXECUTABLES_FALSE@mono: mono-$(mono_bin_suffix)
-@DISABLE_EXECUTABLES_FALSE@	ln -sf $< $@
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@mono: mono-$(mono_bin_suffix)
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@	ln -sf $< $@
 
-@DISABLE_EXECUTABLES_FALSE@mono.exe: mono-$(mono_bin_suffix).exe
-@DISABLE_EXECUTABLES_FALSE@	ln -sf $< $@
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@mono.exe: mono-$(mono_bin_suffix).exe
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@	ln -sf $< $@
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_TRUE@.PHONY: mono
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_TRUE@mono:
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_TRUE@	make -C $(top_srcdir)/msvc mono
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_TRUE@	ln -sf $(mono_msvc_build_bin_dir)/mono-$(mono_bin_suffix)$(EXEEXT) ./mono.exe
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_TRUE@@SUPPORT_SGEN_TRUE@	ln -sf $(mono_msvc_build_bin_dir)/mono-$(mono_bin_suffix)$(EXEEXT) ./mono-sgen.exe
+
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_TRUE@mono.exe: mono
+
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_TRUE@monow.exe: mono
+
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_TRUE@all-local: mono
+
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_TRUE@clean-mono:
+@DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_TRUE@	make -C $(top_srcdir)/msvc clean-mono
 
 @DISABLE_EXECUTABLES_FALSE@install-exec-hook:
 @DISABLE_EXECUTABLES_FALSE@	(cd $(DESTDIR)$(bindir) && ln -sf mono-$(mono_bin_suffix)$(EXEEXT) mono$(EXEEXT))
@@ -2720,14 +2807,14 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 
 # We build this after libmono was built so it contains the date when the final
 # link was done
-@SUPPORT_BOEHM_TRUE@buildver-boehm.h: libmini.la $(monodir)/mono/metadata/libmonoruntime.la
-@SUPPORT_BOEHM_TRUE@	@echo "const char *build_date = \"`date`\";" > buildver-boehm.h
-@SUPPORT_BOEHM_TRUE@libmain_a-main.$(OBJEXT): buildver-boehm.h
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@buildver-boehm.h: libmini.la $(monodir)/mono/metadata/libmonoruntime.la
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@	@echo "const char *build_date = \"`date`\";" > buildver-boehm.h
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@libmain_a-main.$(OBJEXT): buildver-boehm.h
 
-buildver-sgen.h: libmini.la $(monodir)/mono/metadata/libmonoruntimesgen.la $(monodir)/mono/sgen/libmonosgen.la
-	@echo "const char *build_date = \"`date`\";" > buildver-sgen.h
+@ENABLE_MSVC_ONLY_FALSE@buildver-sgen.h: libmini.la $(monodir)/mono/metadata/libmonoruntimesgen.la $(monodir)/mono/sgen/libmonosgen.la
+@ENABLE_MSVC_ONLY_FALSE@	@echo "const char *build_date = \"`date`\";" > buildver-sgen.h
 
-libmain_a-main-sgen.$(OBJEXT): buildver-sgen.h
+@ENABLE_MSVC_ONLY_FALSE@libmain_a-main-sgen.$(OBJEXT): buildver-sgen.h
 
 # if SUPPORT_SGEN
 # 
@@ -2736,13 +2823,13 @@ libmain_a-main-sgen.$(OBJEXT): buildver-sgen.h
 # 
 # endif
 
-@DTRACE_G_REQUIRED_TRUE@mono-dtrace.$(OBJEXT): $(top_srcdir)/data/mono.d mini.lo $(monodir)/mono/metadata/libmonoruntime-static.la
-@DTRACE_G_REQUIRED_TRUE@	DTRACE="$(DTRACE)" DTRACEFLAGS="$(DTRACEFLAGS)" AR="$(AR)" $(SHELL) $(top_srcdir)/data/dtrace-prelink.sh \
-@DTRACE_G_REQUIRED_TRUE@	$@ $(top_srcdir)/data/mono.d $(monodir)/mono/metadata/libmonoruntime-static.la mini.lo
+@DTRACE_G_REQUIRED_TRUE@@ENABLE_MSVC_ONLY_FALSE@mono-dtrace.$(OBJEXT): $(top_srcdir)/data/mono.d mini.lo $(monodir)/mono/metadata/libmonoruntime-static.la
+@DTRACE_G_REQUIRED_TRUE@@ENABLE_MSVC_ONLY_FALSE@	DTRACE="$(DTRACE)" DTRACEFLAGS="$(DTRACEFLAGS)" AR="$(AR)" $(SHELL) $(top_srcdir)/data/dtrace-prelink.sh \
+@DTRACE_G_REQUIRED_TRUE@@ENABLE_MSVC_ONLY_FALSE@	$@ $(top_srcdir)/data/mono.d $(monodir)/mono/metadata/libmonoruntime-static.la mini.lo
 
-@DTRACE_G_REQUIRED_TRUE@.libs/mono-dtrace.$(OBJEXT): $(top_srcdir)/data/mono.d mini.lo $(monodir)/mono/metadata/libmonoruntime.la
-@DTRACE_G_REQUIRED_TRUE@	DTRACE="$(DTRACE)" DTRACEFLAGS="$(DTRACEFLAGS)" AR="$(AR)" $(SHELL) $(top_srcdir)/data/dtrace-prelink.sh \
-@DTRACE_G_REQUIRED_TRUE@	--pic $@ $(top_srcdir)/data/mono.d $(monodir)/mono/metadata/libmonoruntime.la mini.lo
+@DTRACE_G_REQUIRED_TRUE@@ENABLE_MSVC_ONLY_FALSE@.libs/mono-dtrace.$(OBJEXT): $(top_srcdir)/data/mono.d mini.lo $(monodir)/mono/metadata/libmonoruntime.la
+@DTRACE_G_REQUIRED_TRUE@@ENABLE_MSVC_ONLY_FALSE@	DTRACE="$(DTRACE)" DTRACEFLAGS="$(DTRACEFLAGS)" AR="$(AR)" $(SHELL) $(top_srcdir)/data/dtrace-prelink.sh \
+@DTRACE_G_REQUIRED_TRUE@@ENABLE_MSVC_ONLY_FALSE@	--pic $@ $(top_srcdir)/data/mono.d $(monodir)/mono/metadata/libmonoruntime.la mini.lo
 
 basic-simd.exe: basic-simd.cs TestDriver.dll
 	$(MCS) -out:$@ $(CSFLAGS) $< -r:TestDriver.dll -r:$(CLASS)/Mono.Simd.dll
@@ -2869,10 +2956,10 @@ gctest: mono gc-test.exe
 	MONO_DEBUG_OPTIONS=clear-nursery-at-gc $(MINI_RUNTIME) --regression gc-test.exe
 
 aotcheck: mono $(regtests)
-	rm -rf *.exe.so *.exe.dylib *.exe.dylib.dSYM
+	rm -rf *.exe.so *.exe.dylib *.exe.dylib.dSYM *.exe.dll
 	$(MINI_RUNTIME) $(LLVM_AOT_RUNTIME_OPTS) --aot="$(LLVM_AOT_COMPILER_OPTS)" $(regtests) || exit 1
 	for i in $(regtests); do $(RUNTIME_AOTCHECK) --regression $$i || exit 1; done
-	rm -rf *.exe.so *.exe.dylib *.exe.dylib.dSYM
+	rm -rf *.exe.so *.exe.dylib *.exe.dylib.dSYM *.exe.dll
 
 llvmaotcheck:
 	$(MAKE) aotcheck LLVM=1
@@ -2946,7 +3033,7 @@ docu: mini.sgm
 check-local: $(check_local_targets)
 
 clean-local:
-	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
+	rm -f mono mono.exe monow.exe mono-sgen.exe a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
 	if test -e $(top_srcdir)/.git; then \
