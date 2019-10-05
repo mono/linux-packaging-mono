@@ -111,27 +111,49 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libmonosgen_la_LIBADD =
-am__objects_1 = libmonosgen_la-sgen-alloc.lo \
-	libmonosgen_la-sgen-cardtable.lo libmonosgen_la-sgen-debug.lo \
-	libmonosgen_la-sgen-descriptor.lo \
-	libmonosgen_la-sgen-fin-weak-hash.lo libmonosgen_la-sgen-gc.lo \
-	libmonosgen_la-sgen-gchandles.lo libmonosgen_la-sgen-gray.lo \
-	libmonosgen_la-sgen-hash-table.lo \
-	libmonosgen_la-sgen-internal.lo \
-	libmonosgen_la-sgen-layout-stats.lo libmonosgen_la-sgen-los.lo \
-	libmonosgen_la-sgen-marksweep.lo \
-	libmonosgen_la-sgen-memory-governor.lo \
-	libmonosgen_la-sgen-nursery-allocator.lo \
-	libmonosgen_la-sgen-pinning-stats.lo \
-	libmonosgen_la-sgen-pinning.lo \
-	libmonosgen_la-sgen-pointer-queue.lo \
-	libmonosgen_la-sgen-array-list.lo \
-	libmonosgen_la-sgen-protocol.lo libmonosgen_la-sgen-qsort.lo \
-	libmonosgen_la-sgen-simple-nursery.lo \
-	libmonosgen_la-sgen-split-nursery.lo \
-	libmonosgen_la-sgen-thread-pool.lo \
-	libmonosgen_la-sgen-workers.lo
-am_libmonosgen_la_OBJECTS = $(am__objects_1)
+am__libmonosgen_la_SOURCES_DIST = gc-internal-agnostic.h sgen-alloc.c \
+	sgen-archdep.h sgen-cardtable.c sgen-cardtable.h sgen-client.h \
+	sgen-conf.h sgen-copy-object.h sgen-debug.c sgen-descriptor.c \
+	sgen-descriptor.h sgen-fin-weak-hash.c sgen-gc.c sgen-gc.h \
+	sgen-gchandles.c sgen-gray.c sgen-gray.h sgen-hash-table.c \
+	sgen-hash-table.h sgen-internal.c sgen-layout-stats.c \
+	sgen-layout-stats.h sgen-los.c sgen-major-copy-object.h \
+	sgen-marksweep-drain-gray-stack.h sgen-marksweep.c \
+	sgen-memory-governor.c sgen-memory-governor.h \
+	sgen-minor-copy-object.h sgen-minor-scan-object.h \
+	sgen-nursery-allocator.c sgen-pinning-stats.c sgen-pinning.c \
+	sgen-pinning.h sgen-pointer-queue.c sgen-pointer-queue.h \
+	sgen-array-list.h sgen-array-list.c sgen-protocol-def.h \
+	sgen-protocol.c sgen-protocol.h sgen-qsort.c sgen-qsort.h \
+	sgen-scan-object.h sgen-simple-nursery.c sgen-split-nursery.c \
+	sgen-tagged-pointer.h sgen-thread-pool.c sgen-thread-pool.h \
+	sgen-workers.c sgen-workers.h
+@ENABLE_MSVC_ONLY_FALSE@am__objects_1 = libmonosgen_la-sgen-alloc.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-cardtable.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-debug.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-descriptor.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-fin-weak-hash.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-gc.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-gchandles.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-gray.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-hash-table.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-internal.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-layout-stats.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-los.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-marksweep.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-memory-governor.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-nursery-allocator.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-pinning-stats.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-pinning.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-pointer-queue.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-array-list.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-protocol.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-qsort.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-simple-nursery.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-split-nursery.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-thread-pool.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonosgen_la-sgen-workers.lo
+@ENABLE_MSVC_ONLY_FALSE@am_libmonosgen_la_OBJECTS = $(am__objects_1)
 libmonosgen_la_OBJECTS = $(am_libmonosgen_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -141,7 +163,7 @@ libmonosgen_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmonosgen_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o \
 	$@
-@SUPPORT_SGEN_TRUE@am_libmonosgen_la_rpath =
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_SGEN_TRUE@am_libmonosgen_la_rpath =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -173,7 +195,7 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(libmonosgen_la_SOURCES)
-DIST_SOURCES = $(libmonosgen_la_SOURCES)
+DIST_SOURCES = $(am__libmonosgen_la_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -475,64 +497,64 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS)
-@SUPPORT_SGEN_TRUE@shared_libraries = libmonosgen.la
-noinst_LTLIBRARIES = $(shared_libraries)
-monosgen_sources = \
-	gc-internal-agnostic.h \
-	sgen-alloc.c \
-	sgen-archdep.h \
-	sgen-cardtable.c \
-	sgen-cardtable.h \
-	sgen-client.h \
-	sgen-conf.h \
-	sgen-copy-object.h \
-	sgen-debug.c \
-	sgen-descriptor.c \
-	sgen-descriptor.h \
-	sgen-fin-weak-hash.c \
-	sgen-gc.c \
-	sgen-gc.h \
-	sgen-gchandles.c \
-	sgen-gray.c \
-	sgen-gray.h \
-	sgen-hash-table.c \
-	sgen-hash-table.h \
-	sgen-internal.c \
-	sgen-layout-stats.c \
-	sgen-layout-stats.h \
-	sgen-los.c \
-	sgen-major-copy-object.h \
-	sgen-marksweep-drain-gray-stack.h \
-	sgen-marksweep.c \
-	sgen-memory-governor.c \
-	sgen-memory-governor.h \
-	sgen-minor-copy-object.h \
-	sgen-minor-scan-object.h \
-	sgen-nursery-allocator.c \
-	sgen-pinning-stats.c \
-	sgen-pinning.c \
-	sgen-pinning.h \
-	sgen-pointer-queue.c \
-	sgen-pointer-queue.h \
-	sgen-array-list.h \
-	sgen-array-list.c \
-	sgen-protocol-def.h \
-	sgen-protocol.c \
-	sgen-protocol.h \
-	sgen-qsort.c \
-	sgen-qsort.h \
-	sgen-scan-object.h \
-	sgen-simple-nursery.c \
-	sgen-split-nursery.c \
-	sgen-tagged-pointer.h \
-	sgen-thread-pool.c \
-	sgen-thread-pool.h \
-	sgen-workers.c \
-	sgen-workers.h
+@ENABLE_MSVC_ONLY_FALSE@AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_SGEN_TRUE@shared_libraries = libmonosgen.la
+@ENABLE_MSVC_ONLY_FALSE@noinst_LTLIBRARIES = $(shared_libraries)
+@ENABLE_MSVC_ONLY_FALSE@monosgen_sources = \
+@ENABLE_MSVC_ONLY_FALSE@	gc-internal-agnostic.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-alloc.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-archdep.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-cardtable.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-cardtable.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-client.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-conf.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-copy-object.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-debug.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-descriptor.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-descriptor.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-fin-weak-hash.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-gc.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-gc.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-gchandles.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-gray.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-gray.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-hash-table.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-hash-table.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-internal.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-layout-stats.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-layout-stats.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-los.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-major-copy-object.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-marksweep-drain-gray-stack.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-marksweep.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-memory-governor.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-memory-governor.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-minor-copy-object.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-minor-scan-object.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-nursery-allocator.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-pinning-stats.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-pinning.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-pinning.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-pointer-queue.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-pointer-queue.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-array-list.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-array-list.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-protocol-def.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-protocol.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-protocol.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-qsort.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-qsort.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-scan-object.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-simple-nursery.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-split-nursery.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-tagged-pointer.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-thread-pool.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-thread-pool.h \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-workers.c \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-workers.h
 
-libmonosgen_la_SOURCES = $(monosgen_sources)
-libmonosgen_la_CFLAGS = $(SGEN_DEFINES)
+@ENABLE_MSVC_ONLY_FALSE@libmonosgen_la_SOURCES = $(monosgen_sources)
+@ENABLE_MSVC_ONLY_FALSE@libmonosgen_la_CFLAGS = $(SGEN_DEFINES)
 all: all-am
 
 .SUFFIXES:
@@ -902,7 +924,8 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES)
+@ENABLE_MSVC_ONLY_FALSE@all-local:
+all-am: Makefile $(LTLIBRARIES) all-local
 installdirs:
 install: install-am
 install-exec: install-exec-am
@@ -934,10 +957,11 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+@ENABLE_MSVC_ONLY_FALSE@clean-local:
 clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
-	mostlyclean-am
+clean-am: clean-generic clean-libtool clean-local \
+	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -1015,23 +1039,31 @@ uninstall-am:
 
 .MAKE: install-am install-strip
 
-.PHONY: CTAGS GTAGS TAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-noinstLTLIBRARIES cscopelist-am ctags \
-	ctags-am distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-am test-am test-bundle-am test-bundle-local \
-	test-local uninstall uninstall-am
+.PHONY: CTAGS GTAGS TAGS all all-am all-local check check-am clean \
+	clean-generic clean-libtool clean-local \
+	clean-noinstLTLIBRARIES cscopelist-am ctags ctags-am distclean \
+	distclean-compile distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
+	install install-am install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am tags tags-am test-am test-bundle-am \
+	test-bundle-local test-local uninstall uninstall-am
 
 .PRECIOUS: Makefile
 
+
+@ENABLE_MSVC_ONLY_TRUE@all-local:
+
+@ENABLE_MSVC_ONLY_TRUE@	make -C $(top_srcdir)/msvc libgcmonosgen
+
+@ENABLE_MSVC_ONLY_TRUE@clean-local:
+
+@ENABLE_MSVC_ONLY_TRUE@	make -C $(top_srcdir)/msvc clean-libgcmonosgen
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

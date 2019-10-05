@@ -90,7 +90,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-bin_PROGRAMS = sgen-grep-binprot$(EXEEXT)
+@ENABLE_MSVC_ONLY_FALSE@bin_PROGRAMS = sgen-grep-binprot$(EXEEXT)
 subdir = tools/sgen
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -119,35 +119,40 @@ am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
 libmain_a_AR = $(AR) $(ARFLAGS)
 libmain_a_LIBADD =
-am_libmain_a_OBJECTS = libmain_a-sgen-grep-binprot-main.$(OBJEXT) \
-	libmain_a-sgen-entry-stream.$(OBJEXT)
+am__libmain_a_SOURCES_DIST = sgen-grep-binprot-main.c \
+	sgen-entry-stream.c sgen-entry-stream.h
+@ENABLE_MSVC_ONLY_FALSE@am_libmain_a_OBJECTS = libmain_a-sgen-grep-binprot-main.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	libmain_a-sgen-entry-stream.$(OBJEXT)
 libmain_a_OBJECTS = $(am_libmain_a_OBJECTS)
 libsgen_grep_binprot_a_AR = $(AR) $(ARFLAGS)
 libsgen_grep_binprot_a_LIBADD =
-am_libsgen_grep_binprot_a_OBJECTS =  \
-	libsgen_grep_binprot_a-sgen-grep-binprot.$(OBJEXT)
+am__libsgen_grep_binprot_a_SOURCES_DIST = sgen-grep-binprot.c \
+	sgen-grep-binprot.h
+@ENABLE_MSVC_ONLY_FALSE@am_libsgen_grep_binprot_a_OBJECTS = libsgen_grep_binprot_a-sgen-grep-binprot.$(OBJEXT)
 libsgen_grep_binprot_a_OBJECTS = $(am_libsgen_grep_binprot_a_OBJECTS)
 libsgen_grep_binprot32p_a_AR = $(AR) $(ARFLAGS)
 libsgen_grep_binprot32p_a_LIBADD =
-am_libsgen_grep_binprot32p_a_OBJECTS =  \
-	libsgen_grep_binprot32p_a-sgen-grep-binprot.$(OBJEXT)
+am__libsgen_grep_binprot32p_a_SOURCES_DIST = sgen-grep-binprot.c \
+	sgen-grep-binprot.h
+@ENABLE_MSVC_ONLY_FALSE@am_libsgen_grep_binprot32p_a_OBJECTS = libsgen_grep_binprot32p_a-sgen-grep-binprot.$(OBJEXT)
 libsgen_grep_binprot32p_a_OBJECTS =  \
 	$(am_libsgen_grep_binprot32p_a_OBJECTS)
 libsgen_grep_binprot64p_a_AR = $(AR) $(ARFLAGS)
 libsgen_grep_binprot64p_a_LIBADD =
-am_libsgen_grep_binprot64p_a_OBJECTS =  \
-	libsgen_grep_binprot64p_a-sgen-grep-binprot.$(OBJEXT)
+am__libsgen_grep_binprot64p_a_SOURCES_DIST = sgen-grep-binprot.c \
+	sgen-grep-binprot.h
+@ENABLE_MSVC_ONLY_FALSE@am_libsgen_grep_binprot64p_a_OBJECTS = libsgen_grep_binprot64p_a-sgen-grep-binprot.$(OBJEXT)
 libsgen_grep_binprot64p_a_OBJECTS =  \
 	$(am_libsgen_grep_binprot64p_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_sgen_grep_binprot_OBJECTS =
 sgen_grep_binprot_OBJECTS = $(am_sgen_grep_binprot_OBJECTS)
-sgen_grep_binprot_DEPENDENCIES =  \
-	libmain_a-sgen-grep-binprot-main.$(OBJEXT) \
-	libmain_a-sgen-entry-stream.$(OBJEXT) $(glib_libs) \
-	libsgen-grep-binprot.a libsgen-grep-binprot32p.a \
-	libsgen-grep-binprot64p.a
+@ENABLE_MSVC_ONLY_FALSE@sgen_grep_binprot_DEPENDENCIES = libmain_a-sgen-grep-binprot-main.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	libmain_a-sgen-entry-stream.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	$(glib_libs) libsgen-grep-binprot.a \
+@ENABLE_MSVC_ONLY_FALSE@	libsgen-grep-binprot32p.a \
+@ENABLE_MSVC_ONLY_FALSE@	libsgen-grep-binprot64p.a
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -186,9 +191,10 @@ SOURCES = $(libmain_a_SOURCES) $(libsgen_grep_binprot_a_SOURCES) \
 	$(libsgen_grep_binprot32p_a_SOURCES) \
 	$(libsgen_grep_binprot64p_a_SOURCES) \
 	$(sgen_grep_binprot_SOURCES)
-DIST_SOURCES = $(libmain_a_SOURCES) $(libsgen_grep_binprot_a_SOURCES) \
-	$(libsgen_grep_binprot32p_a_SOURCES) \
-	$(libsgen_grep_binprot64p_a_SOURCES) \
+DIST_SOURCES = $(am__libmain_a_SOURCES_DIST) \
+	$(am__libsgen_grep_binprot_a_SOURCES_DIST) \
+	$(am__libsgen_grep_binprot32p_a_SOURCES_DIST) \
+	$(am__libsgen_grep_binprot64p_a_SOURCES_DIST) \
 	$(sgen_grep_binprot_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
@@ -493,38 +499,39 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
-glib_libs = $(top_builddir)/mono/eglib/libeglib.la
+@ENABLE_MSVC_ONLY_FALSE@AM_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
+@ENABLE_MSVC_ONLY_FALSE@glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 
 # Main is in a library so it can be C++.
-noinst_LIBRARIES = libsgen-grep-binprot.a libsgen-grep-binprot32p.a \
-	libsgen-grep-binprot64p.a libmain.a
+@ENABLE_MSVC_ONLY_FALSE@noinst_LIBRARIES = libsgen-grep-binprot.a \
+@ENABLE_MSVC_ONLY_FALSE@	libsgen-grep-binprot32p.a \
+@ENABLE_MSVC_ONLY_FALSE@	libsgen-grep-binprot64p.a libmain.a
 
 # Libraries are C++ if enabled.
-libmain_a_CFLAGS = @CXX_ADD_CFLAGS@
-libsgen_grep_binprot_a_CFLAGS = @CXX_ADD_CFLAGS@
-libsgen_grep_binprot32p_a_CFLAGS = @CXX_ADD_CFLAGS@
-libsgen_grep_binprot64p_a_CFLAGS = @CXX_ADD_CFLAGS@
-libsgen_grep_binprot_a_SOURCES = sgen-grep-binprot.c sgen-grep-binprot.h
-libsgen_grep_binprot_a_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
-libsgen_grep_binprot32p_a_SOURCES = sgen-grep-binprot.c sgen-grep-binprot.h
-libsgen_grep_binprot32p_a_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir) -DBINPROT_SIZEOF_VOID_P=4 -DBINPROT_HAS_HEADER
-libsgen_grep_binprot64p_a_SOURCES = sgen-grep-binprot.c sgen-grep-binprot.h
-libsgen_grep_binprot64p_a_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir) -DBINPROT_SIZEOF_VOID_P=8 -DBINPROT_HAS_HEADER
+@ENABLE_MSVC_ONLY_FALSE@libmain_a_CFLAGS = @CXX_ADD_CFLAGS@
+@ENABLE_MSVC_ONLY_FALSE@libsgen_grep_binprot_a_CFLAGS = @CXX_ADD_CFLAGS@
+@ENABLE_MSVC_ONLY_FALSE@libsgen_grep_binprot32p_a_CFLAGS = @CXX_ADD_CFLAGS@
+@ENABLE_MSVC_ONLY_FALSE@libsgen_grep_binprot64p_a_CFLAGS = @CXX_ADD_CFLAGS@
+@ENABLE_MSVC_ONLY_FALSE@libsgen_grep_binprot_a_SOURCES = sgen-grep-binprot.c sgen-grep-binprot.h
+@ENABLE_MSVC_ONLY_FALSE@libsgen_grep_binprot_a_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
+@ENABLE_MSVC_ONLY_FALSE@libsgen_grep_binprot32p_a_SOURCES = sgen-grep-binprot.c sgen-grep-binprot.h
+@ENABLE_MSVC_ONLY_FALSE@libsgen_grep_binprot32p_a_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir) -DBINPROT_SIZEOF_VOID_P=4 -DBINPROT_HAS_HEADER
+@ENABLE_MSVC_ONLY_FALSE@libsgen_grep_binprot64p_a_SOURCES = sgen-grep-binprot.c sgen-grep-binprot.h
+@ENABLE_MSVC_ONLY_FALSE@libsgen_grep_binprot64p_a_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir) -DBINPROT_SIZEOF_VOID_P=8 -DBINPROT_HAS_HEADER
 
 # Executable has no source files, just links to object files and libraries.
-sgen_grep_binprot_SOURCES = 
-libmain_a_SOURCES = \
-	sgen-grep-binprot-main.c	\
-	sgen-entry-stream.c	\
-	sgen-entry-stream.h
+@ENABLE_MSVC_ONLY_FALSE@sgen_grep_binprot_SOURCES = 
+@ENABLE_MSVC_ONLY_FALSE@libmain_a_SOURCES = \
+@ENABLE_MSVC_ONLY_FALSE@	sgen-grep-binprot-main.c	\
+@ENABLE_MSVC_ONLY_FALSE@	sgen-entry-stream.c	\
+@ENABLE_MSVC_ONLY_FALSE@	sgen-entry-stream.h
 
 
 # Link to the libmain object files instead of library for higher fidelity with old behavior.
-sgen_grep_binprot_LDADD = \
-	libmain_a-sgen-grep-binprot-main.$(OBJEXT) \
-	libmain_a-sgen-entry-stream.$(OBJEXT) \
-	$(glib_libs) libsgen-grep-binprot.a libsgen-grep-binprot32p.a libsgen-grep-binprot64p.a
+@ENABLE_MSVC_ONLY_FALSE@sgen_grep_binprot_LDADD = \
+@ENABLE_MSVC_ONLY_FALSE@	libmain_a-sgen-grep-binprot-main.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	libmain_a-sgen-entry-stream.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	$(glib_libs) libsgen-grep-binprot.a libsgen-grep-binprot32p.a libsgen-grep-binprot64p.a
 
 all: all-am
 

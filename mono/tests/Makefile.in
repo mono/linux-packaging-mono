@@ -637,8 +637,9 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES = tests-config
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
-libtest_la_DEPENDENCIES = $(top_builddir)/mono/eglib/libeglib.la
-am_libtest_la_OBJECTS = libtest_la-libtest.lo
+@ENABLE_MSVC_ONLY_FALSE@libtest_la_DEPENDENCIES = $(top_builddir)/mono/eglib/libeglib.la
+am__libtest_la_SOURCES_DIST = libtest.c
+@ENABLE_MSVC_ONLY_FALSE@am_libtest_la_OBJECTS = libtest_la-libtest.lo
 libtest_la_OBJECTS = $(am_libtest_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -647,6 +648,7 @@ am__v_lt_1 =
 libtest_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libtest_la_CFLAGS) \
 	$(CFLAGS) $(libtest_la_LDFLAGS) $(LDFLAGS) -o $@
+@ENABLE_MSVC_ONLY_FALSE@am_libtest_la_rpath =
 PROGRAMS = $(noinst_PROGRAMS)
 am__split_tailcall_interface_conservestack_SOURCES_DIST =  \
 	split-tailcall-interface-conservestack.cpp
@@ -706,7 +708,7 @@ am__v_CXXLD_1 =
 SOURCES = $(libtest_la_SOURCES) \
 	$(split_tailcall_interface_conservestack_SOURCES) \
 	$(tailcall_split_fsharp_SOURCES)
-DIST_SOURCES = $(libtest_la_SOURCES) \
+DIST_SOURCES = $(am__libtest_la_SOURCES_DIST) \
 	$(am__split_tailcall_interface_conservestack_SOURCES_DIST) \
 	$(am__tailcall_split_fsharp_SOURCES_DIST)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
@@ -1112,7 +1114,8 @@ TAILCALL_DISABLED_TESTS_RUN =  \
 
 # FullAOT does not allow --compile-all.
 @FULL_AOT_TESTS_FALSE@TEST_TAILCALL_COMPILE_ALL = --runtime-args "--compile-all"
-JITTEST_PROG = $(if $(VALGRIND), valgrind $(VALGRIND_ARGS),) $(if $(SGEN),$(top_builddir)/mono/mini/mono-sgen,$(top_builddir)/mono/mini/mono)
+@HOST_WIN32_FALSE@JITTEST_PROG = $(if $(VALGRIND), valgrind $(VALGRIND_ARGS),) $(if $(SGEN),$(top_builddir)/mono/mini/mono-sgen,$(top_builddir)/mono/mini/mono)
+@HOST_WIN32_TRUE@JITTEST_PROG = $(top_builddir)/runtime/mono-wrapper
 JITTEST_PROG_RUN = MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode=execute $(JITTEST_PROG)
 RUNTIME_ARGS = --config tests-config --optimize=all --debug
 CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
@@ -1138,6 +1141,8 @@ ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 TEST_RUNNER = ./test-runner.exe $(am__append_4) $(am__append_5) \
 	--mono-path "$(CLASS)" $(am__append_6) $(am__append_7) \
 	--runtime-args "$(TEST_RUNTIME_FLAGS)" $(if $(V), --verbose,)
+@ENABLE_MSVC_FALSE@@HOST_WIN32_TRUE@DEFAULT_WIN32_RUNTIME = $(top_builddir)/runtime/mono-wrapper)
+@ENABLE_MSVC_TRUE@@HOST_WIN32_TRUE@DEFAULT_WIN32_RUNTIME = $(shell cygpath -w -a $(top_builddir)/@mono_runtime@ | sed 's/\\/\\\\/g')
 TESTS_BENCH_SRC = fib.cs random.cs nested-loops.cs ackermann.cs tight-loop.cs sieve.cs
 TESTS_STRESS_SRC = \
 	abort-stress-1.cs	\
@@ -2123,10 +2128,18 @@ TESTS_SGEN_OOM_SRC = \
 TESTS_SGEN_OOM = $(filter-out $(DISABLED_TESTS),$(TESTS_SGEN_OOM_SRC:.cs=.exe))
 @FULL_AOT_TESTS_TRUE@TESTSAOT_SGEN_OOM = $(TESTS_SGEN_OOM:.exe=.exe$(PLATFORM_AOT_SUFFIX))
 @HYBRID_AOT_TESTS_TRUE@TESTSAOT_SGEN_OOM = $(TESTS_SGEN_OOM:.exe=.exe$(PLATFORM_AOT_SUFFIX))
-AOT_CONFIGURATIONS = \
-	"|regular"	\
-	"--gc=boehm|boehm"
+@HOST_WIN32_FALSE@AOT_CONFIGURATIONS = \
+@HOST_WIN32_FALSE@	"|regular"	\
+@HOST_WIN32_FALSE@	"--gc=boehm|boehm"
 
+@HOST_WIN32_TRUE@AOT_CONFIGURATIONS = \
+@HOST_WIN32_TRUE@	"|regular"
+
+
+#LLVM crashes, got to fix it first.
+#	"--llvm|llvm"	\
+#	"--llvm --gc=boehm|llvm+boehm"
+AOT_TEMP_DIR = $(top_builddir)/mono/tests/aot-tmp
 
 # tests that expect a 1 exit code
 TESTS_UNHANDLED_EXCEPTION_1_SRC = \
@@ -2161,18 +2174,18 @@ TESTS_STRESS_PROCESS_SRC = \
 TESTS_STRESS_PROCESS = $(filter-out $(DISABLED_TESTS),$(TESTS_STRESS_PROCESS_SRC:.cs=.exe))
 @FULL_AOT_TESTS_TRUE@TESTSAOT_STRESS_PROCESS = $(TESTS_STRESS_PROCESS:.exe=.exe$(PLATFORM_AOT_SUFFIX))
 @HYBRID_AOT_TESTS_TRUE@TESTSAOT_STRESS_PROCESS = $(TESTS_STRESS_PROCESS:.exe=.exe$(PLATFORM_AOT_SUFFIX))
-noinst_LTLIBRARIES = libtest.la
-AM_CPPFLAGS = $(GLIB_CFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@noinst_LTLIBRARIES = libtest.la
+@ENABLE_MSVC_ONLY_FALSE@AM_CPPFLAGS = $(GLIB_CFLAGS)
 
 # gcc-3.4.4 emits incorrect code when making indirect calls to stdcall functions using a tail call
 # This shows up when compiling mono_test_marshal_delegate ()
-@HOST_WIN32_TRUE@libtest_la_CFLAGS = -fno-optimize-sibling-calls
-@HOST_WIN32_FALSE@libtest_la_LDFLAGS = -no-undefined -rpath `pwd`
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@libtest_la_CFLAGS = -fno-optimize-sibling-calls
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@libtest_la_LDFLAGS = -no-undefined -rpath `pwd`
 # the exported names created by gcc for stdcall functions are missing the leading _, so MS.NET
 # can't find them. So we use --kill-at to remove the @ suffix as well.
-@HOST_WIN32_TRUE@libtest_la_LDFLAGS = -no-undefined -rpath `pwd` -Wl,--kill-at
-libtest_la_SOURCES = libtest.c
-libtest_la_LIBADD = $(top_builddir)/mono/eglib/libeglib.la
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@libtest_la_LDFLAGS = -no-undefined -rpath `pwd` -Wl,--kill-at
+@ENABLE_MSVC_ONLY_FALSE@libtest_la_SOURCES = libtest.c
+@ENABLE_MSVC_ONLY_FALSE@libtest_la_LIBADD = $(top_builddir)/mono/eglib/libeglib.la
 INTERNALSVISIBLETO_TEST_SRC = \
 	internalsvisibleto-runtimetest.cs \
 	internalsvisibleto-compilertest.cs
@@ -2262,7 +2275,7 @@ clean-noinstLTLIBRARIES:
 	}
 
 libtest.la: $(libtest_la_OBJECTS) $(libtest_la_DEPENDENCIES) $(EXTRA_libtest_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libtest_la_LINK)  $(libtest_la_OBJECTS) $(libtest_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libtest_la_LINK) $(am_libtest_la_rpath) $(libtest_la_OBJECTS) $(libtest_la_LIBADD) $(LIBS)
 
 clean-noinstPROGRAMS:
 	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
@@ -2730,9 +2743,6 @@ TEST_RUNTIME_ARGS ?= $(RUNTIME_ARGS)
 TEST_AOT_BUILD_FLAGS ?= $(AOT_BUILD_FLAGS)
 TEST_AOT_RUN_FLAGS ?= $(AOT_RUN_FLAGS)
 
-@ENABLE_MSVC_TRUE@@HOST_WIN32_TRUE@	DEFAULT_WIN32_RUNTIME=$(shell cygpath -w -a $(top_builddir)/@mono_runtime@ | sed 's/\\/\\\\/g')
-@ENABLE_MSVC_FALSE@@HOST_WIN32_TRUE@	DEFAULT_WIN32_RUNTIME=$(top_builddir)/runtime/mono-wrapper)
-
 @CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@$(TAILCALL_FSHARP_DEEPTAIL_IL): tailcall/fsharp-deeptail.stamp
 
 @CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@$(TAILCALL_INTERFACE_CONSERVESTACK_IL): tailcall/interface-conservestack.stamp
@@ -3169,16 +3179,13 @@ test-sgen-bridge3-ms-conc-par-simple-par-32m-tarjan-bridge: $(TESTS_SGEN_BRIDGE3
 tests-sgen-oom: $(TESTS_SGEN_OOM) $(TESTSAOT_SGEN_OOM) test-runner.exe sgen-cementing-stress.exe sgen-new-threads-dont-join-stw-2.exe sgen-bridge-major-fragmentation.exe
 	$(TOOLS_RUNTIME) $(TEST_RUNNER) $(TEST_RUNNER_ARGS) --testsuite-name $@ --runtime-args "--gc=sgen --gc-debug=max-valloc-size=50M,bridge=Bridge" --disabled "$(DISABLED_TESTS)" --timeout 900 $(TESTS_SGEN_OOM)
 
-#LLVM crashes, got to fix it first.
-#	"--llvm|llvm"	\
-#	"--llvm --gc=boehm|llvm+boehm"
-
 test-aot:
 	@failed=0; \
 	passed=0; \
 	failed_tests="";\
 	profile=$(DEFAULT_PROFILE);	\
-	tmpfile=`mktemp -t mono_aot_outputXXXXXX` || exit 1;	\
+	rm -rf $(AOT_TEMP_DIR); \
+	mkdir $(AOT_TEMP_DIR); \
 	rm -f test-aot-$${name}.stdout test-aot-$${name}.stderr; \
 	for assembly in $(mcs_topdir)/class/lib/$$profile/*.dll	; do	\
 		asm_name=`basename $$assembly`;	\
@@ -3188,7 +3195,7 @@ test-aot:
 			params=`echo $$conf | cut -d\| -f 1`;	\
 			test_name="$${asm_name}|$${name}";	\
 			echo "  $$test_name";	\
-			if MONO_PATH=$(mcs_topdir)/class/lib/$$profile $(JITTEST_PROG_RUN) $$params --aot=outfile=$$tmpfile $$assembly >> test-aot-$${name}.stdout 2>> test-aot-$${name}.stderr;	\
+			if MONO_PATH=$(mcs_topdir)/class/lib/$$profile $(JITTEST_PROG_RUN) $$params --aot=temp-path=$(AOT_TEMP_DIR),outfile=$(AOT_TEMP_DIR)/$$asm_name $$assembly >> test-aot-$${name}.stdout 2>> test-aot-$${name}.stderr;	\
 			then \
 				passed=`expr $${passed} + 1`; \
 			else \
@@ -3197,7 +3204,7 @@ test-aot:
 			fi \
 		done;	\
 	done;	\
-	rm	$$tmpfile;	\
+	rm -rf $(AOT_TEMP_DIR); \
 	echo "$${passed} test(s) passed. $${failed} test(s) did not pass."; \
 	if [ $${failed} != 0 ]; then echo -e "\nFailed tests:\n"; \
 	for i in $${failed_tests}; do echo $${i}; done; exit 1; fi

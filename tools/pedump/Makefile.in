@@ -90,7 +90,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@DISABLE_EXECUTABLES_FALSE@@DISABLE_LIBRARIES_FALSE@@SUPPORT_SGEN_TRUE@bin_PROGRAMS = pedump$(EXEEXT)
+@DISABLE_EXECUTABLES_FALSE@@DISABLE_LIBRARIES_FALSE@@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_SGEN_TRUE@bin_PROGRAMS = pedump$(EXEEXT)
 subdir = tools/pedump
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -119,16 +119,20 @@ am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
 libpedump_a_AR = $(AR) $(ARFLAGS)
 libpedump_a_LIBADD =
-am_libpedump_a_OBJECTS = libpedump_a-pedump.$(OBJEXT)
+am__libpedump_a_SOURCES_DIST = pedump.c
+@ENABLE_MSVC_ONLY_FALSE@am_libpedump_a_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@	libpedump_a-pedump.$(OBJEXT)
 libpedump_a_OBJECTS = $(am_libpedump_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_pedump_OBJECTS =
 pedump_OBJECTS = $(am_pedump_OBJECTS)
-pedump_DEPENDENCIES = libpedump_a-pedump.$(OBJEXT) \
-	$(top_builddir)/mono/metadata/libmonoruntimesgen.la \
-	$(top_builddir)/mono/sgen/libmonosgen.la \
-	$(top_builddir)/mono/utils/libmonoutils.la $(glib_libs)
+@ENABLE_MSVC_ONLY_FALSE@pedump_DEPENDENCIES =  \
+@ENABLE_MSVC_ONLY_FALSE@	libpedump_a-pedump.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	$(top_builddir)/mono/metadata/libmonoruntimesgen.la \
+@ENABLE_MSVC_ONLY_FALSE@	$(top_builddir)/mono/sgen/libmonosgen.la \
+@ENABLE_MSVC_ONLY_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
+@ENABLE_MSVC_ONLY_FALSE@	$(glib_libs)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -167,7 +171,7 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(libpedump_a_SOURCES) $(pedump_SOURCES)
-DIST_SOURCES = $(libpedump_a_SOURCES) $(pedump_SOURCES)
+DIST_SOURCES = $(am__libpedump_a_SOURCES_DIST) $(pedump_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -468,22 +472,24 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS)
-glib_libs = $(top_builddir)/mono/eglib/libeglib.la
-@DISABLE_EXECUTABLES_FALSE@@DISABLE_LIBRARIES_FALSE@@SUPPORT_SGEN_TRUE@noinst_LIBRARIES = libpedump.a
-libpedump_a_CFLAGS = @CXX_ADD_CFLAGS@
-pedump_SOURCES = 
-libpedump_a_SOURCES = pedump.c
-pedump_LDADD = \
-	libpedump_a-pedump.$(OBJEXT) \
-	$(top_builddir)/mono/metadata/libmonoruntimesgen.la \
-	$(top_builddir)/mono/sgen/libmonosgen.la \
-	$(top_builddir)/mono/utils/libmonoutils.la \
-	$(LLVM_LIBS)			\
-	$(LLVM_LDFLAGS)			\
-	$(glib_libs)
+@ENABLE_MSVC_ONLY_FALSE@AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@glib_libs = $(top_builddir)/mono/eglib/libeglib.la
+@DISABLE_EXECUTABLES_FALSE@@DISABLE_LIBRARIES_FALSE@@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_SGEN_TRUE@noinst_LIBRARIES = libpedump.a
+@ENABLE_MSVC_ONLY_FALSE@libpedump_a_CFLAGS = @CXX_ADD_CFLAGS@
+@ENABLE_MSVC_ONLY_FALSE@pedump_SOURCES = 
+@ENABLE_MSVC_ONLY_FALSE@libpedump_a_SOURCES = pedump.c
+@ENABLE_MSVC_ONLY_FALSE@pedump_LDADD = \
+@ENABLE_MSVC_ONLY_FALSE@	libpedump_a-pedump.$(OBJEXT) \
+@ENABLE_MSVC_ONLY_FALSE@	$(top_builddir)/mono/metadata/libmonoruntimesgen.la \
+@ENABLE_MSVC_ONLY_FALSE@	$(top_builddir)/mono/sgen/libmonosgen.la \
+@ENABLE_MSVC_ONLY_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
+@ENABLE_MSVC_ONLY_FALSE@	$(LLVM_LIBS)			\
+@ENABLE_MSVC_ONLY_FALSE@	$(LLVM_LDFLAGS)			\
+@ENABLE_MSVC_ONLY_FALSE@	$(glib_libs)
 
-@HOST_DARWIN_TRUE@pedump_LDFLAGS = -framework CoreFoundation -framework Foundation
+@ENABLE_MSVC_ONLY_FALSE@@HOST_DARWIN_TRUE@pedump_LDFLAGS = -framework CoreFoundation -framework Foundation
+@ENABLE_MSVC_ONLY_TRUE@@SUPPORT_SGEN_FALSE@mono_bin_suffix = 
+@ENABLE_MSVC_ONLY_TRUE@@SUPPORT_SGEN_TRUE@mono_bin_suffix = sgen
 all: all-am
 
 .SUFFIXES:
@@ -714,7 +720,8 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LIBRARIES) $(PROGRAMS)
+@ENABLE_MSVC_ONLY_FALSE@all-local:
+all-am: Makefile $(LIBRARIES) $(PROGRAMS) all-local
 installdirs:
 	for dir in "$(DESTDIR)$(bindir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
@@ -749,9 +756,10 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+@ENABLE_MSVC_ONLY_FALSE@clean-local:
 clean: clean-am
 
-clean-am: clean-binPROGRAMS clean-generic clean-libtool \
+clean-am: clean-binPROGRAMS clean-generic clean-libtool clean-local \
 	clean-noinstLIBRARIES mostlyclean-am
 
 distclean: distclean-am
@@ -830,8 +838,8 @@ uninstall-am: uninstall-binPROGRAMS
 
 .MAKE: install-am install-strip
 
-.PHONY: CTAGS GTAGS TAGS all all-am check check-am clean \
-	clean-binPROGRAMS clean-generic clean-libtool \
+.PHONY: CTAGS GTAGS TAGS all all-am all-local check check-am clean \
+	clean-binPROGRAMS clean-generic clean-libtool clean-local \
 	clean-noinstLIBRARIES cscopelist-am ctags ctags-am distclean \
 	distclean-compile distclean-generic distclean-libtool \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
@@ -848,6 +856,16 @@ uninstall-am: uninstall-binPROGRAMS
 
 .PRECIOUS: Makefile
 
+
+@ENABLE_MSVC_ONLY_TRUE@all-local:
+
+@ENABLE_MSVC_ONLY_TRUE@	make -C $(top_srcdir)/msvc pedump
+@ENABLE_MSVC_ONLY_TRUE@	cp -f $(mono_msvc_build_bin_dir)/pedump-$(mono_bin_suffix)$(EXEEXT) ./pedump$(EXEEXT)
+
+@ENABLE_MSVC_ONLY_TRUE@clean-local:
+
+@ENABLE_MSVC_ONLY_TRUE@	make -C $(top_srcdir)/msvc clean-pedump
+@ENABLE_MSVC_ONLY_TRUE@	rm ./pedump$(EXEEXT)
 
 #Helper target to rebuild metadata as well, it's useful when working on the verifier as its source still on metadata
 md:

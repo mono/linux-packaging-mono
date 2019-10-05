@@ -438,6 +438,8 @@ ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 CLEANFILES = *.dll *.exe *.pdb
 AOTDIR = linker-output
 AOT_TMPDIR = aot-tmp
+@HOST_WIN32_FALSE@PLATFORM_PATH_SEPARATOR = :
+@HOST_WIN32_TRUE@PLATFORM_PATH_SEPARATOR = ;
 SOURCES = \
 	lambda.cs
 
@@ -732,7 +734,7 @@ $(AOTDIR)/%.exe: %.exe
 	cp $< $@
 
 @DISABLE_INTERPRETER_FALSE@@ENABLE_COOP_SUSPEND_FALSE@@X86_FALSE@check: $(AOT_IMAGES) $(TEST_IMAGES)
-@DISABLE_INTERPRETER_FALSE@@ENABLE_COOP_SUSPEND_FALSE@@X86_FALSE@	MONO_PATH=$(AOTDIR):$(CLASS) $(MONO_EXE) --aot-path=$(AOTDIR) --full-aot-interp $(AOTDIR)/lambda.exe
+@DISABLE_INTERPRETER_FALSE@@ENABLE_COOP_SUSPEND_FALSE@@X86_FALSE@	MONO_PATH="$(AOTDIR)$(PLATFORM_PATH_SEPARATOR)$(CLASS)" $(MONO_EXE) --aot-path=$(AOTDIR) --full-aot-interp $(AOTDIR)/lambda.exe
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
