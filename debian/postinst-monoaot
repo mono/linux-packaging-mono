@@ -8,7 +8,7 @@ then
 	if [ -e "/usr/lib/libmono-llvm.so.0" ]
 	then
 		TRYLLVM="try-llvm,"
-		LLVMNOTE=" (trying with LLVM, this might take a few minutes)"
+		LLVMNOTE=" (trying with LLVM, this might take a few hours)"
 	fi
 	if [ -z "$HASSSE41" ]
 	then
