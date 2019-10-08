@@ -3,6 +3,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  eg_my_charset@Base 5.13.0.451
  eg_utf8_to_utf16_with_nuls@Base 5.7.0.181
  eg_wtf8_to_utf16@Base 5.11.0.264
+ g_module_address@Base 6.9.0.8
  mini_get_debug_options@Base 4.1.0.1738
  mini_parse_debug_option@Base 4.3.3.38
  mono_add_internal_call@Base 4.1.0.1738
