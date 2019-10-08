@@ -539,9 +539,19 @@ target_triplet = @target@
 @FULL_AOT_INTERP_TESTS_TRUE@@HOST_WIN32_TRUE@am__append_34 = \
 @FULL_AOT_INTERP_TESTS_TRUE@@HOST_WIN32_TRUE@	assembly_append_ordering.exe
 
-@FULL_AOT_TESTS_TRUE@am__append_35 = $(REMOTING_DISABLED_TESTS)
-@HYBRID_AOT_TESTS_TRUE@am__append_36 = $(REMOTING_DISABLED_TESTS)
-@FULL_AOT_INTERP_TESTS_TRUE@am__append_37 = $(REMOTING_DISABLED_TESTS)
+
+# Test is too sensitive.
+@FULL_AOT_TESTS_TRUE@am__append_35 = $(REMOTING_DISABLED_TESTS) \
+@FULL_AOT_TESTS_TRUE@	localloc-noinit.exe
+
+# Test is too sensitive.
+@HYBRID_AOT_TESTS_TRUE@am__append_36 = $(REMOTING_DISABLED_TESTS) \
+@HYBRID_AOT_TESTS_TRUE@	localloc-noinit.exe
+
+# Test is too sensitive.
+@FULL_AOT_INTERP_TESTS_TRUE@am__append_37 =  \
+@FULL_AOT_INTERP_TESTS_TRUE@	$(REMOTING_DISABLED_TESTS) \
+@FULL_AOT_INTERP_TESTS_TRUE@	localloc-noinit.exe
 
 # https://github.com/mono/mono/issues/12839
 @HOST_WIN32_TRUE@am__append_38 = block_guard_restore_aligment_on_exit.exe
@@ -608,7 +618,13 @@ target_triplet = @target@
 @ARM64_TRUE@	dim-diamondshape.exe \
 @ARM64_TRUE@	pinvoke3.exe
 
-@AMD64_TRUE@am__append_41 = \
+
+# Test is too sensitive.
+@ARM64_TRUE@am__append_41 = localloc-noinit.exe
+
+# Test is too sensitive?
+@HOST_WIN32_TRUE@am__append_42 = localloc-noinit.exe
+@AMD64_TRUE@am__append_43 = \
 @AMD64_TRUE@	assemblyresolve_event6.exe \
 @AMD64_TRUE@	bug-48015.exe \
 @AMD64_TRUE@	bug-60862.exe \
@@ -1574,6 +1590,7 @@ TESTS_IL_SRC = \
 	gh-13057_mono_local_emulate_ops_av.il \
 	module-cctor-entrypoint.il \
 	bug-gh-9706.il \
+	localloc-noinit.il \
 	calli_native.il
 
 
@@ -1659,6 +1676,7 @@ REMOTING_DISABLED_TESTS = \
 	nullable_boxing.2.exe
 
 AOT_DISABLED_TESTS = \
+	localloc-noinit.exe \
 	constraints-load.exe \
 	calli_sig_check.exe
 
@@ -1755,21 +1773,20 @@ KNOWN_FAILING_TESTS = \
 	tailcall-member-function-in-valuetype.exe \
 	tailcall-rgctxb.exe
 
-DISABLED_TESTS = \
-	$(KNOWN_FAILING_TESTS) \
-	$(PLATFORM_DISABLED_TESTS) \
-	$(PROFILE_DISABLED_TESTS) \
-	$(if $(AOT),$(AOT_DISABLED_TESTS)) \
-	$(if $(CI),$(CI_DISABLED_TESTS)) \
-	$(if $(CI_PR),$(CI_PR_DISABLED_TESTS)) \
-	$(if $(LLVM),$(LLVM_DISABLED_TESTS))
-
+DISABLED_TESTS = $(KNOWN_FAILING_TESTS) $(PLATFORM_DISABLED_TESTS) \
+	$(PROFILE_DISABLED_TESTS) $(if $(AOT),$(AOT_DISABLED_TESTS)) \
+	$(if $(CI),$(CI_DISABLED_TESTS)) $(if \
+	$(CI_PR),$(CI_PR_DISABLED_TESTS)) $(if \
+	$(LLVM),$(LLVM_DISABLED_TESTS)) $(am__append_41) \
+	$(am__append_42)
 
 # Interpreter does not currently implement tailcall.
 # Disable all tailcall tests.
 # FIXME
 
 # expected InvalidProgramException not thrown
+
+# Test is too sensitive.
 INTERP_DISABLED_TESTS = $(DISABLED_TESTS) gptail1.exe itail1.exe \
 	itaili1.exe ivtail1.exe sitail1.exe sirtail1.exe srtail1.exe \
 	stail1.exe tail1.exe taili1.exe vtail1.exe \
@@ -1895,7 +1912,8 @@ INTERP_DISABLED_TESTS = $(DISABLED_TESTS) gptail1.exe itail1.exe \
 	tailcall/interface-conservestack/7.exe \
 	tailcall/interface-conservestack/8.exe \
 	tailcall/interface-conservestack/9.exe calli_sig_check.exe \
-	$(am__append_39) $(am__append_40) $(am__append_41)
+	localloc-noinit.exe $(am__append_39) $(am__append_40) \
+	$(am__append_43)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))

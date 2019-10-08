@@ -113,6 +113,8 @@ namespace Mono.Linker {
 
 		public bool KeepUsedAttributeTypesOnly { get; set; }
 
+		public bool KeepDependencyAttributes { get; set; }
+
 		public bool StripResources { get; set; }
 
 		public System.Collections.IDictionary Actions {
@@ -285,6 +287,8 @@ namespace Mono.Linker {
 		public virtual ICollection<AssemblyDefinition> ResolveReferences (AssemblyDefinition assembly)
 		{
 			List<AssemblyDefinition> references = new List<AssemblyDefinition> ();
+			if (assembly == null)
+				return references;
 			foreach (AssemblyNameReference reference in assembly.MainModule.AssemblyReferences) {
 				AssemblyDefinition definition = Resolve (reference);
 				if (definition != null)

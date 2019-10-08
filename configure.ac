@@ -4,22 +4,11 @@
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-AC_INIT(mono, [6.7.0.862],
+AC_INIT(mono, [6.9.0.8],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
 AC_CONFIG_MACRO_DIR([m4])
-
-if test "x$host_alias" = "x"; then
-	build_uname_all=`(uname -a) 2>/dev/null`
-	case "$build_uname_all" in
-	CYGWIN*)
-		AC_MSG_NOTICE([Run configure using ./configure --host=i686-w64-mingw32 or --host=x86_64-w64-mingw32])
-		AC_MSG_NOTICE([Falling back using --host=x86_64-w64-mingw32 as default.])
-		host_alias=x86_64-w64-mingw32
-		;;
-	esac
-fi
 
 AC_CANONICAL_SYSTEM
 AC_CANONICAL_HOST
@@ -74,7 +63,7 @@ MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-MONO_CORLIB_VERSION=de62d46f-9502-49c7-9842-841f367a6a3a
+MONO_CORLIB_VERSION=7b616e7f-0b14-48da-9d67-9446aad4fc5e
 
 #
 # Put a quoted #define in config.h.
@@ -1185,7 +1174,7 @@ AC_DEFINE(DISABLE_STRUCTURED_CRASH,1,[Do not create structured crash files durin
 fi
 
 case "$host" in
-	*-mingw*|*-*-cygwin*|*-*-aix*|*-*-os400*)
+	*-mingw*|*-*-cygwin*)
 		crash_reporting=no
 		;;
 esac
@@ -2228,6 +2217,10 @@ if test x$host_win32 = xno; then
 	AC_CHECK_FUNCS(getresuid)
 	AC_CHECK_FUNCS(setresuid)
 	AC_CHECK_FUNCS(kqueue)
+	# IBM provides a compatibility library for i offering this function.
+	# BSDs and others, have execinfo in base or packages.
+	AC_SEARCH_LIBS(backtrace_symbols, execinfo util)
+	# Two-step so it sets it in config.h
 	AC_CHECK_FUNCS(backtrace_symbols)
 	AC_CHECK_FUNCS(mkstemp)
 	AC_CHECK_FUNCS(mmap)
