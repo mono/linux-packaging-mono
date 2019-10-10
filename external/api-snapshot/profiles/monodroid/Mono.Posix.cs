@@ -1209,6 +1209,7 @@ namespace Mono.Unix.Native
     [System.CLSCompliantAttribute(false)]
     public enum FcntlCommand
     {
+        F_ADD_SEALS = 1033,
         F_DUPFD = 0,
         F_GETFD = 1,
         F_GETFL = 3,
@@ -1216,6 +1217,7 @@ namespace Mono.Unix.Native
         F_GETLK = 12,
         F_GETOWN = 9,
         F_GETSIG = 11,
+        F_GET_SEALS = 1034,
         F_NOCACHE = 48,
         F_NOTIFY = 1026,
         F_OFD_GETLK = 36,
@@ -1380,6 +1382,26 @@ namespace Mono.Unix.Native
     }
     [System.CLSCompliantAttribute(false)]
     [System.FlagsAttribute]
+    public enum MemfdFlags : uint
+    {
+        MFD_ALLOW_SEALING = (uint)2,
+        MFD_CLOEXEC = (uint)1,
+        MFD_HUGETLB = (uint)4,
+        MFD_HUGE_16GB = (uint)2281701376,
+        MFD_HUGE_16MB = (uint)1610612736,
+        MFD_HUGE_1GB = (uint)2013265920,
+        MFD_HUGE_1MB = (uint)1342177280,
+        MFD_HUGE_256MB = (uint)1879048192,
+        MFD_HUGE_2GB = (uint)2080374784,
+        MFD_HUGE_2MB = (uint)1409286144,
+        MFD_HUGE_32MB = (uint)1677721600,
+        MFD_HUGE_512KB = (uint)1275068416,
+        MFD_HUGE_512MB = (uint)1946157056,
+        MFD_HUGE_64KB = (uint)1073741824,
+        MFD_HUGE_8MB = (uint)1543503872,
+    }
+    [System.CLSCompliantAttribute(false)]
+    [System.FlagsAttribute]
     public enum MessageFlags
     {
         MSG_CMSG_CLOEXEC = 1073741824,
@@ -1501,6 +1523,7 @@ namespace Mono.Unix.Native
         public static uint FromFilePermissions(Mono.Unix.Native.FilePermissions value) { throw null; }
         public static int FromLockfCommand(Mono.Unix.Native.LockfCommand value) { throw null; }
         public static short FromLockType(Mono.Unix.Native.LockType value) { throw null; }
+        public static uint FromMemfdFlags(Mono.Unix.Native.MemfdFlags value) { throw null; }
         public static int FromMessageFlags(Mono.Unix.Native.MessageFlags value) { throw null; }
         public static int FromMlockallFlags(Mono.Unix.Native.MlockallFlags value) { throw null; }
         public static int FromMmapFlags(Mono.Unix.Native.MmapFlags value) { throw null; }
@@ -1515,6 +1538,7 @@ namespace Mono.Unix.Native
         public static int FromPosixFadviseAdvice(Mono.Unix.Native.PosixFadviseAdvice value) { throw null; }
         public static int FromPosixMadviseAdvice(Mono.Unix.Native.PosixMadviseAdvice value) { throw null; }
         public static int FromRealTimeSignum(Mono.Unix.Native.RealTimeSignum sig) { throw null; }
+        public static int FromSealType(Mono.Unix.Native.SealType value) { throw null; }
         public static short FromSeekFlags(Mono.Unix.Native.SeekFlags value) { throw null; }
         public static int FromShutdownOption(Mono.Unix.Native.ShutdownOption value) { throw null; }
         public static int FromSignum(Mono.Unix.Native.Signum value) { throw null; }
@@ -1552,6 +1576,7 @@ namespace Mono.Unix.Native
         public static System.Net.IPAddress ToIPAddress(Mono.Unix.Native.InAddr address) { throw null; }
         public static Mono.Unix.Native.LockfCommand ToLockfCommand(int value) { throw null; }
         public static Mono.Unix.Native.LockType ToLockType(short value) { throw null; }
+        public static Mono.Unix.Native.MemfdFlags ToMemfdFlags(uint value) { throw null; }
         public static Mono.Unix.Native.MessageFlags ToMessageFlags(int value) { throw null; }
         public static Mono.Unix.Native.MlockallFlags ToMlockallFlags(int value) { throw null; }
         public static Mono.Unix.Native.MmapFlags ToMmapFlags(int value) { throw null; }
@@ -1567,6 +1592,7 @@ namespace Mono.Unix.Native
         public static Mono.Unix.Native.PosixFadviseAdvice ToPosixFadviseAdvice(int value) { throw null; }
         public static Mono.Unix.Native.PosixMadviseAdvice ToPosixMadviseAdvice(int value) { throw null; }
         public static Mono.Unix.Native.RealTimeSignum ToRealTimeSignum(int offset) { throw null; }
+        public static Mono.Unix.Native.SealType ToSealType(int value) { throw null; }
         public static Mono.Unix.Native.SeekFlags ToSeekFlags(short value) { throw null; }
         public static Mono.Unix.Native.ShutdownOption ToShutdownOption(int value) { throw null; }
         public static Mono.Unix.Native.Signum ToSignum(int value) { throw null; }
@@ -1627,6 +1653,7 @@ namespace Mono.Unix.Native
         public static bool TryFromFilePermissions(Mono.Unix.Native.FilePermissions value, out uint rval) { throw null; }
         public static bool TryFromLockfCommand(Mono.Unix.Native.LockfCommand value, out int rval) { throw null; }
         public static bool TryFromLockType(Mono.Unix.Native.LockType value, out short rval) { throw null; }
+        public static bool TryFromMemfdFlags(Mono.Unix.Native.MemfdFlags value, out uint rval) { throw null; }
         public static bool TryFromMessageFlags(Mono.Unix.Native.MessageFlags value, out int rval) { throw null; }
         public static bool TryFromMlockallFlags(Mono.Unix.Native.MlockallFlags value, out int rval) { throw null; }
         public static bool TryFromMmapFlags(Mono.Unix.Native.MmapFlags value, out int rval) { throw null; }
@@ -1639,6 +1666,7 @@ namespace Mono.Unix.Native
         public static bool TryFromPollEvents(Mono.Unix.Native.PollEvents value, out short rval) { throw null; }
         public static bool TryFromPosixFadviseAdvice(Mono.Unix.Native.PosixFadviseAdvice value, out int rval) { throw null; }
         public static bool TryFromPosixMadviseAdvice(Mono.Unix.Native.PosixMadviseAdvice value, out int rval) { throw null; }
+        public static bool TryFromSealType(Mono.Unix.Native.SealType value, out int rval) { throw null; }
         public static bool TryFromSeekFlags(Mono.Unix.Native.SeekFlags value, out short rval) { throw null; }
         public static bool TryFromShutdownOption(Mono.Unix.Native.ShutdownOption value, out int rval) { throw null; }
         public static bool TryFromSignum(Mono.Unix.Native.Signum value, out int rval) { throw null; }
@@ -1665,6 +1693,7 @@ namespace Mono.Unix.Native
         public static bool TryToFilePermissions(uint value, out Mono.Unix.Native.FilePermissions rval) { throw null; }
         public static bool TryToLockfCommand(int value, out Mono.Unix.Native.LockfCommand rval) { throw null; }
         public static bool TryToLockType(short value, out Mono.Unix.Native.LockType rval) { throw null; }
+        public static bool TryToMemfdFlags(uint value, out Mono.Unix.Native.MemfdFlags rval) { throw null; }
         public static bool TryToMessageFlags(int value, out Mono.Unix.Native.MessageFlags rval) { throw null; }
         public static bool TryToMlockallFlags(int value, out Mono.Unix.Native.MlockallFlags rval) { throw null; }
         public static bool TryToMmapFlags(int value, out Mono.Unix.Native.MmapFlags rval) { throw null; }
@@ -1677,6 +1706,7 @@ namespace Mono.Unix.Native
         public static bool TryToPollEvents(short value, out Mono.Unix.Native.PollEvents rval) { throw null; }
         public static bool TryToPosixFadviseAdvice(int value, out Mono.Unix.Native.PosixFadviseAdvice rval) { throw null; }
         public static bool TryToPosixMadviseAdvice(int value, out Mono.Unix.Native.PosixMadviseAdvice rval) { throw null; }
+        public static bool TryToSealType(int value, out Mono.Unix.Native.SealType rval) { throw null; }
         public static bool TryToSeekFlags(short value, out Mono.Unix.Native.SeekFlags rval) { throw null; }
         public static bool TryToShutdownOption(int value, out Mono.Unix.Native.ShutdownOption rval) { throw null; }
         public static bool TryToSignum(int value, out Mono.Unix.Native.Signum rval) { throw null; }
@@ -1820,6 +1850,16 @@ namespace Mono.Unix.Native
         public override int GetHashCode() { throw null; }
         public static bool operator ==(Mono.Unix.Native.RealTimeSignum lhs, Mono.Unix.Native.RealTimeSignum rhs) { throw null; }
         public static bool operator !=(Mono.Unix.Native.RealTimeSignum lhs, Mono.Unix.Native.RealTimeSignum rhs) { throw null; }
+    }
+    [System.CLSCompliantAttribute(false)]
+    [System.FlagsAttribute]
+    public enum SealType
+    {
+        F_SEAL_FUTURE_WRITE = 16,
+        F_SEAL_GROW = 4,
+        F_SEAL_SEAL = 1,
+        F_SEAL_SHRINK = 2,
+        F_SEAL_WRITE = 8,
     }
     [System.CLSCompliantAttribute(false)]
     public enum SeekFlags : short
@@ -2219,6 +2259,7 @@ namespace Mono.Unix.Native
         [System.Runtime.InteropServices.DllImport("MonoPosixHelper")][System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.PreserveSig)]public static extern int fcntl(int fd, Mono.Unix.Native.FcntlCommand cmd);
         public static int fcntl(int fd, Mono.Unix.Native.FcntlCommand cmd, Mono.Unix.Native.DirectoryNotifyFlags arg) { throw null; }
         [System.Runtime.InteropServices.DllImport("MonoPosixHelper")][System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.PreserveSig)]public static extern int fcntl(int fd, Mono.Unix.Native.FcntlCommand cmd, ref Mono.Unix.Native.Flock @lock);
+        public static int fcntl(int fd, Mono.Unix.Native.FcntlCommand cmd, Mono.Unix.Native.SealType arg) { throw null; }
         [System.Runtime.InteropServices.DllImport("MonoPosixHelper")][System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.PreserveSig)]public static extern int fcntl(int fd, Mono.Unix.Native.FcntlCommand cmd, int arg);
         [System.Runtime.InteropServices.DllImport("MonoPosixHelper")][System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.PreserveSig)]public static extern int fcntl(int fd, Mono.Unix.Native.FcntlCommand cmd, long arg);
         [System.Runtime.InteropServices.DllImport("MonoPosixHelper")][System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.PreserveSig)]public static extern int fcntl(int fd, Mono.Unix.Native.FcntlCommand cmd, System.IntPtr ptr);
@@ -2331,6 +2372,7 @@ namespace Mono.Unix.Native
         [System.Runtime.InteropServices.DllImport("MonoPosixHelper")][System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.PreserveSig)]public static extern int lsetxattr([System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.CustomMarshaler, MarshalType = "Mono.Unix.Native.FileNameMarshaler")]string path, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.CustomMarshaler, MarshalType = "Mono.Unix.Native.FileNameMarshaler")]string name, byte[] value, ulong size, Mono.Unix.Native.XattrFlags flags);
         [System.Runtime.InteropServices.DllImport("MonoPosixHelper")][System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.PreserveSig)]public static extern int lstat([System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.CustomMarshaler, MarshalType = "Mono.Unix.Native.FileNameMarshaler")]string file_name, out Mono.Unix.Native.Stat buf);
         public static int lutimes(string filename, Mono.Unix.Native.Timeval[] tvp) { throw null; }
+        public static int memfd_create(string name, Mono.Unix.Native.MemfdFlags flags) { throw null; }
         [System.Runtime.InteropServices.DllImport("MonoPosixHelper")][System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.PreserveSig)]public static extern int mincore(System.IntPtr start, ulong length, byte[] vec);
         public static int mkdir(string oldpath, Mono.Unix.Native.FilePermissions mode) { throw null; }
         public static int mkdirat(int dirfd, string oldpath, Mono.Unix.Native.FilePermissions mode) { throw null; }

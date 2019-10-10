@@ -248,6 +248,7 @@ namespace System.Drawing
         public static bool operator ==(System.Drawing.CharacterRange cr1, System.Drawing.CharacterRange cr2) { throw null; }
         public static bool operator !=(System.Drawing.CharacterRange cr1, System.Drawing.CharacterRange cr2) { throw null; }
     }
+    [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.ColorConverter))]
     [System.Diagnostics.DebuggerDisplayAttribute("{NameAndARGBValue}")]
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("Mono.Android, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
     [System.SerializableAttribute]
@@ -1300,6 +1301,7 @@ namespace System.Drawing
         public static System.Drawing.Pen Yellow { get { throw null; } }
         public static System.Drawing.Pen YellowGreen { get { throw null; } }
     }
+    [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.PointConverter))]
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("Mono.Android, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
@@ -1371,6 +1373,7 @@ namespace System.Drawing
         public static System.Drawing.PointF Subtract(System.Drawing.PointF pt, System.Drawing.SizeF sz) { throw null; }
         public override string ToString() { throw null; }
     }
+    [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.RectangleConverter))]
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("Mono.Android, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
@@ -1560,6 +1563,7 @@ namespace System.Drawing
         RotateNoneFlipXY = 2,
         RotateNoneFlipY = 6,
     }
+    [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.SizeConverter))]
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("Mono.Android, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
@@ -1607,6 +1611,7 @@ namespace System.Drawing
         public override System.ComponentModel.PropertyDescriptorCollection GetProperties(System.ComponentModel.ITypeDescriptorContext context, object value, System.Attribute[] attributes) { throw null; }
         public override bool GetPropertiesSupported(System.ComponentModel.ITypeDescriptorContext context) { throw null; }
     }
+    [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.SizeFConverter))]
     [System.Runtime.CompilerServices.TypeForwardedFromAttribute("Mono.Android, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065")]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]

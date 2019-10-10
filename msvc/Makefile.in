@@ -526,8 +526,8 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@ENABLE_MSVC_FALSE@clean-local:
 @ENABLE_MSVC_FALSE@install-exec-local:
+@ENABLE_MSVC_FALSE@clean-local:
 clean: clean-am
 
 clean-am: clean-generic clean-libtool clean-local mostlyclean-am
@@ -700,10 +700,10 @@ uninstall-am:
 @ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "clean" "$(host_cpu)" "release" "" "genmdesc.vcxproj"
 
 @ENABLE_MSVC_TRUE@jay:
-@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "build" "$(host_cpu)" "release" "" "jay.vcxproj"
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "build" "$(host_cpu)" "release" "" "$(top_srcdir)/mcs/jay/jay.vcxproj"
 
 @ENABLE_MSVC_TRUE@clean-jay:
-@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "clean" "$(host_cpu)" "release" "" "jay.vcxproj"
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "clean" "$(host_cpu)" "release" "" "$(top_srcdir)/mcs/jay/jay.vcxproj"
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
