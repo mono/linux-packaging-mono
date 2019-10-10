@@ -24,7 +24,9 @@ namespace System.Drawing
 #endif
 #if FEATURE_TYPECONVERTER
     [TypeConverter(typeof(ColorConverter))]
+#if !MOBILE && !XAMMAC_4_5
     [Editor ("System.Drawing.Design.ColorEditor, " + Consts.AssemblySystem_Drawing_Design, typeof (System.Drawing.Design.UITypeEditor))]
+#endif
 #endif
     public readonly struct Color : IEquatable<Color>
     {
