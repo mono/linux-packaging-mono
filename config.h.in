@@ -524,6 +524,9 @@
 /* Define to 1 if you have the `getrusage' function. */
 #undef HAVE_GETRUSAGE
 
+/* Define to 1 if you have the <gnu/lib-names.h> header file. */
+#undef HAVE_GNU_LIB_NAMES_H
+
 /* char* strerror(int errnum, char *buf, size_t buflen) */
 #undef HAVE_GNU_STRERROR_R
 

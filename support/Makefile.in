@@ -143,14 +143,14 @@ am__DEPENDENCIES_1 =
 @ENABLE_MSVC_ONLY_FALSE@libMonoPosixHelper_la_DEPENDENCIES =  \
 @ENABLE_MSVC_ONLY_FALSE@	$(MPH_LIBS) $(am__DEPENDENCIES_2) \
 @ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_1)
-am__libMonoPosixHelper_la_SOURCES_DIST = errno.c map.c map.h mph.h \
-	signal.c stdio.c string.c stdlib.c dirent.c fcntl.c fstab.c \
-	grp.c macros.c nl.c nl.h old-map.c old-map.h pwd.c serial.c \
-	sys-mman.c sys-sendfile.c sys-socket.c sys-stat.c \
-	sys-statvfs.c sys-time.c sys-uio.c sys-uio.h sys-utsname.c \
-	sys-wait.c sys-xattr.c syslog.c time.c unistd.c utime.c \
-	x-struct-str.c zlib-helper.c adler32.c compress.c crc32.c \
-	uncompr.c deflate.c gzguts.h trees.c zutil.c inflate.c \
+am__libMonoPosixHelper_la_SOURCES_DIST = errno.c map.c map.h \
+	map-impl.h mph.h signal.c stdio.c string.c stdlib.c dirent.c \
+	fcntl.c fstab.c grp.c macros.c nl.c nl.h old-map.c old-map.h \
+	pwd.c serial.c sys-mman.c sys-sendfile.c sys-socket.c \
+	sys-stat.c sys-statvfs.c sys-time.c sys-uio.c sys-uio.h \
+	sys-utsname.c sys-wait.c sys-xattr.c syslog.c time.c unistd.c \
+	utime.c x-struct-str.c zlib-helper.c adler32.c compress.c \
+	crc32.c uncompr.c deflate.c gzguts.h trees.c zutil.c inflate.c \
 	infback.c inftrees.c inffast.c crc32.h deflate.h inffast.h \
 	inffixed.h inflate.h inftrees.h trees.h zconf.h zlib.h zutil.h \
 	minizip/crypt.h minizip/ioapi.c minizip/ioapi.h \
@@ -560,6 +560,7 @@ top_srcdir = @top_srcdir@
 @ENABLE_MSVC_ONLY_FALSE@	errno.c					\
 @ENABLE_MSVC_ONLY_FALSE@	map.c					\
 @ENABLE_MSVC_ONLY_FALSE@	map.h					\
+@ENABLE_MSVC_ONLY_FALSE@	map-impl.h				\
 @ENABLE_MSVC_ONLY_FALSE@	mph.h					\
 @ENABLE_MSVC_ONLY_FALSE@	signal.c				\
 @ENABLE_MSVC_ONLY_FALSE@	stdio.c					\
@@ -1101,6 +1102,7 @@ uninstall-am: uninstall-libLTLIBRARIES
 @ENABLE_MSVC_ONLY_FALSE@	--autoconf-header="<utime.h>"                         \
 @ENABLE_MSVC_ONLY_FALSE@	--impl-header="<time.h>"                              \
 @ENABLE_MSVC_ONLY_FALSE@	--impl-header="\"mph.h\""                             \
+@ENABLE_MSVC_ONLY_FALSE@	--impl-header="\"map-impl.h\""                        \
 @ENABLE_MSVC_ONLY_FALSE@	--rename-member=st_atime=st_atime_                    \
 @ENABLE_MSVC_ONLY_FALSE@	--rename-member=st_ctime=st_ctime_                    \
 @ENABLE_MSVC_ONLY_FALSE@	--rename-member=st_mtime=st_mtime_                    \

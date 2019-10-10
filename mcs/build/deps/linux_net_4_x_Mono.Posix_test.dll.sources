@@ -1,4 +1,5 @@
 Test/Mono.Unix.Android/TestHelper.cs
+Test/Mono.Unix.Native/MemfdTest.cs
 Test/Mono.Unix.Native/OFDLockTest.cs
 Test/Mono.Unix.Native/RealTimeSignumTests.cs
 Test/Mono.Unix.Native/SocketTest.cs
