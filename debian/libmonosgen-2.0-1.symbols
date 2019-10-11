@@ -56,6 +56,9 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_assembly_open_full@Base 4.1.0.1738
  mono_assembly_set_main@Base 4.1.0.1738
  mono_assembly_setrootdir@Base 4.1.0.1738
+ mono_assertion_message@Base 6.9.0.30
+ mono_assertion_message_disabled@Base 6.9.0.30
+ mono_assertion_message_unreachable@Base 6.9.0.30
  mono_bitset_alloc_size@Base 4.1.0.1738
  mono_bitset_clear@Base 4.1.0.1738
  mono_bitset_clear_all@Base 4.1.0.1738
