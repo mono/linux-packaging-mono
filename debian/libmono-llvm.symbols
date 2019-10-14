@@ -66,6 +66,7 @@
  mono_llvm_emit_method@Base 5.15.0.231
  mono_llvm_fixup_aot_module@Base 5.21.0.527
  mono_llvm_free_domain_info@Base 5.15.0.231
+ mono_llvm_get_cpu_features@Base 6.9.0.47
  mono_llvm_init@Base 5.15.0.231
  mono_loader_lock@Base 5.15.0.231
  mono_loader_unlock@Base 5.15.0.231
