@@ -15,6 +15,7 @@ all:
 	$(MAKE) -C mono
 	$(MAKE) -C build/monotouch
 	$(MAKE) -C build/monodroid
+	$(MAKE) -C build/monowasm	
 
 clean:
 	$(MAKE) -C v2.0 clean
@@ -33,5 +34,6 @@ clean:
 	$(MAKE) -C mono clean
 	$(MAKE) -C build/monotouch clean
 	$(MAKE) -C build/monodroid clean
+	$(MAKE) -C build/monowasm clean
 
 .PHONY: all clean
