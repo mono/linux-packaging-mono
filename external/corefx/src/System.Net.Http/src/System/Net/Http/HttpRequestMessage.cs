@@ -81,15 +81,23 @@ namespace System.Net.Http
             }
         }
 
+
         public Uri RequestUri
         {
             get { return _requestUri; }
             set
             {
+#if MONO
+                if ((value != null) && (!IsAllowedAbsoluteUri(value)))
+                {
+                    throw new ArgumentException(SR.net_http_client_http_baseaddress_required, nameof(value));
+                }
+#else
                 if ((value != null) && (value.IsAbsoluteUri) && (!HttpUtilities.IsHttpUri(value)))
                 {
                     throw new ArgumentException(SR.net_http_client_http_baseaddress_required, nameof(value));
                 }
+#endif
                 CheckDisposed();
 
                 // It's OK to set 'null'. HttpClient will add the 'BaseAddress'. If there is no 'BaseAddress'

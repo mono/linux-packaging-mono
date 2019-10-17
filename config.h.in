@@ -45,6 +45,9 @@
 /* Disable desktop assembly loader semantics. */
 #undef DISABLE_DESKTOP_LOADER
 
+/* Disables use of DllMaps in MonoVM */
+#undef DISABLE_DLLMAP
+
 /* Disable GAC */
 #undef DISABLE_GAC
 
