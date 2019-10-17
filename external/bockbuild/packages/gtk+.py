@@ -224,7 +224,9 @@ class GtkPackage (GitHubPackage):
 
                 # https://devdiv.visualstudio.com/DevDiv/_workitems/edit/821841
                 'patches/gtk/nsview-embedding-skip-hidden-subviews.patch',
-                'patches/gtk/0001-gtk-combo-box-native-menu-hook.patch'
+                'patches/gtk/0001-gtk-combo-box-native-menu-hook.patch',
+
+                'patches/gtk/gtkviewport-autoscroll.patch'
             ])
 
     def prep(self):
