@@ -2822,7 +2822,7 @@ static long opcode_counts[MINT_LASTOP];
 		sp->data.l = 0; \
 		output_indent (); \
 		char *mn = mono_method_full_name (frame->imethod->method, FALSE); \
-		char *disasm = mono_interp_dis_mintop (frame->imethod->code, ip); \
+		char *disasm = mono_interp_dis_mintop ((gint32)(ip - frame->imethod->code), TRUE, ip + 1, *ip); \
 		g_print ("(%p) %s -> %s\t%d:%s\n", mono_thread_internal_current (), mn, disasm, vt_sp - vtalloc, ins); \
 		g_free (mn); \
 		g_free (ins); \
@@ -3196,6 +3196,27 @@ mono_interp_call (InterpFrame *frame, ThreadContext *context, InterpFrame *child
 		}
 	}
 	return sp;
+}
+
+// varargs in wasm consumes extra linear stack per call-site.
+// These g_warning/g_error wrappers fix that. It is not the
+// small wasm stack, but conserving it is still desirable.
+static void
+g_warning_d (const char *format, int d)
+{
+	g_warning (format, d);
+}
+
+static void
+g_warning_ds (const char *format, int d, const char *s)
+{
+	g_warning (format, d, s);
+}
+
+static void
+g_error_xsx (const char *format, int x1, const char *s, int x2)
+{
+	g_error (format, x1, s, x2);
 }
 
 /*
@@ -3659,18 +3680,18 @@ common_vcall:
 			--sp;
 			*frame->retval = *sp;
 			if (sp > frame->stack)
-				g_warning ("ret: more values on stack: %d", sp-frame->stack);
+				g_warning_d ("ret: more values on stack: %d", sp -frame->stack);
 			goto exit_frame;
 		MINT_IN_CASE(MINT_RET_VOID)
 			if (sp > frame->stack)
-				g_warning ("ret.void: more values on stack: %d %s", sp-frame->stack, mono_method_full_name (frame->imethod->method, TRUE));
+				g_warning_ds ("ret.void: more values on stack: %d %s", sp - frame->stack, mono_method_full_name (frame->imethod->method, TRUE));
 			goto exit_frame;
 		MINT_IN_CASE(MINT_RET_VT) {
 			int const i32 = READ32 (ip + 1);
 			--sp;
 			memcpy(frame->retval->data.p, sp->data.p, i32);
 			if (sp > frame->stack)
-				g_warning ("ret.vt: more values on stack: %d", sp-frame->stack);
+				g_warning_d ("ret.vt: more values on stack: %d", sp - frame->stack);
 			goto exit_frame;
 		}
 		MINT_IN_CASE(MINT_BR_S)
@@ -4513,10 +4534,6 @@ common_vcall:
 			MINT_IN_BREAK;
 		MINT_IN_CASE(MINT_CONV_R8_R4_SP)
 			sp [-2].data.f = (double) sp [-2].data.f_r4;
-			++ip;
-			MINT_IN_BREAK;
-		MINT_IN_CASE(MINT_CONV_U8_I4)
-			sp [-1].data.l = sp [-1].data.i & 0xffffffff;
 			++ip;
 			MINT_IN_BREAK;
 		MINT_IN_CASE(MINT_CONV_U8_R4)
@@ -5957,7 +5974,7 @@ common_vcall:
 			stackval_from_data (mono_method_signature_internal (frame->imethod->method)->ret, frame->retval, sp->data.p,
 			     mono_method_signature_internal (frame->imethod->method)->pinvoke);
 			if (sp > frame->stack)
-				g_warning ("retobj: more values on stack: %d", sp-frame->stack);
+				g_warning_d ("retobj: more values on stack: %d", sp - frame->stack);
 			goto exit_frame;
 		MINT_IN_CASE(MINT_MONO_SGEN_THREAD_INFO)
 			sp->data.p = mono_tls_get_sgen_thread_info ();
@@ -6360,6 +6377,7 @@ common_vcall:
 	ip += 2;
 
 		MINT_IN_CASE(MINT_STLOC_NP_I4) STLOC_NP(i, gint32); MINT_IN_BREAK;
+		MINT_IN_CASE(MINT_STLOC_NP_I8) STLOC_NP(l, gint64); MINT_IN_BREAK;
 		MINT_IN_CASE(MINT_STLOC_NP_O) STLOC_NP(p, gpointer); MINT_IN_BREAK;
 
 		MINT_IN_CASE(MINT_STLOC_VT) {
@@ -6539,7 +6557,7 @@ common_vcall:
 
 #if !USE_COMPUTED_GOTO
 		default:
-			g_error ("Unimplemented opcode: %04x %s at 0x%x\n", *ip, mono_interp_opname (*ip), ip - frame->imethod->code);
+			g_error_xsx ("Unimplemented opcode: %04x %s at 0x%x\n", *ip, mono_interp_opname (*ip), ip - frame->imethod->code);
 #endif
 		}
 	}
@@ -6969,7 +6987,9 @@ register_interp_stats (void)
 	mono_counters_register ("MOVLOC count", MONO_COUNTER_INTERP | MONO_COUNTER_INT, &mono_interp_stats.movlocs);
 	mono_counters_register ("Copy propagations", MONO_COUNTER_INTERP | MONO_COUNTER_INT, &mono_interp_stats.copy_propagations);
 	mono_counters_register ("Added pop count", MONO_COUNTER_INTERP | MONO_COUNTER_INT, &mono_interp_stats.added_pop_count);
+	mono_counters_register ("Constant folds", MONO_COUNTER_INTERP | MONO_COUNTER_INT, &mono_interp_stats.constant_folds);
 	mono_counters_register ("Killed instructions", MONO_COUNTER_INTERP | MONO_COUNTER_INT, &mono_interp_stats.killed_instructions);
+	mono_counters_register ("Emitted instructions", MONO_COUNTER_INTERP | MONO_COUNTER_INT, &mono_interp_stats.emitted_instructions);
 	mono_counters_register ("Methods inlined", MONO_COUNTER_INTERP | MONO_COUNTER_INT, &mono_interp_stats.inlined_methods);
 	mono_counters_register ("Inline failures", MONO_COUNTER_INTERP | MONO_COUNTER_INT, &mono_interp_stats.inline_failures);
 }
