@@ -170,6 +170,9 @@
 /* Extension module enabled */
 #undef ENABLE_EXTENSION_MODULE
 
+/* ENABLE_GSS */
+#undef ENABLE_GSS
+
 /* Enable hybrid suspend for GC stop-the-world */
 #undef ENABLE_HYBRID_SUSPEND
 

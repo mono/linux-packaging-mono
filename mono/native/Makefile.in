@@ -91,6 +91,7 @@ host_triplet = @host@
 target_triplet = @target@
 @ENABLE_GSS_TRUE@am__append_1 = $(gss_sources)
 @ENABLE_GSS_TRUE@am__append_2 = $(gss_sources)
+@ENABLE_GSS_TRUE@am__append_3 = $(gss_sources)
 subdir = mono/native
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -239,20 +240,20 @@ am__objects_4 = libmono_native_compat_la-pal-android.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo
 am__objects_5 = ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_compat_la-pal_gssapi.lo
 @ENABLE_GSS_TRUE@am__objects_6 = $(am__objects_5)
-am__objects_7 = libmono_native_compat_la-pal-icalls.lo \
+am__objects_7 = $(am__objects_2) $(am__objects_6)
+am__objects_8 = libmono_native_compat_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_io.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networking.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_tcpstate.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo \
 	$(am__objects_6)
-am__objects_8 = $(am__objects_2) $(am__objects_6)
 @MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_HAIKU_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_3)
 @MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_3)
 @MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_4)
 @MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_3)
-@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_3)
-@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_7)
-@MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_9 = $(am__objects_8)
+@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_7)
+@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_8)
+@MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_9 = $(am__objects_7)
 am_libmono_native_compat_la_OBJECTS = $(am__objects_1) \
 	$(am__objects_9) \
 	libmono_native_compat_la-platform-type-compat.lo
@@ -364,20 +365,20 @@ am__objects_13 = libmono_native_unified_la-pal-android.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo
 am__objects_14 = ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_unified_la-pal_gssapi.lo
 @ENABLE_GSS_TRUE@am__objects_15 = $(am__objects_14)
-am__objects_16 = libmono_native_unified_la-pal-icalls.lo \
+am__objects_16 = $(am__objects_11) $(am__objects_15)
+am__objects_17 = libmono_native_unified_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_io.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networking.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_tcpstate.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo \
 	$(am__objects_15)
-am__objects_17 = $(am__objects_11) $(am__objects_15)
 @MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_HAIKU_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_12)
 @MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_12)
 @MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_13)
 @MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_12)
-@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_12)
-@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_16)
-@MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_18 = $(am__objects_17)
+@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_16)
+@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_17)
+@MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_18 = $(am__objects_16)
 am_libmono_native_unified_la_OBJECTS = $(am__objects_10) \
 	$(am__objects_18) \
 	libmono_native_unified_la-platform-type-unified.lo
@@ -485,20 +486,20 @@ am__objects_22 = libmono_native_la-pal-android.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo
 am__objects_23 = ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_la-pal_gssapi.lo
 @ENABLE_GSS_TRUE@am__objects_24 = $(am__objects_23)
-am__objects_25 = libmono_native_la-pal-icalls.lo \
+am__objects_25 = $(am__objects_20) $(am__objects_24)
+am__objects_26 = libmono_native_la-pal-icalls.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_io.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networking.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_tcpstate.lo \
 	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo \
 	$(am__objects_24)
-am__objects_26 = $(am__objects_20) $(am__objects_24)
 @MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_HAIKU_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_21)
 @MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_21)
 @MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_22)
 @MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_21)
-@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_21)
-@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_25)
-@MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_27 = $(am__objects_26)
+@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_25)
+@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_26)
+@MONO_NATIVE_PLATFORM_MACOS_TRUE@am__objects_27 = $(am__objects_25)
 am_libmono_native_la_OBJECTS = $(am__objects_19) $(am__objects_27) \
 	libmono_native_la-platform-type.lo
 am__EXTRA_libmono_native_la_SOURCES_DIST = pal_config.h \
@@ -954,8 +955,8 @@ ios_sources = pal-icalls.h pal-icalls.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_tcpstate.h \
 	../../external/corefx/src/Native/Unix/System.Native/pal_random.c \
 	../../external/corefx/src/Native/Unix/System.Native/pal_random.h \
-	$(am__append_2)
-linux_sources = $(unix_sources)
+	$(am__append_3)
+linux_sources = $(unix_sources) $(am__append_2)
 aix_sources = $(unix_sources)
 freebsd_sources = $(unix_sources)
 haiku_sources = $(unix_sources)
