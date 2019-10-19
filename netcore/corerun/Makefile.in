@@ -14,8 +14,6 @@
 
 @SET_MAKE@
 
-# Files copied from coreclr/src/coreclr/hosts/unixcorerun repo
-
 VPATH = @srcdir@
 am__is_gnu_make = { \
   if test -z '$(MAKELEVEL)'; then \
@@ -91,7 +89,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-bin_PROGRAMS = corerun$(EXEEXT)
+@HOST_WIN32_FALSE@bin_PROGRAMS = corerun$(EXEEXT)
 subdir = netcore/corerun
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -114,7 +112,10 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_corerun_OBJECTS = corerun.$(OBJEXT) coreruncommon.$(OBJEXT)
+am__corerun_SOURCES_DIST = corerun.cpp coreruncommon.cpp \
+	coreruncommon.h coreclrhost.h
+@HOST_WIN32_FALSE@am_corerun_OBJECTS = corerun.$(OBJEXT) \
+@HOST_WIN32_FALSE@	coreruncommon.$(OBJEXT)
 corerun_OBJECTS = $(am_corerun_OBJECTS)
 corerun_LDADD = $(LDADD)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -166,7 +167,7 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(corerun_SOURCES)
-DIST_SOURCES = $(corerun_SOURCES)
+DIST_SOURCES = $(am__corerun_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -467,8 +468,9 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CPPFLAGS = $(SHARED_CFLAGS)
-corerun_SOURCES = corerun.cpp coreruncommon.cpp coreruncommon.h coreclrhost.h
+# Files copied from coreclr/src/coreclr/hosts/unixcorerun repo
+@HOST_WIN32_FALSE@AM_CPPFLAGS = $(SHARED_CFLAGS)
+@HOST_WIN32_FALSE@corerun_SOURCES = corerun.cpp coreruncommon.cpp coreruncommon.h coreclrhost.h
 all: all-am
 
 .SUFFIXES:
