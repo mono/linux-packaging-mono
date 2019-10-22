@@ -157,7 +157,7 @@ static void
 db_match_method (gpointer data, gpointer user_data)
 {
 	MonoMethod *m = (MonoMethod*)user_data;
-	MonoMethodDesc *desc = data;
+	MonoMethodDesc *desc = (MonoMethodDesc*)data;
 
 	if (mono_method_desc_full_match (desc, m))
 		break_on_method = 1;
@@ -281,6 +281,14 @@ get_context (void)
 }
 
 static void
+interp_free_context (gpointer ctx)
+{
+	ThreadContext *context = (ThreadContext*)ctx;
+
+	g_free (context);
+}
+
+static void
 mono_interp_error_cleanup (MonoError* error)
 {
 	mono_error_cleanup (error); /* FIXME: don't swallow the error */
@@ -298,6 +306,7 @@ ves_real_abort (int line, MonoMethod *mh,
 	g_printerr ("Line=%d IP=0x%04lx, Aborted execution\n", line, ip-(const unsigned short *) header->code);
 	g_printerr ("0x%04x %02x\n", ip-(const unsigned short *) header->code, *ip);
 	mono_metadata_free_mh (header);
+	g_assert_not_reached ();
 }
 
 #define ves_abort() \
@@ -1481,6 +1490,7 @@ interp_delegate_ctor (MonoObjectHandle this_obj, MonoObjectHandle target, gpoint
  * runtime specifies that the implementation of the method is automatically
  * provided by the runtime and is primarily used for the methods of delegates.
  */
+#ifndef ENABLE_NETCORE
 static MONO_NEVER_INLINE MonoException*
 ves_imethod (InterpFrame *frame, MonoMethod *method, MonoMethodSignature *sig, stackval *sp, stackval *retval)
 {
@@ -1501,6 +1511,7 @@ ves_imethod (InterpFrame *frame, MonoMethod *method, MonoMethodSignature *sig, s
 			m_class_get_name_space (method->klass), m_class_get_name (method->klass),
 			method->name);
 }
+#endif
 
 #if DEBUG_INTERP
 static char*
@@ -3654,6 +3665,7 @@ common_vcall:
 			MINT_IN_BREAK;
 		}
 		MINT_IN_CASE(MINT_CALLRUN) {
+#ifndef ENABLE_NETCORE
 			MonoMethod *target_method = (MonoMethod*) frame->imethod->data_items [ip [1]];
 			MonoMethodSignature *sig = (MonoMethodSignature*) frame->imethod->data_items [ip [2]];
 			stackval *retval;
@@ -3674,6 +3686,9 @@ common_vcall:
 				sp++;
 			}
 			ip += 3;
+#else
+			g_assert_not_reached ();
+#endif
 			MINT_IN_BREAK;
 		}
 		MINT_IN_CASE(MINT_RET)
@@ -5355,7 +5370,14 @@ common_vcall:
 		MINT_IN_CASE(MINT_ARRAY_RANK) {
 			MonoObject* const o = sp [-1].data.o;
 			NULL_CHECK (o);
-			sp [-1].data.i = m_class_get_rank (mono_object_class (sp [-1].data.p));
+			sp [-1].data.i = m_class_get_rank (mono_object_class (o));
+			ip++;
+			MINT_IN_BREAK;
+		}
+		MINT_IN_CASE(MINT_ARRAY_ELEMENT_SIZE) {
+			MonoObject* const o = sp [-1].data.o;
+			NULL_CHECK (o);
+			sp [-1].data.i = mono_class_array_element_size (mono_object_class (o));
 			ip++;
 			MINT_IN_BREAK;
 		}
@@ -6293,16 +6315,18 @@ common_vcall:
 			MINT_IN_BREAK;
 		}
 
-		MINT_IN_CASE(MINT_TRACE_EXIT) {
+		MINT_IN_CASE(MINT_TRACE_EXIT)
+		MINT_IN_CASE(MINT_TRACE_EXIT_VOID) {
 			// Set retval
 			int const i32 = READ32 (ip + 1);
-			--sp;
-			if (i32 == -1)
-				;
-			else if (i32)
+			if (i32 == -1) {
+			} else if (i32) {
+				sp--;
 				memcpy(frame->retval->data.p, sp->data.p, i32);
-			else
+			} else {
+				sp--;
 				*frame->retval = *sp;
+			}
 
 			MonoProfilerCallContext *prof_ctx = g_alloca (sizeof (MonoProfilerCallContext));
 			prof_ctx->interp_frame = frame;
