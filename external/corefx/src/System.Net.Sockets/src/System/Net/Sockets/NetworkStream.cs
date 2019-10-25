@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace System.Net.Sockets
 {
     // Provides the underlying stream of data for network access.
-    public class NetworkStream : Stream
+    public partial class NetworkStream : Stream
     {
         // Used by the class to hold the underlying socket the stream uses.
         private readonly Socket _streamSocket;
