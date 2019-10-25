@@ -97,6 +97,7 @@ BEGIN_EXTERN_C
 
 typedef int errno_t;
 
+#ifndef HAVE_MEMCPY_S
 inline static errno_t memcpy_s(void* dst, size_t sizeInBytes, const void* src, size_t count)
 {
     if (count > 0)
@@ -124,5 +125,6 @@ inline static errno_t memcpy_s(void* dst, size_t sizeInBytes, const void* src, s
 
     return 0;
 }
+#endif
 
 END_EXTERN_C

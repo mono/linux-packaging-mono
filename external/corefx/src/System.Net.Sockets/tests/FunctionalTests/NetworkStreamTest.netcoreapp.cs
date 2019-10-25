@@ -215,6 +215,7 @@ namespace System.Net.Sockets.Tests
 
         [Theory]
         [MemberData(nameof(ReadAsync_ContinuesOnCurrentContextIfDesired_MemberData))]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Mono does not yet support `continueOnCapturedContext`.")]
         public async Task ReadAsync_ContinuesOnCurrentSynchronizationContextIfDesired(
             bool flowExecutionContext, bool? continueOnCapturedContext)
         {
