@@ -12,11 +12,120 @@ internal static partial class Interop
 {
     internal static partial class NetSecurityNative
     {
-#if ENABLE_GSS
+#if !ENABLE_GSS
+        internal static void ReleaseGssBuffer(
+            IntPtr bufferPtr,
+            ulong length) => throw new PlatformNotSupportedException ();
+
+        internal static Status DisplayMinorStatus(
+            out Status minorStatus,
+            Status statusValue,
+            ref GssBuffer buffer) => throw new PlatformNotSupportedException ();
+
+        internal static Status DisplayMajorStatus(
+            out Status minorStatus,
+            Status statusValue,
+            ref GssBuffer buffer) => throw new PlatformNotSupportedException ();
+
+        internal static Status ImportUserName(
+            out Status minorStatus,
+            string inputName,
+            int inputNameByteCount,
+            out SafeGssNameHandle outputName) => throw new PlatformNotSupportedException ();
+
+        internal static Status ImportPrincipalName(
+            out Status minorStatus,
+            string inputName,
+            int inputNameByteCount,
+            out SafeGssNameHandle outputName) => throw new PlatformNotSupportedException ();
+
+        internal static Status ReleaseName(
+            out Status minorStatus,
+            ref IntPtr inputName) => throw new PlatformNotSupportedException ();
+
+        internal static Status InitiateCredSpNego(
+            out Status minorStatus,
+            SafeGssNameHandle desiredName,
+            out SafeGssCredHandle outputCredHandle) => throw new PlatformNotSupportedException ();
+
+        internal static Status InitiateCredWithPassword(
+            out Status minorStatus,
+            bool isNtlm,
+            SafeGssNameHandle desiredName,
+            string password,
+            int passwordLen,
+            out SafeGssCredHandle outputCredHandle) => throw new PlatformNotSupportedException ();
+
+        internal static Status ReleaseCred(
+            out Status minorStatus,
+            ref IntPtr credHandle) => throw new PlatformNotSupportedException ();
+
+        internal static Status InitSecContext(
+            out Status minorStatus,
+            SafeGssCredHandle initiatorCredHandle,
+            ref SafeGssContextHandle contextHandle,
+            bool isNtlmOnly,
+            SafeGssNameHandle targetName,
+            uint reqFlags,
+            byte[] inputBytes,
+            int inputLength,
+            ref GssBuffer token,
+            out uint retFlags,
+            out int isNtlmUsed) => throw new PlatformNotSupportedException ();
+
+        internal static Status InitSecContext(
+            out Status minorStatus,
+            SafeGssCredHandle initiatorCredHandle,
+            ref SafeGssContextHandle contextHandle,
+            bool isNtlmOnly,
+            IntPtr cbt,
+            int cbtSize,
+            SafeGssNameHandle targetName,
+            uint reqFlags,
+            byte[] inputBytes,
+            int inputLength,
+            ref GssBuffer token,
+            out uint retFlags,
+            out int isNtlmUsed) => throw new PlatformNotSupportedException ();
+
+        internal static Status AcceptSecContext(
+            out Status minorStatus,
+            ref SafeGssContextHandle acceptContextHandle,
+            byte[] inputBytes,
+            int inputLength,
+            ref GssBuffer token,
+            out uint retFlags) => throw new PlatformNotSupportedException ();
+
+        internal static Status DeleteSecContext(
+            out Status minorStatus,
+            ref IntPtr contextHandle) => throw new PlatformNotSupportedException ();
+
+        internal static Status GetUser(
+            out Status minorStatus,
+            SafeGssContextHandle acceptContextHandle,
+            ref GssBuffer token) => throw new PlatformNotSupportedException ();
+
+        private static Status Wrap(
+            out Status minorStatus,
+            SafeGssContextHandle contextHandle,
+            bool isEncrypt,
+            byte[] inputBytes,
+            int offset,
+            int count,
+            ref GssBuffer outBuffer) => throw new PlatformNotSupportedException ();
+
+        private static Status Unwrap(
+            out Status minorStatus,
+            SafeGssContextHandle contextHandle,
+            byte[] inputBytes,
+            int offset,
+            int count,
+            ref GssBuffer outBuffer) => throw new PlatformNotSupportedException ();
+#else
         [DllImport(Interop.Libraries.NetSecurityNative, EntryPoint="NetSecurityNative_ReleaseGssBuffer")]
         internal static extern void ReleaseGssBuffer(
             IntPtr bufferPtr,
-            UInt64 length);
+            ulong length);
 
         [DllImport(Interop.Libraries.NetSecurityNative, EntryPoint="NetSecurityNative_DisplayMinorStatus")]
         internal static extern Status DisplayMinorStatus(
@@ -83,18 +192,41 @@ internal static partial class Interop
             out uint retFlags,
             out int isNtlmUsed);
 
+        [DllImport(Interop.Libraries.NetSecurityNative, EntryPoint="NetSecurityNative_InitSecContextEx")]
+        internal static extern Status InitSecContext(
+            out Status minorStatus,
+            SafeGssCredHandle initiatorCredHandle,
+            ref SafeGssContextHandle contextHandle,
+            bool isNtlmOnly,
+            IntPtr cbt,
+            int cbtSize,
+            SafeGssNameHandle targetName,
+            uint reqFlags,
+            byte[] inputBytes,
+            int inputLength,
+            ref GssBuffer token,
+            out uint retFlags,
+            out int isNtlmUsed);
+
         [DllImport(Interop.Libraries.NetSecurityNative, EntryPoint="NetSecurityNative_AcceptSecContext")]
         internal static extern Status AcceptSecContext(
             out Status minorStatus,
             ref SafeGssContextHandle acceptContextHandle,
             byte[] inputBytes,
             int inputLength,
-            ref GssBuffer token);
+            ref GssBuffer token,
+            out uint retFlags);
 
         [DllImport(Interop.Libraries.NetSecurityNative, EntryPoint="NetSecurityNative_DeleteSecContext")]
         internal static extern Status DeleteSecContext(
             out Status minorStatus,
             ref IntPtr contextHandle);
+
+        [DllImport(Interop.Libraries.NetSecurityNative, EntryPoint="NetSecurityNative_GetUser")]
+        internal static extern Status GetUser(
+            out Status minorStatus,
+            SafeGssContextHandle acceptContextHandle,
+            ref GssBuffer token);
 
         [DllImport(Interop.Libraries.NetSecurityNative, EntryPoint="NetSecurityNative_Wrap")]
         private static extern Status Wrap(
@@ -114,6 +246,7 @@ internal static partial class Interop
             int offset,
             int count,
             ref GssBuffer outBuffer);
+#endif
 
         internal static Status WrapBuffer(
             out Status minorStatus,
@@ -145,117 +278,33 @@ internal static partial class Interop
 
             return Unwrap(out minorStatus, contextHandle, inputBytes, offset, count, ref outBuffer);
         }
-#else
-       internal static void ReleaseGssBuffer (
-            IntPtr bufferPtr,
-            UInt64 length) => throw new NotSupportedException ();
 
-        internal static Status DisplayMinorStatus (
-            out Status minorStatus,
-            Status statusValue,
-            ref GssBuffer buffer) => throw new NotSupportedException ();
+        // https://www.gnu.org/software/gss/reference/gss.pdf Page 65
+        internal const int GSS_C_ROUTINE_ERROR_OFFSET = 16;
 
-        internal static Status DisplayMajorStatus (
-            out Status minorStatus,
-            Status statusValue,
-            ref GssBuffer buffer) => throw new NotSupportedException ();
-
-        internal static Status ImportUserName (
-            out Status minorStatus,
-            string inputName,
-            int inputNameByteCount,
-            out SafeGssNameHandle outputName) => throw new NotSupportedException ();
-
-        internal static Status ImportPrincipalName (
-            out Status minorStatus,
-            string inputName,
-            int inputNameByteCount,
-            out SafeGssNameHandle outputName) => throw new NotSupportedException ();
-
-        internal static Status ReleaseName (
-            out Status minorStatus,
-            ref IntPtr inputName) => throw new NotSupportedException ();
-
-        internal static Status InitiateCredSpNego (
-            out Status minorStatus,
-            SafeGssNameHandle desiredName,
-            out SafeGssCredHandle outputCredHandle) => throw new NotSupportedException ();
-
-        internal static Status InitiateCredWithPassword (
-            out Status minorStatus,
-            bool isNtlm,
-            SafeGssNameHandle desiredName,
-            string password,
-            int passwordLen,
-            out SafeGssCredHandle outputCredHandle) => throw new NotSupportedException ();
-
-        internal static Status ReleaseCred (
-            out Status minorStatus,
-            ref IntPtr credHandle) => throw new NotSupportedException ();
-
-        internal static Status InitSecContext (
-            out Status minorStatus,
-            SafeGssCredHandle initiatorCredHandle,
-            ref SafeGssContextHandle contextHandle,
-            bool isNtlmOnly,
-            SafeGssNameHandle targetName,
-            uint reqFlags,
-            byte[] inputBytes,
-            int inputLength,
-            ref GssBuffer token,
-            out uint retFlags,
-            out int isNtlmUsed) => throw new NotSupportedException ();
-
-        internal static Status AcceptSecContext (
-            out Status minorStatus,
-            ref SafeGssContextHandle acceptContextHandle,
-            byte[] inputBytes,
-            int inputLength,
-            ref GssBuffer token) => throw new NotSupportedException ();
-
-        internal static Status DeleteSecContext (
-            out Status minorStatus,
-            ref IntPtr contextHandle) => throw new NotSupportedException ();
-
-        static Status Wrap(
-            out Status minorStatus,
-            SafeGssContextHandle contextHandle,
-            bool isEncrypt,
-            byte[] inputBytes,
-            int offset,
-            int count,
-            ref GssBuffer outBuffer) => throw new NotSupportedException ();
-
-        static Status Unwrap (
-            out Status minorStatus,
-            SafeGssContextHandle contextHandle,
-            byte[] inputBytes,
-            int offset,
-            int count,
-            ref GssBuffer outBuffer) => throw new NotSupportedException ();
-
-        internal static Status WrapBuffer (
-            out Status minorStatus,
-            SafeGssContextHandle contextHandle,
-            bool isEncrypt,
-            byte[] inputBytes,
-            int offset,
-            int count,
-            ref GssBuffer outBuffer) => throw new NotSupportedException ();
-
-        internal static Status UnwrapBuffer (
-            out Status minorStatus,
-            SafeGssContextHandle contextHandle,
-            byte[] inputBytes,
-            int offset,
-            int count,
-            ref GssBuffer outBuffer) => throw new NotSupportedException ();
-#endif
-
+        // https://www.gnu.org/software/gss/reference/gss.pdf Page 9
         internal enum Status : uint
         {
             GSS_S_COMPLETE = 0,
-            GSS_S_CONTINUE_NEEDED = 1
+            GSS_S_CONTINUE_NEEDED = 1,
+            GSS_S_BAD_MECH = 1 << GSS_C_ROUTINE_ERROR_OFFSET,
+            GSS_S_BAD_NAME = 2 << GSS_C_ROUTINE_ERROR_OFFSET,
+            GSS_S_BAD_NAMETYPE = 3 << GSS_C_ROUTINE_ERROR_OFFSET,
+            GSS_S_BAD_BINDINGS = 4 << GSS_C_ROUTINE_ERROR_OFFSET,
+            GSS_S_BAD_STATUS = 5 << GSS_C_ROUTINE_ERROR_OFFSET,
+            GSS_S_BAD_SIG = 6 << GSS_C_ROUTINE_ERROR_OFFSET,
+            GSS_S_NO_CRED = 7 << GSS_C_ROUTINE_ERROR_OFFSET,
+            GSS_S_NO_CONTEXT = 8 << GSS_C_ROUTINE_ERROR_OFFSET,
+            GSS_S_DEFECTIVE_TOKEN = 9 << GSS_C_ROUTINE_ERROR_OFFSET,
+            GSS_S_DEFECTIVE_CREDENTIAL = 10 << GSS_C_ROUTINE_ERROR_OFFSET,
+            GSS_S_CREDENTIALS_EXPIRED = 11 << GSS_C_ROUTINE_ERROR_OFFSET,
+            GSS_S_CONTEXT_EXPIRED = 12 << GSS_C_ROUTINE_ERROR_OFFSET,
+            GSS_S_FAILURE = 13 << GSS_C_ROUTINE_ERROR_OFFSET,
+            GSS_S_BAD_QOP = 14 << GSS_C_ROUTINE_ERROR_OFFSET,
+            GSS_S_UNAUTHORIZED = 15 << GSS_C_ROUTINE_ERROR_OFFSET,
+            GSS_S_UNAVAILABLE = 16 << GSS_C_ROUTINE_ERROR_OFFSET,
+            GSS_S_DUPLICATE_ELEMENT = 17 << GSS_C_ROUTINE_ERROR_OFFSET,
+            GSS_S_NAME_NOT_MN = 18 << GSS_C_ROUTINE_ERROR_OFFSET,
         }
 
         [Flags]

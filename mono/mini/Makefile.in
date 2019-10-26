@@ -397,8 +397,7 @@ am__DEPENDENCIES_1 =
 @ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_1)
 am__libmono_llvm_la_SOURCES_DIST = mini-llvm.c mini-llvm-cpp.cpp \
 	llvm-jit.cpp
-@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@am_libmono_llvm_la_OBJECTS =  \
-@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@	mini-llvm.lo \
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@am_libmono_llvm_la_OBJECTS = libmono_llvm_la-mini-llvm.lo \
 @ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@	mini-llvm-cpp.lo \
 @ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@	llvm-jit.lo
 libmono_llvm_la_OBJECTS = $(am_libmono_llvm_la_OBJECTS)
@@ -958,6 +957,7 @@ ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 @ENABLE_MSVC_ONLY_FALSE@libmain_a_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
 @ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@libmono_llvm_la_SOURCES = mini-llvm.c mini-llvm-cpp.cpp llvm-jit.cpp
 @ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@libmono_llvm_la_LIBADD = $(glib_libs) $(LLVM_LIBS) $(LLVM_LDFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@libmono_llvm_la_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
 @ENABLE_MSVC_ONLY_FALSE@@HOST_DARWIN_TRUE@@LOADED_LLVM_TRUE@libmono_llvm_la_LDFLAGS = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace 
 
 # we need this to prevent automake from generating a default mono_SOURCES = mono.c
@@ -1712,10 +1712,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_ee_interp_la-interp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_ee_interp_la-mintops.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_ee_interp_la-transform.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_llvm_la-mini-llvm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/llvm-jit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/llvm-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mini-llvm-cpp.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mini-llvm.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -2486,6 +2486,13 @@ libmono_ee_interp_la-transform.lo: interp/transform.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='interp/transform.c' object='libmono_ee_interp_la-transform.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_la_CFLAGS) $(CFLAGS) -c -o libmono_ee_interp_la-transform.lo `test -f 'interp/transform.c' || echo '$(srcdir)/'`interp/transform.c
+
+libmono_llvm_la-mini-llvm.lo: mini-llvm.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_llvm_la_CFLAGS) $(CFLAGS) -MT libmono_llvm_la-mini-llvm.lo -MD -MP -MF $(DEPDIR)/libmono_llvm_la-mini-llvm.Tpo -c -o libmono_llvm_la-mini-llvm.lo `test -f 'mini-llvm.c' || echo '$(srcdir)/'`mini-llvm.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_llvm_la-mini-llvm.Tpo $(DEPDIR)/libmono_llvm_la-mini-llvm.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-llvm.c' object='libmono_llvm_la-mini-llvm.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_llvm_la_CFLAGS) $(CFLAGS) -c -o libmono_llvm_la-mini-llvm.lo `test -f 'mini-llvm.c' || echo '$(srcdir)/'`mini-llvm.c
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
