@@ -15,10 +15,7 @@
 #include <config.h>
 #include <glib.h>
 #include <string.h>
-
-#ifdef HAVE_SIGNAL_H
 #include <signal.h>
-#endif
 
 #ifdef HAVE_EXECINFO_H
 #include <execinfo.h>
@@ -2724,10 +2721,12 @@ mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resu
 			 * FIXME: The check below is hackish, but its hard to distinguish
 			 * these runtime invoke calls from others in the runtime.
 			 */
+#ifndef ENABLE_NETCORE
 			if (ji && jinfo_get_method (ji)->wrapper_type == MONO_WRAPPER_RUNTIME_INVOKE) {
 				if (prev_ji && jinfo_get_method (prev_ji) == mono_defaults.threadpool_perform_wait_callback_method)
 					unhandled = TRUE;
 			}
+#endif
 
 			if (unhandled)
 				mini_get_dbg_callbacks ()->handle_exception ((MonoException *)obj, ctx, NULL, NULL);

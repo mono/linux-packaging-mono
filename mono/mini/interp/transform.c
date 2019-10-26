@@ -4916,7 +4916,7 @@ generate_code (TransformData *td, MonoMethod *method, MonoMethodHeader *header, 
 				g_assert_not_reached ();
 				break;
 			}
-			SET_SIMPLE_TYPE(td->sp - 1, STACK_TYPE_I8);
+			SET_SIMPLE_TYPE(td->sp - 1, STACK_TYPE_I);
 			++td->ip;
 			break;
 		case CEE_CONV_OVF_I8_UN:
@@ -6399,7 +6399,7 @@ emit_compacted_instruction (TransformData *td, guint16* start_ip, InterpInst *in
 		cbb->last_seq_point = seqp;
 	} else {
 		if (MINT_IS_LDLOC (opcode) || MINT_IS_STLOC (opcode) || MINT_IS_STLOC_NP (opcode) || opcode == MINT_LDLOCA_S ||
-				MINT_IS_LDLOCFLD (opcode) || MINT_IS_LOCUNOP (opcode)) {
+				MINT_IS_LDLOCFLD (opcode) || MINT_IS_LOCUNOP (opcode) || MINT_IS_STLOCFLD (opcode)) {
 			ins->data [0] = get_interp_local_offset (td, ins->data [0]);
 		} else if (MINT_IS_MOVLOC (opcode)) {
 			ins->data [0] = get_interp_local_offset (td, ins->data [0]);
@@ -6791,7 +6791,7 @@ interp_local_equal (StackValue *locals, int local1, int local2)
 static void
 interp_cprop (TransformData *td)
 {
-	if (!td->max_stack_height || !td->locals_size)
+	if (!td->max_stack_height)
 		return;
 	StackContentInfo *stack = (StackContentInfo*) g_malloc (td->max_stack_height * sizeof (StackContentInfo));
 	StackContentInfo *stack_end = stack + td->max_stack_height;
@@ -6839,6 +6839,10 @@ retry:
 						replace_op = MINT_STLOC_NP_I4;
 					else if (mt == MINT_TYPE_I8)
 						replace_op = MINT_STLOC_NP_I8;
+					else if (mt == MINT_TYPE_R4)
+						replace_op = MINT_STLOC_NP_R4;
+					else if (mt == MINT_TYPE_R8)
+						replace_op = MINT_STLOC_NP_R8;
 					else if (mt == MINT_TYPE_O || mt == MINT_TYPE_P)
 						replace_op = MINT_STLOC_NP_O;
 					if (replace_op) {
@@ -7067,6 +7071,39 @@ retry:
 		} else if (MINT_IS_BINOP (ins->opcode)) {
 			ins = interp_fold_binop (td, sp, ins);
 			sp--;
+		} else if (ins->opcode >= MINT_STFLD_I1 && ins->opcode <= MINT_STFLD_P && (mono_interp_opt & INTERP_OPT_SUPER_INSTRUCTIONS)) {
+			if (sp [-2].ins) {
+				InterpInst *obj_ins = sp [-2].ins;
+				if (obj_ins->opcode == MINT_LDLOC_O) {
+					int loc_index = obj_ins->data [0];
+					int fld_offset = ins->data [0];
+					int mt = ins->opcode - MINT_STFLD_I1;
+					ins = interp_insert_ins (td, ins, MINT_STLOCFLD_I1 + mt);
+					ins->data [0] = loc_index;
+					ins->data [1] = fld_offset;
+					interp_clear_ins (td, ins->prev);
+					interp_clear_ins (td, obj_ins);
+					mono_interp_stats.super_instructions++;
+					mono_interp_stats.killed_instructions++;
+				} else if (obj_ins->opcode == MINT_LDARG_O || obj_ins->opcode == MINT_LDARG_P0) {
+					int arg_index = 0;
+					int fld_offset = ins->data [0];
+					int mt = ins->opcode - MINT_STFLD_I1;
+					if (obj_ins->opcode == MINT_LDARG_O)
+						arg_index = obj_ins->data [0];
+					ins = interp_insert_ins (td, ins, MINT_STARGFLD_I1 + mt);
+					ins->data [0] = arg_index;
+					ins->data [1] = fld_offset;
+					interp_clear_ins (td, ins->prev);
+					interp_clear_ins (td, obj_ins);
+					mono_interp_stats.super_instructions++;
+					mono_interp_stats.killed_instructions++;
+				}
+			}
+			sp -= 2;
+		} else if (MINT_IS_STLOCFLD (ins->opcode)) {
+			local_ref_count [ins->data [0]]++;
+			sp--;
 		} else {
 			if (pop == MINT_POP_ALL)
 				pop = sp - stack;
@@ -7256,8 +7293,9 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, MonoG
 	if (td->max_stack_height > header->max_stack * 3 && header->max_stack > 16)
 		g_warning ("Excessive stack space usage for method %s, %d/%d", method->name, td->max_stack_height, header->max_stack);
 
-	int code_len;
-	code_len = td->new_code_end - td->new_code;
+	int code_len_u8, code_len_u16;
+	code_len_u8 = (guint8 *) td->new_code_end - (guint8 *) td->new_code;
+	code_len_u16 = td->new_code_end - td->new_code;
 
 	rtm->clauses = (MonoExceptionClause*)mono_domain_alloc0 (domain, header->num_clauses * sizeof (MonoExceptionClause));
 	memcpy (rtm->clauses, header->clauses, header->num_clauses * sizeof(MonoExceptionClause));
@@ -7269,11 +7307,11 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, MonoG
 		int end_off = c->try_offset + c->try_len;
 		c->try_offset = get_in_offset (td, c->try_offset);
 		c->try_len = find_in_offset (td, end_off) - c->try_offset;
-		g_assert ((c->try_offset + c->try_len) < code_len);
+		g_assert ((c->try_offset + c->try_len) < code_len_u16);
 		end_off = c->handler_offset + c->handler_len;
 		c->handler_offset = get_in_offset (td, c->handler_offset);
 		c->handler_len = find_in_offset (td, end_off) - c->handler_offset;
-		g_assert (c->handler_len >= 0 && (c->handler_offset + c->handler_len) <= code_len);
+		g_assert (c->handler_len >= 0 && (c->handler_offset + c->handler_len) <= code_len_u16);
 		if (c->flags & MONO_EXCEPTION_CLAUSE_FILTER)
 			c->data.filter_offset = get_in_offset (td, c->data.filter_offset);
 	}
@@ -7295,7 +7333,7 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, MonoG
 	jinfo = (MonoJitInfo *)mono_domain_alloc0 (domain, jinfo_len);
 	jinfo->is_interp = 1;
 	rtm->jinfo = jinfo;
-	mono_jit_info_init (jinfo, method, (guint8*)rtm->code, code_len, (MonoJitInfoFlags)0, header->num_clauses, 0);
+	mono_jit_info_init (jinfo, method, (guint8*)rtm->code, code_len_u8, (MonoJitInfoFlags)0, header->num_clauses, 0);
 	for (i = 0; i < jinfo->num_clauses; ++i) {
 		MonoJitExceptionInfo *ei = &jinfo->clauses [i];
 		MonoExceptionClause *c = rtm->clauses + i;

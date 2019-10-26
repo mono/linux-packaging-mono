@@ -716,9 +716,6 @@
 /* Define to 1 if you have the `mremap' function. */
 #undef HAVE_MREMAP
 
-/* Have MSG_NOSIGNAL */
-#undef HAVE_MSG_NOSIGNAL
-
 /* Define to 1 if you have the `msync' function. */
 #undef HAVE_MSYNC
 
@@ -1343,6 +1340,9 @@
 
 /* Define to 1 if you have the `writev' function. */
 #undef HAVE_WRITEV
+
+/* Targeting the AIX and PASE platforms */
+#undef HOST_AIX
 
 /* ... */
 #undef HOST_AMD64

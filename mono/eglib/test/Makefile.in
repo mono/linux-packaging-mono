@@ -89,6 +89,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
+# This export file is required so test symbols are visible.
+@HOST_AIX_TRUE@am__append_1 = -Wl,-bE:test-eglib.exp
 @DISABLE_EXECUTABLES_FALSE@@HOST_WIN32_FALSE@noinst_PROGRAMS = test-eglib$(EXEEXT) \
 @DISABLE_EXECUTABLES_FALSE@@HOST_WIN32_FALSE@	assertf$(EXEEXT)
 subdir = mono/eglib/test
@@ -294,7 +296,7 @@ JEMALLOC_CFLAGS = @JEMALLOC_CFLAGS@
 JEMALLOC_CPPFLAGS = @JEMALLOC_CPPFLAGS@
 JEMALLOC_LDFLAGS = @JEMALLOC_LDFLAGS@
 LD = @LD@
-LDFLAGS = @LDFLAGS@
+LDFLAGS = @LDFLAGS@ $(am__append_1)
 LIBC = @LIBC@
 LIBGC_CPPFLAGS = @LIBGC_CPPFLAGS@
 LIBGC_LIBS = @LIBGC_LIBS@
@@ -476,7 +478,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
-EXTRA_DIST = UTF-8.txt UTF-16BE.txt UTF-16LE.txt UTF-32BE.txt UTF-32LE.txt
+EXTRA_DIST = UTF-8.txt UTF-16BE.txt UTF-16LE.txt UTF-32BE.txt UTF-32LE.txt test-eglib.exp
 SOURCES = \
 	enum.cpp	\
 	test.c 		\
