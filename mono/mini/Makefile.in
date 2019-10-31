@@ -205,10 +205,10 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	llvm-runtime.h type-checking.c calls.c lldb.h lldb.c \
 	memory-access.c intrinsics.c mini-profiler.c interp-stubs.c \
 	llvmonly-runtime.h llvmonly-runtime.c aot-runtime.h ee.h \
-	mini-runtime.h mini-llvm.c mini-llvm-loaded.c \
-	mini-llvm-cpp.cpp llvm-jit.cpp llvm-runtime.cpp mini-amd64.c \
-	mini-amd64.h exceptions-amd64.c tramp-amd64.c \
-	mini-amd64-gsharedvt.c mini-amd64-gsharedvt.h \
+	tiered.h tiered.c mini-runtime.h mini-llvm.c \
+	mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-jit.cpp \
+	llvm-runtime.cpp mini-amd64.c mini-amd64.h exceptions-amd64.c \
+	tramp-amd64.c mini-amd64-gsharedvt.c mini-amd64-gsharedvt.h \
 	tramp-amd64-gsharedvt.c mini-arm64.c mini-arm64.h \
 	exceptions-arm64.c tramp-arm64.c mini-arm64-gsharedvt.c \
 	mini-arm64-gsharedvt.h tramp-arm64-gsharedvt.c mini-arm.c \
@@ -271,7 +271,8 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmini_la-intrinsics.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-profiler.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmini_la-interp-stubs.lo \
-@ENABLE_MSVC_ONLY_FALSE@	libmini_la-llvmonly-runtime.lo
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-llvmonly-runtime.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-tiered.lo
 @ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@am__objects_3 = libmini_la-mini-llvm.lo \
 @ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm-loaded.lo \
 @ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.lo \
@@ -1213,6 +1214,8 @@ ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 @ENABLE_MSVC_ONLY_FALSE@	llvmonly-runtime.c \
 @ENABLE_MSVC_ONLY_FALSE@	aot-runtime.h	\
 @ENABLE_MSVC_ONLY_FALSE@	ee.h \
+@ENABLE_MSVC_ONLY_FALSE@	tiered.h \
+@ENABLE_MSVC_ONLY_FALSE@	tiered.c \
 @ENABLE_MSVC_ONLY_FALSE@	mini-runtime.h
 
 
@@ -1688,6 +1691,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-simd-intrinsics.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-ssa.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tasklets.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tiered.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-trace.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tramp-amd64-gsharedvt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tramp-amd64.Plo@am__quote@
@@ -2101,6 +2105,13 @@ libmini_la-llvmonly-runtime.lo: llvmonly-runtime.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='llvmonly-runtime.c' object='libmini_la-llvmonly-runtime.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-llvmonly-runtime.lo `test -f 'llvmonly-runtime.c' || echo '$(srcdir)/'`llvmonly-runtime.c
+
+libmini_la-tiered.lo: tiered.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-tiered.lo -MD -MP -MF $(DEPDIR)/libmini_la-tiered.Tpo -c -o libmini_la-tiered.lo `test -f 'tiered.c' || echo '$(srcdir)/'`tiered.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-tiered.Tpo $(DEPDIR)/libmini_la-tiered.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tiered.c' object='libmini_la-tiered.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-tiered.lo `test -f 'tiered.c' || echo '$(srcdir)/'`tiered.c
 
 libmini_la-mini-llvm.lo: mini-llvm.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-llvm.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-llvm.Tpo -c -o libmini_la-mini-llvm.lo `test -f 'mini-llvm.c' || echo '$(srcdir)/'`mini-llvm.c

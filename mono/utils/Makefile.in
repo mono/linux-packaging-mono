@@ -191,10 +191,10 @@ am__libmonoutils_la_SOURCES_DIST = dlmalloc.h dlmalloc.c \
 	mono-threads-wasm.c mono-threads.h mono-threads-debug.h \
 	mono-threads-api.h mono-threads-coop.c mono-threads-coop.h \
 	mono-utility-thread.c mono-utility-thread.h mono-tls.h \
-	mono-tls.c mono-utils-debug.c mono-utils-debug.h linux_magic.h \
-	mono-memory-model.h atomic.h atomic.c mono-hwcap.h \
-	mono-hwcap.c mono-hwcap-vars.h bsearch.h bsearch.c \
-	mono-signal-handler.h mono-conc-hashtable.h \
+	mono-tls-inline.h mono-tls.c mono-utils-debug.c \
+	mono-utils-debug.h linux_magic.h mono-memory-model.h atomic.h \
+	atomic.c mono-hwcap.h mono-hwcap.c mono-hwcap-vars.h bsearch.h \
+	bsearch.c mono-signal-handler.h mono-conc-hashtable.h \
 	mono-conc-hashtable.c json.h json.c networking.c \
 	networking-posix.c networking-fallback.c networking-missing.c \
 	networking-windows.c networking.h mono-rand.c \
@@ -897,6 +897,7 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@	mono-utility-thread.c	\
 @ENABLE_MSVC_ONLY_FALSE@	mono-utility-thread.h	\
 @ENABLE_MSVC_ONLY_FALSE@	mono-tls.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-tls-inline.h	\
 @ENABLE_MSVC_ONLY_FALSE@	mono-tls.c	\
 @ENABLE_MSVC_ONLY_FALSE@	mono-utils-debug.c \
 @ENABLE_MSVC_ONLY_FALSE@	mono-utils-debug.h \
