@@ -167,6 +167,9 @@
 /* Enable feature experiments */
 #undef ENABLE_EXPERIMENTS
 
+/* Enable experiment 'Tiered Compilation' */
+#undef ENABLE_EXPERIMENT_TIERED
+
 /* Enable experiment 'null' */
 #undef ENABLE_EXPERIMENT_null
 
