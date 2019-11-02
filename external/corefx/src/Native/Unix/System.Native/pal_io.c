@@ -1257,15 +1257,30 @@ int32_t SystemNative_CopyFile(intptr_t sourceFd, intptr_t destinationFd)
     int ret;
     struct stat_ sourceStat;
     bool copied = false;
-#if HAVE_SENDFILE_4
-    // If sendfile is available (Linux), try to use it, as the whole copy
-    // can be performed in the kernel, without lots of unnecessary copying.
+
+    // First, stat the source file.
     while ((ret = fstat_(inFd, &sourceStat)) < 0 && errno == EINTR);
+    if (ret != 0)
+    {
+        // If we can't stat() it, then we likely don't have permission to read it.
+        return -1;
+    }
+
+    // Copy permissions.  This fchmod() needs to happen prior to writing anything into
+    // the file to avoid possibly leaking any private data.
+    while ((ret = fchmod(outFd, sourceStat.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO))) < 0 && errno == EINTR);
+#if !TARGET_ANDROID
+    // On Android, we are not allowed to modify permissions, but the copy should still succeed;
+    // see https://github.com/mono/mono/issues/17133 for details.
     if (ret != 0)
     {
         return -1;
     }
+#endif
 
+#if HAVE_SENDFILE_4
+    // If sendfile is available (Linux), try to use it, as the whole copy
+    // can be performed in the kernel, without lots of unnecessary copying.
 
     // On 32-bit, if you use 64-bit offsets, the last argument of `sendfile' will be a
     // `size_t' a 32-bit integer while the `st_size' field of the stat structure will be off64_t.
@@ -1313,37 +1328,30 @@ int32_t SystemNative_CopyFile(intptr_t sourceFd, intptr_t destinationFd)
     // from the source file.  First copy the file times.
     // If futimes nor futimes are available on this platform, file times will
     // not be copied over.
-    while ((ret = fstat_(inFd, &sourceStat)) < 0 && errno == EINTR);
-    if (ret == 0)
-    {
 #if HAVE_FUTIMENS
-        // futimens is prefered because it has a higher resolution.
-        struct timespec origTimes[2];
-        origTimes[0].tv_sec = (time_t)sourceStat.st_atime;
-        origTimes[0].tv_nsec = ST_ATIME_NSEC(&sourceStat);
-        origTimes[1].tv_sec = (time_t)sourceStat.st_mtime;
-        origTimes[1].tv_nsec = ST_MTIME_NSEC(&sourceStat);
-        while ((ret = futimens(outFd, origTimes)) < 0 && errno == EINTR);
+    // futimens is prefered because it has a higher resolution.
+    struct timespec origTimes[2];
+    origTimes[0].tv_sec = (time_t)sourceStat.st_atime;
+    origTimes[0].tv_nsec = ST_ATIME_NSEC(&sourceStat);
+    origTimes[1].tv_sec = (time_t)sourceStat.st_mtime;
+    origTimes[1].tv_nsec = ST_MTIME_NSEC(&sourceStat);
+    while ((ret = futimens(outFd, origTimes)) < 0 && errno == EINTR);
 #elif HAVE_FUTIMES
-        struct timeval origTimes[2];
-        origTimes[0].tv_sec = sourceStat.st_atime;
-        origTimes[0].tv_usec = ST_ATIME_NSEC(&sourceStat) / 1000;
-        origTimes[1].tv_sec = sourceStat.st_mtime;
-        origTimes[1].tv_usec = ST_MTIME_NSEC(&sourceStat) / 1000;
-        while ((ret = futimes(outFd, origTimes)) < 0 && errno == EINTR);
+    struct timeval origTimes[2];
+    origTimes[0].tv_sec = sourceStat.st_atime;
+    origTimes[0].tv_usec = ST_ATIME_NSEC(&sourceStat) / 1000;
+    origTimes[1].tv_sec = sourceStat.st_mtime;
+    origTimes[1].tv_usec = ST_MTIME_NSEC(&sourceStat) / 1000;
+    while ((ret = futimes(outFd, origTimes)) < 0 && errno == EINTR);
 #endif
-    }
-    if (ret != 0)
-    {
-        return -1;
-    }
 
-    // Then copy permissions.
-    while ((ret = fchmod(outFd, sourceStat.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO))) < 0 && errno == EINTR);
+#if !TARGET_ANDROID
+    // On Android, the copy should still succeed even if copying the file times didn't.
     if (ret != 0)
     {
         return -1;
     }
+#endif
 
     return 0;
 #endif // HAVE_FCOPYFILE
