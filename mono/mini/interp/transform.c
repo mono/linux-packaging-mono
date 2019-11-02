@@ -1039,7 +1039,7 @@ void
 mono_interp_print_code (InterpMethod *imethod)
 {
 	MonoJitInfo *jinfo = imethod->jinfo;
-	const guint16 *start;
+	const guint8 *start;
 
 	if (!jinfo)
 		return;
@@ -1048,8 +1048,8 @@ mono_interp_print_code (InterpMethod *imethod)
 	g_print ("Method : %s\n", name);
 	g_free (name);
 
-	start = (guint16*) jinfo->code_start;
-	dump_mint_code (start, start + jinfo->code_size);
+	start = (guint8*) jinfo->code_start;
+	dump_mint_code ((const guint16*)start, (const guint16*)(start + jinfo->code_size));
 }
 
 
@@ -2488,7 +2488,9 @@ interp_transform_call (TransformData *td, MonoMethod *method, MonoMethod *target
 				td->last_ins->data[1] = save_last_error;
 			}
 		} else {
-			td->last_ins->data [0] = get_data_item_index (td, (void *)mono_interp_get_imethod (domain, target_method, error));
+			InterpMethod *imethod = mono_interp_get_imethod (domain, target_method, error);
+			td->last_ins->data [0] = get_data_item_index (td, (void *)imethod);
+			td->last_ins->data [1] = imethod->param_count + imethod->hasthis;
 #ifdef ENABLE_EXPERIMENT_TIERED
 			if (MINT_IS_PATCHABLE_CALL (td->last_ins->opcode)) {
 				g_assert (!calli && !is_virtual);
@@ -3338,14 +3340,26 @@ generate_code (TransformData *td, MonoMethod *method, MonoMethodHeader *header, 
 		if (header->num_locals && header->init_locals)
 			interp_add_ins (td, MINT_INITLOCALS);
 
+		guint16 enter_profiling = 0;
 		if (mono_jit_trace_calls != NULL && mono_trace_eval (method))
-			interp_add_ins (td, MINT_TRACE_ENTER);
-		else if (rtm->prof_flags & MONO_PROFILER_CALL_INSTRUMENTATION_ENTER)
+			enter_profiling |= TRACING_FLAG;
+		if (rtm->prof_flags & MONO_PROFILER_CALL_INSTRUMENTATION_ENTER)
+			enter_profiling |= PROFILING_FLAG;
+		if (enter_profiling) {
 			interp_add_ins (td, MINT_PROF_ENTER);
+			td->last_ins->data [0] = enter_profiling;
+		}
 
+		/*
+		 * If safepoints are required by default, always check for polling,
+		 * without emitting new instructions. This optimizes method entry in
+		 * the common scenario, which is coop.
+		 */
+#if !defined(ENABLE_HYBRID_SUSPEND) && !defined(ENABLE_COOP_SUSPEND)
 		/* safepoint is required on method entry */
 		if (mono_threads_are_safepoints_enabled ())
 			interp_add_ins (td, MINT_SAFEPOINT);
+#endif
 	} else {
 		int local;
 		arg_locals = (guint32*) g_malloc ((!!signature->hasthis + signature->param_count) * sizeof (guint32));
@@ -3733,15 +3747,21 @@ generate_code (TransformData *td, MonoMethod *method, MonoMethodHeader *header, 
 				td->last_ins->flags |= INTERP_INST_FLAG_SEQ_POINT_METHOD_EXIT;
 			}
 
-			if (mono_jit_trace_calls != NULL && mono_trace_eval (method)) {
+			guint16 exit_profiling = 0;
+			if (mono_jit_trace_calls != NULL && mono_trace_eval (method))
+				exit_profiling |= TRACING_FLAG;
+			if (rtm->prof_flags & MONO_PROFILER_CALL_INSTRUMENTATION_LEAVE)
+				exit_profiling |= PROFILING_FLAG;
+			if (exit_profiling) {
 				/* This does the return as well */
 				if (ult->type == MONO_TYPE_VOID) {
-					interp_add_ins (td, MINT_TRACE_EXIT_VOID);
+					interp_add_ins (td, MINT_PROF_EXIT_VOID);
 					vt_size = -1;
 				} else {
-					interp_add_ins (td, MINT_TRACE_EXIT);
+					interp_add_ins (td, MINT_PROF_EXIT);
 				}
-				WRITE32_INS (td->last_ins, 0, &vt_size);
+				td->last_ins->data [0] = exit_profiling;
+				WRITE32_INS (td->last_ins, 1, &vt_size);
 				++td->ip;
 			} else {
 				if (vt_size == 0)
@@ -4753,7 +4773,9 @@ generate_code (TransformData *td, MonoMethod *method, MonoMethodHeader *header, 
 			MonoClass *field_klass = mono_class_from_mono_type_internal (ftype);
 			mt = mint_type (m_class_get_byval_arg (field_klass));
 #ifndef DISABLE_REMOTING
-			if (m_class_get_marshalbyref (klass)) {
+			if ((m_class_get_marshalbyref (klass) && !(signature->hasthis && td->last_ins->opcode == MINT_LDARG_P0)) ||
+					mono_class_is_contextbound (klass) ||
+					klass == mono_defaults.marshalbyrefobject_class) {
 				g_assert (!is_static);
 				interp_add_ins (td, mt == MINT_TYPE_VT ? MINT_LDRMFLD_VT :  MINT_LDRMFLD);
 				td->last_ins->data [0] = get_data_item_index (td, field);
@@ -6896,7 +6918,7 @@ retry:
 		}
 		// The instruction pops some values then pushes some other
 		get_inst_stack_usage (td, ins, &pop, &push);
-		if (td->verbose_level) {
+		if (td->verbose_level && ins->opcode != MINT_NOP) {
 			dump_interp_inst (ins);
 			g_print (", sp %d, (pop %d, push %d)\n", sp - stack, pop, push);
 		}
