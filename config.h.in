@@ -137,6 +137,9 @@
 /* Do not create structured crash files during unmanaged crashes */
 #undef DISABLE_STRUCTURED_CRASH
 
+/* Disable Threads */
+#undef DISABLE_THREADS
+
 /* Disables the verifier */
 #undef DISABLE_VERIFIER
 
