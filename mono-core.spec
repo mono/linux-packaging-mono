@@ -42,6 +42,7 @@ BuildRequires:  automake
 BuildRequires:  bison
 BuildRequires:  which
 BuildRequires:  cmake
+BuildRequires:  krb5-devel
 BuildRequires:  gettext
 BuildRequires:  fdupes
 BuildRequires:  gcc-c++
