@@ -4,7 +4,7 @@
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-AC_INIT(mono, [6.9.0.285],
+AC_INIT(mono, [6.9.0.304],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -1360,6 +1360,7 @@ MONO_LLVM_PATH_OPTION=llvm-path="`pwd`/llvm/usr/bin"
 if test x$cross_compiling = xyes -o x$enable_mcs_build = xno; then
    DISABLE_MCS_DOCS_default=yes
 elif test x$with_runtime_preset = xnetcore; then
+   # Keep in sync with winconfig.h netcore configuration.
    DISABLE_MCS_DOCS_default=yes
    BTLS_SUPPORTED=no
    enable_mcs_build=no
@@ -6998,7 +6999,7 @@ if test x$buildsgen = xyes; then
 fi
 
 if test "x$with_core" = "xonly"; then
-  if test ! -d netcore; then
+  if test ! -e netcore/Makefile; then
     # Out of tree builds
     mkdir -p netcore
     echo "all:" > netcore/Makefile
