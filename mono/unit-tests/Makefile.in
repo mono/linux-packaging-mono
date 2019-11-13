@@ -98,7 +98,9 @@ target_triplet = @target@
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-handle$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-path$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-callspec$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-string$(EXEEXT)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-string$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-embed$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-embed-invoke$(EXEEXT)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@TESTS = test-sgen-qsort$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-memfuncs$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-linked-list-set$(EXEEXT) \
@@ -106,7 +108,9 @@ target_triplet = @target@
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-handle$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-path$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-callspec$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-string$(EXEEXT)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-string$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-embed$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-embed-invoke$(EXEEXT)
 subdir = mono/unit-tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -133,14 +137,17 @@ LTLIBRARIES = $(noinst_LTLIBRARIES)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	../utils/libmonoutils.la
 am__libtestlib_la_SOURCES_DIST = test-sgen-qsort.c test-memfuncs.c \
 	test-mono-linked-list-set.c test-conc-hashtable.c \
-	test-mono-handle.c test-mono-callspec.c test-mono-string.c
+	test-mono-handle.c test-mono-callspec.c test-mono-string.c \
+	test-mono-embed.c test-embed-invoke.c
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_libtestlib_la_OBJECTS = libtestlib_la-test-sgen-qsort.lo \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-memfuncs.lo \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-mono-linked-list-set.lo \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-conc-hashtable.lo \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-mono-handle.lo \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-mono-callspec.lo \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-mono-string.lo
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-mono-string.lo \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-mono-embed.lo \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	libtestlib_la-test-embed-invoke.lo
 libtestlib_la_OBJECTS = $(am_libtestlib_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -163,6 +170,13 @@ test_conc_hashtable_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_conc_hashtable_CFLAGS) $(CFLAGS) \
 	$(test_conc_hashtable_LDFLAGS) $(LDFLAGS) -o $@
+am__test_embed_invoke_SOURCES_DIST = main.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_embed_invoke_OBJECTS = test_embed_invoke-main.$(OBJEXT)
+test_embed_invoke_OBJECTS = $(am_test_embed_invoke_OBJECTS)
+test_embed_invoke_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_embed_invoke_CFLAGS) $(CFLAGS) \
+	$(test_embed_invoke_LDFLAGS) $(LDFLAGS) -o $@
 am__test_memfuncs_SOURCES_DIST = main.c
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_memfuncs_OBJECTS = test_memfuncs-main.$(OBJEXT)
 test_memfuncs_OBJECTS = $(am_test_memfuncs_OBJECTS)
@@ -179,6 +193,13 @@ test_mono_callspec_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_mono_callspec_CFLAGS) $(CFLAGS) \
 	$(test_mono_callspec_LDFLAGS) $(LDFLAGS) -o $@
+am__test_mono_embed_SOURCES_DIST = main.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_mono_embed_OBJECTS = test_mono_embed-main.$(OBJEXT)
+test_mono_embed_OBJECTS = $(am_test_mono_embed_OBJECTS)
+test_mono_embed_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_mono_embed_CFLAGS) $(CFLAGS) $(test_mono_embed_LDFLAGS) \
+	$(LDFLAGS) -o $@
 am__test_mono_handle_SOURCES_DIST = main.c
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@am_test_mono_handle_OBJECTS = test_mono_handle-main.$(OBJEXT)
 test_mono_handle_OBJECTS = $(am_test_mono_handle_OBJECTS)
@@ -263,15 +284,18 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(libtestlib_la_SOURCES) $(test_conc_hashtable_SOURCES) \
-	$(test_memfuncs_SOURCES) $(test_mono_callspec_SOURCES) \
+	$(test_embed_invoke_SOURCES) $(test_memfuncs_SOURCES) \
+	$(test_mono_callspec_SOURCES) $(test_mono_embed_SOURCES) \
 	$(test_mono_handle_SOURCES) \
 	$(test_mono_linked_list_set_SOURCES) \
 	$(test_mono_string_SOURCES) $(test_path_SOURCES) \
 	$(test_sgen_qsort_SOURCES)
 DIST_SOURCES = $(am__libtestlib_la_SOURCES_DIST) \
 	$(am__test_conc_hashtable_SOURCES_DIST) \
+	$(am__test_embed_invoke_SOURCES_DIST) \
 	$(am__test_memfuncs_SOURCES_DIST) \
 	$(am__test_mono_callspec_SOURCES_DIST) \
+	$(am__test_mono_embed_SOURCES_DIST) \
 	$(am__test_mono_handle_SOURCES_DIST) \
 	$(am__test_mono_linked_list_set_SOURCES_DIST) \
 	$(am__test_mono_string_SOURCES_DIST) \
@@ -783,7 +807,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) -DMONO_BINDIR=\"$(bindir)/\" -DMONO_ASSEMBLIES=\"$(assembliesdir)\" -DMONO_CFG_DIR=\"$(confdir)\"
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono -I$(top_srcdir)/samples $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) -DMONO_BINDIR=\"$(bindir)/\" -DMONO_ASSEMBLIES=\"$(assembliesdir)\" -DMONO_CFG_DIR=\"$(confdir)\"
 CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
 TOOLS_RUNTIME = MONO_PATH=$(mcs_topdir)/class/lib/build $(top_builddir)/runtime/mono-wrapper --aot-path=$(mcs_topdir)/class/lib/build
 MCS_NO_UNSAFE = $(TOOLS_RUNTIME) $(CSC) -debug:portable \
@@ -820,7 +844,9 @@ mini_libs = $(monodir)/mono/mini/libmini.la $(am__append_1) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-conc-hashtable.c \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-handle.c \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-callspec.c \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-string.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-string.c \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-mono-embed.c \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	test-embed-invoke.c 
 
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@libtestlib_la_LIBADD = ../metadata/libmonoruntimesgen.la ../sgen/libmonosgen.la ../utils/libmonoutils.la
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_sgen_qsort_SOURCES = main.c
@@ -849,13 +875,23 @@ mini_libs = $(monodir)/mono/mini/libmini.la $(am__append_1) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_callspec_LDFLAGS = $(test_ldflags)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_callspec_DEPENDENCIES = callspec.exe
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_SOURCES = main.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_CFLAGS = $(test-cflags) -DMAIN=test_mono_string_main
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_CFLAGS = $(test_cflags) -DMAIN=test_mono_string_main
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_LDADD = $(test_ldadd) $(mini_libs) $(sgen_libs) libtestlib_la-test-mono-string.lo
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_string_LDFLAGS = $(test_ldflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_embed_SOURCES = main.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_embed_CFLAGS = $(test_cflags) -DMAIN=test_mono_embed_main
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_embed_LDADD = $(test_ldadd) $(mini_libs) $(sgen_libs) libtestlib_la-test-mono-embed.lo
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_embed_LDFLAGS = $(test_ldflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_mono_embed_DEPENDENCIES = test-embed.exe
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_path_SOURCES = test-path.c
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_path_CFLAGS = $(test-cflags)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_path_LDADD = $(test_ldadd) $(mini_libs) $(sgen_libs)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_path_LDFLAGS = $(test_ldflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_embed_invoke_SOURCES = main.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_embed_invoke_CFLAGS = $(test_cflags) -DMAIN=test_mono_embed_invoke_main
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_embed_invoke_LDADD = $(test_ldadd) $(mini_libs) $(sgen_libs) libtestlib_la-test-embed-invoke.lo
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_embed_invoke_LDFLAGS = $(test_ldflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test_embed_invoke_DEPENDENCIES = test-embed-invoke-cs.exe
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@AM_TESTS_ENVIRONMENT = export MONO_PATH=$(mcs_topdir)/class/lib/build;
 all: all-am
 
@@ -919,6 +955,10 @@ test-conc-hashtable$(EXEEXT): $(test_conc_hashtable_OBJECTS) $(test_conc_hashtab
 	@rm -f test-conc-hashtable$(EXEEXT)
 	$(AM_V_CCLD)$(test_conc_hashtable_LINK) $(test_conc_hashtable_OBJECTS) $(test_conc_hashtable_LDADD) $(LIBS)
 
+test-embed-invoke$(EXEEXT): $(test_embed_invoke_OBJECTS) $(test_embed_invoke_DEPENDENCIES) $(EXTRA_test_embed_invoke_DEPENDENCIES) 
+	@rm -f test-embed-invoke$(EXEEXT)
+	$(AM_V_CCLD)$(test_embed_invoke_LINK) $(test_embed_invoke_OBJECTS) $(test_embed_invoke_LDADD) $(LIBS)
+
 test-memfuncs$(EXEEXT): $(test_memfuncs_OBJECTS) $(test_memfuncs_DEPENDENCIES) $(EXTRA_test_memfuncs_DEPENDENCIES) 
 	@rm -f test-memfuncs$(EXEEXT)
 	$(AM_V_CCLD)$(test_memfuncs_LINK) $(test_memfuncs_OBJECTS) $(test_memfuncs_LDADD) $(LIBS)
@@ -926,6 +966,10 @@ test-memfuncs$(EXEEXT): $(test_memfuncs_OBJECTS) $(test_memfuncs_DEPENDENCIES) $
 test-mono-callspec$(EXEEXT): $(test_mono_callspec_OBJECTS) $(test_mono_callspec_DEPENDENCIES) $(EXTRA_test_mono_callspec_DEPENDENCIES) 
 	@rm -f test-mono-callspec$(EXEEXT)
 	$(AM_V_CCLD)$(test_mono_callspec_LINK) $(test_mono_callspec_OBJECTS) $(test_mono_callspec_LDADD) $(LIBS)
+
+test-mono-embed$(EXEEXT): $(test_mono_embed_OBJECTS) $(test_mono_embed_DEPENDENCIES) $(EXTRA_test_mono_embed_DEPENDENCIES) 
+	@rm -f test-mono-embed$(EXEEXT)
+	$(AM_V_CCLD)$(test_mono_embed_LINK) $(test_mono_embed_OBJECTS) $(test_mono_embed_LDADD) $(LIBS)
 
 test-mono-handle$(EXEEXT): $(test_mono_handle_OBJECTS) $(test_mono_handle_DEPENDENCIES) $(EXTRA_test_mono_handle_DEPENDENCIES) 
 	@rm -f test-mono-handle$(EXEEXT)
@@ -954,15 +998,19 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtestlib_la-test-conc-hashtable.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtestlib_la-test-embed-invoke.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtestlib_la-test-memfuncs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtestlib_la-test-mono-callspec.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtestlib_la-test-mono-embed.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtestlib_la-test-mono-handle.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtestlib_la-test-mono-linked-list-set.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtestlib_la-test-mono-string.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtestlib_la-test-sgen-qsort.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_conc_hashtable-main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_embed_invoke-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_memfuncs-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_callspec-main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_embed-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_handle-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_linked_list_set-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_string-main.Po@am__quote@
@@ -970,22 +1018,25 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_sgen_qsort-main.Po@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
@@ -1039,6 +1090,20 @@ libtestlib_la-test-mono-string.lo: test-mono-string.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtestlib_la_CFLAGS) $(CFLAGS) -c -o libtestlib_la-test-mono-string.lo `test -f 'test-mono-string.c' || echo '$(srcdir)/'`test-mono-string.c
 
+libtestlib_la-test-mono-embed.lo: test-mono-embed.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtestlib_la_CFLAGS) $(CFLAGS) -MT libtestlib_la-test-mono-embed.lo -MD -MP -MF $(DEPDIR)/libtestlib_la-test-mono-embed.Tpo -c -o libtestlib_la-test-mono-embed.lo `test -f 'test-mono-embed.c' || echo '$(srcdir)/'`test-mono-embed.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libtestlib_la-test-mono-embed.Tpo $(DEPDIR)/libtestlib_la-test-mono-embed.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-mono-embed.c' object='libtestlib_la-test-mono-embed.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtestlib_la_CFLAGS) $(CFLAGS) -c -o libtestlib_la-test-mono-embed.lo `test -f 'test-mono-embed.c' || echo '$(srcdir)/'`test-mono-embed.c
+
+libtestlib_la-test-embed-invoke.lo: test-embed-invoke.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtestlib_la_CFLAGS) $(CFLAGS) -MT libtestlib_la-test-embed-invoke.lo -MD -MP -MF $(DEPDIR)/libtestlib_la-test-embed-invoke.Tpo -c -o libtestlib_la-test-embed-invoke.lo `test -f 'test-embed-invoke.c' || echo '$(srcdir)/'`test-embed-invoke.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libtestlib_la-test-embed-invoke.Tpo $(DEPDIR)/libtestlib_la-test-embed-invoke.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-embed-invoke.c' object='libtestlib_la-test-embed-invoke.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtestlib_la_CFLAGS) $(CFLAGS) -c -o libtestlib_la-test-embed-invoke.lo `test -f 'test-embed-invoke.c' || echo '$(srcdir)/'`test-embed-invoke.c
+
 test_conc_hashtable-main.o: main.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_conc_hashtable_CFLAGS) $(CFLAGS) -MT test_conc_hashtable-main.o -MD -MP -MF $(DEPDIR)/test_conc_hashtable-main.Tpo -c -o test_conc_hashtable-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_conc_hashtable-main.Tpo $(DEPDIR)/test_conc_hashtable-main.Po
@@ -1052,6 +1117,20 @@ test_conc_hashtable-main.obj: main.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_conc_hashtable-main.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_conc_hashtable_CFLAGS) $(CFLAGS) -c -o test_conc_hashtable-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+
+test_embed_invoke-main.o: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_embed_invoke_CFLAGS) $(CFLAGS) -MT test_embed_invoke-main.o -MD -MP -MF $(DEPDIR)/test_embed_invoke-main.Tpo -c -o test_embed_invoke-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_embed_invoke-main.Tpo $(DEPDIR)/test_embed_invoke-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_embed_invoke-main.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_embed_invoke_CFLAGS) $(CFLAGS) -c -o test_embed_invoke-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+
+test_embed_invoke-main.obj: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_embed_invoke_CFLAGS) $(CFLAGS) -MT test_embed_invoke-main.obj -MD -MP -MF $(DEPDIR)/test_embed_invoke-main.Tpo -c -o test_embed_invoke-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_embed_invoke-main.Tpo $(DEPDIR)/test_embed_invoke-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_embed_invoke-main.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_embed_invoke_CFLAGS) $(CFLAGS) -c -o test_embed_invoke-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
 
 test_memfuncs-main.o: main.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_memfuncs_CFLAGS) $(CFLAGS) -MT test_memfuncs-main.o -MD -MP -MF $(DEPDIR)/test_memfuncs-main.Tpo -c -o test_memfuncs-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
@@ -1080,6 +1159,20 @@ test_mono_callspec-main.obj: main.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_mono_callspec-main.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_callspec_CFLAGS) $(CFLAGS) -c -o test_mono_callspec-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+
+test_mono_embed-main.o: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_embed_CFLAGS) $(CFLAGS) -MT test_mono_embed-main.o -MD -MP -MF $(DEPDIR)/test_mono_embed-main.Tpo -c -o test_mono_embed-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_embed-main.Tpo $(DEPDIR)/test_mono_embed-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_mono_embed-main.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_embed_CFLAGS) $(CFLAGS) -c -o test_mono_embed-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+
+test_mono_embed-main.obj: main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_embed_CFLAGS) $(CFLAGS) -MT test_mono_embed-main.obj -MD -MP -MF $(DEPDIR)/test_mono_embed-main.Tpo -c -o test_mono_embed-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_embed-main.Tpo $(DEPDIR)/test_mono_embed-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='test_mono_embed-main.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_embed_CFLAGS) $(CFLAGS) -c -o test_mono_embed-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
 
 test_mono_handle-main.o: main.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_handle_CFLAGS) $(CFLAGS) -MT test_mono_handle-main.o -MD -MP -MF $(DEPDIR)/test_mono_handle-main.Tpo -c -o test_mono_handle-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
@@ -1408,6 +1501,20 @@ test-mono-string.log: test-mono-string$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
+test-mono-embed.log: test-mono-embed$(EXEEXT)
+	@p='test-mono-embed$(EXEEXT)'; \
+	b='test-mono-embed'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+test-embed-invoke.log: test-embed-invoke$(EXEEXT)
+	@p='test-embed-invoke$(EXEEXT)'; \
+	b='test-embed-invoke'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 .test.log:
 	@p='$<'; \
 	$(am__set_b); \
@@ -1611,10 +1718,18 @@ uninstall-am:
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	fi;
 
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@clean-local:
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	rm -f callspec.exe callspec.pdb
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	rm -f callspec.exe callspec.pdb 
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	rm -f test-embed.exe test-embed.pdb
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	rm -f test-embed-invoke-cs.exe test-embed-invoke-cs.pdb
 
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@%.exe: %.cs
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(MCS) -r:$(CLASS)/System.dll -r:$(CLASS)/System.Xml.dll -r:$(CLASS)/System.Core.dll -out:$@ $<
+
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test-embed.exe: $(top_srcdir)/samples/embed/test.cs
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(MCS) -r:$(CLASS)/System.dll -r:$(CLASS)/System.Xml.dll -r:$(CLASS)/System.Core.dll -out:$@ $<
+
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@test-embed-invoke-cs.exe: $(top_srcdir)/samples/embed/invoke.cs
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@	$(MCS) -r:$(CLASS)/System.dll -r:$(CLASS)/System.Xml.dll -r:$(CLASS)/System.Core.dll  -out:$@ $<
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
