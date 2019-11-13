@@ -174,6 +174,7 @@ ICALL_EXPORT void ves_icall_System_GCHandle_FreeHandle (guint32 handle);
 ICALL_EXPORT void ves_icall_System_GC_InternalCollect (int generation);
 ICALL_EXPORT void ves_icall_System_GC_RecordPressure (gint64);
 ICALL_EXPORT void ves_icall_System_GC_WaitForPendingFinalizers (void);
+ICALL_EXPORT void ves_icall_System_GC_GetGCMemoryInfo (gint64*, gint64*, gint64*, gint64*, gint64*);
 #if !ENABLE_NETCORE
 ICALL_EXPORT void ves_icall_System_IO_LogcatTextWriter_Log (const char*, gint32, const char*);
 #endif
@@ -220,5 +221,6 @@ ICALL_EXPORT void ves_icall_Mono_Runtime_AnnotateMicrosoftTelemetry (const char 
 ICALL_EXPORT void ves_icall_Mono_Runtime_DisableMicrosoftTelemetry (void);
 ICALL_EXPORT int ves_icall_Mono_Runtime_CheckCrashReportingLog (const char *directory, MonoBoolean clear);
 ICALL_EXPORT void ves_icall_Mono_Runtime_EnableCrashReportingLog (const char *directory);
+ICALL_EXPORT void ves_icall_System_Array_InternalCreate (MonoArray *volatile* result, MonoType* type, gint32 rank, gint32* pLengths, gint32* pLowerBounds);
 
 #endif // __MONO_METADATA_ICALL_H__

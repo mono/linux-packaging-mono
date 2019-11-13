@@ -415,8 +415,8 @@ EXTRA_DIST = build.mk build_llvm_config.sh
 @TARGET_WASM_FALSE@LLVM_TARGET = 
 @TARGET_WASM_TRUE@LLVM_TARGET = wasm32
 
-# LLVM_BRANCH  := $(shell git -C "$(abs_top_srcdir)/external/llvm" rev-parse --abbrev-ref HEAD)
-LLVM_VERSION := $(shell git -C "$(abs_top_srcdir)/external/llvm" rev-parse HEAD)
+# LLVM_BRANCH  := $(shell git -C "$(abs_top_srcdir)/external/llvm-project/llvm" rev-parse --abbrev-ref HEAD)
+LLVM_VERSION := $(shell git -C "$(abs_top_srcdir)/external/llvm-project/llvm" rev-parse HEAD)
 
 # FIXME: URL should be http://xamjenkinsartifact.blob.core.windows.net/build-package-osx-llvm-$(LLVM_BRANCH)/llvm-osx64-$(LLVM_VERSION).tar.gz
 LLVM_DOWNLOAD_LOCATION = "http://xamjenkinsartifact.blob.core.windows.net/build-package-osx-llvm-release60/llvm-osx64-$(LLVM_VERSION).tar.gz"
@@ -659,7 +659,7 @@ LLVM_BUILD ?= $(abspath $(abs_top_srcdir)/llvm/build)
 LLVM_PREFIX ?= $(abspath $(abs_top_srcdir)/llvm/usr)
 
 # -DLLVM_ENABLE_LIBXML2=Off is needed because xml2 is not used and it breaks 32-bit builds on 64-bit Linux hosts
-$(LLVM_BUILD)/$(if $(NINJA),build.ninja,Makefile): $(abs_top_srcdir)/external/llvm/CMakeLists.txt
+$(LLVM_BUILD)/$(if $(NINJA),build.ninja,Makefile): $(abs_top_srcdir)/external/llvm-project/llvm/CMakeLists.txt
 	mkdir -p $(LLVM_BUILD) $(LLVM_PREFIX)
 	cd $(LLVM_BUILD) && $(CMAKE) \
 		$(if $(NINJA),-G Ninja) \
@@ -686,7 +686,7 @@ configure-llvm: $(LLVM_BUILD)/$(if $(NINJA),build.ninja,Makefile)
 
 .PHONY: build-llvm
 build-llvm: configure-llvm
-	DESTDIR="" $(if $(NINJA),$(NINJA),$(MAKE)) -C $(LLVM_BUILD)
+	DESTDIR="" $(if $(NINJA),$(NINJA),$(MAKE) -j) -C $(LLVM_BUILD)
 
 .PHONY: install-llvm
 install-llvm: build-llvm
