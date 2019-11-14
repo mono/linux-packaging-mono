@@ -4,7 +4,7 @@
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-AC_INIT(mono, [6.9.0.366],
+AC_INIT(mono, [6.9.0.370],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -63,7 +63,7 @@ MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-MONO_CORLIB_VERSION=3EAB4D03-8026-4D77-B1AE-AC96DF737E67
+MONO_CORLIB_VERSION=4519505b-4021-473c-867a-ee387a584821
 
 #
 # Put a quoted #define in config.h.
