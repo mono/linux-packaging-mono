@@ -4,7 +4,7 @@
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-AC_INIT(mono, [6.9.0.370],
+AC_INIT(mono, [6.9.0.390],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -63,7 +63,7 @@ MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-MONO_CORLIB_VERSION=4519505b-4021-473c-867a-ee387a584821
+MONO_CORLIB_VERSION=423e7794-9279-49a3-a477-f1cb2432e9f4
 
 #
 # Put a quoted #define in config.h.
@@ -3408,6 +3408,15 @@ if test x$host_win32 = xno; then
 	AC_CHECK_DECL(ECHO,              [AC_DEFINE(HAVE_ECHO, 1, [ECHO])], [], [[#include <termios.h>]])
 	AC_CHECK_DECL(ICANON,            [AC_DEFINE(HAVE_ICANON, 1, [ICANON])], [], [[#include <termios.h>]])
 	AC_CHECK_DECL(TCSANOW,           [AC_DEFINE(HAVE_TCSANOW, 1, [TCSANOW])], [], [[#include <termios.h>]])
+
+	AC_CHECK_DECL(lchflags,          [AC_DEFINE(HAVE_LCHFLAGS, 1, [lchflags])], [], 
+		[[#include <sys/types.h> 
+		#include <sys/stat.h>]])
+	AC_CHECK_MEMBER(struct stat.st_flags,
+		[AC_DEFINE(HAVE_STAT_FLAGS, 1, [struct stat.st_flags])],
+		[],
+		[#include <sys/types.h>
+		#include <sys/stat.h>])
 
 	AC_CHECK_MEMBER(struct stat.st_birthtimespec,
 		[AC_DEFINE(HAVE_STAT_BIRTHTIME, 1, [struct stat.st_birthtimespec])],
