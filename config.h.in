@@ -632,6 +632,9 @@
 /* Have large file support */
 #undef HAVE_LARGE_FILE_SUPPORT
 
+/* lchflags */
+#undef HAVE_LCHFLAGS
+
 /* Define to 1 if you have the `iconv' library (-liconv). */
 #undef HAVE_LIBICONV
 
@@ -983,6 +986,9 @@
 
 /* struct stat.st_birthtimespec */
 #undef HAVE_STAT_BIRTHTIME
+
+/* struct stat.st_flags */
+#undef HAVE_STAT_FLAGS
 
 /* struct stat.st_atimensec */
 #undef HAVE_STAT_NSEC

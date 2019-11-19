@@ -7440,7 +7440,7 @@ namespace System.Diagnostics
         public static void Break() { }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static bool IsLogging() { throw null; }
         public static bool Launch() { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static void Log(int level, string category, string message) { }
+        public static void Log(int level, string category, string message) { }
         public static void NotifyOfCrossThreadDependency() { }
     }
     [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.Property, AllowMultiple=false)]
