@@ -92,6 +92,7 @@ target_triplet = @target@
 @ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__append_1 = $(gss_sources)
 @ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__append_2 = $(gss_sources)
 @ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__append_3 = $(gss_sources)
+@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__append_4 = $(gss_sources)
 subdir = mono/native
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -234,26 +235,27 @@ am__dirstamp = $(am__leading_dot)dirstamp
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_tcpstate.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo
 @ENABLE_MSVC_ONLY_FALSE@am__objects_3 = $(am__objects_2)
-@ENABLE_MSVC_ONLY_FALSE@am__objects_4 = libmono_native_compat_la-pal-android.lo \
+@ENABLE_MSVC_ONLY_FALSE@am__objects_4 = ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_compat_la-pal_gssapi.lo
+@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_5 =  \
+@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_4)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_6 = libmono_native_compat_la-pal-android.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmono_native_compat_la-pal-icalls.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_io.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networkstatistics.lo \
-@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo
-@ENABLE_MSVC_ONLY_FALSE@am__objects_5 = ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_compat_la-pal_gssapi.lo
-@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_6 =  \
-@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_5)
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_5)
 @ENABLE_MSVC_ONLY_FALSE@am__objects_7 = $(am__objects_2) \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_6)
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_5)
 @ENABLE_MSVC_ONLY_FALSE@am__objects_8 = libmono_native_compat_la-pal-icalls.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_io.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_networking.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_tcpstate.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_compat_la-pal_random.lo \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_6)
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_5)
 @ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_HAIKU_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_FALSE@am__objects_9 = $(am__objects_3)
 @ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_TRUE@am__objects_9 = $(am__objects_3)
 @ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_3)
-@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_4)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_6)
 @ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_3)
 @ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_7)
 @ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_9 = $(am__objects_8)
@@ -364,26 +366,27 @@ am__libmono_native_unified_la_SOURCES_DIST = pal_config.h \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_tcpstate.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo
 @ENABLE_MSVC_ONLY_FALSE@am__objects_12 = $(am__objects_11)
-@ENABLE_MSVC_ONLY_FALSE@am__objects_13 = libmono_native_unified_la-pal-android.lo \
+@ENABLE_MSVC_ONLY_FALSE@am__objects_13 = ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_unified_la-pal_gssapi.lo
+@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_14 =  \
+@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_13)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_15 = libmono_native_unified_la-pal-android.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmono_native_unified_la-pal-icalls.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_io.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networkstatistics.lo \
-@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo
-@ENABLE_MSVC_ONLY_FALSE@am__objects_14 = ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_unified_la-pal_gssapi.lo
-@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_15 =  \
-@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_14)
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_14)
 @ENABLE_MSVC_ONLY_FALSE@am__objects_16 = $(am__objects_11) \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_15)
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_14)
 @ENABLE_MSVC_ONLY_FALSE@am__objects_17 = libmono_native_unified_la-pal-icalls.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_io.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_networking.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_tcpstate.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_unified_la-pal_random.lo \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_15)
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_14)
 @ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_HAIKU_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_FALSE@am__objects_18 = $(am__objects_12)
 @ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_TRUE@am__objects_18 = $(am__objects_12)
 @ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_12)
-@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_13)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_15)
 @ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_12)
 @ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_16)
 @ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_18 = $(am__objects_17)
@@ -491,28 +494,29 @@ am__libmono_native_la_SOURCES_DIST = pal_config.h \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_tcpstate.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo
 @ENABLE_MSVC_ONLY_FALSE@am__objects_21 = $(am__objects_20)
-@ENABLE_MSVC_ONLY_FALSE@am__objects_22 =  \
+@ENABLE_MSVC_ONLY_FALSE@am__objects_22 = ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_la-pal_gssapi.lo
+@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_23 =  \
+@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_22)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_24 =  \
 @ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal-android.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal-icalls.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_io.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networkstatistics.lo \
-@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo
-@ENABLE_MSVC_ONLY_FALSE@am__objects_23 = ../../external/corefx/src/Native/Unix/System.Net.Security.Native/libmono_native_la-pal_gssapi.lo
-@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_24 =  \
-@ENABLE_GSS_TRUE@@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_23)
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_23)
 @ENABLE_MSVC_ONLY_FALSE@am__objects_25 = $(am__objects_20) \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_24)
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_23)
 @ENABLE_MSVC_ONLY_FALSE@am__objects_26 =  \
 @ENABLE_MSVC_ONLY_FALSE@	libmono_native_la-pal-icalls.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_io.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_networking.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_tcpstate.lo \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/libmono_native_la-pal_random.lo \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_24)
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_23)
 @ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_HAIKU_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_FALSE@am__objects_27 = $(am__objects_21)
 @ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_FALSE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@@MONO_NATIVE_PLATFORM_NETBSD_TRUE@am__objects_27 = $(am__objects_21)
 @ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_FALSE@@MONO_NATIVE_PLATFORM_FREEBSD_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_21)
-@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_22)
+@ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_FALSE@@MONO_NATIVE_PLATFORM_ANDROID_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_24)
 @ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_AIX_TRUE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_FALSE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_21)
 @ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_IOS_FALSE@@MONO_NATIVE_PLATFORM_LINUX_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_25)
 @ENABLE_MSVC_ONLY_FALSE@@MONO_NATIVE_PLATFORM_IOS_TRUE@@MONO_NATIVE_PLATFORM_MACOS_FALSE@am__objects_27 = $(am__objects_26)
@@ -983,18 +987,15 @@ CCLD = $(MONO_NATIVE_CC)
 @ENABLE_MSVC_ONLY_FALSE@freebsd_sources = $(unix_sources)
 @ENABLE_MSVC_ONLY_FALSE@netbsd_sources = $(unix_sources)
 @ENABLE_MSVC_ONLY_FALSE@haiku_sources = $(unix_sources)
-@ENABLE_MSVC_ONLY_FALSE@android_sources = \
-@ENABLE_MSVC_ONLY_FALSE@	pal-android.h \
-@ENABLE_MSVC_ONLY_FALSE@	pal-android.c \
-@ENABLE_MSVC_ONLY_FALSE@	pal-icalls.h \
-@ENABLE_MSVC_ONLY_FALSE@	pal-icalls.c \
+@ENABLE_MSVC_ONLY_FALSE@android_sources = pal-android.h pal-android.c \
+@ENABLE_MSVC_ONLY_FALSE@	pal-icalls.h pal-icalls.c \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_io.c \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_io.h \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.c \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_networkstatistics.h \
 @ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_random.c \
-@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_random.h
-
+@ENABLE_MSVC_ONLY_FALSE@	../../external/corefx/src/Native/Unix/System.Native/pal_random.h \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__append_4)
 @ENABLE_MSVC_ONLY_FALSE@unix_sources = \
 @ENABLE_MSVC_ONLY_FALSE@	pal-icalls.h \
 @ENABLE_MSVC_ONLY_FALSE@	pal-icalls.c \
