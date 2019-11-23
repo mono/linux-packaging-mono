@@ -98,7 +98,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
 	$(top_srcdir)/m4/ax_require_defined.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/m4/mono-output.m4 $(top_srcdir)/m4/nls.m4 \
 	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
 	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -330,6 +331,7 @@ MONO_NATIVE_UNIFIED_CFLAGS = @MONO_NATIVE_UNIFIED_CFLAGS@
 MONO_NATIVE_UNIFIED_CPPFLAGS = @MONO_NATIVE_UNIFIED_CPPFLAGS@
 MONO_NATIVE_UNIFIED_CXXFLAGS = @MONO_NATIVE_UNIFIED_CXXFLAGS@
 MONO_NATIVE_UNIFIED_LDFLAGS = @MONO_NATIVE_UNIFIED_LDFLAGS@
+MONO_SUBDIRS = @MONO_SUBDIRS@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -407,7 +409,6 @@ builddir = @builddir@
 datadir = @datadir@
 datarootdir = @datarootdir@
 docdir = @docdir@
-docs_dir = @docs_dir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 export_ldflags = @export_ldflags@
@@ -418,13 +419,11 @@ host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
 htmldir = @htmldir@
-ikvm_native_dir = @ikvm_native_dir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
-libgc_dir = @libgc_dir@
 libgdiplus_install_loc = @libgdiplus_install_loc@
 libgdiplus_loc = @libgdiplus_loc@
 libmono_cflags = @libmono_cflags@
@@ -796,28 +795,6 @@ uninstall-am:
 
 .PRECIOUS: Makefile
 
-
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@monotouch-do-build:
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	@list='$(SUBDIRS)'; for subdir in $$list; do \
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	  case "x$$subdir" in \
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@		xmetadata ) target="monotouch-do-build" ;; \
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@		xmini ) target="monotouch-do-build" ;; \
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@		* ) target="all" ;; \
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	  esac; \
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	  echo "Making $$target in $$subdir"; \
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$target); \
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@    done;
-
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@monotouch-do-clean:
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	@list='$(SUBDIRS)'; for subdir in $$list; do \
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	  case "x$$subdir" in \
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@		xmetadata ) target="monotouch-do-clean" ;; \
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@		xmini ) target="monotouch-do-clean" ;; \
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@		* ) target="clean" ;; \
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	  esac; \
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	  echo "Making $$target in $$subdir"; \
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$target); \
-@CROSS_COMPILING_FALSE@@ENABLE_NETCORE_FALSE@@INSTALL_MONOTOUCH_TRUE@    done;
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

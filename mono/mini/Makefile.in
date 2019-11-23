@@ -129,7 +129,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
 	$(top_srcdir)/m4/ax_require_defined.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/m4/mono-output.m4 $(top_srcdir)/m4/nls.m4 \
 	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
 	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -409,7 +410,7 @@ libmono_llvm_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(LDFLAGS) -o $@
 @ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@am_libmono_llvm_la_rpath =  \
 @ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@	-rpath $(libdir)
-@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_FALSE@am__DEPENDENCIES_2 = $(monodir)/libgc/libmonogc.la
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_FALSE@am__DEPENDENCIES_2 = $(monodir)/external/bdwgc/libgc.la
 @ENABLE_MSVC_ONLY_FALSE@am__DEPENDENCIES_3 = $(monodir)/mono/metadata/libmonoruntime.la \
 @ENABLE_MSVC_ONLY_FALSE@	$(monodir)/mono/utils/libmonoutils.la \
 @ENABLE_MSVC_ONLY_FALSE@	$(glib_libs) $(am__DEPENDENCIES_2)
@@ -726,6 +727,7 @@ MONO_NATIVE_UNIFIED_CFLAGS = @MONO_NATIVE_UNIFIED_CFLAGS@
 MONO_NATIVE_UNIFIED_CPPFLAGS = @MONO_NATIVE_UNIFIED_CPPFLAGS@
 MONO_NATIVE_UNIFIED_CXXFLAGS = @MONO_NATIVE_UNIFIED_CXXFLAGS@
 MONO_NATIVE_UNIFIED_LDFLAGS = @MONO_NATIVE_UNIFIED_LDFLAGS@
+MONO_SUBDIRS = @MONO_SUBDIRS@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -803,7 +805,6 @@ builddir = @builddir@
 datadir = @datadir@
 datarootdir = @datarootdir@
 docdir = @docdir@
-docs_dir = @docs_dir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 export_ldflags = @export_ldflags@
@@ -814,13 +815,11 @@ host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
 htmldir = @htmldir@
-ikvm_native_dir = @ikvm_native_dir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
-libgc_dir = @libgc_dir@
 libgdiplus_install_loc = @libgdiplus_install_loc@
 libgdiplus_loc = @libgdiplus_loc@
 libmono_cflags = @libmono_cflags@
@@ -868,11 +867,11 @@ monodir = $(top_builddir)
 mono = $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),mono)
 @HOST_WIN32_FALSE@PLATFORM_PATH_SEPARATOR = :
 @HOST_WIN32_TRUE@PLATFORM_PATH_SEPARATOR = ;
-@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_FALSE@libgc_libs = $(monodir)/libgc/libmonogc.la
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_FALSE@libgc_libs = $(monodir)/external/bdwgc/libgc.la
 
 # This is needed for automake dependency generation
 @ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_TRUE@libgc_libs = 
-@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_FALSE@libgc_static_libs = $(monodir)/libgc/libmonogc-static.la
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_FALSE@libgc_static_libs = $(monodir)/external/bdwgc/libgc-static.la
 @ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_TRUE@libgc_static_libs = 
 @ENABLE_MSVC_ONLY_FALSE@glib_libs = $(monodir)/mono/eglib/libeglib.la
 @ENABLE_MSVC_ONLY_FALSE@boehm_libs = \
