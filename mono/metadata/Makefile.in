@@ -92,11 +92,6 @@ host_triplet = @host@
 target_triplet = @target@
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_TRUE@am__append_1 = threadpool-worker-wasm.c
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_FALSE@am__append_2 = threadpool-worker-default.c
-@ENABLE_MONOTOUCH_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__append_3 = ../../support/zlib-helper.c
-@ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__append_4 = \
-@ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@@ENABLE_MSVC_ONLY_FALSE@	../../support/nl.c \
-@ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@@ENABLE_MSVC_ONLY_FALSE@	../../support/zlib-helper.c
-
 subdir = mono/metadata
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -193,27 +188,18 @@ libmonoruntime_config_la_OBJECTS =  \
 	$(am_libmonoruntime_config_la_OBJECTS)
 @ENABLE_MSVC_ONLY_FALSE@am_libmonoruntime_config_la_rpath =
 libmonoruntime_support_la_LIBADD =
-am__libmonoruntime_support_la_SOURCES_DIST = empty.c \
-	../../support/zlib-helper.c ../../support/nl.c
-am__dirstamp = $(am__leading_dot)dirstamp
-@ENABLE_MONOTOUCH_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_1 = ../../support/libmonoruntime_support_la-zlib-helper.lo
-@ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__objects_2 = ../../support/libmonoruntime_support_la-nl.lo \
-@ENABLE_MONODROID_TRUE@@ENABLE_MONOTOUCH_FALSE@@ENABLE_MSVC_ONLY_FALSE@	../../support/libmonoruntime_support_la-zlib-helper.lo
-@ENABLE_MSVC_ONLY_FALSE@am__objects_3 =  \
-@ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_support_la-empty.lo \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_1) $(am__objects_2)
-@ENABLE_MSVC_ONLY_FALSE@am_libmonoruntime_support_la_OBJECTS =  \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_3)
+am__libmonoruntime_support_la_SOURCES_DIST = support.c
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_FALSE@am_libmonoruntime_support_la_OBJECTS = libmonoruntime_support_la-support.lo
 libmonoruntime_support_la_OBJECTS =  \
 	$(am_libmonoruntime_support_la_OBJECTS)
 libmonoruntime_support_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmonoruntime_support_la_CFLAGS) $(CFLAGS) \
 	$(libmonoruntime_support_la_LDFLAGS) $(LDFLAGS) -o $@
-@ENABLE_MSVC_ONLY_FALSE@am_libmonoruntime_support_la_rpath =
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_FALSE@am_libmonoruntime_support_la_rpath =
 @ENABLE_MSVC_ONLY_FALSE@libmonoruntime_la_DEPENDENCIES =  \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime-config.la \
-@ENABLE_MSVC_ONLY_FALSE@	libmonoruntime-support.la
+@ENABLE_MSVC_ONLY_FALSE@	$(support_libraries)
 am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	w32semaphore-unix.c w32event-unix.c w32process-unix.c \
 	w32process-unix-internals.h w32process-unix-osx.c \
@@ -283,7 +269,7 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	marshal-ilgen.c marshal-ilgen.h sgen-mono-ilgen.c \
 	sgen-mono-ilgen.h gc-stats.c gc.c monitor.c null-gc.c \
 	null-gc-handles.h null-gc-handles.c boehm-gc.c
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_4 = libmonoruntime_la-console-unix.lo \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_1 = libmonoruntime_la-console-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntime_la-w32mutex-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntime_la-w32semaphore-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntime_la-w32event-unix.lo \
@@ -296,9 +282,9 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntime_la-w32file-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntime_la-w32file-unix-glob.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntime_la-w32error-unix.lo
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_TRUE@am__objects_5 = libmonoruntime_la-threadpool-worker-wasm.lo
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_FALSE@am__objects_6 = libmonoruntime_la-threadpool-worker-default.lo
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_7 = libmonoruntime_la-console-win32.lo \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_TRUE@am__objects_2 = libmonoruntime_la-threadpool-worker-wasm.lo
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_FALSE@am__objects_3 = libmonoruntime_la-threadpool-worker-default.lo
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_4 = libmonoruntime_la-console-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntime_la-w32file-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntime_la-icall-windows.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntime_la-marshal-windows.lo \
@@ -309,15 +295,15 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntime_la-w32process-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntime_la-w32socket-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntime_la-w32error-win32.lo
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_8 =  \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_4) \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_5) \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_6)
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_8 =  \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_7) \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_5) \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_6)
-@ENABLE_MSVC_ONLY_FALSE@am__objects_9 = $(am__objects_8) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_5 =  \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_1) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_2) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_3)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_5 =  \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_4) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_2) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_3)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_6 = $(am__objects_5) \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-appdomain.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-assembly-load-context.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-domain.lo \
@@ -394,22 +380,21 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-callspec.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-abi.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-native-library.lo
-@DISABLE_ICALL_TABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__objects_10 = libmonoruntime_la-icall-table.lo
-@ENABLE_ILGEN_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_11 = libmonoruntime_la-method-builder-ilgen.lo \
+@DISABLE_ICALL_TABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__objects_7 = libmonoruntime_la-icall-table.lo
+@ENABLE_ILGEN_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_8 = libmonoruntime_la-method-builder-ilgen.lo \
 @ENABLE_ILGEN_TRUE@@ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-marshal-ilgen.lo \
 @ENABLE_ILGEN_TRUE@@ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-sgen-mono-ilgen.lo
-@ENABLE_MSVC_ONLY_FALSE@am__objects_12 =  \
-@ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-gc-stats.lo \
+@ENABLE_MSVC_ONLY_FALSE@am__objects_9 = libmonoruntime_la-gc-stats.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-gc.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-monitor.lo
-@ENABLE_MSVC_ONLY_FALSE@am__objects_13 = libmonoruntime_la-null-gc.lo \
+@ENABLE_MSVC_ONLY_FALSE@am__objects_10 = libmonoruntime_la-null-gc.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-null-gc-handles.lo
-@ENABLE_MSVC_ONLY_FALSE@am__objects_14 =  \
+@ENABLE_MSVC_ONLY_FALSE@am__objects_11 =  \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-boehm-gc.lo
 @ENABLE_MSVC_ONLY_FALSE@am_libmonoruntime_la_OBJECTS =  \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_9) $(am__objects_10) \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_11) $(am__objects_12) \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_13) $(am__objects_14)
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_6) $(am__objects_7) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_8) $(am__objects_9) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_10) $(am__objects_11)
 libmonoruntime_la_OBJECTS = $(am_libmonoruntime_la_OBJECTS)
 libmonoruntime_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -418,7 +403,7 @@ libmonoruntime_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@am_libmonoruntime_la_rpath =
 @ENABLE_MSVC_ONLY_FALSE@libmonoruntimesgen_la_DEPENDENCIES =  \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime-config.la \
-@ENABLE_MSVC_ONLY_FALSE@	libmonoruntime-support.la
+@ENABLE_MSVC_ONLY_FALSE@	$(support_libraries)
 am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	w32mutex-unix.c w32semaphore-unix.c w32event-unix.c \
 	w32process-unix.c w32process-unix-internals.h \
@@ -491,7 +476,7 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	sgen-old-bridge.c sgen-new-bridge.c sgen-tarjan-bridge.c \
 	sgen-toggleref.c sgen-toggleref.h sgen-stw.c sgen-mono.c \
 	sgen-mono.h sgen-client-mono.h
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_15 = libmonoruntimesgen_la-console-unix.lo \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_12 = libmonoruntimesgen_la-console-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32mutex-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32semaphore-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32event-unix.lo \
@@ -504,9 +489,9 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32file-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32file-unix-glob.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32error-unix.lo
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_TRUE@am__objects_16 = libmonoruntimesgen_la-threadpool-worker-wasm.lo
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_FALSE@am__objects_17 = libmonoruntimesgen_la-threadpool-worker-default.lo
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_18 = libmonoruntimesgen_la-console-win32.lo \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_TRUE@am__objects_13 = libmonoruntimesgen_la-threadpool-worker-wasm.lo
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_FALSE@am__objects_14 = libmonoruntimesgen_la-threadpool-worker-default.lo
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_15 = libmonoruntimesgen_la-console-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32file-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntimesgen_la-icall-windows.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntimesgen_la-marshal-windows.lo \
@@ -517,15 +502,15 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32process-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32socket-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32error-win32.lo
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_19 =  \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_15) \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_16) \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_17)
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_19 =  \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_18) \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_16) \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_17)
-@ENABLE_MSVC_ONLY_FALSE@am__objects_20 = $(am__objects_19) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_16 =  \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_12) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_13) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_14)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_16 =  \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_15) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_13) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_14)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_17 = $(am__objects_16) \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-appdomain.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-assembly-load-context.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-domain.lo \
@@ -602,15 +587,15 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-callspec.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-abi.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-native-library.lo
-@DISABLE_ICALL_TABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__objects_21 = libmonoruntimesgen_la-icall-table.lo
-@ENABLE_ILGEN_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_22 = libmonoruntimesgen_la-method-builder-ilgen.lo \
+@DISABLE_ICALL_TABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__objects_18 = libmonoruntimesgen_la-icall-table.lo
+@ENABLE_ILGEN_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_19 = libmonoruntimesgen_la-method-builder-ilgen.lo \
 @ENABLE_ILGEN_TRUE@@ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-marshal-ilgen.lo \
 @ENABLE_ILGEN_TRUE@@ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-sgen-mono-ilgen.lo
-@ENABLE_MSVC_ONLY_FALSE@am__objects_23 =  \
+@ENABLE_MSVC_ONLY_FALSE@am__objects_20 =  \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-gc-stats.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-gc.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-monitor.lo
-@ENABLE_MSVC_ONLY_FALSE@am__objects_24 =  \
+@ENABLE_MSVC_ONLY_FALSE@am__objects_21 =  \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-sgen-bridge.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-sgen-old-bridge.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-sgen-new-bridge.lo \
@@ -619,9 +604,9 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-sgen-stw.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-sgen-mono.lo
 @ENABLE_MSVC_ONLY_FALSE@am_libmonoruntimesgen_la_OBJECTS =  \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_20) $(am__objects_21) \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_22) $(am__objects_23) \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_24)
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_17) $(am__objects_18) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_19) $(am__objects_20) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_21)
 libmonoruntimesgen_la_OBJECTS = $(am_libmonoruntimesgen_la_OBJECTS)
 libmonoruntimesgen_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -1036,13 +1021,11 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@boehm_libraries = libmonoruntime.la
 @DISABLE_ICALL_TABLES_TRUE@@ENABLE_MSVC_ONLY_FALSE@icall_table_libraries = libmono-icall-table.la
 @ENABLE_ILGEN_FALSE@@ENABLE_MSVC_ONLY_FALSE@ilgen_libraries = libmono-ilgen.la
-@ENABLE_MSVC_ONLY_FALSE@support_sources = empty.c $(am__append_3) \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__append_4)
 @ENABLE_MSVC_ONLY_FALSE@BUNDLE_ZLIB_PATH = $(top_builddir)/mono/zlib/libz.la
 @ENABLE_MSVC_ONLY_FALSE@@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@Z_LIBS = $(BUNDLE_ZLIB_PATH)
 @ENABLE_MSVC_ONLY_FALSE@@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_TRUE@Z_LIBS = -lz
 @ENABLE_MSVC_ONLY_FALSE@@HAVE_STATIC_ZLIB_TRUE@Z_LIBS = $(STATIC_ZLIB_PATH)
-@ENABLE_MSVC_ONLY_FALSE@noinst_LTLIBRARIES = libmonoruntime-config.la libmonoruntime-support.la $(boehm_libraries) $(sgen_libraries)
+@ENABLE_MSVC_ONLY_FALSE@noinst_LTLIBRARIES = libmonoruntime-config.la $(support_libraries) $(boehm_libraries) $(sgen_libraries)
 @ENABLE_MSVC_ONLY_FALSE@lib_LTLIBRARIES = $(icall_table_libraries) $(ilgen_libraries)
 @ENABLE_MSVC_ONLY_FALSE@AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS)
 
@@ -1060,9 +1043,10 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 #
 # Support is a separate library because it is not valid C++.
 #
-@ENABLE_MSVC_ONLY_FALSE@libmonoruntime_support_la_SOURCES = $(support_sources)
-@ENABLE_MSVC_ONLY_FALSE@libmonoruntime_support_la_LDFLAGS = $(Z_LIBS)
-@ENABLE_MSVC_ONLY_FALSE@libmonoruntime_support_la_CFLAGS = $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@) @ZLIB_CFLAGS@
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_FALSE@support_libraries = libmonoruntime-support.la
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_FALSE@libmonoruntime_support_la_SOURCES = support.c
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_FALSE@libmonoruntime_support_la_LDFLAGS = $(Z_LIBS)
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_FALSE@libmonoruntime_support_la_CFLAGS = $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@) @ZLIB_CFLAGS@
 
 #
 # This library contains the icall tables if the runtime was configured with --disable-icall-tables
@@ -1326,11 +1310,11 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@libmonoruntime_la_SOURCES = $(common_sources) $(icall_tables_sources) $(ilgen_sources) $(gc_dependent_sources) $(null_gc_sources) $(boehm_sources)
 # Add CXX_ADD_CFLAGS per-library until/unless https://github.com/dotnet/corefx/pull/31342.
 @ENABLE_MSVC_ONLY_FALSE@libmonoruntime_la_CFLAGS = $(BOEHM_DEFINES) @CXX_ADD_CFLAGS@
-@ENABLE_MSVC_ONLY_FALSE@libmonoruntime_la_LIBADD = libmonoruntime-config.la libmonoruntime-support.la
+@ENABLE_MSVC_ONLY_FALSE@libmonoruntime_la_LIBADD = libmonoruntime-config.la $(support_libraries)
 @ENABLE_MSVC_ONLY_FALSE@libmonoruntimesgen_la_SOURCES = $(common_sources) $(icall_tables_sources) $(ilgen_sources) $(gc_dependent_sources) $(sgen_sources)
 # Add CXX_ADD_CFLAGS per-library until/unless https://github.com/dotnet/corefx/pull/31342.
 @ENABLE_MSVC_ONLY_FALSE@libmonoruntimesgen_la_CFLAGS = $(SGEN_DEFINES) @CXX_ADD_CFLAGS@
-@ENABLE_MSVC_ONLY_FALSE@libmonoruntimesgen_la_LIBADD = libmonoruntime-config.la libmonoruntime-support.la
+@ENABLE_MSVC_ONLY_FALSE@libmonoruntimesgen_la_LIBADD = libmonoruntime-config.la $(support_libraries)
 libmonoruntimeincludedir = $(includedir)/mono-$(API_VER)/mono/metadata
 
 # This list is sorted for easier searching.
@@ -1458,18 +1442,6 @@ libmono-ilgen.la: $(libmono_ilgen_la_OBJECTS) $(libmono_ilgen_la_DEPENDENCIES) $
 
 libmonoruntime-config.la: $(libmonoruntime_config_la_OBJECTS) $(libmonoruntime_config_la_DEPENDENCIES) $(EXTRA_libmonoruntime_config_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK) $(am_libmonoruntime_config_la_rpath) $(libmonoruntime_config_la_OBJECTS) $(libmonoruntime_config_la_LIBADD) $(LIBS)
-../../support/$(am__dirstamp):
-	@$(MKDIR_P) ../../support
-	@: > ../../support/$(am__dirstamp)
-../../support/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) ../../support/$(DEPDIR)
-	@: > ../../support/$(DEPDIR)/$(am__dirstamp)
-../../support/libmonoruntime_support_la-zlib-helper.lo:  \
-	../../support/$(am__dirstamp) \
-	../../support/$(DEPDIR)/$(am__dirstamp)
-../../support/libmonoruntime_support_la-nl.lo:  \
-	../../support/$(am__dirstamp) \
-	../../support/$(DEPDIR)/$(am__dirstamp)
 
 libmonoruntime-support.la: $(libmonoruntime_support_la_OBJECTS) $(libmonoruntime_support_la_DEPENDENCIES) $(EXTRA_libmonoruntime_support_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmonoruntime_support_la_LINK) $(am_libmonoruntime_support_la_rpath) $(libmonoruntime_support_la_OBJECTS) $(libmonoruntime_support_la_LIBADD) $(LIBS)
@@ -1482,14 +1454,10 @@ libmonoruntimesgen.la: $(libmonoruntimesgen_la_OBJECTS) $(libmonoruntimesgen_la_
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
-	-rm -f ../../support/*.$(OBJEXT)
-	-rm -f ../../support/*.lo
 
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@../../support/$(DEPDIR)/libmonoruntime_support_la-nl.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@../../support/$(DEPDIR)/libmonoruntime_support_la-zlib-helper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_icall_table_la-icall-table.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_ilgen_la-marshal-ilgen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_ilgen_la-method-builder-ilgen.Plo@am__quote@
@@ -1607,7 +1575,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-w32socket-unix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-w32socket-win32.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-w32socket.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_support_la-empty.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_support_la-support.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-abi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-appdomain.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-assembly-load-context.Plo@am__quote@
@@ -1784,26 +1752,12 @@ libmonoruntime_config_la-mono-config-dirs.lo: mono-config-dirs.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmonoruntime_config_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libmonoruntime_config_la-mono-config-dirs.lo `test -f 'mono-config-dirs.c' || echo '$(srcdir)/'`mono-config-dirs.c
 
-libmonoruntime_support_la-empty.lo: empty.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_support_la-empty.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_support_la-empty.Tpo -c -o libmonoruntime_support_la-empty.lo `test -f 'empty.c' || echo '$(srcdir)/'`empty.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_support_la-empty.Tpo $(DEPDIR)/libmonoruntime_support_la-empty.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='empty.c' object='libmonoruntime_support_la-empty.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_support_la-support.lo: support.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_support_la-support.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_support_la-support.Tpo -c -o libmonoruntime_support_la-support.lo `test -f 'support.c' || echo '$(srcdir)/'`support.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_support_la-support.Tpo $(DEPDIR)/libmonoruntime_support_la-support.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='support.c' object='libmonoruntime_support_la-support.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_support_la-empty.lo `test -f 'empty.c' || echo '$(srcdir)/'`empty.c
-
-../../support/libmonoruntime_support_la-zlib-helper.lo: ../../support/zlib-helper.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT ../../support/libmonoruntime_support_la-zlib-helper.lo -MD -MP -MF ../../support/$(DEPDIR)/libmonoruntime_support_la-zlib-helper.Tpo -c -o ../../support/libmonoruntime_support_la-zlib-helper.lo `test -f '../../support/zlib-helper.c' || echo '$(srcdir)/'`../../support/zlib-helper.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../support/$(DEPDIR)/libmonoruntime_support_la-zlib-helper.Tpo ../../support/$(DEPDIR)/libmonoruntime_support_la-zlib-helper.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/zlib-helper.c' object='../../support/libmonoruntime_support_la-zlib-helper.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o ../../support/libmonoruntime_support_la-zlib-helper.lo `test -f '../../support/zlib-helper.c' || echo '$(srcdir)/'`../../support/zlib-helper.c
-
-../../support/libmonoruntime_support_la-nl.lo: ../../support/nl.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT ../../support/libmonoruntime_support_la-nl.lo -MD -MP -MF ../../support/$(DEPDIR)/libmonoruntime_support_la-nl.Tpo -c -o ../../support/libmonoruntime_support_la-nl.lo `test -f '../../support/nl.c' || echo '$(srcdir)/'`../../support/nl.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../support/$(DEPDIR)/libmonoruntime_support_la-nl.Tpo ../../support/$(DEPDIR)/libmonoruntime_support_la-nl.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../support/nl.c' object='../../support/libmonoruntime_support_la-nl.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o ../../support/libmonoruntime_support_la-nl.lo `test -f '../../support/nl.c' || echo '$(srcdir)/'`../../support/nl.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_support_la-support.lo `test -f 'support.c' || echo '$(srcdir)/'`support.c
 
 libmonoruntime_la-console-unix.lo: console-unix.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-console-unix.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-console-unix.Tpo -c -o libmonoruntime_la-console-unix.lo `test -f 'console-unix.c' || echo '$(srcdir)/'`console-unix.c
@@ -3406,7 +3360,6 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
-	-rm -rf ../../support/.libs ../../support/_libs
 install-libmonoruntimeincludeHEADERS: $(libmonoruntimeinclude_HEADERS)
 	@$(NORMAL_INSTALL)
 	@list='$(libmonoruntimeinclude_HEADERS)'; test -n "$(libmonoruntimeincludedir)" || list=; \
@@ -3548,8 +3501,6 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
-	-rm -f ../../support/$(DEPDIR)/$(am__dirstamp)
-	-rm -f ../../support/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -3561,7 +3512,7 @@ clean-am: clean-generic clean-libLTLIBRARIES clean-libtool clean-local \
 	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf ../../support/$(DEPDIR) ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -3607,7 +3558,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf ../../support/$(DEPDIR) ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

@@ -4,7 +4,7 @@
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-AC_INIT(mono, [6.9.0.411],
+AC_INIT(mono, [6.9.0.430],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([Makefile.am])
@@ -510,8 +510,8 @@ case "$host" in
 		dnl We still set this for *FLAGS, however, because we may not
 		dnl be setting OBJECT_MODE.
 		LDFLAGS="$LDFLAGS -maix64"
-		CPPFLAGS="$CPPFLAGS -maix64 -DGC_AIX_THREADS -D_ALL_SOURCE -D_THREAD_SAFE -D_LARGE_FILES -D_REENTRANT"
-		libmono_cflags="-D_THREAD_SAFE -D_REENTRANT"
+		CPPFLAGS="$CPPFLAGS -maix64 -DGC_AIX_THREADS -D_ALL_SOURCE -pthread -D_THREAD_SAFE -D_LARGE_FILES -D_REENTRANT"
+		libmono_cflags="-pthread -D_THREAD_SAFE -D_REENTRANT"
 		dnl Would you believe GNU nm doesn't know how to process AIX libraries?
 		dnl Hardcode IBM binutils in case GNU ones end up on our path. Also
 		dnl specifiy 64-bit mode for tools. (OBJECT_MODE is finicky with cmake.)
@@ -1206,8 +1206,10 @@ AC_ARG_ENABLE(cxx, [  --enable-cxx   compile some code as C++])
 
 # mono/corefx/native has a lot of invalid C++98 in its headers
 # dotnet/corefx/native looks a lot better, i.e. 44e5bdafb8d989a220c9cf1b94f31a64a6e4f052
+# use these C99 print macros in the command line, since glib may not win first inttypes include
 #CXXFLAGS_COMMON=' -std=gnu++98 -fno-exceptions -fno-rtti '
 CXXFLAGS_COMMON=' -std=gnu++0x -fno-exceptions -fno-rtti '
+CXXFLAGS_COMMON="$CXXFLAGS_COMMON -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS"
 # "c++0x" instead of C++11, for compat with Centos6/gcc4.4
 
 # -stdlib=libc++ is needed by clang for iOS 6.0 (-miphoneos-version-min=6.0)
@@ -6724,40 +6726,6 @@ if test x$host_darwin = xyes; then
    sed -e 's,lock_old_archive_extraction=yes,lock_old_archive_extraction=no,g' < libtool > libtool.new && mv libtool.new libtool && chmod +x libtool
 fi
 
-force_enable_compiler_server=no;
-
-AC_MSG_CHECKING([compiler server])
-AC_ARG_WITH(compiler-server, [  --with-compiler-server=yes,no,default,force      Enables or disables compiler server],[
-   if test x$withval = xyes; then
-       enable_compiler_server=yes;
-   # force will bypass any automatic disables to allow you to test the compiler server
-   #  in scenarios where it is disabled
-   elif test x$withval = xforce; then
-       enable_compiler_server=yes;
-       force_enable_compiler_server=yes;
-   elif test x$withval = xno; then
-       enable_compiler_server=no;
-   elif test x$withval = xdefault; then
-       enable_compiler_server=yes;
-   else
-       AC_MSG_ERROR([You must supply one of "yes", "no", "default" or "force" to the --with-compiler-server option])
-   fi
-],[enable_compiler_server=yes])
-
-AC_MSG_RESULT($enable_compiler_server)
-
-if test x$enable_compiler_server = xyes; then
-   if test x$force_enable_compiler_server = xyes; then
-       AC_MSG_WARN([forcing compiler server to stay enabled])
-   elif test x$host_darwin = xyes || test x$host_win32 = xyes; then
-       AC_MSG_WARN([compiler server temporarily disabled on darwin and win32])
-       enable_compiler_server=no;
-   elif test x$csc_compiler = xmcs; then
-       AC_MSG_WARN([mcs does not support the compiler server])
-       enable_compiler_server=no;
-   fi
-fi
-
 (
   case $prefix in
   NONE) prefix=$ac_default_prefix ;;
@@ -6885,6 +6853,40 @@ fi
       echo "MONO_NATIVE_USING_COMPAT=true" >> $srcdir/$mcsdir/build/config.make
     else
       echo "MONO_NATIVE_USING_COMPAT=false" >> $srcdir/$mcsdir/build/config.make
+    fi
+
+    force_enable_compiler_server=no;
+
+    AC_MSG_CHECKING([compiler server])
+    AC_ARG_WITH(compiler-server, [  --with-compiler-server=yes,no,default,force      Enables or disables compiler server],[
+       if test x$withval = xyes; then
+           enable_compiler_server=yes;
+       # force will bypass any automatic disables to allow you to test the compiler server
+       #  in scenarios where it is disabled
+       elif test x$withval = xforce; then
+           enable_compiler_server=yes;
+           force_enable_compiler_server=yes;
+       elif test x$withval = xno; then
+           enable_compiler_server=no;
+       elif test x$withval = xdefault; then
+           enable_compiler_server=yes;
+       else
+           AC_MSG_ERROR([You must supply one of "yes", "no", "default" or "force" to the --with-compiler-server option])
+       fi
+    ],[enable_compiler_server=yes])
+
+    AC_MSG_RESULT($enable_compiler_server)
+
+    if test x$enable_compiler_server = xyes; then
+       if test x$force_enable_compiler_server = xyes; then
+           AC_MSG_WARN([forcing compiler server to stay enabled])
+       elif test x$host_darwin = xyes || test x$host_win32 = xyes; then
+           AC_MSG_WARN([compiler server temporarily disabled on darwin and win32])
+           enable_compiler_server=no;
+       elif test x$csc_compiler = xmcs; then
+           AC_MSG_WARN([mcs does not support the compiler server])
+           enable_compiler_server=no;
+       fi
     fi
 
     echo "MONO_NATIVE_PLATFORM_TYPE=$MONO_NATIVE_PLATFORM_TYPE" >> $srcdir/$mcsdir/build/config.make

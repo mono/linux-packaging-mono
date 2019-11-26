@@ -632,8 +632,8 @@ uninstall-am:
 
 @ENABLE_MSVC_TRUE@install-exec-local:
 @ENABLE_MSVC_TRUE@	@echo "Install Visual Studio build Mono runtime."
-@ENABLE_MSVC_TRUE@	$(mkinstalldirs) "$(DESTDIR)$(libdir)"
-@ENABLE_MSVC_TRUE@	$(mkinstalldirs) "$(DESTDIR)$(bindir)"
+@ENABLE_MSVC_TRUE@	mkdir -p "$(DESTDIR)$(libdir)"
+@ENABLE_MSVC_TRUE@	mkdir -p "$(DESTDIR)$(bindir)"
 @ENABLE_MSVC_TRUE@	$(install_sh) $(mono_msvc_build_lib_dir)/*.lib "$(DESTDIR)$(libdir)"
 @ENABLE_MSVC_TRUE@	$(install_sh) $(mono_msvc_build_bin_dir)/*.dll "$(DESTDIR)$(bindir)"
 @ENABLE_MSVC_TRUE@	$(install_sh) $(mono_msvc_build_bin_dir)/*.exe "$(DESTDIR)$(bindir)"
