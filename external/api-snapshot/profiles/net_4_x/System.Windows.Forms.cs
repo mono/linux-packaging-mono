@@ -12192,6 +12192,7 @@ namespace System.Windows.Forms
         [System.MonoTODOAttribute("Never called")]
         protected void OnComComponentNameChanged(System.ComponentModel.Design.ComponentRenameEventArgs e) { }
         protected override void OnEnabledChanged(System.EventArgs e) { }
+        protected void OnExpandedItemChanged(System.EventArgs e) { }
         protected override void OnFontChanged(System.EventArgs e) { }
         protected override void OnGotFocus(System.EventArgs e) { }
         protected override void OnHandleCreated(System.EventArgs e) { }
