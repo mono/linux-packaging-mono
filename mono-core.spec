@@ -26,10 +26,10 @@
 %undefine _missing_build_ids_terminate_build
 
 Name:           mono-core
-%define __majorver 6.9.0
-%define __minorver 467
+%define __majorver 6.11.0
+%define __minorver 0
 Version:	%{__majorver}.%{__minorver}
-Release:	0.nightly.2
+Release:	0.nightly.1
 Summary:        Cross-platform, Open Source, .NET development framework
 License:        LGPL-2.1 and MIT and MS-PL
 Group:          Development/Languages/Mono
