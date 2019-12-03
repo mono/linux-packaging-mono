@@ -242,7 +242,7 @@ namespace Mono.Linker.Steps {
 					// type forwarders to deleted assembly (facade) when
 					// facade assemblies are not kept. For that reason we need to
 					// rewrite the copy to save to update the scopes not to point
-					// forwardning assembly (facade).
+					// forwarding assembly (facade).
 					//
 					//		foo.dll -> facade.dll    -> lib.dll
 					//		copy    |  copy (delete) |  link
@@ -281,7 +281,14 @@ namespace Mono.Linker.Steps {
 				if (tr.IsWindowsRuntimeProjection)
 					continue;
 
-				var td = tr.Resolve ();
+				TypeDefinition td;
+				try {
+					td = tr.Resolve ();
+				} catch (AssemblyResolutionException) {
+					// Don't crash on unresolved assembly
+					continue;
+				}
+
 				// at this stage reference might include things that can't be resolved
 				// and if it is (resolved) it needs to be kept only if marked (#16213)
 				if (td == null || !Annotations.IsMarked (td))
@@ -414,6 +421,10 @@ namespace Mono.Linker.Steps {
 
 		static void UpdateTypeScope (TypeReference type, AssemblyDefinition assembly)
 		{
+			// Can't update the scope of windows runtime projections
+			if (type.IsWindowsRuntimeProjection)
+				return;
+
 			if (type is GenericInstanceType git && git.HasGenericArguments) {
 				UpdateTypeScope (git.ElementType, assembly);
 				foreach (var ga in git.GenericArguments)
