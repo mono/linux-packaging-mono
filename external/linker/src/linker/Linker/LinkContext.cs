@@ -155,6 +155,8 @@ namespace Mono.Linker {
 
 		public bool AddReflectionAnnotations { get; set; }
 
+		public string AssemblyListFile { get; set; }
+
 		public LinkContext (Pipeline pipeline)
 			: this (pipeline, new AssemblyResolver ())
 		{
@@ -430,6 +432,11 @@ namespace Mono.Linker {
 		/// <summary>
 		/// Option to clear the initlocals flag on methods
 		/// </summary>
-		ClearInitLocals = 1 << 3
+		ClearInitLocals = 1 << 3,
+
+		/// <summary>
+		/// Option to remove .interfaceimpl for interface types that are not used
+		/// </summary>
+		UnusedInterfaces = 1 << 4,
 	}
 }
