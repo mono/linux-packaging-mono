@@ -336,7 +336,7 @@ am__define_uniq_tagged_files = \
 ETAGS = etags
 CTAGS = ctags
 am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/depcomp \
-	$(top_srcdir)/mk/common.mk $(top_srcdir)/mkinstalldirs
+	$(top_srcdir)/mkinstalldirs
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
@@ -736,7 +736,7 @@ all: all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/mk/common.mk $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -756,7 +756,6 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
-$(top_srcdir)/mk/common.mk $(am__empty):
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh

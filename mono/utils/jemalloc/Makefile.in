@@ -135,8 +135,7 @@ am__can_run_installinfo = \
   esac
 am__extra_recursive_targets = test-recursive test-bundle-recursive
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
-am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/mk/common.mk \
-	$(top_srcdir)/mkinstalldirs \
+am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/mkinstalldirs \
 	$(top_srcdir)/scripts/submodules/versions.mk
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
@@ -425,7 +424,7 @@ EXTRA_DIST = SUBMODULES.json
 all: all-am
 
 .SUFFIXES:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/mk/common.mk $(top_srcdir)/scripts/submodules/versions.mk $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/scripts/submodules/versions.mk $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -445,7 +444,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
-$(top_srcdir)/mk/common.mk $(top_srcdir)/scripts/submodules/versions.mk $(am__empty):
+$(top_srcdir)/scripts/submodules/versions.mk $(am__empty):
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh

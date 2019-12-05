@@ -27,6 +27,9 @@
 /* Disable agent attach support */
 #undef DISABLE_ATTACH
 
+/* Disable config directories. */
+#undef DISABLE_CFGDIR_CONFIG
+
 /* Disable runtime cleanup. */
 #undef DISABLE_CLEANUP
 

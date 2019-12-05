@@ -13,6 +13,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
+
 VPATH = @srcdir@
 am__is_gnu_make = { \
   if test -z '$(MAKELEVEL)'; then \
@@ -88,25 +89,18 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-subdir = mk
+subdir = doc
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
-	$(top_srcdir)/m4/ax_append_flag.m4 \
-	$(top_srcdir)/m4/ax_append_link_flags.m4 \
-	$(top_srcdir)/m4/ax_check_compile_flag.m4 \
-	$(top_srcdir)/m4/ax_check_link_flag.m4 \
-	$(top_srcdir)/m4/ax_require_defined.m4 \
-	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
-	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/m4/mono-output.m4 $(top_srcdir)/m4/nls.m4 \
-	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-DIST_COMMON = $(srcdir)/Makefile.am $(am__DIST_COMMON)
-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/config.h
+DIST_COMMON = $(srcdir)/Makefile.am $(dist_pkgdata_DATA) \
+	$(am__DIST_COMMON)
+mkinstalldirs = $(install_sh) -d
+CONFIG_HEADER = $(top_builddir)/src/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_P = $(am__v_P_@AM_V@)
@@ -128,160 +122,89 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
-am__extra_recursive_targets = test-recursive test-bundle-recursive
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
+am__install_max = 40
+am__nobase_strip_setup = \
+  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
+am__nobase_strip = \
+  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
+am__nobase_list = $(am__nobase_strip_setup); \
+  for p in $$list; do echo "$$p $$p"; done | \
+  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
+  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
+    if (++n[$$2] == $(am__install_max)) \
+      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
+    END { for (dir in files) print dir, files[dir] }'
+am__base_list = \
+  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
+  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
+am__uninstall_files_from_dir = { \
+  test -z "$$files" \
+    || { test ! -d "$$dir" && test ! -f "$$dir" && test ! -r "$$dir"; } \
+    || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
+         $(am__cd) "$$dir" && rm -f $$files; }; \
+  }
+am__installdirs = "$(DESTDIR)$(pkgdatadir)"
+DATA = $(dist_pkgdata_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
-am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/mkinstalldirs
+am__DIST_COMMON = $(srcdir)/Makefile.in
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
-AOT_BUILD_FLAGS = @AOT_BUILD_FLAGS@
-AOT_RUN_FLAGS = @AOT_RUN_FLAGS@
-API_VER = @API_VER@
 AR = @AR@
-AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
-BOEHM_DEFINES = @BOEHM_DEFINES@
-BREAKPOINT = @BREAKPOINT@
-BTLS_ARCH = @BTLS_ARCH@
-BTLS_CFLAGS = @BTLS_CFLAGS@
-BTLS_CMAKE_ARGS = @BTLS_CMAKE_ARGS@
-BTLS_PLATFORM = @BTLS_PLATFORM@
-BTLS_ROOT = @BTLS_ROOT@
-BUILD_EXEEXT = @BUILD_EXEEXT@
 CC = @CC@
 CCAS = @CCAS@
 CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
-CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
-CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
-CMAKE = @CMAKE@
-COREARCH = @COREARCH@
-CORETARGETS = @CORETARGETS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
-CSC = @CSC@
-CXX = @CXX@
-CXXCPP = @CXXCPP@
-CXXDEPMODE = @CXXDEPMODE@
-CXXFLAGS = @CXXFLAGS@
-CXXFLAGS_COMMON = @CXXFLAGS_COMMON@
-CXX_ADD_CFLAGS = @CXX_ADD_CFLAGS@
-CXX_REMOVE_CFLAGS = @CXX_REMOVE_CFLAGS@
 CYGPATH_W = @CYGPATH_W@
-DEFAULT_PROFILE = @DEFAULT_PROFILE@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
-DOLT_BASH = @DOLT_BASH@
 DSYMUTIL = @DSYMUTIL@
-DTRACE = @DTRACE@
-DTRACEFLAGS = @DTRACEFLAGS@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
-EXTERNAL_LLVM_CONFIG = @EXTERNAL_LLVM_CONFIG@
-EXTERNAL_LLVM_CONFIG_WIN32 = @EXTERNAL_LLVM_CONFIG_WIN32@
 FGREP = @FGREP@
-GDKX11 = @GDKX11@
-GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
-GLIB_CFLAGS = @GLIB_CFLAGS@
-GMSGFMT = @GMSGFMT@
-GMSGFMT_015 = @GMSGFMT_015@
-GNUC_NORETURN = @GNUC_NORETURN@
-GNUC_PRETTY = @GNUC_PRETTY@
-GNUC_UNUSED = @GNUC_UNUSED@
 GREP = @GREP@
-GSIZE = @GSIZE@
-GSIZE_FORMAT = @GSIZE_FORMAT@
-GSSIZE = @GSSIZE@
-GTKX11 = @GTKX11@
-HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
-HAVE_MSGFMT = @HAVE_MSGFMT@
-HAVE_NINJA = @HAVE_NINJA@
-HAVE_UNISTD_H = @HAVE_UNISTD_H@
-HAVE_YASM = @HAVE_YASM@
-HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-INTERP_CFLAGS = @INTERP_CFLAGS@
-INTL = @INTL@
-INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
-JEMALLOC_AUTOCONF_FLAGS = @JEMALLOC_AUTOCONF_FLAGS@
-JEMALLOC_CFLAGS = @JEMALLOC_CFLAGS@
-JEMALLOC_CPPFLAGS = @JEMALLOC_CPPFLAGS@
-JEMALLOC_LDFLAGS = @JEMALLOC_LDFLAGS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
-LIBC = @LIBC@
-LIBGC_CPPFLAGS = @LIBGC_CPPFLAGS@
-LIBGC_LIBS = @LIBGC_LIBS@
-LIBGC_STATIC_LIBS = @LIBGC_STATIC_LIBS@
-LIBMONO_LA = @LIBMONO_LA@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
-LLVM_CODEGEN_LIBS = @LLVM_CODEGEN_LIBS@
 LN_S = @LN_S@
-LTCOMPILE = @LTCOMPILE@
-LTCXXCOMPILE = @LTCXXCOMPILE@
 LTLIBOBJS = @LTLIBOBJS@
 LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
-MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
-MONO_CXXLD = @MONO_CXXLD@
-MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
-MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
-MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
-MONO_NATIVE_CC = @MONO_NATIVE_CC@
-MONO_NATIVE_CCASFLAGS = @MONO_NATIVE_CCASFLAGS@
-MONO_NATIVE_CFLAGS = @MONO_NATIVE_CFLAGS@
-MONO_NATIVE_COMPAT_CCASFLAGS = @MONO_NATIVE_COMPAT_CCASFLAGS@
-MONO_NATIVE_COMPAT_CFLAGS = @MONO_NATIVE_COMPAT_CFLAGS@
-MONO_NATIVE_COMPAT_CPPFLAGS = @MONO_NATIVE_COMPAT_CPPFLAGS@
-MONO_NATIVE_COMPAT_CXXFLAGS = @MONO_NATIVE_COMPAT_CXXFLAGS@
-MONO_NATIVE_COMPAT_LDFLAGS = @MONO_NATIVE_COMPAT_LDFLAGS@
-MONO_NATIVE_CPPFLAGS = @MONO_NATIVE_CPPFLAGS@
-MONO_NATIVE_CXX = @MONO_NATIVE_CXX@
-MONO_NATIVE_CXXFLAGS = @MONO_NATIVE_CXXFLAGS@
-MONO_NATIVE_LDFLAGS = @MONO_NATIVE_LDFLAGS@
-MONO_NATIVE_LIBADD = @MONO_NATIVE_LIBADD@
-MONO_NATIVE_LIBRARY_NAME = @MONO_NATIVE_LIBRARY_NAME@
-MONO_NATIVE_PLATFORM = @MONO_NATIVE_PLATFORM@
-MONO_NATIVE_PLATFORM_TYPE = @MONO_NATIVE_PLATFORM_TYPE@
-MONO_NATIVE_PLATFORM_TYPE_COMPAT = @MONO_NATIVE_PLATFORM_TYPE_COMPAT@
-MONO_NATIVE_PLATFORM_TYPE_UNIFIED = @MONO_NATIVE_PLATFORM_TYPE_UNIFIED@
-MONO_NATIVE_UNIFIED_CCASFLAGS = @MONO_NATIVE_UNIFIED_CCASFLAGS@
-MONO_NATIVE_UNIFIED_CFLAGS = @MONO_NATIVE_UNIFIED_CFLAGS@
-MONO_NATIVE_UNIFIED_CPPFLAGS = @MONO_NATIVE_UNIFIED_CPPFLAGS@
-MONO_NATIVE_UNIFIED_CXXFLAGS = @MONO_NATIVE_UNIFIED_CXXFLAGS@
-MONO_NATIVE_UNIFIED_LDFLAGS = @MONO_NATIVE_UNIFIED_LDFLAGS@
-MONO_SUBDIRS = @MONO_SUBDIRS@
-MSGFMT = @MSGFMT@
-MSGFMT_015 = @MSGFMT_015@
-MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-ODBC = @ODBC@
-ORDER = @ORDER@
-OS = @OS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -291,54 +214,27 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
-PATHSEP = @PATHSEP@
 PATH_SEPARATOR = @PATH_SEPARATOR@
-PIDTYPE = @PIDTYPE@
-PKG_CONFIG = @PKG_CONFIG@
-PLATFORM_AOT_PREFIX = @PLATFORM_AOT_PREFIX@
-PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
+PICFLAG = @PICFLAG@
 RANLIB = @RANLIB@
-RID = @RID@
-SEARCHSEP = @SEARCHSEP@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
-SGEN_DEFINES = @SGEN_DEFINES@
-SHARED_CFLAGS = @SHARED_CFLAGS@
 SHELL = @SHELL@
-SIZEOF_VOID_P = @SIZEOF_VOID_P@
-SQLITE = @SQLITE@
-SQLITE3 = @SQLITE3@
-STATIC_GCC_LIBS = @STATIC_GCC_LIBS@
-STATIC_ZLIB_PATH = @STATIC_ZLIB_PATH@
 STRIP = @STRIP@
-TEST_PROFILE = @TEST_PROFILE@
-USE_NLS = @USE_NLS@
+THREADDLLIBS = @THREADDLLIBS@
 VERSION = @VERSION@
-VTUNE_CFLAGS = @VTUNE_CFLAGS@
-VTUNE_LIBS = @VTUNE_LIBS@
-WERROR_CFLAGS = @WERROR_CFLAGS@
-X11 = @X11@
-XATTR_LIB = @XATTR_LIB@
-XGETTEXT = @XGETTEXT@
-XGETTEXT_015 = @XGETTEXT_015@
-XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
-XINERAMA = @XINERAMA@
-XMKMF = @XMKMF@
-ZLIB_CFLAGS = @ZLIB_CFLAGS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
 ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
-ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
-arch_target = @arch_target@
 bindir = @bindir@
 build = @build@
 build_alias = @build_alias@
@@ -351,8 +247,6 @@ datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
-export_ldflags = @export_ldflags@
-extra_runtime_ldflags = @extra_runtime_ldflags@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
@@ -364,35 +258,19 @@ infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
-libgdiplus_install_loc = @libgdiplus_install_loc@
-libgdiplus_loc = @libgdiplus_loc@
-libmono_cflags = @libmono_cflags@
-libmono_ldflags = @libmono_ldflags@
-libsuffix = @libsuffix@
 localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
-mcs_topdir = @mcs_topdir@
-mcs_topdir_from_srcdir = @mcs_topdir_from_srcdir@
 mkdir_p = @mkdir_p@
-mono_build_root = @mono_build_root@
-mono_cfg_dir = @mono_cfg_dir@
-mono_msvc_build_bin_dir = @mono_msvc_build_bin_dir@
-mono_msvc_build_dir = @mono_msvc_build_dir@
-mono_msvc_build_lib_dir = @mono_msvc_build_lib_dir@
-mono_runtime = @mono_runtime@
-mono_runtime_wrapper = @mono_runtime_wrapper@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
-reloc_libdir = @reloc_libdir@
 runstatedir = @runstatedir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
-subdirs = @subdirs@
 sysconfdir = @sysconfdir@
 target = @target@
 target_alias = @target_alias@
@@ -402,7 +280,12 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = common.mk
+
+# installed documentation
+#
+dist_pkgdata_DATA = LICENSING.txt README.txt README_stack.txt \
+    README_malloc.txt README_win32.txt
+
 all: all-am
 
 .SUFFIXES:
@@ -415,9 +298,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign mk/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign doc/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign mk/Makefile
+	  $(AUTOMAKE) --foreign doc/Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -441,8 +324,27 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
-test-local: 
-test-bundle-local: 
+install-dist_pkgdataDATA: $(dist_pkgdata_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(dist_pkgdata_DATA)'; test -n "$(pkgdatadir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(pkgdatadir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(pkgdatadir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(pkgdatadir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(pkgdatadir)" || exit $$?; \
+	done
+
+uninstall-dist_pkgdataDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(dist_pkgdata_DATA)'; test -n "$(pkgdatadir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(pkgdatadir)'; $(am__uninstall_files_from_dir)
 tags TAGS:
 
 ctags CTAGS:
@@ -482,8 +384,11 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile
+all-am: Makefile $(DATA)
 installdirs:
+	for dir in "$(DESTDIR)$(pkgdatadir)"; do \
+	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
+	done
 install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
@@ -534,7 +439,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-dist_pkgdataDATA
 
 install-dvi: install-dvi-am
 
@@ -578,30 +483,22 @@ ps: ps-am
 
 ps-am:
 
-test: test-am
-
-test-am: test-local
-
-test-bundle: test-bundle-am
-
-test-bundle-am: test-bundle-local
-
-uninstall-am:
+uninstall-am: uninstall-dist_pkgdataDATA
 
 .MAKE: install-am install-strip
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	cscopelist-am ctags-am distclean distclean-generic \
 	distclean-libtool distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags-am test-am test-bundle-am test-bundle-local test-local \
-	uninstall uninstall-am
+	install install-am install-data install-data-am \
+	install-dist_pkgdataDATA install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags-am uninstall \
+	uninstall-am uninstall-dist_pkgdataDATA
 
 .PRECIOUS: Makefile
 
