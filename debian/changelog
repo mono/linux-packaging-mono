@@ -1,3 +1,9 @@
+mono (6.6.0.161-0xamarin2) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 05 Dec 2019 09:41:31 +0000
+
 mono (6.6.0.161-0xamarin1) preview; urgency=medium
 
   * New release - mono-6.6.0.161.tar.xz
