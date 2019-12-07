@@ -3,8 +3,8 @@
  * Copyright 2018 Microsoft
  * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
-#ifndef __MONO_METADATA_ICALL_H__
-#define __MONO_METADATA_ICALL_H__
+#ifndef __MONO_METADATA_ICALL_DECL_H__
+#define __MONO_METADATA_ICALL_DECL_H__
 
 #include "appdomain-icalls.h"
 #include "class.h"
@@ -236,5 +236,7 @@ ICALL_EXPORT MonoBoolean ves_icall_Mono_Security_Cryptography_KeyPairPersistence
 ICALL_EXPORT MonoBoolean ves_icall_Mono_Security_Cryptography_KeyPairPersistence_IsUserProtected (const gunichar2*);
 ICALL_EXPORT MonoBoolean ves_icall_Mono_Security_Cryptography_KeyPairPersistence_ProtectMachine (const gunichar2*);
 ICALL_EXPORT MonoBoolean ves_icall_Mono_Security_Cryptography_KeyPairPersistence_ProtectUser (const gunichar2*);
+ICALL_EXPORT gpointer ves_icall_System_Net_Sockets_Socket_Accept_internal (gsize, gint32*, MonoBoolean);
+ICALL_EXPORT gint32 ves_icall_System_Net_Sockets_Socket_Available_internal (gsize, gint32*);
 
-#endif // __MONO_METADATA_ICALL_H__
+#endif // __MONO_METADATA_ICALL_DECL_H__
