@@ -1,3 +1,14 @@
+mono (6.8.0.73-0xamarin2) preview; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [f962d85] Symbol refresh [4cbe69a] Use --with-llvm, not PATH
+    manipulation, for LLVM
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 10 Dec 2019 21:14:30 +0000
+
 mono (6.8.0.73-0xamarin1) preview; urgency=medium
 
   * New release - mono-6.8.0.73.tar.xz
