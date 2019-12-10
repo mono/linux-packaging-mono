@@ -76,8 +76,8 @@
 static FILE *mini_stats_fd;
 
 static void mini_usage (void);
-static void mono_runtime_set_execution_mode (MonoEEMode mode);
-static void mono_runtime_set_execution_mode_full (MonoEEMode mode, gboolean override);
+static void mono_runtime_set_execution_mode (int mode);
+static void mono_runtime_set_execution_mode_full (int mode, gboolean override);
 static int mono_jit_exec_internal (MonoDomain *domain, MonoAssembly *assembly, int argc, char *argv[]);
 
 #ifdef HOST_WIN32
@@ -666,7 +666,7 @@ mini_regression_list (int verbose, int count, char *images [])
 	total_run =  total = 0;
 	for (i = 0; i < count; ++i) {
 		MonoAssemblyOpenRequest req;
-		mono_assembly_request_prepare (&req.request, sizeof (req), MONO_ASMCTX_DEFAULT);
+		mono_assembly_request_prepare_open (&req, MONO_ASMCTX_DEFAULT, mono_domain_default_alc (mono_get_root_domain ()));
 		ass = mono_assembly_request_open (images [i], &req, NULL);
 		if (!ass) {
 			g_warning ("failed to load assembly: %s", images [i]);
@@ -721,7 +721,7 @@ interp_regression_step (MonoImage *image, int verbose, int *total_run, int *tota
 			}
 
 			result_obj = mini_get_interp_callbacks ()->runtime_invoke (method, NULL, NULL, &exc, interp_error);
-			if (!mono_error_ok (interp_error)) {
+			if (!is_ok (interp_error)) {
 				cfailed++;
 				g_print ("Test '%s' execution failed.\n", method->name);
 			} else if (exc != NULL) {
@@ -793,7 +793,7 @@ mono_interp_regression_list (int verbose, int count, char *images [])
 	total_run = total = 0;
 	for (i = 0; i < count; ++i) {
 		MonoAssemblyOpenRequest req;
-		mono_assembly_request_prepare (&req.request, sizeof (req), MONO_ASMCTX_DEFAULT);
+		mono_assembly_request_prepare_open (&req, MONO_ASMCTX_DEFAULT, mono_domain_default_alc (mono_get_root_domain ()));
 		MonoAssembly *ass = mono_assembly_request_open (images [i], &req, NULL);
 		if (!ass) {
 			g_warning ("failed to load assembly: %s", images [i]);
@@ -1203,14 +1203,14 @@ compile_all_methods_thread_main_inner (CompileAllThreadArgs *args)
 		if (mono_use_interpreter) {
 			mini_get_interp_callbacks ()->create_method_pointer (method, TRUE, error);
 			// FIXME There are a few failures due to DllNotFoundException related to System.Native
-			if (verbose && !mono_error_ok (error))
+			if (verbose && !is_ok (error))
 				g_print ("Compilation of %s failed\n", mono_method_full_name (method, TRUE));
 		} else {
 			cfg = mini_method_compile (method, mono_get_optimizations_for_method (method, args->opts), mono_get_root_domain (), (JitFlags)JIT_FLAG_DISCARD_RESULTS, 0, -1);
 			if (cfg->exception_type != MONO_EXCEPTION_NONE) {
 				const char *msg = cfg->exception_message;
 				if (cfg->exception_type == MONO_EXCEPTION_MONO_ERROR)
-					msg = mono_error_get_message (&cfg->error);
+					msg = mono_error_get_message (cfg->error);
 				g_print ("Compilation of %s failed with exception '%s':\n", mono_method_full_name (cfg->method, TRUE), msg);
 				fail_count ++;
 			}
@@ -1249,7 +1249,7 @@ compile_all_methods (MonoAssembly *ass, int verbose, guint32 opts, guint32 recom
 	mono_thread_create_checked (mono_domain_get (), (gpointer)compile_all_methods_thread_main, &args, error);
 	mono_error_assert_ok (error);
 
-	mono_thread_manage ();
+	mono_thread_manage_internal ();
 }
 
 /**
@@ -1429,7 +1429,7 @@ load_agent (MonoDomain *domain, char *desc)
 	}
 
 	MonoAssemblyOpenRequest req;
-	mono_assembly_request_prepare (&req.request, sizeof (req), MONO_ASMCTX_DEFAULT);
+	mono_assembly_request_prepare_open (&req, MONO_ASMCTX_DEFAULT, mono_domain_default_alc (mono_get_root_domain ()));
 	agent_assembly = mono_assembly_request_open (agent, &req, &open_status);
 	if (!agent_assembly) {
 		fprintf (stderr, "Cannot open agent assembly '%s': %s.\n", agent, mono_image_strerror (open_status));
@@ -1677,6 +1677,7 @@ mono_get_version_info (void)
 #endif
 #endif
 
+	mono_threads_suspend_policy_init ();
 	g_string_append_printf (output, "\tSuspend:       %s\n", mono_threads_suspend_policy_name (mono_threads_suspend_policy ()));
 
 	return g_string_free (output, FALSE);
@@ -1979,7 +1980,6 @@ mono_main (int argc, char* argv[])
 	MonoAssembly *assembly;
 	MonoMethodDesc *desc;
 	MonoMethod *method;
-	MonoCompile *cfg;
 	MonoDomain *domain;
 	MonoImageOpenStatus open_status;
 	const char* aname, *mname = NULL;
@@ -2346,6 +2346,8 @@ mono_main (int argc, char* argv[])
 #endif
 		} else if (strcmp (argv [i], "--nollvm") == 0){
 			mono_use_llvm = FALSE;
+		} else if (strcmp (argv [i], "--ffast-math") == 0){
+			mono_use_fast_math = TRUE;
 		} else if ((strcmp (argv [i], "--interpreter") == 0) || !strcmp (argv [i], "--interp")) {
 			mono_runtime_set_execution_mode (MONO_EE_MODE_INTERP);
 		} else if (strncmp (argv [i], "--interp=", 9) == 0) {
@@ -2583,8 +2585,7 @@ mono_main (int argc, char* argv[])
 	}
 
 	MonoAssemblyOpenRequest open_req;
-	mono_assembly_request_prepare (&open_req.request, sizeof (open_req), MONO_ASMCTX_DEFAULT);
-	open_req.request.alc = mono_domain_default_alc (mono_get_root_domain ());
+	mono_assembly_request_prepare_open (&open_req, MONO_ASMCTX_DEFAULT, mono_domain_default_alc (mono_get_root_domain ()));
 	assembly = mono_assembly_request_open (aname, &open_req, &open_status);
 	if (!assembly && !mono_compile_aot) {
 		fprintf (stderr, "Cannot open assembly '%s': %s.\n", aname, mono_image_strerror (open_status));
@@ -2621,7 +2622,7 @@ mono_main (int argc, char* argv[])
 		main_args.opts = opt;
 		main_args.aot_options = aot_options;
 		main_thread_handler (&main_args);
-		mono_thread_manage ();
+		mono_thread_manage_internal ();
 
 		mini_cleanup (domain);
 
@@ -2649,6 +2650,7 @@ mono_main (int argc, char* argv[])
 	}
 
 #ifndef DISABLE_JIT
+	MonoCompile *cfg;
 	if (action == DO_DRAW) {
 		int part = 0;
 
@@ -2752,7 +2754,9 @@ mono_main (int argc, char* argv[])
 MonoDomain * 
 mono_jit_init (const char *file)
 {
-	return mini_init (file, NULL);
+	MonoDomain *ret = mini_init (file, NULL);
+	MONO_ENTER_GC_SAFE_UNBALANCED; //once it is not executing any managed code yet, it's safe to run the gc
+	return ret;
 }
 
 /**
@@ -2778,7 +2782,16 @@ mono_jit_init (const char *file)
 MonoDomain * 
 mono_jit_init_version (const char *domain_name, const char *runtime_version)
 {
-	return mini_init (domain_name, runtime_version);
+	MonoDomain *ret = mini_init (domain_name, runtime_version);
+	MONO_ENTER_GC_SAFE_UNBALANCED; //once it is not executing any managed code yet, it's safe to run the gc
+	return ret;
+}
+
+MonoDomain * 
+mono_jit_init_version_for_test_only (const char *domain_name, const char *runtime_version)
+{
+	MonoDomain *ret = mini_init (domain_name, runtime_version);
+	return ret;
 }
 
 /**
@@ -2787,11 +2800,16 @@ mono_jit_init_version (const char *domain_name, const char *runtime_version)
 void        
 mono_jit_cleanup (MonoDomain *domain)
 {
-	MONO_ENTER_GC_UNSAFE;
-	mono_thread_manage ();
+	MONO_STACKDATA (dummy);
+	(void) mono_threads_enter_gc_unsafe_region_unbalanced_internal (&dummy);
+
+	// after mini_cleanup everything is cleaned up so MONO_EXIT_GC_UNSAFE
+	// can't work and doesn't make sense.
+
+	mono_thread_manage_internal ();
 
 	mini_cleanup (domain);
-	MONO_EXIT_GC_UNSAFE;
+
 }
 
 void
@@ -2802,7 +2820,7 @@ mono_jit_set_aot_only (gboolean val)
 }
 
 static void
-mono_runtime_set_execution_mode_full (MonoEEMode mode, gboolean override)
+mono_runtime_set_execution_mode_full (int mode, gboolean override)
 {
 	static gboolean mode_initialized = FALSE;
 	if (mode_initialized && !override)
@@ -2869,7 +2887,7 @@ mono_runtime_set_execution_mode_full (MonoEEMode mode, gboolean override)
 }
 
 static void
-mono_runtime_set_execution_mode (MonoEEMode mode)
+mono_runtime_set_execution_mode (int mode)
 {
 	mono_runtime_set_execution_mode_full (mode, TRUE);
 }
@@ -2887,7 +2905,7 @@ mono_jit_set_aot_mode (MonoAotMode mode)
 	mono_aot_mode = mode;
 	inited = TRUE;
 	
-	mono_runtime_set_execution_mode ((MonoEEMode)mode);
+	mono_runtime_set_execution_mode (mode);
 }
 
 mono_bool
@@ -3129,13 +3147,13 @@ mono_win32_parse_options (const char *options, int *ref_argc, char **ref_argv []
 	return NULL;
 }
 
-static inline char *
+static char *
 mono_parse_response_options (const char *options, int *ref_argc, char **ref_argv [], gboolean prepend)
 {
 	return mono_win32_parse_options (options, ref_argc, ref_argv, prepend);
 }
 #else
-static inline char *
+static char *
 mono_parse_response_options (const char *options, int *ref_argc, char **ref_argv [], gboolean prepend)
 {
 	return mono_parse_options (options, ref_argc, ref_argv, prepend);

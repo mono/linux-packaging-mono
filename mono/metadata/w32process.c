@@ -423,6 +423,7 @@ cleanup:
 
 #endif // G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT)
 
+#ifndef ENABLE_NETCORE
 void
 ves_icall_System_Diagnostics_FileVersionInfo_GetVersionInfo_internal (MonoObjectHandle this_obj,
 		const gunichar2 *filename, int filename_length, MonoError *error)
@@ -436,6 +437,7 @@ ves_icall_System_Diagnostics_FileVersionInfo_GetVersionInfo_internal (MonoObject
 
 	process_set_field_utf16 (this_obj, str, "filename", filename, filename_length, error);
 }
+#endif
 
 #if G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT)
 
@@ -551,6 +553,7 @@ exit:
 	HANDLE_FUNCTION_RETURN ();
 }
 
+#ifndef ENABLE_NETCORE
 /* Returns an array of System.Diagnostics.ProcessModule */
 MonoArrayHandle
 ves_icall_System_Diagnostics_Process_GetModules_internal (MonoObjectHandle this_obj, HANDLE process, MonoError *error)
@@ -649,6 +652,7 @@ ves_icall_System_Diagnostics_Process_ProcessName_internal (HANDLE process, MonoE
 	g_free (name);
 	return res;
 }
+#endif /* ENABLE_NETCORE */
 
 #endif // G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT) && defined(HOST_WIN32)
 

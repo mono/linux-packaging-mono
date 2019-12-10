@@ -243,7 +243,11 @@ namespace Mono.Linker.Steps {
 		{
 			// We may mark an interface type later on.  Which means we need to reprocess any time with one or more interface implementations that have not been marked
 			// and if an interface type is found to be marked and implementation is not marked, then we need to mark that implementation
-			foreach (var type in _typesWithInterfaces) {
+
+			// copy the data to avoid modified while enumerating error potential, which can happen under certain conditions.
+			var typesWithInterfaces = _typesWithInterfaces.ToArray ();
+
+			foreach (var type in typesWithInterfaces) {
 				// Exception, types that have not been flagged as instantiated yet.  These types may not need their interfaces even if the
 				// interface type is marked
 				if (!Annotations.IsInstantiated (type))
@@ -355,6 +359,11 @@ namespace Mono.Linker.Steps {
 				foreach (CustomAttribute ca in provider.CustomAttributes) {
 					if (IsUserDependencyMarker (ca.AttributeType) && provider is MemberReference mr) {
 						MarkUserDependency (mr, ca);
+
+						if (_context.KeepDependencyAttributes) {
+							MarkCustomAttribute (ca);
+							continue;
+						}
 
 						if (Annotations.GetAction (mr.DeclaringType.Module.Assembly) == AssemblyAction.Link)
 							continue;
@@ -679,7 +688,7 @@ namespace Mono.Linker.Steps {
 			if (property != null)
 				MarkMethod (property.SetMethod);
 
-			MarkIfType (namedArgument.Argument);
+			MarkCustomAttributeArgument (namedArgument.Argument);
 			Tracer.Pop ();
 		}
 
@@ -711,7 +720,7 @@ namespace Mono.Linker.Steps {
 			if (field != null)
 				MarkField (field);
 
-			MarkIfType (namedArgument.Argument);
+			MarkCustomAttributeArgument (namedArgument.Argument);
 		}
 
 		FieldDefinition GetField (TypeDefinition type, string fieldname)
@@ -746,55 +755,40 @@ namespace Mono.Linker.Steps {
 				return;
 
 			foreach (var argument in ca.ConstructorArguments)
-				MarkIfType (argument);
+				MarkCustomAttributeArgument (argument);
 		}
 
-		void MarkIfType (CustomAttributeArgument argument)
+		void MarkCustomAttributeArgument (CustomAttributeArgument argument)
 		{
 			var at = argument.Type;
+
 			if (at.IsArray) {
 				var et = at.GetElementType ();
-				if (et.Namespace != "System" || et.Name != "Type")
-					return;
 
 				MarkType (et);
 				if (argument.Value == null)
 					return;
 
-				foreach (var cac in (CustomAttributeArgument[]) argument.Value)
-					MarkWithResolvedScope ((TypeReference) cac.Value);
-			} else if (at.Namespace == "System" && at.Name == "Type") {
-				MarkType (argument.Type);
-				MarkWithResolvedScope ((TypeReference) argument.Value);
-			}
-		}
+				foreach (var caa in (CustomAttributeArgument [])argument.Value)
+					MarkCustomAttributeArgument (caa);
 
-		// custom attributes encoding means it's possible to have a scope that will point into a PCL facade
-		// even if we (just before saving) will resolve all type references (bug #26752)
-		void MarkWithResolvedScope (TypeReference type)
-		{
-			if (type == null)
-				return;
-
-			// a GenericInstanceType can could contains generic arguments with scope that
-			// needs to be updated out of the PCL facade (bug #28823)
-			var git = (type as GenericInstanceType);
-			if ((git != null) && git.HasGenericArguments) {
-				foreach (var ga in git.GenericArguments)
-					MarkWithResolvedScope (ga);
-			}
-			// we cannot set the Scope of a TypeSpecification but it's element type can be set
-			// e.g. System.String[] -> System.String
-			var ts = (type as TypeSpecification);
-			if (ts != null) {
-				MarkWithResolvedScope (ts.ElementType);
 				return;
 			}
 
-			var td = type.Resolve ();
-			if (td != null)
-				type.Scope = td.Scope;
-			MarkType (type);
+			if (at.Namespace == "System") {
+				switch (at.Name) {
+				case "Type":
+					MarkType (argument.Type);
+					MarkType ((TypeReference)argument.Value);
+					return;
+
+				case "Object":
+					var boxed_value = (CustomAttributeArgument)argument.Value;
+					MarkType (boxed_value.Type);
+					MarkCustomAttributeArgument (boxed_value);
+					return;
+				}
+			}
 		}
 
 		protected bool CheckProcessed (IMetadataTokenProvider provider)
@@ -1151,18 +1145,23 @@ namespace Mono.Linker.Steps {
 				return;
 
 			foreach (CustomAttribute attribute in type.CustomAttributes) {
-				switch (attribute.Constructor.DeclaringType.FullName) {
-				case "System.Xml.Serialization.XmlSchemaProviderAttribute":
+				var attrType = attribute.Constructor.DeclaringType;
+				switch (attrType.Name) {
+				case "XmlSchemaProviderAttribute" when attrType.Namespace == "System.Xml.Serialization":
 					MarkXmlSchemaProvider (type, attribute);
 					break;
-				case "System.Diagnostics.DebuggerDisplayAttribute":
+				case "DebuggerDisplayAttribute" when attrType.Namespace == "System.Diagnostics":
 					MarkTypeWithDebuggerDisplayAttribute (type, attribute);
 					break;
-				case "System.Diagnostics.DebuggerTypeProxyAttribute":
+				case "DebuggerTypeProxyAttribute" when attrType.Namespace == "System.Diagnostics":
 					MarkTypeWithDebuggerTypeProxyAttribute (type, attribute);
 					break;
-				case "System.Diagnostics.Tracing.EventDataAttribute":
+				case "EventDataAttribute" when attrType.Namespace == "System.Diagnostics.Tracing":
 					MarkMethodsIf (type.Methods, IsPublicInstancePropertyMethod);
+					break;
+				case "TypeConverterAttribute" when attrType.Namespace == "System.ComponentModel":
+					// The attribute can be applied anywhere but in reality it's always associated with type
+					MarkTypeConverterDependency (attribute);
 					break;
 				}
 			}
@@ -1189,6 +1188,30 @@ namespace Mono.Linker.Steps {
 				return;
 
 			MarkNamedMethod (type, method_name);
+		}
+
+		void MarkTypeConverterDependency (CustomAttribute attribute)
+		{
+			var args = attribute.ConstructorArguments;
+			if (args.Count < 1)
+				return;
+
+			TypeDefinition tdef = null;
+			switch (attribute.ConstructorArguments [0].Value) {
+			case string s:
+				tdef = ResolveFullyQualifiedTypeName (s);
+				break;
+			case TypeReference type:
+				tdef = type.Resolve ();
+				break;
+			}
+
+			if (tdef == null)
+				return;
+
+			MarkMethodsIf (tdef.Methods, l =>
+				l.IsDefaultConstructor () ||
+				l.Parameters.Count == 1 && l.Parameters [0].ParameterType.IsTypeOf ("System", "Type"));
 		}
 
 		void MarkTypeWithDebuggerDisplayAttribute (TypeDefinition type, CustomAttribute attribute)
@@ -1370,8 +1393,13 @@ namespace Mono.Linker.Steps {
 		void MarkGenericParameter (GenericParameter parameter)
 		{
 			MarkCustomAttributes (parameter);
-			foreach (var constraint in parameter.Constraints)
+			if (!parameter.HasConstraints)
+				return;
+
+			foreach (var constraint in parameter.Constraints) {
+				MarkCustomAttributes (constraint);
 				MarkType (constraint.ConstraintType);
+			}
 		}
 
 		bool IsVirtualNeededByTypeDueToPreservedScope (MethodDefinition method)
@@ -1543,6 +1571,25 @@ namespace Mono.Linker.Steps {
 				td = type.Resolve ();
 
 			return td;
+		}
+
+		TypeDefinition ResolveFullyQualifiedTypeName (string name)
+		{
+			if (!TypeNameParser.TryParseTypeAssemblyQualifiedName (name, out string typeName, out string assemblyName))
+				return null;
+
+			foreach (var assemblyDefinition in _context.GetAssemblies ()) {
+				if (assemblyName != null && assemblyDefinition.Name.Name != assemblyName)
+					continue;
+
+				var foundType = assemblyDefinition.MainModule.GetType (typeName);
+				if (foundType == null)
+					continue;
+
+				return foundType;
+			}
+
+			return null;
 		}
 
 		protected TypeReference GetOriginalType (TypeReference type)
@@ -1826,7 +1873,10 @@ namespace Mono.Linker.Steps {
 			if (ShouldMarkAsInstancePossible (method))
 				MarkRequirementsForInstantiatedTypes (method.DeclaringType);
 
-			if (IsPropertyMethod (method))
+			if (method.IsConstructor) {
+				if (!Annotations.ProcessSatelliteAssemblies && KnownMembers.IsSatelliteAssemblyMarker (method))
+					Annotations.ProcessSatelliteAssemblies = true;
+			} else if (IsPropertyMethod (method))
 				MarkProperty (GetProperty (method));
 			else if (IsEventMethod (method))
 				MarkEvent (GetEvent (method));
@@ -2269,14 +2319,11 @@ namespace Mono.Linker.Steps {
 
 				int first_arg_instr, second_arg_instr;
 				Instruction first_arg;
-				string name = default;
 
 				//
 				// System.Type
 				//
 				if (methodCalledType.Name == "Type" && methodCalledType.Namespace == "System") {
-					System.Reflection.MemberTypes memberTypes = default;
-					BindingFlags bindingFlags = default;
 
 					switch (methodCalled.Name) {
 					//
@@ -2285,16 +2332,18 @@ namespace Mono.Linker.Steps {
 					// GetConstructor (BindingFlags, Binder, CallingConventions, Type [], ParameterModifier [])
 					//
 					case "GetConstructor":
-						memberTypes = System.Reflection.MemberTypes.Constructor;
-						goto case "Get_?_Instance";
+						if (!methodCalledDefinition.IsStatic)
+							ProcessSystemTypeGetMemberLikeCall (System.Reflection.MemberTypes.Constructor, methodCalledDefinition, i - 1);
+
+						break;
 
 					//
 					// GetMethod (String)
 					// GetMethod (String, BindingFlags)
-					// GetMethod (String, Type [])
-					// GetMethod (String, Type [], ParameterModifier [])
-					// GetMethod (String, BindingFlags, Binder, Type [], ParameterModifier [])
-					// GetMethod (String, BindingFlags, Binder, CallingConventions, Type [], ParameterModifier [])
+					// GetMethod (String, Type[])
+					// GetMethod (String, Type[], ParameterModifier[])
+					// GetMethod (String, BindingFlags, Binder, Type[], ParameterModifier[])
+					// GetMethod (String, BindingFlags, Binder, CallingConventions, Type[], ParameterModifier[])
 					//
 					// TODO: .NET Core extensions
 					// GetMethod (String, int, Type[])
@@ -2302,89 +2351,44 @@ namespace Mono.Linker.Steps {
 					// GetMethod (String, int, BindingFlags, Binder?, Type[], ParameterModifier[]?)
 					// GetMethod (String, int, BindingFlags, Binder?, CallingConventions, Type[], ParameterModifier[]?)
 					//
+					case "GetMethod":
+						if (!methodCalledDefinition.IsStatic)
+							ProcessSystemTypeGetMemberLikeCall (System.Reflection.MemberTypes.Method, methodCalledDefinition, i - 1);
+
+						break;
+
+					//
 					// GetField (String)
 					// GetField (String, BindingFlags)
+					//
+					case "GetField":
+						if (!methodCalledDefinition.IsStatic)
+							ProcessSystemTypeGetMemberLikeCall (System.Reflection.MemberTypes.Field, methodCalledDefinition, i - 1);
+
+						break;
+
 					//
 					// GetEvent (String)
 					// GetEvent (String, BindingFlags)
 					//
+					case "GetEvent":
+						if (!methodCalledDefinition.IsStatic)
+							ProcessSystemTypeGetMemberLikeCall (System.Reflection.MemberTypes.Event, methodCalledDefinition, i - 1);
+
+						break;
+
+					//
 					// GetProperty (String)
 					// GetProperty (String, BindingFlags)
 					// GetProperty (String, Type)
-					// GetProperty (String, Type [])
-					// GetProperty (String, Type, Type [])
-					// GetProperty (String, Type, Type [], ParameterModifier [])
-					// GetProperty (String, BindingFlags, Binder, Type, Type [], ParameterModifier [])
+					// GetProperty (String, Type[])
+					// GetProperty (String, Type, Type[])
+					// GetProperty (String, Type, Type[], ParameterModifier[])
+					// GetProperty (String, BindingFlags, Binder, Type, Type[], ParameterModifier[])
 					//
-					case "GetMethod":
-						memberTypes = System.Reflection.MemberTypes.Method;
-						goto case "Get_?_Instance";
-					case "GetField":
-						memberTypes = System.Reflection.MemberTypes.Field;
-						goto case "Get_?_Instance";
-					case "GetEvent":
-						memberTypes = System.Reflection.MemberTypes.Event;
-						goto case "Get_?_Instance";
 					case "GetProperty":
-						memberTypes = System.Reflection.MemberTypes.Property;
-						goto case "Get_?_Instance";
-
-					case "Get_?_Instance":
-						if (methodCalledDefinition.IsStatic)
-							continue;
-
-						first_arg_instr = GetInstructionAtStackDepth (instructions, i - 1, methodCalledDefinition.Parameters.Count);
-						if (first_arg_instr < 0) {
-							_context.LogMessage (MessageImportance.Low, $"Reflection call '{methodCalled.FullName}' couldn't be decomposed");
-							continue;
-						}
-
-						first_arg = instructions [first_arg_instr];
-
-						if (memberTypes == System.Reflection.MemberTypes.Constructor) {
-							if (first_arg.OpCode == OpCodes.Ldc_I4_S && methodCalled.Parameters.Count > 0 && methodCalled.Parameters [0].ParameterType.Name == "BindingFlags") {
-								bindingFlags = (BindingFlags)(sbyte)first_arg.Operand;
-							}
-						} else {
-							//
-							// The next value must be string constant (we don't handle anything else)
-							//
-							if (first_arg.OpCode != OpCodes.Ldstr) {
-								_context.LogMessage (MessageImportance.Low, $"Reflection call '{methodCalled.FullName}' was detected with argument which cannot be analyzed");
-								continue;
-							}
-
-							name = (string)first_arg.Operand;
-
-							var pos_arg = instructions [first_arg_instr + 1];
-							if (pos_arg.OpCode == OpCodes.Ldc_I4_S && methodCalled.Parameters.Count > 1 && methodCalled.Parameters [1].ParameterType.Name == "BindingFlags") {
-								bindingFlags = (BindingFlags)(sbyte)pos_arg.Operand;
-							}
-						}
-
-						var declaringType = FindReflectionTypeForLookup (instructions, first_arg_instr - 1);
-						if (declaringType == null) {
-							_context.LogMessage (MessageImportance.Low, $"Reflection call '{methodCalled.FullName}' does not use detectable instance type extraction");
-							continue;
-						}
-
-						switch (memberTypes) {
-						case System.Reflection.MemberTypes.Constructor:
-							MarkMethodsFromReflectionCall (declaringType, ".ctor", 0, bindingFlags);
-							break;
-						case System.Reflection.MemberTypes.Method:
-							MarkMethodsFromReflectionCall (declaringType, name, 0, bindingFlags);
-							break;
-						case System.Reflection.MemberTypes.Field:
-							MarkFieldsFromReflectionCall (declaringType, name);
-							break;
-						case System.Reflection.MemberTypes.Property:
-							MarkPropertiesFromReflectionCall (declaringType, name);
-							break;
-						case System.Reflection.MemberTypes.Event:
-							MarkEventsFromReflectionCall (declaringType, name);
-							break;
-						}
+						if (!methodCalledDefinition.IsStatic)
+							ProcessSystemTypeGetMemberLikeCall (System.Reflection.MemberTypes.Property, methodCalledDefinition, i - 1);
 
 						break;
 
@@ -2402,7 +2406,8 @@ namespace Mono.Linker.Steps {
 
 						first_arg_instr = GetInstructionAtStackDepth (instructions, i - 1, methodCalledDefinition.Parameters.Count);
 						if (first_arg_instr < 0) {
-							_context.LogMessage (MessageImportance.Low, $"Reflection call '{methodCalled.FullName}' couldn't be decomposed");
+							if (!HasManuallyTrackedDependency (body))
+								_context.LogMessage (MessageImportance.Low, $"Reflection call '{methodCalled.FullName}' inside '{body.Method.FullName}' couldn't be decomposed");
 							continue;
 						}
 
@@ -2411,25 +2416,12 @@ namespace Mono.Linker.Steps {
 						//
 						first_arg = instructions [first_arg_instr];
 						if (first_arg.OpCode != OpCodes.Ldstr) {
-							_context.LogMessage (MessageImportance.Low, $"Reflection call '{methodCalled.FullName}' was detected with argument which cannot be analyzed");
+							if (!HasManuallyTrackedDependency (body))
+								_context.LogMessage (MessageImportance.Low, $"Reflection call '{methodCalled.FullName}' inside '{body.Method.FullName}' was detected with argument which cannot be analyzed");
 							continue;
 						}
 
-						name = (string)first_arg.Operand;
-
-						if (!TypeNameParser.TryParseTypeAssemblyQualifiedName (name, out string typeName, out string assemblyName))
-							continue;
-
-						TypeDefinition foundType = null;
-						foreach (var assemblyDefinition in _context.GetAssemblies ()) {
-							if (assemblyName != null && assemblyDefinition.Name.Name != assemblyName)
-								continue;
-
-							foundType = assemblyDefinition.MainModule.GetType (typeName);
-							if (foundType != null)
-								break;
-						}
-
+						TypeDefinition foundType = ResolveFullyQualifiedTypeName ((string) first_arg.Operand);
 						if (foundType == null)
 							continue;
 
@@ -2464,7 +2456,8 @@ namespace Mono.Linker.Steps {
 					case "Call":
 						first_arg_instr = GetInstructionAtStackDepth (instructions, i - 1, 4);
 						if (first_arg_instr < 0) {
-							_context.LogMessage (MessageImportance.Low, $"Expression call '{methodCalled.FullName}' couldn't be decomposed");
+							if (!HasManuallyTrackedDependency (body))
+								_context.LogMessage (MessageImportance.Low, $"Expression call '{methodCalled.FullName}' inside '{body.Method.FullName}' couldn't be decomposed");
 							continue;
 						}
 
@@ -2473,19 +2466,21 @@ namespace Mono.Linker.Steps {
 							first_arg_instr++;
 
 						declaringType = FindReflectionTypeForLookup (instructions, first_arg_instr);
-						if (declaringType == null) {
-							_context.LogMessage (MessageImportance.Low, $"Expression call '{methodCalled.FullName}' was detected with 1st argument which cannot be analyzed");
+						if (declaringType == null ) {
+							if (!HasManuallyTrackedDependency (body))
+								_context.LogMessage (MessageImportance.Low, $"Expression call '{methodCalled.FullName}' inside '{body.Method.FullName}' was detected with 1st argument which cannot be analyzed");
 							continue;
 						}
 
 						second_arg_instr = GetInstructionAtStackDepth (instructions, i - 1, 3);
 						second_argument = instructions [second_arg_instr];
 						if (second_argument.OpCode != OpCodes.Ldstr) {
-							_context.LogMessage (MessageImportance.Low, $"Expression call '{methodCalled.FullName}' was detected with 2nd argument which cannot be analyzed");
+							if (!HasManuallyTrackedDependency (body))
+								_context.LogMessage (MessageImportance.Low, $"Expression call '{methodCalled.FullName}' inside '{body.Method.FullName}' was detected with 2nd argument which cannot be analyzed");
 							continue;
 						}
 
-						name = (string)second_argument.Operand;
+						var name = (string)second_argument.Operand;
 
 						MarkMethodsFromReflectionCall (declaringType, name, null, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
 
@@ -2500,7 +2495,8 @@ namespace Mono.Linker.Steps {
 
 						second_arg_instr = GetInstructionAtStackDepth (instructions, i - 1, 2);
 						if (second_arg_instr < 0) {
-							_context.LogMessage (MessageImportance.Low, $"Expression call '{methodCalled.FullName}' couldn't be decomposed");
+							if (!HasManuallyTrackedDependency (body))
+								_context.LogMessage (MessageImportance.Low, $"Expression call '{methodCalled.FullName}' inside '{body.Method.FullName}' couldn't be decomposed");
 							continue;
 						}
 
@@ -2510,14 +2506,16 @@ namespace Mono.Linker.Steps {
 
 						declaringType = FindReflectionTypeForLookup (instructions, second_arg_instr);
 						if (declaringType == null) {
-							_context.LogMessage (MessageImportance.Low, $"Expression call '{methodCalled.FullName}' was detected with 2nd argument which cannot be analyzed");
+							if (!HasManuallyTrackedDependency (body))
+								_context.LogMessage (MessageImportance.Low, $"Expression call '{methodCalled.FullName}' inside '{body.Method.FullName}' was detected with 2nd argument which cannot be analyzed");
 							continue;
 						}
 
 						var third_arg_inst = GetInstructionAtStackDepth (instructions, i - 1, 1);
 						var third_argument = instructions [third_arg_inst];
 						if (third_argument.OpCode != OpCodes.Ldstr) {
-							_context.LogMessage (MessageImportance.Low, $"Expression call '{methodCalled.FullName}' was detected with the 3rd argument which cannot be analyzed");
+							if (!HasManuallyTrackedDependency (body))
+								_context.LogMessage (MessageImportance.Low, $"Expression call '{methodCalled.FullName}' inside '{body.Method.FullName}' was detected with the 3rd argument which cannot be analyzed");
 							continue;
 						}
 
@@ -2552,6 +2550,114 @@ namespace Mono.Linker.Steps {
 					}
 
 					continue;
+				}
+
+				//
+				// System.Reflection.RuntimeReflectionExtensions
+				//
+				if (methodCalledType.Name == "RuntimeReflectionExtensions" && methodCalledType.Namespace == "System.Reflection") {
+					switch (methodCalled.Name) {
+					//
+					// GetRuntimeField (this Type type, string name)
+					//
+					case "GetRuntimeField":
+						ProcessSystemTypeGetMemberLikeCall (System.Reflection.MemberTypes.Field, methodCalledDefinition, i - 1, thisExtension: true);
+						break;
+
+					//
+					// GetRuntimeMethod (this Type type, string name, Type[] parameters)
+					//
+					case "GetRuntimeMethod":
+						ProcessSystemTypeGetMemberLikeCall (System.Reflection.MemberTypes.Method, methodCalledDefinition, i - 1, thisExtension: true);
+						break;
+
+					//
+					// GetRuntimeProperty(this Type type, string name)
+					//
+					case "GetRuntimeProperty":
+						ProcessSystemTypeGetMemberLikeCall (System.Reflection.MemberTypes.Property, methodCalledDefinition, i - 1, thisExtension: true);
+						break;
+
+					//
+					// GetRuntimeEvent(this Type type, string name)
+					//
+					case "GetRuntimeEvent":
+						ProcessSystemTypeGetMemberLikeCall (System.Reflection.MemberTypes.Event, methodCalledDefinition, i - 1, thisExtension: true);
+						break;
+					}
+				}
+			}
+
+			bool HasManuallyTrackedDependency (MethodBody methodBody)
+			{
+				return PreserveDependencyLookupStep.HasPreserveDependencyAttribute (methodBody.Method);
+			}
+
+			//
+			// Handles instance methods called over typeof (Foo) with string name as the first argument
+			//
+			void ProcessSystemTypeGetMemberLikeCall (System.Reflection.MemberTypes memberTypes, MethodDefinition methodCalledDefinition, int startIndex, bool thisExtension = false)
+			{
+				int first_instance_arg = methodCalledDefinition.Parameters.Count;
+				if (thisExtension)
+					--first_instance_arg;
+
+				var first_arg_instr = GetInstructionAtStackDepth (instructions, startIndex, first_instance_arg);
+				if (first_arg_instr < 0 && !HasManuallyTrackedDependency (null)) {
+					if (!HasManuallyTrackedDependency (body))
+						_context.LogMessage (MessageImportance.Low, $"Reflection call '{methodCalledDefinition.FullName}' inside '{body.Method.FullName}' couldn't be decomposed");
+					return;
+				}
+
+				var first_arg = instructions [first_arg_instr];
+				BindingFlags bindingFlags= default;
+				string name = default;
+
+				if (memberTypes == System.Reflection.MemberTypes.Constructor) {
+					if (first_arg.OpCode == OpCodes.Ldc_I4_S && methodCalledDefinition.Parameters.Count > 0 && methodCalledDefinition.Parameters [0].ParameterType.Name == "BindingFlags") {
+						bindingFlags = (BindingFlags)(sbyte)first_arg.Operand;
+					}
+				} else {
+					//
+					// The next value must be string constant (we don't handle anything else)
+					//
+					if (first_arg.OpCode != OpCodes.Ldstr) {
+						if (!HasManuallyTrackedDependency (body))
+							_context.LogMessage (MessageImportance.Low, $"Reflection call '{methodCalledDefinition.FullName}' inside '{body.Method.FullName}' was detected with argument which cannot be analyzed");
+						return;
+					}
+
+					name = (string)first_arg.Operand;
+
+					var pos_arg = instructions [first_arg_instr + 1];
+					if (pos_arg.OpCode == OpCodes.Ldc_I4_S && methodCalledDefinition.Parameters.Count > 1 && methodCalledDefinition.Parameters [1].ParameterType.Name == "BindingFlags") {
+						bindingFlags = (BindingFlags)(sbyte)pos_arg.Operand;
+					}
+				}
+
+				var declaringType = FindReflectionTypeForLookup (instructions, first_arg_instr - 1);
+				if (declaringType == null) {
+					if (!HasManuallyTrackedDependency (body))
+						_context.LogMessage (MessageImportance.Low, $"Reflection call '{methodCalledDefinition.FullName}' inside '{body.Method.FullName}' does not use detectable instance type extraction");
+					return;
+				}
+
+				switch (memberTypes) {
+				case System.Reflection.MemberTypes.Constructor:
+					MarkMethodsFromReflectionCall (declaringType, ".ctor", 0, bindingFlags);
+					break;
+				case System.Reflection.MemberTypes.Method:
+					MarkMethodsFromReflectionCall (declaringType, name, 0, bindingFlags);
+					break;
+				case System.Reflection.MemberTypes.Field:
+					MarkFieldsFromReflectionCall (declaringType, name);
+					break;
+				case System.Reflection.MemberTypes.Property:
+					MarkPropertiesFromReflectionCall (declaringType, name);
+					break;
+				case System.Reflection.MemberTypes.Event:
+					MarkEventsFromReflectionCall (declaringType, name);
+					break;
 				}
 			}
 		}

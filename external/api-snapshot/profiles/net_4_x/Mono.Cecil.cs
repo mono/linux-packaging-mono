@@ -1592,6 +1592,7 @@ namespace Mono.Cecil
         I1 = 16,
         I2 = 2,
         I4 = 3,
+        I8 = 20,
         Int = 22,
         None = 0,
         R4 = 4,
@@ -1599,6 +1600,7 @@ namespace Mono.Cecil
         UI1 = 17,
         UI2 = 18,
         UI4 = 19,
+        UI8 = 21,
         UInt = 23,
         Unknown = 13,
         Variant = 12,
@@ -1607,6 +1609,9 @@ namespace Mono.Cecil
     {
         public WriterParameters() { }
         public bool DeterministicMvid { get { throw null; } set { } }
+        public bool HasStrongNameKey { get { throw null; } }
+        public byte[] StrongNameKeyBlob { get { throw null; } set { } }
+        public string StrongNameKeyContainer { get { throw null; } set { } }
         public System.Reflection.StrongNameKeyPair StrongNameKeyPair { get { throw null; } set { } }
         public System.IO.Stream SymbolStream { get { throw null; } set { } }
         public Mono.Cecil.Cil.ISymbolWriterProvider SymbolWriterProvider { get { throw null; } set { } }

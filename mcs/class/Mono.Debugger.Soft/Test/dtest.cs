@@ -4466,7 +4466,6 @@ public class DebuggerTests
 	}
 
 	[Test]
-	[Category ("NotWorkingRuntimeInterpreter")]
 	public void SetIP2 () {
 		var bevent = run_until ("set_ip_1");
 
@@ -5151,6 +5150,16 @@ public class DebuggerTests
 		Assert.IsInstanceOfType (typeof (ExceptionEvent), ev);
 		vm.Exit (0);
 		vm = null;
+	}
+	
+	[Test]
+	public void TestAsyncDebugGenerics () {
+		Event e = run_until ("test_async_debug_generics");
+		e = step_in_await ("test_async_debug_generics", e);
+		e = step_in_await ("MoveNext", e);
+		e = step_in_await ("MoveNext", e);
+		e = step_in_await ("MoveNext", e);
+		e = step_in_await ("MoveNext", e);
 	}
 	
 #endif

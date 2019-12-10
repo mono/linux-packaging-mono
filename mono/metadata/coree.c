@@ -80,6 +80,7 @@ BOOL STDMETHODCALLTYPE _CorDllMain(HINSTANCE hInst, DWORD dwReason, LPVOID lpRes
 	MonoImage* image;
 	gchar* file_name;
 	gchar* error;
+	MonoAssemblyLoadContext *alc = mono_domain_default_alc (mono_get_root_domain ());
 
 	switch (dwReason)
 	{
@@ -89,7 +90,7 @@ BOOL STDMETHODCALLTYPE _CorDllMain(HINSTANCE hInst, DWORD dwReason, LPVOID lpRes
 		file_name = mono_get_module_file_name (hInst);
 
 		if (mono_get_root_domain ()) {
-			image = mono_image_open_from_module_handle (mono_domain_default_alc (mono_get_root_domain ()), hInst, mono_path_resolve_symlinks (file_name), TRUE, NULL);
+			image = mono_image_open_from_module_handle (alc, hInst, mono_path_resolve_symlinks (file_name), TRUE, NULL);
 		} else {
 			init_from_coree = TRUE;
 			mono_runtime_load (file_name, NULL);
@@ -97,7 +98,7 @@ BOOL STDMETHODCALLTYPE _CorDllMain(HINSTANCE hInst, DWORD dwReason, LPVOID lpRes
 			if (error) {
 				g_free (error);
 				g_free (file_name);
-				mono_runtime_quit ();
+				mono_runtime_quit_internal ();
 				return FALSE;
 			}
 
@@ -122,7 +123,7 @@ BOOL STDMETHODCALLTYPE _CorDllMain(HINSTANCE hInst, DWORD dwReason, LPVOID lpRes
 		 */
 		if (image->tables [MONO_TABLE_ASSEMBLY].rows && image->image_info->cli_cli_header.ch_vtable_fixups.rva) {
 			MonoAssemblyOpenRequest req;
-			mono_assembly_request_prepare (&req.request, sizeof (req), MONO_ASMCTX_DEFAULT);
+			mono_assembly_request_prepare_open (&req, MONO_ASMCTX_DEFAULT, alc);
 			assembly = mono_assembly_request_open (file_name, &req, NULL);
 		}
 
@@ -133,7 +134,7 @@ BOOL STDMETHODCALLTYPE _CorDllMain(HINSTANCE hInst, DWORD dwReason, LPVOID lpRes
 			/* The process is terminating. */
 			return TRUE;
 		file_name = mono_get_module_file_name (hInst);
-		image = mono_image_loaded_internal (mono_domain_default_alc (mono_get_root_domain ()), file_name, FALSE);
+		image = mono_image_loaded_internal (alc, file_name, FALSE);
 		if (image)
 			mono_image_close (image);
 
@@ -171,18 +172,18 @@ __int32 STDMETHODCALLTYPE _CorExeMain(void)
 		g_free (corlib_version_error);
 		g_free (file_name);
 		MessageBox (NULL, L"Corlib not in sync with this runtime.", NULL, MB_ICONERROR);
-		mono_runtime_quit ();
+		mono_runtime_quit_internal ();
 		ExitProcess (1);
 	}
 
 	MonoAssemblyOpenRequest req;
-	mono_assembly_request_prepare (&req.request, sizeof (req), MONO_ASMCTX_DEFAULT);
+	mono_assembly_request_prepare_open (&req, MONO_ASMCTX_DEFAULT, mono_domain_default_alc (mono_get_root_domain ()));
 	assembly = mono_assembly_request_open (file_name, &req, NULL);
 	mono_close_exe_image ();
 	if (!assembly) {
 		g_free (file_name);
 		MessageBox (NULL, L"Cannot open assembly.", NULL, MB_ICONERROR);
-		mono_runtime_quit ();
+		mono_runtime_quit_internal ();
 		ExitProcess (1);
 	}
 
@@ -191,7 +192,7 @@ __int32 STDMETHODCALLTYPE _CorExeMain(void)
 	if (!entry) {
 		g_free (file_name);
 		MessageBox (NULL, L"Assembly doesn't have an entry point.", NULL, MB_ICONERROR);
-		mono_runtime_quit ();
+		mono_runtime_quit_internal ();
 		ExitProcess (1);
 	}
 
@@ -200,7 +201,7 @@ __int32 STDMETHODCALLTYPE _CorExeMain(void)
 		g_free (file_name);
 		mono_error_cleanup (error); /* FIXME don't swallow the error */
 		MessageBox (NULL, L"The entry point method could not be loaded.", NULL, MB_ICONERROR);
-		mono_runtime_quit ();
+		mono_runtime_quit_internal ();
 		ExitProcess (1);
 	}
 
@@ -213,9 +214,9 @@ __int32 STDMETHODCALLTYPE _CorExeMain(void)
 
 	mono_runtime_run_main_checked (method, argc, argv, error);
 	mono_error_raise_exception_deprecated (error); /* OK, triggers unhandled exn handler */
-	mono_thread_manage ();
+	mono_thread_manage_internal ();
 
-	mono_runtime_quit ();
+	mono_runtime_quit_internal ();
 
 	/* return does not terminate the process. */
 	ExitProcess (mono_environment_exitcode_get ());
@@ -230,7 +231,7 @@ void STDMETHODCALLTYPE CorExitProcess(int exitCode)
 	if (mono_get_root_domain () && !mono_runtime_is_shutting_down ()) {
 		mono_runtime_set_shutting_down ();
 		mono_thread_suspend_all_other_threads ();
-		mono_runtime_quit ();
+		mono_runtime_quit_internal ();
 	}
 #endif
 	ExitProcess (exitCode);

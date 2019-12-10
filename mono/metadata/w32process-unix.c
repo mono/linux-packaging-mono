@@ -47,6 +47,7 @@
 #include <utime.h>
 #endif
 
+#if defined (HAVE_FORK) && defined (HAVE_EXECVE)
 // For close_my_fds
 #if defined (_AIX)
 #include <procinfo.h>
@@ -56,6 +57,7 @@
 #include <libutil.h>
 #elif defined(__linux__)
 #include <dirent.h>
+#endif
 #endif
 
 #include <mono/metadata/object-internals.h>
@@ -89,6 +91,8 @@
 #include <mono/utils/mono-threads-coop.h>
 #include "object-internals.h"
 #include "icall-decl.h"
+
+#ifndef ENABLE_NETCORE
 
 #ifndef MAXPATHLEN
 #define MAXPATHLEN 242
@@ -1102,19 +1106,6 @@ mono_w32process_module_get_information (gpointer handle, gpointer module, MODULE
 	return ret;
 }
 
-static void
-switch_dir_separators (char *path)
-{
-	size_t i, pathLength = strlen(path);
-	
-	/* Turn all the slashes round the right way, except for \' */
-	/* There are probably other characters that need to be excluded as well. */
-	for (i = 0; i < pathLength; i++) {
-		if (path[i] == '\\' && i < pathLength - 1 && path[i+1] != '\'' )
-			path[i] = '/';
-	}
-}
-
 #if HAVE_SIGACTION
 
 MONO_SIGNAL_HANDLER_FUNC (static, mono_sigchld_signal_handler, (int _dummy, siginfo_t *info, void *context))
@@ -1181,6 +1172,20 @@ mono_w32process_signal_finished (void)
 	}
 
 	mono_coop_mutex_unlock (&processes_mutex);
+}
+
+#if defined (HAVE_FORK) && defined (HAVE_EXECVE)
+static void
+switch_dir_separators (char *path)
+{
+	size_t i, pathLength = strlen (path);
+
+	/* Turn all the slashes round the right way, except for \' */
+	/* There are probably other characters that need to be excluded as well. */
+	for (i = 0; i < pathLength; i++) {
+		if (path[i] == '\\' && i < pathLength - 1 && path[i + 1] != '\'')
+			path[i] = '/';
+	}
 }
 
 static gboolean
@@ -1345,7 +1350,7 @@ leave:
  * that, the system's file descriptor limit. This is called by the fork child
  * in close_my_fds.
  */
-static inline guint32
+static guint32
 max_fd_count (void)
 {
 #if defined (_AIX)
@@ -1458,6 +1463,7 @@ fallback:
 	for (guint32 i = max_fd_count () - 1; i > 2; i--)
 		close (i);
 }
+#endif
 
 static gboolean
 process_create (const gunichar2 *appname, const gunichar2 *cmdline,
@@ -1752,7 +1758,7 @@ process_create (const gunichar2 *appname, const gunichar2 *cmdline,
 		char *qprog;
 
 		qprog = g_shell_quote (prog);
-		full_prog = g_strconcat (qprog, " ", args_after_prog, NULL);
+		full_prog = g_strconcat (qprog, " ", args_after_prog, (const char*)NULL);
 		g_free (qprog);
 	} else {
 		full_prog = g_shell_quote (prog);
@@ -2034,7 +2040,7 @@ ves_icall_System_Diagnostics_Process_ShellExecuteEx_internal (MonoW32ProcessStar
 					/* kfmclient needs exec argument */
 					char *old = handler;
 					handler = g_strconcat (old, " exec",
-							       NULL);
+							       (const char*)NULL);
 					g_free (old);
 				}
 			}
@@ -4250,3 +4256,51 @@ mono_w32process_ver_language_name (guint32 lang, gunichar2 *lang_out, guint32 la
 
 	return copy_lang (lang_out, lang_len, name);
 }
+
+#else /* ENABLE_NETCORE */
+
+void
+mono_w32process_init (void)
+{
+}
+
+void
+mono_w32process_cleanup (void)
+{
+}
+
+void
+mono_w32process_set_cli_launcher (gchar *path)
+{
+}
+
+void
+mono_w32process_signal_finished (void)
+{
+}
+
+guint32
+mono_w32process_ver_language_name (guint32 lang, gunichar2 *lang_out, guint32 lang_len)
+{
+	return 0;
+}
+
+gboolean
+mono_w32process_get_fileversion_info (const gunichar2 *filename, gpointer *data)
+{
+	return FALSE;
+}
+
+gboolean
+mono_w32process_module_get_information (gpointer handle, gpointer module, MODULEINFO *modinfo, guint32 size)
+{
+	return FALSE;
+}
+
+gboolean
+mono_w32process_ver_query_value (gconstpointer datablock, const gunichar2 *subblock, gpointer *buffer, guint32 *len)
+{
+	return FALSE;
+}
+
+#endif /* ENABLE_NETCORE */

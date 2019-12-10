@@ -1010,37 +1010,13 @@ namespace Mono.Security.Interface
         System.Net.Security.SslStream SslStream { get; }
         System.Net.TransportContext TransportContext { get; }
         int WriteTimeout { get; set; }
-        void AuthenticateAsClient(string targetHost);
-        void AuthenticateAsClient(string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, bool checkCertificateRevocation);
-        void AuthenticateAsClient(string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, System.Security.Authentication.SslProtocols enabledSslProtocols, bool checkCertificateRevocation);
-        System.Threading.Tasks.Task AuthenticateAsClientAsync(string targetHost);
-        System.Threading.Tasks.Task AuthenticateAsClientAsync(string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, bool checkCertificateRevocation);
         System.Threading.Tasks.Task AuthenticateAsClientAsync(string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, System.Security.Authentication.SslProtocols enabledSslProtocols, bool checkCertificateRevocation);
-        void AuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate);
-        void AuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, bool checkCertificateRevocation);
-        void AuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, System.Security.Authentication.SslProtocols enabledSslProtocols, bool checkCertificateRevocation);
-        System.Threading.Tasks.Task AuthenticateAsServerAsync(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate);
-        System.Threading.Tasks.Task AuthenticateAsServerAsync(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, bool checkCertificateRevocation);
         System.Threading.Tasks.Task AuthenticateAsServerAsync(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, System.Security.Authentication.SslProtocols enabledSslProtocols, bool checkCertificateRevocation);
-        System.IAsyncResult BeginAuthenticateAsClient(string targetHost, System.AsyncCallback asyncCallback, object asyncState);
-        System.IAsyncResult BeginAuthenticateAsClient(string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, bool checkCertificateRevocation, System.AsyncCallback asyncCallback, object asyncState);
-        System.IAsyncResult BeginAuthenticateAsClient(string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, System.Security.Authentication.SslProtocols enabledSslProtocols, bool checkCertificateRevocation, System.AsyncCallback asyncCallback, object asyncState);
-        System.IAsyncResult BeginAuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, System.AsyncCallback asyncCallback, object asyncState);
-        System.IAsyncResult BeginAuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, bool checkCertificateRevocation, System.AsyncCallback asyncCallback, object asyncState);
-        System.IAsyncResult BeginAuthenticateAsServer(System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, System.Security.Authentication.SslProtocols enabledSslProtocols, bool checkCertificateRevocation, System.AsyncCallback asyncCallback, object asyncState);
-        System.IAsyncResult BeginRead(byte[] buffer, int offset, int count, System.AsyncCallback asyncCallback, object asyncState);
-        System.IAsyncResult BeginWrite(byte[] buffer, int offset, int count, System.AsyncCallback asyncCallback, object asyncState);
-        void EndAuthenticateAsClient(System.IAsyncResult asyncResult);
-        void EndAuthenticateAsServer(System.IAsyncResult asyncResult);
-        int EndRead(System.IAsyncResult asyncResult);
-        void EndWrite(System.IAsyncResult asyncResult);
         Mono.Security.Interface.MonoTlsConnectionInfo GetConnectionInfo();
-        int Read(byte[] buffer, int offset, int count);
+        System.Threading.Tasks.Task<int> ReadAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken);
         System.Threading.Tasks.Task RenegotiateAsync(System.Threading.CancellationToken cancellationToken);
         void SetLength(long value);
         System.Threading.Tasks.Task ShutdownAsync();
-        void Write(byte[] buffer);
-        void Write(byte[] buffer, int offset, int count);
         System.Threading.Tasks.Task WriteAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken);
     }
     public enum MonoEncryptionPolicy
@@ -1255,118 +1231,6 @@ namespace Mono.Security.Protocol.Ntlm
         protected override void Decode(byte[] message) { }
         ~Type3Message() { }
         public override byte[] GetBytes() { throw null; }
-    }
-}
-namespace Mono.Security.Protocol.Tls
-{
-    public delegate System.Security.Cryptography.X509Certificates.X509Certificate CertificateSelectionCallback(System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection serverRequestedCertificates);
-    public delegate bool CertificateValidationCallback(System.Security.Cryptography.X509Certificates.X509Certificate certificate, int[] certificateErrors);
-    public delegate Mono.Security.Interface.ValidationResult CertificateValidationCallback2(Mono.Security.X509.X509CertificateCollection collection);
-    [System.SerializableAttribute]
-    public enum CipherAlgorithmType
-    {
-        Des = 0,
-        None = 1,
-        Rc2 = 2,
-        Rc4 = 3,
-        Rijndael = 4,
-        SkipJack = 5,
-        TripleDes = 6,
-    }
-    [System.SerializableAttribute]
-    public enum ExchangeAlgorithmType
-    {
-        DiffieHellman = 0,
-        Fortezza = 1,
-        None = 2,
-        RsaKeyX = 3,
-        RsaSign = 4,
-    }
-    [System.SerializableAttribute]
-    public enum HashAlgorithmType
-    {
-        Md5 = 0,
-        None = 1,
-        Sha1 = 2,
-    }
-    public delegate System.Security.Cryptography.AsymmetricAlgorithm PrivateKeySelectionCallback(System.Security.Cryptography.X509Certificates.X509Certificate certificate, string targetHost);
-    public enum SecurityCompressionType
-    {
-        None = 0,
-        Zlib = 1,
-    }
-    [System.FlagsAttribute]
-    [System.SerializableAttribute]
-    public enum SecurityProtocolType
-    {
-        Default = -1073741824,
-        Ssl2 = 12,
-        Ssl3 = 48,
-        Tls = 192,
-        Tls11 = 768,
-        Tls12 = 3072,
-    }
-    public partial class SslClientStream : Mono.Security.Protocol.Tls.SslStreamBase
-    {
-        public SslClientStream(System.IO.Stream stream, string targetHost, bool ownsStream) : base (default(System.IO.Stream), default(bool)) { }
-        public SslClientStream(System.IO.Stream stream, string targetHost, bool ownsStream, Mono.Security.Protocol.Tls.SecurityProtocolType securityProtocolType) : base (default(System.IO.Stream), default(bool)) { }
-        public SslClientStream(System.IO.Stream stream, string targetHost, bool ownsStream, Mono.Security.Protocol.Tls.SecurityProtocolType securityProtocolType, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates) : base (default(System.IO.Stream), default(bool)) { }
-        public SslClientStream(System.IO.Stream stream, string targetHost, System.Security.Cryptography.X509Certificates.X509Certificate clientCertificate) : base (default(System.IO.Stream), default(bool)) { }
-        public SslClientStream(System.IO.Stream stream, string targetHost, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates) : base (default(System.IO.Stream), default(bool)) { }
-        public System.Security.Cryptography.X509Certificates.X509CertificateCollection ClientCertificates { get { throw null; } }
-        public Mono.Security.Protocol.Tls.CertificateSelectionCallback ClientCertSelectionDelegate { get { throw null; } set { } }
-        public Mono.Security.Protocol.Tls.PrivateKeySelectionCallback PrivateKeyCertSelectionDelegate { get { throw null; } set { } }
-        public System.Security.Cryptography.X509Certificates.X509Certificate SelectedClientCertificate { get { throw null; } }
-        public Mono.Security.Protocol.Tls.CertificateValidationCallback ServerCertValidationDelegate { get { throw null; } set { } }
-        public event Mono.Security.Protocol.Tls.CertificateValidationCallback2 ServerCertValidation2 { add { } remove { } }
-        protected override void Dispose(bool disposing) { }
-        ~SslClientStream() { }
-    }
-    public partial class SslServerStream : Mono.Security.Protocol.Tls.SslStreamBase
-    {
-        public SslServerStream(System.IO.Stream stream, System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate) : base (default(System.IO.Stream), default(bool)) { }
-        public SslServerStream(System.IO.Stream stream, System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, bool ownsStream) : base (default(System.IO.Stream), default(bool)) { }
-        public SslServerStream(System.IO.Stream stream, System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, bool ownsStream, Mono.Security.Protocol.Tls.SecurityProtocolType securityProtocolType) : base (default(System.IO.Stream), default(bool)) { }
-        public SslServerStream(System.IO.Stream stream, System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, bool requestClientCertificate, bool ownsStream) : base (default(System.IO.Stream), default(bool)) { }
-        public SslServerStream(System.IO.Stream stream, System.Security.Cryptography.X509Certificates.X509Certificate serverCertificate, bool clientCertificateRequired, bool requestClientCertificate, bool ownsStream, Mono.Security.Protocol.Tls.SecurityProtocolType securityProtocolType) : base (default(System.IO.Stream), default(bool)) { }
-        public System.Security.Cryptography.X509Certificates.X509Certificate ClientCertificate { get { throw null; } }
-        public Mono.Security.Protocol.Tls.CertificateValidationCallback ClientCertValidationDelegate { get { throw null; } set { } }
-        public Mono.Security.Protocol.Tls.PrivateKeySelectionCallback PrivateKeyCertSelectionDelegate { get { throw null; } set { } }
-        public event Mono.Security.Protocol.Tls.CertificateValidationCallback2 ClientCertValidation2 { add { } remove { } }
-        protected override void Dispose(bool disposing) { }
-        ~SslServerStream() { }
-    }
-    public abstract partial class SslStreamBase : System.IO.Stream, System.IDisposable
-    {
-        protected SslStreamBase(System.IO.Stream stream, bool ownsStream) { }
-        public override bool CanRead { get { throw null; } }
-        public override bool CanSeek { get { throw null; } }
-        public override bool CanWrite { get { throw null; } }
-        public bool CheckCertRevocationStatus { get { throw null; } set { } }
-        public Mono.Security.Protocol.Tls.CipherAlgorithmType CipherAlgorithm { get { throw null; } }
-        public int CipherStrength { get { throw null; } }
-        public Mono.Security.Protocol.Tls.HashAlgorithmType HashAlgorithm { get { throw null; } }
-        public int HashStrength { get { throw null; } }
-        public Mono.Security.Protocol.Tls.ExchangeAlgorithmType KeyExchangeAlgorithm { get { throw null; } }
-        public int KeyExchangeStrength { get { throw null; } }
-        public override long Length { get { throw null; } }
-        public override long Position { get { throw null; } set { } }
-        public Mono.Security.Protocol.Tls.SecurityProtocolType SecurityProtocol { get { throw null; } }
-        public System.Security.Cryptography.X509Certificates.X509Certificate ServerCertificate { get { throw null; } }
-        public override System.IAsyncResult BeginRead(byte[] buffer, int offset, int count, System.AsyncCallback callback, object state) { throw null; }
-        public override System.IAsyncResult BeginWrite(byte[] buffer, int offset, int count, System.AsyncCallback callback, object state) { throw null; }
-        public override void Close() { }
-        protected override void Dispose(bool disposing) { }
-        public override int EndRead(System.IAsyncResult asyncResult) { throw null; }
-        public override void EndWrite(System.IAsyncResult asyncResult) { }
-        ~SslStreamBase() { }
-        public override void Flush() { }
-        public int Read(byte[] buffer) { throw null; }
-        public override int Read(byte[] buffer, int offset, int count) { throw null; }
-        public override long Seek(long offset, System.IO.SeekOrigin origin) { throw null; }
-        public override void SetLength(long value) { }
-        public void Write(byte[] buffer) { }
-        public override void Write(byte[] buffer, int offset, int count) { }
     }
 }
 namespace Mono.Security.X509

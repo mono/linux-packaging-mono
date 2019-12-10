@@ -4,11 +4,23 @@
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-AC_INIT(mono, [6.6.0.161],
+AC_INIT(mono, [6.8.0.73],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([README.md])
 AC_CONFIG_MACRO_DIR([m4])
+
+if test "x$host_alias" = "x"; then
+	build_uname_all=`(uname -a) 2>/dev/null`
+	case "$build_uname_all" in
+	CYGWIN*)
+		AC_MSG_NOTICE([Run configure using ./configure --host=i686-w64-mingw32 or --host=x86_64-w64-mingw32])
+		AC_MSG_NOTICE([Falling back using --host=x86_64-w64-mingw32 as default.])
+		host_alias=x86_64-w64-mingw32
+		;;
+	esac
+fi
+
 AC_CANONICAL_SYSTEM
 AC_CANONICAL_HOST
 
@@ -16,7 +28,7 @@ AC_CANONICAL_HOST
 # The extra brackets are to foil regex-based scans.
 m4_ifdef([_A][M_PROG_TAR],[_A][M_SET_OPTION([tar-ustar])])
 
-AM_INIT_AUTOMAKE([1.9 dist-xz tar-ustar no-dist-gzip foreign subdir-objects]
+AM_INIT_AUTOMAKE([1.9 dist-xz tar-ustar no-dist-gzip foreign]
                  m4_esyscmd([case `automake --version | head -n 1` in    # parallel-tests is default in automake 1.13+, we need to explicitly enable it
                              *1.11*|*1.12*) echo parallel-tests;;        # for 1.11 and 1.12 but not below as those versions don't recognize the flag
                              esac]))                                     # TODO: remove this hack once we require automake 1.11+
@@ -62,7 +74,7 @@ MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-MONO_CORLIB_VERSION=A144A63D-652C-4CCF-A9EE-8E5A091547F1
+MONO_CORLIB_VERSION=ABB721D6-116A-4555-B4FD-9248146D2051
 
 #
 # Put a quoted #define in config.h.
@@ -137,6 +149,7 @@ platform_tizen=no
 platform_ios=no
 host_darwin=no
 host_linux=no
+build_darwin=no
 
 case "$host" in
 	wasm32*)
@@ -144,6 +157,11 @@ case "$host" in
 		CPPFLAGS="$CPPFLAGS -D_REENTRANT -DUSE_MMAP -s WASM=1"
 		libgc_threads=pthreads
 		platform_wasm=yes
+		# FIXME:
+		RID="osx-x64"
+		COREARCH="x64"
+		CORETARGETS="-p:TargetsUnix=true -p:TargetsOSX=true"
+		build_darwin=yes
 		;;
 	*-mingw*|*-*-cygwin*)
 		AC_DEFINE(DISABLE_PORTABILITY,1,[Disable the io-portability layer])
@@ -1359,6 +1377,8 @@ elif test x$with_runtime_preset = xnetcore; then
    mono_feature_disable_mdb='yes'
    mono_feature_disable_com='yes'
    mono_feature_disable_gac='yes'
+   mono_feature_disable_perfcounters='yes'
+   mono_feature_disable_attach='yes'
    disable_mono_native=yes
    support_boehm=no
 elif test x$with_runtime_preset = xnet_4_x; then
@@ -3391,6 +3411,15 @@ if test x$host_win32 = xno; then
 	AC_CHECK_DECL(ICANON,            [AC_DEFINE(HAVE_ICANON, 1, [ICANON])], [], [[#include <termios.h>]])
 	AC_CHECK_DECL(TCSANOW,           [AC_DEFINE(HAVE_TCSANOW, 1, [TCSANOW])], [], [[#include <termios.h>]])
 
+	AC_CHECK_DECL(lchflags,          [AC_DEFINE(HAVE_LCHFLAGS, 1, [lchflags])], [], 
+		[[#include <sys/types.h> 
+		#include <sys/stat.h>]])
+	AC_CHECK_MEMBER(struct stat.st_flags,
+		[AC_DEFINE(HAVE_STAT_FLAGS, 1, [struct stat.st_flags])],
+		[],
+		[#include <sys/types.h>
+		#include <sys/stat.h>])
+
 	AC_CHECK_MEMBER(struct stat.st_birthtimespec,
 		[AC_DEFINE(HAVE_STAT_BIRTHTIME, 1, [struct stat.st_birthtimespec])],
 		[],
@@ -4199,14 +4228,7 @@ if test "x$enable_llvm" = "xyes"; then
 			AC_MSG_ERROR([LLVM executable $EXTERNAL_LLVM_CONFIG not found.])
 		fi
 	else
-		if test x$host_win32 = xyes; then
-			AC_PATH_PROG(EXTERNAL_LLVM_CONFIG, llvm-config.exe, no)
-		else
-			AC_PATH_PROG(EXTERNAL_LLVM_CONFIG, llvm-config, no)
-		fi
-		if test "x$EXTERNAL_LLVM_CONFIG" = "xno"; then
-			internal_llvm=yes
-		fi
+		internal_llvm=yes
 	fi
 
 	LLVM_CODEGEN_LIBS="x86codegen"
@@ -4300,6 +4322,7 @@ jit_wanted=true
 boehm_supported=true
 BTLS_SUPPORTED=no
 BTLS_PLATFORM=
+INTERP_CFLAGS=""
 
 case "$host" in
 	wasm32*)
@@ -4309,6 +4332,10 @@ case "$host" in
 		ACCESS_UNALIGNED="no"
 		with_tls=pthread
 		target_wasm=yes
+		if test "x$mono_cv_clang" = "xyes"; then
+		   INTERP_CFLAGS="-mllvm -join-liveintervals=false"
+		   AC_SUBST(INTERP_CFLAGS)
+		fi
 		;;
 	mips*)
 		TARGET=MIPS;
@@ -5653,6 +5680,7 @@ fi
 
 if test x$enable_cooperative_suspend != xno; then
 	AC_DEFINE(ENABLE_COOP_SUSPEND,1,[Enable cooperative stop-the-world garbage collection.])
+	enable_hybrid_suspend_default=no
 fi
 
 AM_CONDITIONAL([ENABLE_COOP_SUSPEND], [test x$enable_cooperative_suspend != xno])
@@ -5989,12 +6017,24 @@ AC_DEFINE(MONO_INSIDE_RUNTIME,1, [Disable banned functions from being used by th
 mono_build_root=`pwd`
 AC_SUBST(mono_build_root)
 
+AC_ARG_ENABLE(msvc_only,[  --enable-msvc-only    Build only with Visual Studio (msvc) (defaults to no). Disable gcc build.], enable_msvc_only=$enableval, enable_msvc_only=no)
+if test x$host_win32 = xno; then
+	if test x$enable_msvc_only = xyes; then
+		echo "Error, --enable-msvc-only only supported for Windows builds."
+		exit 1
+	fi
+fi
+AM_CONDITIONAL(ENABLE_MSVC_ONLY, test x$enable_msvc_only = xyes)
+
 AC_ARG_ENABLE(msvc,[  --enable-msvc    Build with Visual Studio (msvc) (defaults to no)], enable_msvc=$enableval, enable_msvc=no)
 if test x$host_win32 = xno; then
 	if test x$enable_msvc = xyes; then
 		echo "Error, --enable-msvc only supported for Windows builds."
 		exit 1
 	fi
+fi
+if test x$enable_msvc_only = xyes; then
+	enable_msvc=yes
 fi
 AM_CONDITIONAL(ENABLE_MSVC, test x$enable_msvc = xyes)
 
@@ -6026,8 +6066,8 @@ fi
 AC_SUBST(mono_runtime)
 AC_SUBST(mono_runtime_wrapper)
 
-CSC_LOCATION=`cd $srcdir && pwd`/external/roslyn-binaries/Microsoft.Net.Compilers/3.4.0/csc.exe
-VBCS_LOCATION=`cd $srcdir && pwd`/external/roslyn-binaries/Microsoft.Net.Compilers/3.4.0/VBCSCompiler.exe
+CSC_LOCATION=`cd $srcdir && pwd`/external/roslyn-binaries/Microsoft.Net.Compilers/3.5.0/csc.exe
+VBCS_LOCATION=`cd $srcdir && pwd`/external/roslyn-binaries/Microsoft.Net.Compilers/3.5.0/VBCSCompiler.exe
 
 if test $csc_compiler = mcs; then
   CSC=$mcs_topdir/class/lib/build/mcs.exe
@@ -6467,6 +6507,22 @@ elif case $host_os in freebsd*) true;; *) false;; esac; then
 	AC_MSG_RESULT(freebsd)
 
 	MONO_NATIVE_PLATFORM_TYPE="MONO_NATIVE_PLATFORM_TYPE_FREEBSD"
+elif case $host_os in netbsd*) true;; *) false;; esac; then
+	mono_native_text="NetBSD"
+	MONO_NATIVE_CC=$CC
+	MONO_NATIVE_CXX=$CXX
+	MONO_NATIVE_CPPFLAGS=$CPPFLAGS
+	MONO_NATIVE_CXXFLAGS=$CXXFLAGS
+	MONO_NATIVE_CFLAGS=$CFLAGS
+	MONO_NATIVE_LDFLAGS=$LDFLAGS
+
+	mono_native=yes
+	mono_native_compat=no
+	MONO_NATIVE_PLATFORM=netbsd
+	AC_MSG_CHECKING([Mono.Native support])
+	AC_MSG_RESULT(netbsd)
+
+	MONO_NATIVE_PLATFORM_TYPE="MONO_NATIVE_PLATFORM_TYPE_NETBSD"
 elif case $host_os in haiku*) true;; *) false;; esac; then
 	mono_native_text="Haiku"
 	MONO_NATIVE_CC=$CC
@@ -6540,6 +6596,7 @@ AM_CONDITIONAL(MONO_NATIVE_PLATFORM_LINUX, test x$MONO_NATIVE_PLATFORM = xlinux)
 AM_CONDITIONAL(MONO_NATIVE_PLATFORM_AIX, test x$MONO_NATIVE_PLATFORM = xaix)
 AM_CONDITIONAL(MONO_NATIVE_PLATFORM_ANDROID, test x$MONO_NATIVE_PLATFORM = xandroid)
 AM_CONDITIONAL(MONO_NATIVE_PLATFORM_FREEBSD, test x$MONO_NATIVE_PLATFORM = xfreebsd)
+AM_CONDITIONAL(MONO_NATIVE_PLATFORM_NETBSD, test x$MONO_NATIVE_PLATFORM = xnetbsd)
 AM_CONDITIONAL(MONO_NATIVE_PLATFORM_HAIKU, test x$MONO_NATIVE_PLATFORM = xhaiku)
 
 MONO_NATIVE_PLATFORM_TYPE_COMPAT="$MONO_NATIVE_PLATFORM_TYPE | MONO_NATIVE_PLATFORM_TYPE_COMPAT"
@@ -6620,10 +6677,10 @@ fi
 #
 AC_MSG_CHECKING([for large file support])
 AC_COMPILE_IFELSE(
-	[
+	[AC_LANG_SOURCE([
 		#include <sys/types.h>
 		off64_t dummy = 0;
-	], [
+	])], [
 		AC_MSG_RESULT(yes)
 		# FIXME The ramifications of _LARGEFILE64_SOURCE are not understood.
 		# ZLIB_CFLAGS="$ZLIB_CFLAGS -D_LARGEFILE64_SOURCE=1"
@@ -6727,6 +6784,7 @@ tools/mono-hang-watchdog/Makefile
 runtime/Makefile
 msvc/Makefile
 po/Makefile
+netcore/corerun/Makefile
 ])
 
 if test x$host_win32 = xyes; then
@@ -6768,8 +6826,8 @@ AC_MSG_RESULT($enable_compiler_server)
 if test x$enable_compiler_server = xyes; then
    if test x$force_enable_compiler_server = xyes; then
        AC_MSG_WARN([forcing compiler server to stay enabled])
-   elif test x$host_darwin = xyes; then
-       AC_MSG_WARN([compiler server temporarily disabled on darwin])
+   elif test x$host_darwin = xyes || test x$host_win32 = xyes; then
+       AC_MSG_WARN([compiler server temporarily disabled on darwin and win32])
        enable_compiler_server=no;
    elif test x$csc_compiler = xmcs; then
        AC_MSG_WARN([mcs does not support the compiler server])
@@ -6799,9 +6857,7 @@ fi
     echo "sysconfdir=$sysconfdir" >> $mcs_topdir/build/config.make
     echo 'mono_libdir=${exec_prefix}/lib' >> $mcs_topdir/build/config.make
     echo "mono_build_root=$mono_build_root" >> $mcs_topdir/build/config.make
-    echo 'IL_FLAGS = /debug' >> $mcs_topdir/build/config.make
     echo "RUNTIME = $mono_build_root/runtime/mono-wrapper" >> $mcs_topdir/build/config.make
-    echo "ILDISASM = $mono_build_root/runtime/monodis-wrapper" >> $mcs_topdir/build/config.make
     echo "JAY_CFLAGS = $JAY_CFLAGS" >> $mcs_topdir/build/config.make
     echo "VERSION = $VERSION" >> $mcs_topdir/build/config.make
 
@@ -6917,6 +6973,10 @@ fi
     fi
     echo "COMPILER_SERVER_PIPENAME?=monomake" >> $srcdir/$mcsdir/build/config.make
 
+	if test x$enable_msvc_only = xyes; then
+		echo "ENABLE_MSVC_ONLY=1" >> $srcdir/$mcsdir/build/config.make
+	fi
+
   fi
 
 )
@@ -6944,13 +7004,20 @@ if test x$buildsgen = xyes; then
 fi
 
 if test "x$with_core" = "xonly"; then
+  if test ! -d netcore; then
+    # Out of tree builds
+    mkdir -p netcore
+    echo "all:" > netcore/Makefile
+  fi
   echo "VERSION = $VERSION" > netcore/config.make
   echo "RID = $RID" >> netcore/config.make
   echo "COREARCH = $COREARCH" >> netcore/config.make
   echo "CORETARGETS = $CORETARGETS" >> netcore/config.make
   echo "MONO_CORLIB_VERSION = $MONO_CORLIB_VERSION" >> netcore/config.make
 
-  if test x$host_darwin = xyes; then
+  if test x$build_darwin = xyes; then
+    echo "HOST_PLATFORM ?= macos" >> netcore/config.make
+  elif test x$host_darwin = xyes; then
     echo "HOST_PLATFORM ?= macos" >> netcore/config.make
   elif test x$host_win32 = xyes; then
     echo "HOST_PLATFORM ?= win32" >> netcore/config.make

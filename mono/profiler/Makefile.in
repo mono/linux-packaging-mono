@@ -141,7 +141,7 @@ am__uninstall_files_from_dir = { \
   }
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
 	"$(DESTDIR)$(suppressiondir)"
-LTLIBRARIES = $(lib_LTLIBRARIES)
+LTLIBRARIES = $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
 libmono_profiler_aot_static_la_LIBADD =
 am_libmono_profiler_aot_static_la_OBJECTS = aot.lo helper.lo
 libmono_profiler_aot_static_la_OBJECTS =  \
@@ -245,6 +245,14 @@ libmono_profiler_vtune_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libmono_profiler_vtune_la_LDFLAGS) $(LDFLAGS) -o $@
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@am_libmono_profiler_vtune_la_rpath = -rpath \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@	$(libdir)
+libproftest_pinvokes_la_LIBADD =
+am_libproftest_pinvokes_la_OBJECTS = proftest-pinvokes.lo
+libproftest_pinvokes_la_OBJECTS =  \
+	$(am_libproftest_pinvokes_la_OBJECTS)
+libproftest_pinvokes_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(libproftest_pinvokes_la_LDFLAGS) \
+	$(LDFLAGS) -o $@
 PROGRAMS = $(bin_PROGRAMS)
 am_mprof_report_OBJECTS = mprof-report.$(OBJEXT)
 mprof_report_OBJECTS = $(am_mprof_report_OBJECTS)
@@ -289,7 +297,8 @@ SOURCES = $(libmono_profiler_aot_static_la_SOURCES) \
 	$(libmono_profiler_log_static_la_SOURCES) \
 	$(libmono_profiler_log_la_SOURCES) \
 	$(libmono_profiler_vtune_static_la_SOURCES) \
-	$(libmono_profiler_vtune_la_SOURCES) $(mprof_report_SOURCES)
+	$(libmono_profiler_vtune_la_SOURCES) \
+	$(libproftest_pinvokes_la_SOURCES) $(mprof_report_SOURCES)
 DIST_SOURCES = $(libmono_profiler_aot_static_la_SOURCES) \
 	$(libmono_profiler_aot_la_SOURCES) \
 	$(libmono_profiler_coverage_static_la_SOURCES) \
@@ -298,7 +307,7 @@ DIST_SOURCES = $(libmono_profiler_aot_static_la_SOURCES) \
 	$(libmono_profiler_log_la_SOURCES) \
 	$(am__libmono_profiler_vtune_static_la_SOURCES_DIST) \
 	$(am__libmono_profiler_vtune_la_SOURCES_DIST) \
-	$(mprof_report_SOURCES)
+	$(libproftest_pinvokes_la_SOURCES) $(mprof_report_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -411,6 +420,7 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+INTERP_CFLAGS = @INTERP_CFLAGS@
 INTL = @INTL@
 INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
 JEMALLOC_AUTOCONF_FLAGS = @JEMALLOC_AUTOCONF_FLAGS@
@@ -695,12 +705,20 @@ libmono_profiler_coverage_static_la_LDFLAGS = -static
 mprof_report_SOURCES = mprof-report.c
 mprof_report_LDADD = $(glib_libs) $(zlib_dep)
 mprof_report_LDFLAGS = -no-undefined
+noinst_LTLIBRARIES = libproftest_pinvokes.la
+libproftest_pinvokes_la_SOURCES = proftest-pinvokes.c
+@HOST_WIN32_FALSE@libproftest_pinvokes_la_LDFLAGS = -no-undefined -rpath `pwd`
+# (borrowed from mono/tests/Makefile.am libtest_la_LDFLAGS)
+# the exported names created by gcc for stdcall functions are missing the leading _, so MS.NET
+# can't find them. So we use --kill-at to remove the @ suffix as well.
+@HOST_WIN32_TRUE@libproftest_pinvokes_la_LDFLAGS = -no-undefined -rpath `pwd` -Wl,--kill-at
 PLOG_TESTS_SRC = \
 	test-alloc.cs \
 	test-busy.cs \
 	test-monitor.cs \
 	test-excleave.cs \
 	test-heapshot.cs \
+	test-pinvokes.cs \
 	test-traces.cs
 
 PLOG_TESTS = $(PLOG_TESTS_SRC:.cs=.exe)
@@ -785,6 +803,17 @@ clean-libLTLIBRARIES:
 	  rm -f $${locs}; \
 	}
 
+clean-noinstLTLIBRARIES:
+	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
+	@list='$(noinst_LTLIBRARIES)'; \
+	locs=`for p in $$list; do echo $$p; done | \
+	      sed 's|^[^/]*$$|.|; s|/[^/]*$$||; s|$$|/so_locations|' | \
+	      sort -u`; \
+	test -z "$$locs" || { \
+	  echo rm -f $${locs}; \
+	  rm -f $${locs}; \
+	}
+
 libmono-profiler-aot-static.la: $(libmono_profiler_aot_static_la_OBJECTS) $(libmono_profiler_aot_static_la_DEPENDENCIES) $(EXTRA_libmono_profiler_aot_static_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmono_profiler_aot_static_la_LINK) $(am_libmono_profiler_aot_static_la_rpath) $(libmono_profiler_aot_static_la_OBJECTS) $(libmono_profiler_aot_static_la_LIBADD) $(LIBS)
 
@@ -808,6 +837,9 @@ libmono-profiler-vtune-static.la: $(libmono_profiler_vtune_static_la_OBJECTS) $(
 
 libmono-profiler-vtune.la: $(libmono_profiler_vtune_la_OBJECTS) $(libmono_profiler_vtune_la_DEPENDENCIES) $(EXTRA_libmono_profiler_vtune_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmono_profiler_vtune_la_LINK) $(am_libmono_profiler_vtune_la_rpath) $(libmono_profiler_vtune_la_OBJECTS) $(libmono_profiler_vtune_la_LIBADD) $(LIBS)
+
+libproftest_pinvokes.la: $(libproftest_pinvokes_la_OBJECTS) $(libproftest_pinvokes_la_DEPENDENCIES) $(EXTRA_libproftest_pinvokes_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libproftest_pinvokes_la_LINK)  $(libproftest_pinvokes_la_OBJECTS) $(libproftest_pinvokes_la_LIBADD) $(LIBS)
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
@@ -876,27 +908,25 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/log-args.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/log.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mprof-report.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/proftest-pinvokes.Plo@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
-@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
-@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
-@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
-@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
@@ -1069,7 +1099,7 @@ maintainer-clean-generic:
 clean: clean-am
 
 clean-am: clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
-	clean-libtool mostlyclean-am
+	clean-libtool clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -1150,21 +1180,21 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 
 .PHONY: CTAGS GTAGS TAGS all all-am check check-am check-local clean \
 	clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
-	clean-libtool cscopelist-am ctags ctags-am distclean \
-	distclean-compile distclean-generic distclean-libtool \
-	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-binPROGRAMS install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-libLTLIBRARIES install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	install-suppressionDATA installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am test-am \
-	test-bundle-am test-bundle-local test-local uninstall \
-	uninstall-am uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
-	uninstall-suppressionDATA
+	clean-libtool clean-noinstLTLIBRARIES cscopelist-am ctags \
+	ctags-am distclean distclean-compile distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-binPROGRAMS \
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-libLTLIBRARIES \
+	install-man install-pdf install-pdf-am install-ps \
+	install-ps-am install-strip install-suppressionDATA \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags tags-am test-am test-bundle-am test-bundle-local \
+	test-local uninstall uninstall-am uninstall-binPROGRAMS \
+	uninstall-libLTLIBRARIES uninstall-suppressionDATA
 
 .PRECIOUS: Makefile
 
@@ -1172,12 +1202,15 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 %.exe: %.cs
 	$(MCS) -out:$@ $<
 
+test-pinvokes.exe: libproftest_pinvokes.la
+
 test-local: $(PLOG_TESTS)
 
 test-bundle-local:
 	mkdir -p $(TEST_BUNDLE_PATH)/tests/profiler/
 	cp -L .libs/libmono-profiler-log$(libsuffix) $(TEST_BUNDLE_PATH)/
 	cp -L $(PLOG_TESTS) $(TEST_BUNDLE_PATH)/tests/profiler/
+	cp -L .libs/libproftest_pinvokes$(libsuffix) $(TEST_BUNDLE_PATH)/tests/profiler/
 	cp -L ptestrunner.pl $(TEST_BUNDLE_PATH)/tests/profiler/
 	cp -L mprof-report $(TEST_BUNDLE_PATH)/
 	chmod +x $(TEST_BUNDLE_PATH)/mprof-report

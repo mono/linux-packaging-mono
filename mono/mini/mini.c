@@ -99,9 +99,8 @@ static guint32 jinfo_try_holes_size;
 #define mono_jit_unlock() mono_os_mutex_unlock (&jit_mutex)
 static mono_mutex_t jit_mutex;
 
-static MonoBackend *current_backend;
-
 #ifndef DISABLE_JIT
+static MonoBackend *current_backend;
 
 gpointer
 mono_realloc_native_code (MonoCompile *cfg)
@@ -999,12 +998,12 @@ mini_method_verify (MonoCompile *cfg, MonoMethod *method, gboolean fail_compile)
 					char *msg = g_strdup_printf ("Error verifying %s: %s", method_name, info->info.message);
 
 					if (info->exception_type == MONO_EXCEPTION_METHOD_ACCESS)
-						mono_error_set_generic_error (&cfg->error, "System", "MethodAccessException", "%s", msg);
+						mono_error_set_generic_error (cfg->error, "System", "MethodAccessException", "%s", msg);
 					else if (info->exception_type == MONO_EXCEPTION_FIELD_ACCESS)
-						mono_error_set_generic_error (&cfg->error, "System", "FieldAccessException", "%s", msg);
+						mono_error_set_generic_error (cfg->error, "System", "FieldAccessException", "%s", msg);
 					else if (info->exception_type == MONO_EXCEPTION_UNVERIFIABLE_IL)
-						mono_error_set_generic_error (&cfg->error, "System.Security", "VerificationException", "%s", msg);
-					if (!mono_error_ok (&cfg->error)) {
+						mono_error_set_generic_error (cfg->error, "System.Security", "VerificationException", "%s", msg);
+					if (!is_ok (cfg->error)) {
 						mono_cfg_set_exception (cfg, MONO_EXCEPTION_MONO_ERROR);
 						g_free (msg);
 					} else {
@@ -2316,8 +2315,8 @@ mono_codegen (MonoCompile *cfg)
 			if (ji->type == MONO_PATCH_INFO_NONE)
 				continue;
 
-			target = mono_resolve_patch_target (cfg->method, cfg->domain, cfg->native_code, ji, cfg->run_cctors, &cfg->error);
-			if (!mono_error_ok (&cfg->error)) {
+			target = mono_resolve_patch_target (cfg->method, cfg->domain, cfg->native_code, ji, cfg->run_cctors, cfg->error);
+			if (!is_ok (cfg->error)) {
 				mono_cfg_set_exception (cfg, MONO_EXCEPTION_MONO_ERROR);
 				return;
 			}
@@ -2325,8 +2324,8 @@ mono_codegen (MonoCompile *cfg)
 		}
 	}
 #else
-	mono_arch_patch_code (cfg, cfg->method, cfg->domain, cfg->native_code, cfg->patch_info, cfg->run_cctors, &cfg->error);
-	if (!is_ok (&cfg->error)) {
+	mono_arch_patch_code (cfg, cfg->method, cfg->domain, cfg->native_code, cfg->patch_info, cfg->run_cctors, cfg->error);
+	if (!is_ok (cfg->error)) {
 		mono_cfg_set_exception (cfg, MONO_EXCEPTION_MONO_ERROR);
 		return;
 	}
@@ -3161,6 +3160,7 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 	cfg->gen_sdb_seq_points = mini_debug_options.gen_sdb_seq_points;
 	cfg->llvm_only = (flags & JIT_FLAG_LLVM_ONLY) != 0;
 	cfg->interp = (flags & JIT_FLAG_INTERP) != 0;
+	cfg->use_current_cpu = (flags & JIT_FLAG_USE_CURRENT_CPU) != 0;
 	cfg->backend = current_backend;
 
 	if (cfg->method->wrapper_type == MONO_WRAPPER_ALLOC) {
@@ -3199,7 +3199,8 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 
 	if (cfg->gen_seq_points)
 		cfg->seq_points = g_ptr_array_new ();
-	error_init (&cfg->error);
+	cfg->error = (MonoError*)&cfg->error_value;
+	error_init (cfg->error);
 
 	if (cfg->compile_aot && !try_generic_shared && (method->is_generic || mono_class_is_gtd (method->klass) || method_is_gshared)) {
 		cfg->exception_type = MONO_EXCEPTION_GENERIC_SHARING_FAILED;
@@ -3252,7 +3253,7 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 		return cfg;
 	}
 
-	header = cfg->header = mono_method_get_header_checked (cfg->method, &cfg->error);
+	header = cfg->header = mono_method_get_header_checked (cfg->method, cfg->error);
 	if (!header) {
 		mono_cfg_set_exception (cfg, MONO_EXCEPTION_MONO_ERROR);
 		if (MONO_METHOD_COMPILE_END_ENABLED ())
@@ -3869,8 +3870,10 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 	}
 
 	if (cfg->verbose_level >= 2) {
-		char *id =  mono_method_full_name (cfg->method, FALSE);
+		char *id =  mono_method_full_name (cfg->method, TRUE);
+		g_print ("\n*** ASM for %s ***\n", id);
 		mono_disassemble_code (cfg, cfg->native_code, cfg->code_len, id + 3);
+		g_print ("***\n\n");
 		g_free (id);
 	}
 
@@ -3974,7 +3977,7 @@ void
 mono_cfg_set_exception_invalid_program (MonoCompile *cfg, char *msg)
 {
 	mono_cfg_set_exception (cfg, MONO_EXCEPTION_MONO_ERROR);
-	mono_error_set_generic_error (&cfg->error, "System", "InvalidProgramException", "%s", msg);
+	mono_error_set_generic_error (cfg->error, "System", "InvalidProgramException", "%s", msg);
 }
 
 #endif /* DISABLE_JIT */
@@ -4072,8 +4075,8 @@ mono_jit_compile_method_inner (MonoMethod *method, MonoDomain *target_domain, in
 	}
 	case MONO_EXCEPTION_MONO_ERROR:
 		// FIXME: MonoError has no copy ctor
-		g_assert (!mono_error_ok (&cfg->error));
-		ex = mono_error_convert_to_exception (&cfg->error);
+		g_assert (!is_ok (cfg->error));
+		ex = mono_error_convert_to_exception (cfg->error);
 		break;
 	default:
 		g_assert_not_reached ();
@@ -4143,7 +4146,7 @@ mono_jit_compile_method_inner (MonoMethod *method, MonoDomain *target_domain, in
 #endif
 	mono_domain_unlock (target_domain);
 
-	if (!mono_error_ok (error))
+	if (!is_ok (error))
 		return NULL;
 
 	vtable = mono_class_vtable_checked (target_domain, method->klass, error);

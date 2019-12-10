@@ -69,8 +69,15 @@ mono_threads_suspend_policy_is_multiphase_stw_enabled (MonoThreadsSuspendPolicy 
 gboolean
 mono_threads_suspend_policy_is_blocking_transition_enabled (MonoThreadsSuspendPolicy p);
 
-MonoThreadsSuspendPolicy
-mono_threads_suspend_policy (void) MONO_LLVM_INTERNAL;
+extern char mono_threads_suspend_policy_hidden_dont_modify MONO_LLVM_INTERNAL;
+
+static inline MonoThreadsSuspendPolicy
+mono_threads_suspend_policy (void) {
+	return (MonoThreadsSuspendPolicy)mono_threads_suspend_policy_hidden_dont_modify;
+}
+
+void
+mono_threads_suspend_policy_init (void);
 
 const char*
 mono_threads_suspend_policy_name (MonoThreadsSuspendPolicy p);
@@ -127,11 +134,7 @@ mono_threads_enter_gc_safe_region_with_info (THREAD_INFO_TYPE *info, MonoStackDa
 
 #define MONO_EXIT_GC_SAFE_WITH_INFO	MONO_EXIT_GC_SAFE
 
-G_EXTERN_C // due to THREAD_INFO_TYPE varying
-gpointer
-mono_threads_enter_gc_unsafe_region_with_info (THREAD_INFO_TYPE *, MonoStackData *stackdata);
-
-G_EXTERN_C // due to THREAD_INFO_TYPE varying
+MONO_PROFILER_API
 gpointer
 mono_threads_enter_gc_unsafe_region_with_info (THREAD_INFO_TYPE *, MonoStackData *stackdata);
 

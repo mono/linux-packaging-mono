@@ -621,6 +621,12 @@ mono_gc_wait_for_bridge_processing (void)
 
 <h3>Write Barriers</h3>
 
+	<p />SGen is a concurrent and generational GC, features which require
+	tracking changes to the state of the heap. This is achieved through
+	write barriers. Whenever native code is changing the state of the
+	heap by storing references into another managed object, it needs to
+	do it using this write barrier API.
+
 </div> <!-- class=mapi  -->
 
 <a name="api:mono_gc_wbarrier_arrayref_copy"></a>
@@ -632,8 +638,16 @@ mono_gc_wait_for_bridge_processing (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_wbarrier_arrayref_copy</div>
+            <div class="mapi-prototype">void
+mono_gc_wbarrier_arrayref_copy (void* dest_ptr, /*const*/ void* src_ptr, int count)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>dest_ptr</i></td><td> destination slot address</td></tr><tr><td><i>src_ptr</i></td><td> source slot address</td></tr><tr><td><i>count</i></td><td> number of references to copy</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div>
+ Copies <i>count</i> references from one array to another, executing a write
+ barrier if needed.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -647,8 +661,15 @@ mono_gc_wait_for_bridge_processing (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_wbarrier_generic_nostore</div>
+            <div class="mapi-prototype">void
+mono_gc_wbarrier_generic_nostore (void* ptr)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div>
+ Executes a write barrier for an address, informing the GC that
+ the reference stored at that address has been changed.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -667,6 +688,11 @@ mono_gc_wbarrier_generic_store (void* ptr, MonoObject* value)
 
 </div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>ptr</i></td><td> address of field</td></tr><tr><td><i>obj</i></td><td> object to store</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div>
+ Stores the <i>value</i> object inside the field represented by <i>ptr</i>,
+ executing a write barrier if needed.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -680,8 +706,15 @@ mono_gc_wbarrier_generic_store (void* ptr, MonoObject* value)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_wbarrier_generic_store_atomic</div>
+            <div class="mapi-prototype">void
+mono_gc_wbarrier_generic_store_atomic (void *ptr, MonoObject *value)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div>
+ Same as <code>mono_gc_wbarrier_generic_store</code> but performs the store
+ as an atomic operation with release semantics.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -700,10 +733,11 @@ mono_gc_wbarrier_object_copy (MonoObject* obj, MonoObject *src)
 
 </div>
             <p />
-             <div class="mapi-section">Description</div>
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>obj</i></td><td> destination object</td></tr><tr><td><i>src</i></td><td> source object</td></tr></tbody></table>             <div class="mapi-section">Description</div>
              <div>
-<p />
- Write barrier to call when <i>obj</i> is the result of a clone or copy of an object.</div>
+ Copies contents of <i>src</i> to <i>obj</i>, executing any necessary write
+ barriers.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -722,6 +756,11 @@ mono_gc_wbarrier_set_arrayref (MonoArray *arr, void* slot_ptr, MonoObject* value
 
 </div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>arr</i></td><td> array containing the destination slot</td></tr><tr><td><i>slot_ptr</i></td><td> address of slot inside the array</td></tr><tr><td><i>value</i></td><td> reference to the object to be stored</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div>
+ Stores an object reference inside an array of objects, executing a write
+ barrier if needed.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -740,5 +779,10 @@ mono_gc_wbarrier_set_field (MonoObject *obj, void* field_ptr, MonoObject* value)
 
 </div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>obj</i></td><td> object containing the destination field</td></tr><tr><td><i>field_ptr</i></td><td> address of field inside the object</td></tr><tr><td><i>value</i></td><td> reference to the object to be stored</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div>
+ Stores an object reference inside another object, executing a write barrier
+ if needed.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
