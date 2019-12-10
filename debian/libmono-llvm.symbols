@@ -1,5 +1,6 @@
  mini_exception_id_by_name@Base 6.4.0.137
  mini_get_underlying_type@Base 5.14.0.87
+ mini_ins_info@Base 6.8.0.73
  mini_is_gsharedvt_klass@Base 5.14.0.87
  mini_is_gsharedvt_variable_klass@Base 5.14.0.87
  mini_is_gsharedvt_variable_signature@Base 6.4.0.137
@@ -19,6 +20,7 @@
  mono_alloc_lreg@Base 5.14.0.87
  mono_alloc_preg@Base 5.14.0.87
  mono_aot_can_specialize@Base 6.4.0.137
+ mono_aot_can_enter_interp@Base 6.8.0.73
  mono_aot_get_direct_call_symbol@Base 5.14.0.87
  mono_aot_get_got_offset@Base 5.14.0.87
  mono_aot_get_mangled_method_name@Base 5.14.0.87
@@ -69,6 +71,7 @@
  mono_marshal_find_nonzero_bit_offset@Base 5.14.0.87
  mono_marshal_get_aot_init_wrapper@Base 6.4.0.137
  mono_marshal_get_aot_init_wrapper_name@Base 6.4.0.137
+ mono_marshal_get_llvm_func_wrapper@Base 6.8.0.73
  mono_marshal_get_wrapper_info@Base 5.20.1.10
  mono_opcode_to_cond@Base 5.14.0.87
  mono_patch_info_equal@Base 6.4.0.137
@@ -78,7 +81,7 @@
  mono_resolve_patch_target@Base 5.14.0.87
  mono_resume_unwind@Base 5.14.0.87
  mono_rgctx_info_type_to_str@Base 6.4.0.137
- mono_threads_suspend_policy@Base 6.4.0.137
+ mono_threads_suspend_policy_hidden_dont_modify@Base 6.8.0.73
  mono_type_to_regmove@Base 5.14.0.87
  mono_unwind_decode_fde@Base 5.14.0.87
  mono_unwind_decode_llvm_mono_fde@Base 5.14.0.87

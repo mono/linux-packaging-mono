@@ -191,6 +191,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_counters_register_with_size@Base 4.1.0.1738
  mono_counters_sample@Base 4.1.0.1738
  mono_cpu_count@Base 5.8.0.22
+ mono_cpu_features_disabled@Base 6.8.0.73
+ mono_cpu_features_enabled@Base 6.8.0.73
  mono_custom_attrs_construct@Base 4.1.0.1738
  mono_custom_attrs_free@Base 4.1.0.1738
  mono_custom_attrs_from_assembly@Base 4.1.0.1738
@@ -513,6 +515,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_jit_info_table_find@Base 4.1.0.1738
  mono_jit_init@Base 4.1.0.1738
  mono_jit_init_version@Base 4.1.0.1738
+ mono_jit_init_version_for_test_only@Base 6.8.0.73
  mono_jit_parse_options@Base 4.1.0.1738
  mono_jit_set_aot_mode@Base 4.1.0.1738
  mono_jit_set_aot_only@Base 4.1.0.1738
@@ -667,8 +670,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_method_header_get_num_clauses@Base 4.1.0.1738
  mono_method_print_code@Base 4.1.0.1738
  mono_method_signature@Base 4.1.0.1738
- mono_method_signature_checked@Base 4.9.0.1707
- mono_method_signature_internal@Base 6.0.0.172
+ mono_method_signature_checked_slow@Base 6.8.0.73
+ mono_method_signature_internal_slow@Base 6.8.0.73
  mono_method_verify@Base 4.1.0.1738
  mono_mlist_alloc@Base 4.1.0.1738
  mono_mlist_append@Base 4.1.0.1738
@@ -1011,11 +1014,12 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_thread_set_coop_aware@Base 6.6.0.97
  mono_thread_set_main@Base 4.1.0.1738
  mono_thread_set_manage_callback@Base 4.1.0.1738
- mono_thread_set_name_internal@Base 5.14.0.78
+ mono_thread_set_name@Base 6.8.0.73
  mono_thread_stop@Base 4.1.0.1738
  mono_threads_assert_gc_safe_region@Base 4.3.3.735
  mono_threads_assert_gc_unsafe_region@Base 4.3.3.735
  mono_threads_attach_coop@Base 4.5.2.48
+ mono_threads_attach_tools_thread@Base 6.8.0.73
  mono_threads_detach_coop@Base 4.5.2.48
  mono_threads_enter_gc_safe_region@Base 4.3.3.735
  mono_threads_enter_gc_safe_region_internal@Base 5.16.0.100
@@ -1023,10 +1027,12 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_threads_enter_gc_safe_region_with_info@Base 6.0.0.310
  mono_threads_enter_gc_unsafe_region@Base 4.3.0.1080
  mono_threads_enter_gc_unsafe_region_unbalanced@Base 4.5.2.195
+ mono_threads_enter_gc_unsafe_region_with_info@Base 6.8.0.73
  mono_threads_exit_gc_safe_region@Base 4.3.3.735
  mono_threads_exit_gc_safe_region_internal@Base 5.16.0.100
  mono_threads_exit_gc_safe_region_unbalanced@Base 4.5.2.195
  mono_threads_exit_gc_unsafe_region@Base 4.3.0.1080
+ mono_threads_exit_gc_unsafe_region_internal@Base 6.8.0.73
  mono_threads_exit_gc_unsafe_region_unbalanced@Base 4.5.2.195
  mono_threads_get_default_stacksize@Base 4.1.0.1738
  mono_threads_request_thread_dump@Base 4.1.0.1738
@@ -1066,6 +1072,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_unicode_from_external@Base 4.1.0.1738
  mono_unicode_to_external@Base 4.1.0.1738
  mono_upgrade_remote_class_wrapper@Base 4.1.0.1738
+ mono_use_fast_math@Base 6.8.0.73
  mono_use_interpreter@Base 4.9.0.1707
  mono_use_llvm@Base 4.1.0.1738
  mono_utf8_from_external@Base 4.1.0.1738
@@ -1104,6 +1111,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  monoeg_g_array_set_size@Base 5.8.0.22
  monoeg_g_array_sized_new@Base 5.8.0.22
  monoeg_g_ascii_strdown@Base 5.8.0.22
+ monoeg_g_ascii_strdown_no_alloc@Base 6.8.0.73
  monoeg_g_ascii_strncasecmp@Base 5.8.0.22
  monoeg_g_ascii_tolower@Base 5.8.0.22
  monoeg_g_ascii_xdigit_value@Base 5.8.0.22
