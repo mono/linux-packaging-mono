@@ -557,7 +557,7 @@ inverse of this mapping.
  */
 #define rtsize(meta,s,b) (((s) < (1 << (b)) ? 2 : 4))
 
-static inline int
+static int
 idx_size (MonoImage *meta, int idx)
 {
 	if (meta->referenced_tables && (meta->referenced_tables & ((guint64)1 << idx)))
@@ -566,7 +566,7 @@ idx_size (MonoImage *meta, int idx)
 		return meta->tables [idx].rows < 65536 ? 2 : 4;
 }
 
-static inline int
+static int
 get_nrows (MonoImage *meta, int idx)
 {
 	if (meta->referenced_tables && (meta->referenced_tables & ((guint64)1 << idx)))
@@ -2558,13 +2558,13 @@ aggregate_modifiers_in_image (MonoAggregateModContainer *amods, MonoImage *image
 	return FALSE;
 }
 
-static inline void
+static void
 image_sets_lock (void)
 {
 	mono_os_mutex_lock (&image_sets_mutex);
 }
 
-static inline void
+static void
 image_sets_unlock (void)
 {
 	mono_os_mutex_unlock (&image_sets_mutex);
@@ -2904,7 +2904,7 @@ enlarge_data (CollectData *data)
 	data->images_len = new_len;
 }
 
-static inline void
+static void
 add_image (MonoImage *image, CollectData *data)
 {
 	int i;
@@ -3550,7 +3550,7 @@ mono_metadata_inflate_generic_inst (MonoGenericInst *ginst, MonoGenericContext *
 
 	for (i = 0; i < ginst->type_argc; i++) {
 		type_argv [i] = mono_class_inflate_generic_type_checked (ginst->type_argv [i], context, error);
-		if (!mono_error_ok (error))
+		if (!is_ok (error))
 			goto cleanup;
 		++count;
 	}
@@ -6754,7 +6754,8 @@ handle_enum:
 			*conv = MONO_MARSHAL_CONV_DEL_FTN;
 			return MONO_NATIVE_FUNC;
 		}
-		if (mono_class_try_get_safehandle_class () && type->data.klass == mono_class_try_get_safehandle_class ()){
+		if (mono_class_try_get_safehandle_class () && type->data.klass != NULL &&
+			mono_class_is_subclass_of_internal (type->data.klass,  mono_class_try_get_safehandle_class (), FALSE)){
 			*conv = MONO_MARSHAL_CONV_SAFEHANDLE;
 			return MONO_NATIVE_INT;
 		}
@@ -7172,8 +7173,8 @@ mono_bool
 mono_type_is_byref (MonoType *type)
 {
 	mono_bool result;
-	MONO_ENTER_GC_UNSAFE;
-	result = type->byref;
+	MONO_ENTER_GC_UNSAFE; // FIXME slow
+	result = mono_type_is_byref_internal (type);
 	MONO_EXIT_GC_UNSAFE;
 	return result;
 }
@@ -7187,7 +7188,7 @@ mono_type_is_byref (MonoType *type)
 int
 mono_type_get_type (MonoType *type)
 {
-	return type->type;
+	return mono_type_get_type_internal (type);
 }
 
 /**
@@ -7200,8 +7201,7 @@ mono_type_get_type (MonoType *type)
 MonoMethodSignature*
 mono_type_get_signature (MonoType *type)
 {
-	g_assert (type->type == MONO_TYPE_FNPTR);
-	return type->data.method;
+	return mono_type_get_signature_internal (type);
 }
 
 /**
@@ -7216,7 +7216,7 @@ MonoClass*
 mono_type_get_class (MonoType *type)
 {
 	/* FIXME: review the runtime users before adding the assert here */
-	return type->data.klass;
+	return mono_type_get_class_internal (type);
 }
 
 /**
@@ -7230,7 +7230,7 @@ mono_type_get_class (MonoType *type)
 MonoArrayType*
 mono_type_get_array_type (MonoType *type)
 {
-	return type->data.array;
+	return mono_type_get_array_type_internal (type);
 }
 
 /**

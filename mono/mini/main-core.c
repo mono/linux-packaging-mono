@@ -6,6 +6,7 @@
 #include "mini-runtime.h"
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/assembly-internals.h>
+#include <mono/metadata/environment.h>
 #include <mono/metadata/loader-internals.h>
 #include <mono/utils/mono-logger-internals.h>
 
@@ -121,25 +122,25 @@ parse_native_dll_search_directories (const char *native_dlls_dirs)
 }
 
 static MonoAssembly*
-mono_core_preload_hook (MonoAssemblyName *aname, char **unused_apaths, void *user_data)
+mono_core_preload_hook (MonoAssemblyLoadContext *alc, MonoAssemblyName *aname, char **assemblies_path, gboolean refonly, gpointer user_data, MonoError *error)
 {
 	MonoAssembly *result = NULL;
 	MonoCoreTrustedPlatformAssemblies *a = (MonoCoreTrustedPlatformAssemblies *)user_data;
-	const gboolean refonly = FALSE; /* TODO: make a refonly preload hook, too */
 	/* TODO: check that CoreCLR wants the strong name semantics here */
 	MonoAssemblyCandidatePredicate predicate = &mono_assembly_candidate_predicate_sn_same_name;
 	void* predicate_ud = aname;
 
 	g_assert (aname);
 	g_assert (aname->name);
+	/* alc might be a user ALC - we get here from alc.LoadFromAssemblyName(), but we should load TPA assemblies into the default alc */
+	MonoAssemblyLoadContext *default_alc = mono_domain_default_alc (mono_alc_domain (alc));
 
-	char *basename = g_strconcat (aname->name, ".dll", NULL); /* TODO: make sure CoreCLR never needs to load .exe files */
+	char *basename = g_strconcat (aname->name, ".dll", (const char*)NULL); /* TODO: make sure CoreCLR never needs to load .exe files */
 
 	for (int i = 0; i < a->assembly_count; ++i) {
 		if (!strcmp (basename, a->basenames[i])) {
 			MonoAssemblyOpenRequest req;
-			mono_assembly_request_prepare (&req.request, sizeof (req), refonly ? MONO_ASMCTX_REFONLY : MONO_ASMCTX_DEFAULT);
-			req.request.alc = mono_domain_default_alc (mono_get_root_domain ());
+			mono_assembly_request_prepare_open (&req, refonly ? MONO_ASMCTX_REFONLY : MONO_ASMCTX_DEFAULT, default_alc);
 			req.request.predicate = predicate;
 			req.request.predicate_ud = predicate_ud;
 
@@ -170,7 +171,7 @@ mono_core_preload_hook (MonoAssemblyName *aname, char **unused_apaths, void *use
 static void
 install_assembly_loader_hooks (void)
 {
-	mono_install_assembly_preload_hook (mono_core_preload_hook, (void*)trusted_platform_assemblies);
+	mono_install_assembly_preload_hook_v2 (mono_core_preload_hook, (void*)trusted_platform_assemblies, FALSE);
 }
 
 static gboolean
@@ -281,6 +282,8 @@ int STDAPICALLTYPE coreclr_execute_assembly (void* hostHandle, unsigned int doma
 	*ptr = NULL;
 
 	mono_parse_env_options (&mono_argc, &mono_argv);
+
+	// TODO: Should be return code of Main only (mono_jit_exec result)
 	*exitCode = mono_main (mono_argc, mono_argv);
 
 	return 0;
@@ -292,6 +295,7 @@ int STDAPICALLTYPE coreclr_execute_assembly (void* hostHandle, unsigned int doma
 // Parameters:
 //  hostHandle              - Handle of the host
 //  domainId                - Id of the domain 
+//  latchedExitCode         - Latched exit code after domain unloaded
 //
 // Returns:
 //  HRESULT indicating status of the operation. S_OK if the assembly was successfully executed
@@ -306,6 +310,8 @@ int STDAPICALLTYPE coreclr_shutdown_2 (void* hostHandle, unsigned int domainId, 
 	MonoCoreTrustedPlatformAssemblies *a = trusted_platform_assemblies;
 	trusted_platform_assemblies = NULL;
 	mono_core_trusted_platform_assemblies_free (a);
+
+	*latchedExitCode = mono_environment_exitcode_get ();
 
 	return 0;
 }

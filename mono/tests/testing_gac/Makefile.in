@@ -217,6 +217,7 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+INTERP_CFLAGS = @INTERP_CFLAGS@
 INTL = @INTL@
 INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
 JEMALLOC_AUTOCONF_FLAGS = @JEMALLOC_AUTOCONF_FLAGS@
@@ -420,16 +421,18 @@ TEST_RUNTIME = MONO_PATH=$(CLASS) $(RUNTIME)
 TOOLS_RUNTIME = MONO_PATH=$(mcs_topdir)/class/lib/build $(RUNTIME)
 
 # These tests are testing strict assembly strong-name resolution
-TEST_RUNNER = ../test-runner.exe --runtime $(RUNTIME) --runtime-args \
+TEST_RUNNER = ../test-runner.exe --runtime-args \
 	"--assembly-loader=strict" $(am__append_1) $(am__append_2)
+@ENABLE_MSVC_FALSE@@HOST_WIN32_TRUE@DEFAULT_WIN32_RUNTIME = $(top_builddir)/runtime/mono-wrapper)
+@ENABLE_MSVC_TRUE@@HOST_WIN32_TRUE@DEFAULT_WIN32_RUNTIME = $(shell cygpath -w -a $(top_builddir)/@mono_runtime@ | sed 's/\\/\\\\/g')
 @HOST_WIN32_FALSE@TEST_RUNNER_ARGS = --runtime $(if \
 @HOST_WIN32_FALSE@	$(MONO_EXECUTABLE),$(MONO_EXECUTABLE),mono) \
 @HOST_WIN32_FALSE@	$(if $(V), --verbose,)
-@HOST_WIN32_TRUE@TEST_RUNNER_ARGS = --runtime $(if \
+@HOST_WIN32_TRUE@TEST_RUNNER_ARGS = --runtime "$(if \
 @HOST_WIN32_TRUE@	$(MONO_EXECUTABLE),$(shell cygpath -w -a \
 @HOST_WIN32_TRUE@	$(MONO_EXECUTABLE) | sed \
-@HOST_WIN32_TRUE@	's/\\/\\\\/g'),$(DEFAULT_WIN32_RUNTIME)) $(if \
-@HOST_WIN32_TRUE@	$(V), --verbose,)
+@HOST_WIN32_TRUE@	's/\\/\\\\/g'),$(DEFAULT_WIN32_RUNTIME))" \
+@HOST_WIN32_TRUE@	$(if $(V), --verbose,)
 
 ### tools
 GACUTIL = $(mcs_topdir)/class/lib/build/gacutil.exe
@@ -671,9 +674,6 @@ uninstall-am:
 
 .PRECIOUS: Makefile
 
-
-@ENABLE_MSVC_TRUE@@HOST_WIN32_TRUE@	DEFAULT_WIN32_RUNTIME=$(shell cygpath -w -a $(top_builddir)/@mono_runtime@ | sed 's/\\/\\\\/g')
-@ENABLE_MSVC_FALSE@@HOST_WIN32_TRUE@	DEFAULT_WIN32_RUNTIME=$(top_builddir)/runtime/mono-wrapper)
 
 ### Test cases
 

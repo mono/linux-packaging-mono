@@ -60,7 +60,7 @@ static mono_mutex_t gshared_mutex;
 
 static gboolean partial_supported = FALSE;
 
-static inline gboolean
+static gboolean
 partial_sharing_supported (void)
 {
 	if (!ALLOW_PARTIAL_SHARING)
@@ -76,18 +76,18 @@ partial_sharing_supported (void)
 static int
 type_check_context_used (MonoType *type, gboolean recursive)
 {
-	switch (mono_type_get_type (type)) {
+	switch (mono_type_get_type_internal (type)) {
 	case MONO_TYPE_VAR:
 		return MONO_GENERIC_CONTEXT_USED_CLASS;
 	case MONO_TYPE_MVAR:
 		return MONO_GENERIC_CONTEXT_USED_METHOD;
 	case MONO_TYPE_SZARRAY:
-		return mono_class_check_context_used (mono_type_get_class (type));
+		return mono_class_check_context_used (mono_type_get_class_internal (type));
 	case MONO_TYPE_ARRAY:
 		return mono_class_check_context_used (mono_type_get_array_type (type)->eklass);
 	case MONO_TYPE_CLASS:
 		if (recursive)
-			return mono_class_check_context_used (mono_type_get_class (type));
+			return mono_class_check_context_used (mono_type_get_class_internal (type));
 		else
 			return 0;
 	case MONO_TYPE_GENERICINST:
@@ -407,17 +407,7 @@ info_has_identity (MonoRgctxInfoType info_type)
 /*
  * LOCKING: loader lock
  */
-#if defined(HOST_ANDROID) && defined(TARGET_ARM)
-/* work around for HW bug on Nexus9 when running on armv7 */
-#ifdef __clang__
-static __attribute__ ((optnone)) void
-#else
-/* gcc */
-static __attribute__ ((optimize("O0"))) void
-#endif
-#else
 static void
-#endif
 rgctx_template_set_slot (MonoImage *image, MonoRuntimeGenericContextTemplate *template_, int type_argc,
 	int slot, gpointer data, MonoRgctxInfoType info_type)
 {
@@ -597,7 +587,7 @@ inflate_info (MonoRuntimeGenericContextInfoTemplate *oti, MonoGenericContext *co
 		} else {
 			ERROR_DECL (error);
 			inflated_method = mono_class_inflate_generic_method_checked (method, context, error);
-			g_assert (mono_error_ok (error)); /* FIXME don't swallow the error */
+			g_assert (is_ok (error)); /* FIXME don't swallow the error */
 		}
 		mono_class_init_internal (inflated_method->klass);
 		g_assert (inflated_method->klass == inflated_class);
@@ -663,7 +653,7 @@ inflate_info (MonoRuntimeGenericContextInfoTemplate *oti, MonoGenericContext *co
 		} else {
 			ERROR_DECL (error);
 			inflated_method = mono_class_inflate_generic_method_checked (method, context, error);
-			g_assert (mono_error_ok (error)); /* FIXME don't swallow the error */
+			g_assert (is_ok (error)); /* FIXME don't swallow the error */
 		}
 		mono_class_init_internal (inflated_method->klass);
 		g_assert (inflated_method->klass == inflated_class);
@@ -703,7 +693,7 @@ inflate_info (MonoRuntimeGenericContextInfoTemplate *oti, MonoGenericContext *co
 		ERROR_DECL (error);
 
 		isig = mono_inflate_generic_signature (sig, context, error);
-		g_assert (mono_error_ok (error));
+		g_assert (is_ok (error));
 		return isig;
 	}
 	case MONO_RGCTX_INFO_VIRT_METHOD_CODE:
@@ -723,7 +713,7 @@ inflate_info (MonoRuntimeGenericContextInfoTemplate *oti, MonoGenericContext *co
 		mono_metadata_free_type (t);
 
 		res->method = mono_class_inflate_generic_method_checked (info->method, context, error);
-		g_assert (mono_error_ok (error)); /* FIXME don't swallow the error */
+		g_assert (is_ok (error)); /* FIXME don't swallow the error */
 
 		return res;
 	}
@@ -1420,7 +1410,7 @@ mini_get_gsharedvt_in_sig_wrapper (MonoMethodSignature *sig)
 	MonoMethod *res, *cached;
 	WrapperInfo *info;
 	MonoMethodSignature *csig, *gsharedvt_sig;
-	int i, pindex, retval_var = 0;
+	int i, pindex;
 	char **param_names;
 	static GHashTable *cache;
 
@@ -1479,6 +1469,7 @@ mini_get_gsharedvt_in_sig_wrapper (MonoMethodSignature *sig)
 #endif
 
 #ifndef DISABLE_JIT
+	int retval_var = 0;
 	if (sig->ret->type != MONO_TYPE_VOID)
 		retval_var = mono_mb_add_local (mb, sig->ret);
 
@@ -1539,7 +1530,7 @@ mini_get_gsharedvt_out_sig_wrapper (MonoMethodSignature *sig)
 	MonoMethod *res, *cached;
 	WrapperInfo *info;
 	MonoMethodSignature *normal_sig, *csig;
-	int i, pindex, args_start, ldind_op, stind_op;
+	int i, pindex, args_start;
 	char **param_names;
 	static GHashTable *cache;
 
@@ -1601,6 +1592,7 @@ mini_get_gsharedvt_out_sig_wrapper (MonoMethodSignature *sig)
 #endif
 
 #ifndef DISABLE_JIT
+	int ldind_op, stind_op;
 	if (sig->ret->type != MONO_TYPE_VOID)
 		/* Load return address */
 		mono_mb_emit_ldarg (mb, sig->hasthis ? 1 : 0);
@@ -1688,7 +1680,7 @@ mini_get_interp_in_wrapper (MonoMethodSignature *sig)
 	MonoMethod *res, *cached;
 	WrapperInfo *info;
 	MonoMethodSignature *csig, *entry_sig;
-	int i, pindex, retval_var = 0;
+	int i, pindex;
 	static GHashTable *cache;
 	const char *name;
 	gboolean generic = FALSE;
@@ -1781,6 +1773,7 @@ mini_get_interp_in_wrapper (MonoMethodSignature *sig)
 		mb->method->save_lmf = 1;
 
 #ifndef DISABLE_JIT
+	int retval_var = 0;
 	if (return_native_struct) {
 		retval_var = mono_mb_add_local (mb, int_type);
 		mono_mb_emit_icon (mb, mono_class_native_size (sig->ret->data.klass, NULL));
@@ -2486,7 +2479,7 @@ instantiate_info (MonoDomain *domain, MonoRuntimeGenericContextInfoTemplate *oti
 				break;
 			default:
 				res->entries [i] = instantiate_info (domain, template_, context, klass, error);
-				if (!mono_error_ok (error))
+				if (!is_ok (error))
 					return NULL;
 				break;
 			}
@@ -4190,6 +4183,7 @@ mini_get_rgctx_entry_slot (MonoJumpInfoRgctxEntry *entry)
 	}
 	default:
 		g_assert_not_reached ();
+	case MONO_PATCH_INFO_NONE:
 		break;
 	}
 

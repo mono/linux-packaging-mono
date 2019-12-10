@@ -215,6 +215,7 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+INTERP_CFLAGS = @INTERP_CFLAGS@
 INTL = @INTL@
 INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
 JEMALLOC_AUTOCONF_FLAGS = @JEMALLOC_AUTOCONF_FLAGS@
@@ -637,6 +638,72 @@ uninstall-am:
 @ENABLE_MSVC_TRUE@	$(install_sh) $(mono_msvc_build_bin_dir)/*.dll "$(DESTDIR)$(bindir)"
 @ENABLE_MSVC_TRUE@	$(install_sh) $(mono_msvc_build_bin_dir)/*.exe "$(DESTDIR)$(bindir)"
 @ENABLE_MSVC_TRUE@	$(install_sh) $(mono_msvc_build_bin_dir)/*.pdb "$(DESTDIR)$(bindir)"
+
+@ENABLE_MSVC_TRUE@eglib:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "build" "$(host_cpu)" "release" "" "eglib.vcxproj"
+
+@ENABLE_MSVC_TRUE@clean-eglib:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "clean" "$(host_cpu)" "release" "" "eglib.vcxproj"
+
+@ENABLE_MSVC_TRUE@libgcmonosgen:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "build" "$(host_cpu)" "release" "" "libgcmonosgen.vcxproj"
+
+@ENABLE_MSVC_TRUE@clean-libgcmonosgen:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "clean" "$(host_cpu)" "release" "" "libgcmonosgen.vcxproj"
+
+@ENABLE_MSVC_TRUE@libmonoposixhelper:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "build" "$(host_cpu)" "release" "" "monoposixhelper.vcxproj"
+
+@ENABLE_MSVC_TRUE@clean-libmonoposixhelper:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "clean" "$(host_cpu)" "release" "" "monoposixhelper.vcxproj"
+
+@ENABLE_MSVC_TRUE@libmonoutils:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "build" "$(host_cpu)" "release" "" "libmonoutils.vcxproj"
+
+@ENABLE_MSVC_TRUE@clean-libmonoutils:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "clean" "$(host_cpu)" "release" "" "libmonoutils.vcxproj"
+
+@ENABLE_MSVC_TRUE@libmonoruntime:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "build" "$(host_cpu)" "release" "" "libmonoruntime.vcxproj"
+
+@ENABLE_MSVC_TRUE@clean-libmonoruntime:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "clean" "$(host_cpu)" "release" "" "libmonoruntime.vcxproj"
+
+@ENABLE_MSVC_TRUE@mono:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "build" "$(host_cpu)" "release" "" "mono.vcxproj"
+
+@ENABLE_MSVC_TRUE@clean-mono:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "clean" "$(host_cpu)" "release" "" "mono.vcxproj"
+
+@ENABLE_MSVC_TRUE@monow:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "build" "$(host_cpu)" "release" "" "monow.vcxproj"
+
+@ENABLE_MSVC_TRUE@clean-monow:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "clean" "$(host_cpu)" "release" "" "monow.vcxproj"
+
+@ENABLE_MSVC_TRUE@pedump:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "build" "$(host_cpu)" "release" "" "pedump.vcxproj"
+
+@ENABLE_MSVC_TRUE@clean-pedump:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "clean" "$(host_cpu)" "release" "" "pedump.vcxproj"
+
+@ENABLE_MSVC_TRUE@monodis:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "build" "$(host_cpu)" "release" "" "monodis.vcxproj"
+
+@ENABLE_MSVC_TRUE@clean-monodis:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "clean" "$(host_cpu)" "release" "" "monodis.vcxproj"
+
+@ENABLE_MSVC_TRUE@genmdesc:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "build" "$(host_cpu)" "release" "" "genmdesc.vcxproj"
+
+@ENABLE_MSVC_TRUE@clean-genmdesc:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "clean" "$(host_cpu)" "release" "" "genmdesc.vcxproj"
+
+@ENABLE_MSVC_TRUE@jay:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "build" "$(host_cpu)" "release" "" "jay.vcxproj"
+
+@ENABLE_MSVC_TRUE@clean-jay:
+@ENABLE_MSVC_TRUE@	$(top_srcdir)/msvc/run-msbuild.sh "clean" "$(host_cpu)" "release" "" "jay.vcxproj"
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

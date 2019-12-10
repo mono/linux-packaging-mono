@@ -75,6 +75,7 @@
 #include "mini.h"
 #include "trace.h"
 #include "debugger-agent.h"
+#include "debugger-engine.h"
 #include "seq-points.h"
 #include "llvm-runtime.h"
 #include "mini-llvm.h"
@@ -94,7 +95,7 @@
 #define MONO_ARCH_CONTEXT_DEF
 #endif
 
-#ifndef HOST_WIN32
+#if !defined(HOST_WIN32) && !defined(DISABLE_CRASH_REPORTING)
 #include <dlfcn.h>
 #endif
 
@@ -162,14 +163,14 @@ mono_thread_get_managed_sp (void)
 	return addr;
 }
 
-static inline void
+static void
 mini_clear_abort_threshold (void)
 {
 	MonoJitTlsData *jit_tls = mono_get_jit_tls ();
 	jit_tls->abort_exc_stack_threshold = NULL;
 }
 
-static inline void
+static void
 mini_set_abort_threshold (StackFrameInfo *frame)
 {
 	gpointer sp = frame->frame_addr;
@@ -186,7 +187,7 @@ mini_set_abort_threshold (StackFrameInfo *frame)
 // Note: In the case that the frame is above where the thread abort
 // was set we bump the threshold so that functions called from the new,
 // higher threshold don't trigger the thread abort exception
-static inline gboolean
+static gboolean
 mini_above_abort_threshold (void)
 {
 	gpointer sp = mono_thread_get_managed_sp ();
@@ -845,8 +846,8 @@ get_generic_info_from_stack_frame (MonoJitInfo *ji, MonoContext *ctx)
 /*
  * generic_info is either a MonoMethodRuntimeGenericContext or a MonoVTable.
  */
-static MonoGenericContext
-get_generic_context_from_stack_frame (MonoJitInfo *ji, gpointer generic_info)
+MonoGenericContext
+mono_get_generic_context_from_stack_frame (MonoJitInfo *ji, gpointer generic_info)
 {
 	MonoGenericContext context = { NULL, NULL };
 	MonoClass *klass, *method_container_class;
@@ -891,6 +892,7 @@ get_generic_context_from_stack_frame (MonoJitInfo *ji, gpointer generic_info)
 	return context;
 }
 
+
 static MonoMethod*
 get_method_from_stack_frame (MonoJitInfo *ji, gpointer generic_info)
 {
@@ -900,12 +902,12 @@ get_method_from_stack_frame (MonoJitInfo *ji, gpointer generic_info)
 	
 	if (!ji->has_generic_jit_info || !mono_jit_info_get_generic_jit_info (ji)->has_this)
 		return jinfo_get_method (ji);
-	context = get_generic_context_from_stack_frame (ji, generic_info);
+	context = mono_get_generic_context_from_stack_frame (ji, generic_info);
 
 	method = jinfo_get_method (ji);
 	method = mono_method_get_declaring_generic_method (method);
 	method = mono_class_inflate_generic_method_checked (method, &context, error);
-	g_assert (mono_error_ok (error)); /* FIXME don't swallow the error */
+	g_assert (is_ok (error)); /* FIXME don't swallow the error */
 
 	return method;
 }
@@ -1056,7 +1058,7 @@ ves_icall_get_trace (MonoException *exc, gint32 skip, MonoBoolean need_file_info
 	for (i = skip; i < len; i++) {
 		MonoJitInfo *ji;
 		MonoStackFrame *sf = (MonoStackFrame *)mono_object_new_checked (domain, mono_defaults.stack_frame_class, error);
-		if (!mono_error_ok (error)) {
+		if (!is_ok (error)) {
 			mono_error_set_pending_exception (error);
 			return NULL;
 		}
@@ -1099,7 +1101,7 @@ ves_icall_get_trace (MonoException *exc, gint32 skip, MonoBoolean need_file_info
 		}
 		else {
 			MonoReflectionMethod *rm = mono_method_get_object_checked (domain, method, NULL, error);
-			if (!mono_error_ok (error)) {
+			if (!is_ok (error)) {
 				mono_error_set_pending_exception (error);
 				return NULL;
 			}
@@ -1900,7 +1902,7 @@ ves_icall_get_frame_info (gint32 skip, MonoBoolean need_file_info,
 	}
 
 	MonoReflectionMethod *rm = mono_method_get_object_checked (domain, actual_method, NULL, error);
-	if (!mono_error_ok (error)) {
+	if (!is_ok (error)) {
 		mono_error_set_pending_exception (error);
 		return FALSE;
 	}
@@ -1951,7 +1953,7 @@ get_exception_catch_class (MonoJitExceptionInfo *ei, MonoJitInfo *ji, MonoContex
 
 	if (!ji->has_generic_jit_info || !mono_jit_info_get_generic_jit_info (ji)->has_this)
 		return catch_class;
-	context = get_generic_context_from_stack_frame (ji, get_generic_info_from_stack_frame (ji, ctx));
+	context = mono_get_generic_context_from_stack_frame (ji, get_generic_info_from_stack_frame (ji, ctx));
 
 	/* FIXME: we shouldn't inflate but instead put the
 	   type in the rgctx and fetch it from there.  It
@@ -2704,7 +2706,7 @@ mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resu
 				G_BREAKPOINT ();
 			mini_get_dbg_callbacks ()->handle_exception ((MonoException *)obj, ctx, NULL, NULL);
 
-			if (mini_debug_options.suspend_on_unhandled) {
+			if (mini_debug_options.suspend_on_unhandled && mono_object_class (obj) != mono_defaults.threadabortexception_class) {
 				mono_runtime_printf_err ("Unhandled exception, suspending...");
 				while (1)
 					;
@@ -3453,8 +3455,6 @@ mono_print_thread_dump_internal (void *sigctx, MonoContext *start_ctx)
 	MonoInternalThread *thread = mono_thread_internal_current ();
 	MonoContext ctx;
 	GString* text;
-	char *name;
-	GError *gerror = NULL;
 
 	if (!thread)
 		return;
@@ -4022,7 +4022,7 @@ mono_llvm_match_exception (MonoJitInfo *jinfo, guint32 region_start, guint32 reg
 			MonoType *inflated_type;
 
 			g_assert (rgctx || this_obj);
-			context = get_generic_context_from_stack_frame (jinfo, rgctx ? rgctx : this_obj->vtable);
+			context = mono_get_generic_context_from_stack_frame (jinfo, rgctx ? rgctx : this_obj->vtable);
 			inflated_type = mono_class_inflate_generic_type_checked (m_class_get_byval_arg (catch_class), &context, error);
 			mono_error_assert_ok (error); /* FIXME don't swallow the error */
 

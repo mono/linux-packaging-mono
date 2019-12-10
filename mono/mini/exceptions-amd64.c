@@ -83,8 +83,10 @@ get_win32_restore_stack (void)
 	if (start)
 		return start;
 
+	const int size = 128;
+
 	/* restore_stack (void) */
-	start = code = mono_global_codeman_reserve (128);
+	start = code = mono_global_codeman_reserve (size);
 
 	amd64_push_reg (code, AMD64_RBP);
 	amd64_mov_reg_reg (code, AMD64_RBP, AMD64_RSP, 8);
@@ -110,7 +112,7 @@ get_win32_restore_stack (void)
 	amd64_mov_reg_imm (code, AMD64_R11, mono_restore_context);
 	amd64_call_reg (code, AMD64_R11);
 
-	g_assert ((code - start) < 128);
+	g_assertf ((code - start) <= size, "%d %d", (int)(code - start), size);
 
 	mono_arch_flush_icache (start, code - start);
 	MONO_PROFILER_RAISE (jit_code_buffer, (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL));
@@ -249,7 +251,9 @@ mono_arch_get_restore_context (MonoTrampInfo **info, gboolean aot)
 
 	/* restore_contect (MonoContext *ctx) */
 
-	start = code = (guint8 *)mono_global_codeman_reserve (256);
+	const int size = 256;
+
+	start = code = (guint8 *)mono_global_codeman_reserve (size);
 
 	amd64_mov_reg_reg (code, AMD64_R11, AMD64_ARG_REG1, 8);
 
@@ -274,6 +278,8 @@ mono_arch_get_restore_context (MonoTrampInfo **info, gboolean aot)
 
 	/* jump to the saved IP */
 	amd64_jump_reg (code, AMD64_R11);
+
+	g_assertf ((code - start) <= size, "%d %d", (int)(code - start), size);
 
 	mono_arch_flush_icache (start, code - start);
 	MONO_PROFILER_RAISE (jit_code_buffer, (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL));
@@ -300,7 +306,7 @@ mono_arch_get_call_filter (MonoTrampInfo **info, gboolean aot)
 	guint32 pos;
 	MonoJumpInfo *ji = NULL;
 	GSList *unwind_ops = NULL;
-	const guint kMaxCodeSize = 128;
+	const int kMaxCodeSize = 128;
 
 	start = code = (guint8 *)mono_global_codeman_reserve (kMaxCodeSize);
 
@@ -361,7 +367,7 @@ mono_arch_get_call_filter (MonoTrampInfo **info, gboolean aot)
 #endif
 	amd64_ret (code);
 
-	g_assert ((code - start) < kMaxCodeSize);
+	g_assertf ((code - start) <= kMaxCodeSize, "%d %d", (int)(code - start), kMaxCodeSize);
 
 	mono_arch_flush_icache (start, code - start);
 	MONO_PROFILER_RAISE (jit_code_buffer, (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL));
@@ -454,7 +460,7 @@ get_throw_trampoline (MonoTrampInfo **info, gboolean rethrow, gboolean corlib, g
 	MonoJumpInfo *ji = NULL;
 	GSList *unwind_ops = NULL;
 	int i, stack_size, arg_offsets [16], ctx_offset, regs_offset;
-	const guint kMaxCodeSize = 256;
+	const int kMaxCodeSize = 256;
 
 #ifdef TARGET_WIN32
 	const int dummy_stack_space = 6 * sizeof (target_mgreg_t);	/* Windows expects stack space allocated for all 6 dummy args. */
@@ -550,7 +556,7 @@ get_throw_trampoline (MonoTrampInfo **info, gboolean rethrow, gboolean corlib, g
 
 	mono_arch_flush_icache (start, code - start);
 
-	g_assert ((code - start) < kMaxCodeSize);
+	g_assertf ((code - start) <= kMaxCodeSize, "%d %d", (int)(code - start), kMaxCodeSize);
 	g_assert_checked (mono_arch_unwindinfo_validate_size (unwind_ops, MONO_MAX_TRAMPOLINE_UNWINDINFO_SIZE));
 
 	MONO_PROFILER_RAISE (jit_code_buffer, (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL));
@@ -1268,7 +1274,7 @@ fast_find_range_in_table_no_lock_ex (gsize begin_range, gsize end_range, gboolea
 	return found_entry;
 }
 
-static inline DynamicFunctionTableEntry *
+static DynamicFunctionTableEntry *
 fast_find_range_in_table_no_lock (gsize begin_range, gsize end_range, gboolean *continue_search)
 {
 	GList *found_entry = fast_find_range_in_table_no_lock_ex (begin_range, end_range, continue_search);
@@ -1304,7 +1310,7 @@ find_range_in_table_no_lock_ex (const gpointer code_block, gsize block_size)
 	return found_entry;
 }
 
-static inline DynamicFunctionTableEntry *
+static DynamicFunctionTableEntry *
 find_range_in_table_no_lock (const gpointer code_block, gsize block_size)
 {
 	GList *found_entry = find_range_in_table_no_lock_ex (code_block, block_size);
@@ -1340,7 +1346,7 @@ find_pc_in_table_no_lock_ex (const gpointer pc)
 	return found_entry;
 }
 
-static inline DynamicFunctionTableEntry *
+static DynamicFunctionTableEntry *
 find_pc_in_table_no_lock (const gpointer pc)
 {
 	GList *found_entry = find_pc_in_table_no_lock_ex (pc);
@@ -1379,7 +1385,7 @@ validate_table_no_lock (void)
 
 #else
 
-static inline void
+static void
 validate_table_no_lock (void)
 {
 }
@@ -1586,7 +1592,7 @@ mono_arch_unwindinfo_find_rt_func_in_table (const gpointer code, gsize code_size
 	return found_rt_func;
 }
 
-static inline PRUNTIME_FUNCTION
+static PRUNTIME_FUNCTION
 mono_arch_unwindinfo_find_pc_rt_func_in_table (const gpointer pc)
 {
 	return mono_arch_unwindinfo_find_rt_func_in_table (pc, 0);
@@ -1624,7 +1630,7 @@ validate_rt_funcs_in_table_no_lock (DynamicFunctionTableEntry *entry)
 
 #else
 
-static inline void
+static void
 validate_rt_funcs_in_table_no_lock (DynamicFunctionTableEntry *entry)
 {
 }
@@ -1904,8 +1910,7 @@ mono_tasklets_arch_restore (void)
 	static guint8* saved = NULL;
 	guint8 *code, *start;
 	int cont_reg = AMD64_R9; /* register usable on both call conventions */
-	const guint kMaxCodeSize = 64;
-	
+	const int kMaxCodeSize = 64;
 
 	if (saved)
 		return (MonoContinuationRestore)saved;
@@ -1941,7 +1946,7 @@ mono_tasklets_arch_restore (void)
 
 	/* state is already in rax */
 	amd64_jump_membase (code, cont_reg, MONO_STRUCT_OFFSET (MonoContinuation, return_ip));
-	g_assert ((code - start) <= kMaxCodeSize);
+	g_assertf ((code - start) <= kMaxCodeSize, "%d %d", (int)(code - start), kMaxCodeSize);
 
 	mono_arch_flush_icache (start, code - start);
 	MONO_PROFILER_RAISE (jit_code_buffer, (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL));

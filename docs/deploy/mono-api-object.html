@@ -959,9 +959,12 @@ mono_array_length (MonoArray *array)
              <div>
  with elements of size sizeof(type) to the provided <i>value</i>.
 <p />
- This macro does not attempt to perform type checking or bounds checking.
+ This macro does not attempt to perform type checking or bounds checking
+ and it doesn't execute any write barriers.
 <p />
- Use this to set value types in a <code>MonoArray</code>.</div>
+ Use this to set value types in a <code>MonoArray</code>. This shouldn't be used if
+ the copied value types contain references. Use <code>mono_gc_wbarrier_value_copy</code>
+ instead when also copying references.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->

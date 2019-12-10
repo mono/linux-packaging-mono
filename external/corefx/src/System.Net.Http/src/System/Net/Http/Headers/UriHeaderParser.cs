@@ -13,8 +13,17 @@ namespace System.Net.Http.Headers
     {
         private UriKind _uriKind;
 
+#if MONO
+        // FIXME: Workaround for https://github.com/mono/mono/issues/17897.
+        //        This is the same as setting the MONO_URI_DOTNETRELATIVEORABSOLUTE=true
+        //        environment variable.
+        //        See https://github.com/mono/mono/blob/1454b010ae1165a0f2cf261b9420e32d1b52fdaf/mcs/class/referencesource/System/net/System/URI.cs#L991.
+        internal static readonly UriHeaderParser RelativeOrAbsoluteUriParser =
+            new UriHeaderParser((UriKind)300);
+#else
         internal static readonly UriHeaderParser RelativeOrAbsoluteUriParser =
             new UriHeaderParser(UriKind.RelativeOrAbsolute);
+#endif
 
         private UriHeaderParser(UriKind uriKind)
             : base(false)

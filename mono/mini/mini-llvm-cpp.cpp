@@ -37,6 +37,7 @@
 #include <llvm/IR/Module.h>
 #include <llvm/IR/DIBuilder.h>
 #include <llvm/IR/CallSite.h>
+#include <llvm/IR/MDBuilder.h>
 
 #include "mini-llvm-cpp.h"
 
@@ -50,8 +51,16 @@ void
 mono_llvm_dump_value (LLVMValueRef value)
 {
 	/* Same as LLVMDumpValue (), but print to stdout */
+	outs () << (*unwrap<Value> (value)) << "\n";
 	fflush (stdout);
-	outs () << (*unwrap<Value> (value));
+}
+
+void
+mono_llvm_dump_module (LLVMModuleRef module)
+{
+	/* Same as LLVMDumpModule (), but print to stdout */
+	outs () << (*unwrap (module));
+	fflush (stdout);
 }
 
 /* Missing overload for building an alloca with an alignment */
@@ -201,6 +210,34 @@ mono_llvm_build_fence (LLVMBuilderRef builder, BarrierKind kind)
 	return wrap (ins);
 }
 
+LLVMValueRef
+mono_llvm_build_weighted_branch (LLVMBuilderRef builder, LLVMValueRef cond, LLVMBasicBlockRef t, LLVMBasicBlockRef f, uint32_t t_weight, uint32_t f_weight)
+{
+	auto b = unwrap (builder);
+	auto &ctx = b->getContext ();
+	MDBuilder mdb{ctx};
+	auto weights = mdb.createBranchWeights (t_weight, f_weight);
+	auto ins = b->CreateCondBr (unwrap (cond), unwrap (t), unwrap (f), weights);
+	return wrap (ins);
+}
+
+void
+mono_llvm_add_string_metadata (LLVMValueRef insref, const char* label, const char* text)
+{
+	auto ins = unwrap<Instruction> (insref);
+	auto &ctx = ins->getContext ();
+	ins->setMetadata (label, MDNode::get (ctx, MDString::get (ctx, text)));
+}
+
+void
+mono_llvm_set_implicit_branch (LLVMBuilderRef builder, LLVMValueRef branch)
+{
+	auto b = unwrap (builder);
+	auto &ctx = b->getContext ();
+	auto ins = unwrap<Instruction> (branch);
+	ins->setMetadata (LLVMContext::MD_make_implicit, MDNode::get (ctx, {}));
+}
+
 void
 mono_llvm_set_must_tailcall (LLVMValueRef call_ins)
 {
@@ -228,26 +265,9 @@ mono_llvm_set_is_constant (LLVMValueRef global_var)
 	unwrap<GlobalVariable>(global_var)->setConstant (true);
 }
 
-void
-mono_llvm_set_preserveall_cc (LLVMValueRef func)
-{
-	unwrap<Function>(func)->setCallingConv (CallingConv::PreserveAll);
-}
-
 // Note that in future versions of LLVM, CallInst and InvokeInst
 // share a CallBase parent class that would make the below methods
 // look much better
-
-void
-mono_llvm_set_call_preserveall_cc (LLVMValueRef wrapped_calli)
-{
-	Instruction *calli = unwrap<Instruction> (wrapped_calli);
-
-	if (isa<CallInst> (calli))
-		dyn_cast<CallInst>(calli)->setCallingConv (CallingConv::PreserveAll);
-	else
-		dyn_cast<InvokeInst>(calli)->setCallingConv (CallingConv::PreserveAll);
-}
 
 void
 mono_llvm_set_call_nonnull_arg (LLVMValueRef wrapped_calli, int argNo)
@@ -467,6 +487,14 @@ mono_llvm_di_create_location (void *di_builder, void *scope, int row, int column
 }
 
 void
+mono_llvm_set_fast_math (LLVMBuilderRef builder)
+{
+	FastMathFlags flags;
+	flags.setFast ();
+	unwrap(builder)->setFastMathFlags (flags);
+}
+
+void
 mono_llvm_di_set_location (LLVMBuilderRef builder, void *loc_md)
 {
 	unwrap(builder)->SetCurrentDebugLocation ((DILocation*)loc_md);
@@ -500,4 +528,24 @@ mono_llvm_get_or_insert_gc_safepoint_poll (LLVMModuleRef module)
 
 	return wrap(SafepointPoll);
 #endif
+}
+
+int
+mono_llvm_check_cpu_features (const CpuFeatureAliasFlag *features, int length)
+{
+	int flags = 0;
+	llvm::StringMap<bool> HostFeatures;
+	if (llvm::sys::getHostCPUFeatures (HostFeatures)) {
+		for (int i=0; i<length; i++) {
+			CpuFeatureAliasFlag feature = features [i];
+			if (HostFeatures [feature.alias])
+				flags |= feature.flag;
+		}
+		/*
+		for (auto &F : HostFeatures)
+			if (F.second)
+				outs () << "X: " << F.first () << "\n";
+		*/
+	}
+	return flags;
 }

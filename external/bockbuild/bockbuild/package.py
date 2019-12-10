@@ -878,6 +878,7 @@ class Package:
                 elif orig_suffix is not None:
                     suffixed = os.path.join(
                         dest_dir, reldir, add_suffix(filename, orig_suffix))
+                    trace(dest_orig_file)
                     trace(suffixed)
                     shutil.move(dest_orig_file, suffixed)
                     os.symlink(os.path.basename(suffixed), dest_orig_file)

@@ -106,6 +106,9 @@ mono_thread_create_internal_handle (MonoDomain *domain, T func, gpointer arg, Mo
 }
 #endif
 
+void
+mono_thread_manage_internal (void);
+
 /* Data owned by a MonoInternalThread that must live until both the finalizer
  * for MonoInternalThread has run, and the underlying machine thread has
  * detached.
@@ -156,7 +159,7 @@ ICALL_EXPORT
 gint64 ves_icall_System_Threading_Interlocked_Exchange_Long(gint64 *location, gint64 value);
 
 ICALL_EXPORT
-MonoObject *ves_icall_System_Threading_Interlocked_Exchange_Object(MonoObject **location, MonoObject *value);
+void ves_icall_System_Threading_Interlocked_Exchange_Object (MonoObject *volatile*location, MonoObject *volatile*value, MonoObject *volatile*res);
 
 ICALL_EXPORT
 gpointer ves_icall_System_Threading_Interlocked_Exchange_IntPtr(gpointer *location, gpointer value);
@@ -177,7 +180,7 @@ ICALL_EXPORT
 gint64 ves_icall_System_Threading_Interlocked_CompareExchange_Long(gint64 *location, gint64 value, gint64 comparand);
 
 ICALL_EXPORT
-MonoObject *ves_icall_System_Threading_Interlocked_CompareExchange_Object(MonoObject **location, MonoObject *value, MonoObject *comparand);
+void ves_icall_System_Threading_Interlocked_CompareExchange_Object (MonoObject *volatile*location, MonoObject *volatile*value, MonoObject *volatile*comparand, MonoObject *volatile*res);
 
 ICALL_EXPORT
 gpointer ves_icall_System_Threading_Interlocked_CompareExchange_IntPtr(gpointer *location, gpointer value, gpointer comparand);
@@ -189,10 +192,10 @@ ICALL_EXPORT
 gdouble ves_icall_System_Threading_Interlocked_CompareExchange_Double(gdouble *location, gdouble value, gdouble comparand);
 
 ICALL_EXPORT
-MonoObject* ves_icall_System_Threading_Interlocked_CompareExchange_T(MonoObject **location, MonoObject *value, MonoObject *comparand);
+void ves_icall_System_Threading_Interlocked_CompareExchange_T (MonoObject *volatile*location, MonoObject *volatile*value, MonoObject *volatile*comparand, MonoObject *volatile*res);
 
 ICALL_EXPORT
-MonoObject* ves_icall_System_Threading_Interlocked_Exchange_T(MonoObject **location, MonoObject *value);
+void ves_icall_System_Threading_Interlocked_Exchange_T (MonoObject *volatile*location, MonoObject *volatile*value, MonoObject *volatile*res);
 
 ICALL_EXPORT
 gint32 ves_icall_System_Threading_Interlocked_Add_Int(gint32 *location, gint32 value);
@@ -344,16 +347,21 @@ typedef enum {
     MonoSetThreadNameFlag_None      = 0x0000,
     MonoSetThreadNameFlag_Permanent = 0x0001,
     MonoSetThreadNameFlag_Reset     = 0x0002,
-    //MonoSetThreadNameFlag_Constant  = 0x0004,
+    MonoSetThreadNameFlag_Constant  = 0x0004,
 } MonoSetThreadNameFlags;
 
 G_ENUM_FUNCTIONS (MonoSetThreadNameFlags)
 
 MONO_PROFILER_API
-void
-mono_thread_set_name_internal (MonoInternalThread *thread,
-			       MonoString *name,
-			       MonoSetThreadNameFlags flags, MonoError *error);
+gsize
+mono_thread_set_name (MonoInternalThread *thread,
+		      const char* name8, size_t name8_length, const gunichar2* name16,
+		      MonoSetThreadNameFlags flags, MonoError *error);
+
+#define mono_thread_set_name_constant_ignore_error(thread, name, flags) \
+	mono_thread_set_name ((thread), name, G_N_ELEMENTS (name) - 1,  \
+		MONO_THREAD_NAME_WINDOWS_CONSTANT (name),               \
+		(flags) | MonoSetThreadNameFlag_Constant, NULL)
 
 void mono_thread_suspend_all_other_threads (void);
 gboolean mono_threads_abort_appdomain_threads (MonoDomain *domain, int timeout);
@@ -377,7 +385,17 @@ MonoExceptionHandle
 mono_thread_interruption_checkpoint_handle (void);
 
 MonoException* mono_thread_force_interruption_checkpoint_noraise (void);
-gint32* mono_thread_interruption_request_flag (void);
+
+/**
+ * mono_thread_interruption_request_flag:
+ *
+ * A flag that will be non-zero if an interruption has
+ * been requested for a thread. The thread to interrupt may not be the current
+ * thread, so an additional call to mono_thread_interruption_requested () or
+ * mono_thread_interruption_checkpoint () is always needed if the flag is not
+ * zero.
+ */
+extern gint32 mono_thread_interruption_request_flag;
 
 uint32_t mono_alloc_special_static_data (uint32_t static_type, uint32_t size, uint32_t align, uintptr_t *bitmap, int numbits);
 void*    mono_get_special_static_data   (uint32_t offset);
@@ -404,9 +422,6 @@ void mono_threads_add_joinable_runtime_thread (MonoThreadInfo *thread_info);
 void mono_threads_add_joinable_thread (gpointer tid);
 void mono_threads_join_threads (void);
 void mono_thread_join (gpointer tid);
-
-ICALL_EXPORT
-void ves_icall_System_Threading_Thread_GetStackTraces (MonoArray **out_threads, MonoArray **out_stack_traces);
 
 MONO_API gpointer
 mono_threads_attach_coop (MonoDomain *domain, gpointer *dummy);
@@ -541,7 +556,7 @@ typedef struct {
 } MonoThreadSummary;
 
 void
-mono_threads_summarize_init (const char *timeline_dir);
+mono_threads_summarize_init (void);
 
 gboolean
 mono_threads_summarize (MonoContext *ctx, gchar **out, MonoStackHash *hashes, gboolean silent, gboolean signal_handler_controller, gchar *mem, size_t provided_size);

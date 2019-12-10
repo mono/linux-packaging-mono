@@ -129,18 +129,25 @@ namespace MonoTests.System.IO
 				Assert.IsNotNull (watcherHandleField);
 				var proxyType = typeof (FileSystemWatcher).Assembly.GetType ("System.IO.CoreFXFileSystemWatcherProxy");
 				Assert.IsNotNull (proxyType);
+				// the "internal_map" maps watcher handles to backend CoreFX FSW instances
+				var proxyTypeInternalMapField = proxyType.GetField ("internal_map", BindingFlags.Static | BindingFlags.NonPublic);
+				Assert.IsNotNull (proxyTypeInternalMapField);
 
 				var fsw1 = new FileSystemWatcher (tmp.Path, "*");
 				var fsw2 = new FileSystemWatcher (tmp.Path, "*");
+				// at this point watcher and watcher_handle should be set
 
+				global::System.Collections.Generic.IDictionary<object, global::System.IO.CoreFX.FileSystemWatcher> internal_map = null;
 				object handle1 = null;
 				object handle2 = null;
 
 				// using "using" to ensure that Dispose gets called even if we throw an exception
 				using (var fsw11 = fsw1)
 				using (var fsw22 = fsw2) {
-					// at this point watcher and watcher_handle should be set
 
+					// Once at least one FSW is initialized, watcher should be set.  But if the
+					// wrong backend is getting used, ignore this test because the other checks
+					// (internal_map in particular) won't be valid.
 					var watcher = watcherField.GetValue (fsw1);
 					Assert.IsNotNull (watcher);
 					if (!proxyType.IsAssignableFrom (watcher.GetType ()))
@@ -152,20 +159,23 @@ namespace MonoTests.System.IO
 					Assert.IsNotNull (handle1);
 					Assert.IsNotNull (handle2);
 
+					// Can't check for internal_map earlier - it is lazily created when the first
+					// FSW instance is created
+					internal_map = proxyTypeInternalMapField.GetValue (null)
+						as global::System.Collections.Generic.IDictionary<object, global::System.IO.CoreFX.FileSystemWatcher>;
+					Assert.IsNotNull (internal_map);
+
+					// Both of handles should be in the internal map while the file system watchers
+					// are not disposed.
+					Assert.IsTrue (internal_map.ContainsKey (handle1));
+					Assert.IsTrue (internal_map.ContainsKey (handle2));
+
 				}
 
 				// Dispose was called, now watcher_handle should be null
 
 				Assert.IsNull (watcherHandleField.GetValue (fsw1));
 				Assert.IsNull (watcherHandleField.GetValue (fsw2));
-
-				// and moreover, the CoreFXFileSystemWatcherProxy shouldn't have entries for either handle1 or handle2
-
-				var proxyTypeInternalMapField = proxyType.GetField ("internal_map", BindingFlags.Static | BindingFlags.NonPublic);
-				Assert.IsNotNull (proxyTypeInternalMapField);
-				var internal_map = proxyTypeInternalMapField.GetValue (null)
-					as global::System.Collections.Generic.IDictionary<object, global::System.IO.CoreFX.FileSystemWatcher>;
-				Assert.IsNotNull (internal_map);
 
 				// This pair are the critical checks: after we call Dispose on fsw1 and fsw2, the
 				// backend's internal map shouldn't have anything keyed on handle1 and handle2.

@@ -91,7 +91,6 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 subdir = mono/eglib
-SUBDIRS =
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
 	$(top_srcdir)/m4/ax_append_flag.m4 \
@@ -123,27 +122,48 @@ am__libeglib_la_SOURCES_DIST = eglib-remap.h sort.frag.h glib.h \
 	gdate-win32.c gdir-win32.c gfile-win32.c gmisc-win32.c \
 	gmodule-win32.c gmodule-win32-internals.h gtimer-win32.c \
 	gunicode-win32.c
-am__objects_1 = libeglib_la-gdate-unix.lo libeglib_la-gdir-unix.lo \
-	libeglib_la-gfile-unix.lo libeglib_la-gmisc-unix.lo \
-	libeglib_la-gmodule-unix.lo libeglib_la-gtimer-unix.lo
-am__objects_2 = libeglib_la-gdate-win32.lo libeglib_la-gdir-win32.lo \
-	libeglib_la-gfile-win32.lo libeglib_la-gmisc-win32.lo \
-	libeglib_la-gmodule-win32.lo libeglib_la-gtimer-win32.lo \
-	libeglib_la-gunicode-win32.lo
-@HOST_WIN32_FALSE@am__objects_3 = $(am__objects_1)
-@HOST_WIN32_TRUE@am__objects_3 = $(am__objects_2)
-am_libeglib_la_OBJECTS = libeglib_la-garray.lo \
-	libeglib_la-gbytearray.lo libeglib_la-gerror.lo \
-	libeglib_la-ghashtable.lo libeglib_la-giconv.lo \
-	libeglib_la-gmem.lo libeglib_la-goutput.lo \
-	libeglib_la-gqsort.lo libeglib_la-gstr.lo \
-	libeglib_la-gslist.lo libeglib_la-gstring.lo \
-	libeglib_la-gptrarray.lo libeglib_la-glist.lo \
-	libeglib_la-gqueue.lo libeglib_la-gpath.lo \
-	libeglib_la-gshell.lo libeglib_la-gspawn.lo \
-	libeglib_la-gfile.lo libeglib_la-gfile-posix.lo \
-	libeglib_la-gpattern.lo libeglib_la-gmarkup.lo \
-	libeglib_la-gutf8.lo libeglib_la-gunicode.lo $(am__objects_3)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_1 = libeglib_la-gdate-unix.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gdir-unix.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gfile-unix.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gmisc-unix.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gmodule-unix.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gtimer-unix.lo
+@ENABLE_MSVC_ONLY_FALSE@am__objects_2 = libeglib_la-gdate-win32.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gdir-win32.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gfile-win32.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gmisc-win32.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gmodule-win32.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gtimer-win32.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gunicode-win32.lo
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_3 =  \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_1)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_3 =  \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_2)
+@ENABLE_MSVC_ONLY_FALSE@am_libeglib_la_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-garray.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gbytearray.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gerror.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-ghashtable.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-giconv.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gmem.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-goutput.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gqsort.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gstr.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gslist.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gstring.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gptrarray.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-glist.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gqueue.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gpath.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gshell.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gspawn.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gfile.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gfile-posix.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gpattern.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gmarkup.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gutf8.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gunicode.lo \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_3)
 libeglib_la_OBJECTS = $(am_libeglib_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -152,6 +172,7 @@ am__v_lt_1 =
 libeglib_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libeglib_la_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+@ENABLE_MSVC_ONLY_FALSE@am_libeglib_la_rpath =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -254,6 +275,7 @@ am__define_uniq_tagged_files = \
   done | $(am__uniquify_input)`
 ETAGS = etags
 CTAGS = ctags
+DIST_SUBDIRS = . test
 am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/eglib-config.h.in \
 	$(top_srcdir)/depcomp $(top_srcdir)/mk/common.mk \
 	$(top_srcdir)/mkinstalldirs
@@ -366,6 +388,7 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+INTERP_CFLAGS = @INTERP_CFLAGS@
 INTL = @INTL@
 INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
 JEMALLOC_AUTOCONF_FLAGS = @JEMALLOC_AUTOCONF_FLAGS@
@@ -555,63 +578,60 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
+@ENABLE_MSVC_ONLY_FALSE@SUBDIRS = . test
+@ENABLE_MSVC_ONLY_FALSE@noinst_LTLIBRARIES = libeglib.la
+@ENABLE_MSVC_ONLY_FALSE@AM_CFLAGS = $(WERROR_CFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@win_files = \
+@ENABLE_MSVC_ONLY_FALSE@	eglib-config.hw \
+@ENABLE_MSVC_ONLY_FALSE@	gdate-win32.c gdir-win32.c gfile-win32.c gmisc-win32.c \
+@ENABLE_MSVC_ONLY_FALSE@	gmodule-win32.c gmodule-win32-internals.h gtimer-win32.c gunicode-win32.c
 
-# FIXME
-#SUBDIRS = test
-DIST_SUBDIRS = test
-noinst_LTLIBRARIES = libeglib.la
-AM_CFLAGS = $(WERROR_CFLAGS)
-win_files = \
-	eglib-config.hw \
-	gdate-win32.c gdir-win32.c gfile-win32.c gmisc-win32.c \
-	gmodule-win32.c gmodule-win32-internals.h gtimer-win32.c gunicode-win32.c
+@ENABLE_MSVC_ONLY_FALSE@unix_files = \
+@ENABLE_MSVC_ONLY_FALSE@	gdate-unix.c  gdir-unix.c  gfile-unix.c  gmisc-unix.c	\
+@ENABLE_MSVC_ONLY_FALSE@	gmodule-unix.c gtimer-unix.c
 
-unix_files = \
-	gdate-unix.c  gdir-unix.c  gfile-unix.c  gmisc-unix.c	\
-	gmodule-unix.c gtimer-unix.c
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@os_files = $(unix_files)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@os_files = $(win_files)
+@ENABLE_MSVC_ONLY_FALSE@libeglib_la_SOURCES = \
+@ENABLE_MSVC_ONLY_FALSE@	eglib-remap.h	\
+@ENABLE_MSVC_ONLY_FALSE@	sort.frag.h	\
+@ENABLE_MSVC_ONLY_FALSE@	glib.h	     	\
+@ENABLE_MSVC_ONLY_FALSE@	garray.c	\
+@ENABLE_MSVC_ONLY_FALSE@	gbytearray.c	\
+@ENABLE_MSVC_ONLY_FALSE@	gerror.c	\
+@ENABLE_MSVC_ONLY_FALSE@	ghashtable.c 	\
+@ENABLE_MSVC_ONLY_FALSE@	giconv.c	\
+@ENABLE_MSVC_ONLY_FALSE@	gmem.c       	\
+@ENABLE_MSVC_ONLY_FALSE@	gmodule.h	\
+@ENABLE_MSVC_ONLY_FALSE@	goutput.c    	\
+@ENABLE_MSVC_ONLY_FALSE@	gqsort.c	\
+@ENABLE_MSVC_ONLY_FALSE@	gstr.c       	\
+@ENABLE_MSVC_ONLY_FALSE@	gslist.c     	\
+@ENABLE_MSVC_ONLY_FALSE@	gstring.c    	\
+@ENABLE_MSVC_ONLY_FALSE@	gptrarray.c     \
+@ENABLE_MSVC_ONLY_FALSE@	glist.c		\
+@ENABLE_MSVC_ONLY_FALSE@	gqueue.c	\
+@ENABLE_MSVC_ONLY_FALSE@	gpath.c		\
+@ENABLE_MSVC_ONLY_FALSE@	gshell.c	\
+@ENABLE_MSVC_ONLY_FALSE@	gspawn.c	\
+@ENABLE_MSVC_ONLY_FALSE@	gfile.c		\
+@ENABLE_MSVC_ONLY_FALSE@	gfile-posix.c	\
+@ENABLE_MSVC_ONLY_FALSE@	gpattern.c	\
+@ENABLE_MSVC_ONLY_FALSE@	gmarkup.c	\
+@ENABLE_MSVC_ONLY_FALSE@	gutf8.c		\
+@ENABLE_MSVC_ONLY_FALSE@	gunicode.c	\
+@ENABLE_MSVC_ONLY_FALSE@	unicode-data.h	\
+@ENABLE_MSVC_ONLY_FALSE@	$(os_files)
 
-@HOST_WIN32_FALSE@os_files = $(unix_files)
-@HOST_WIN32_TRUE@os_files = $(win_files)
-libeglib_la_SOURCES = \
-	eglib-remap.h	\
-	sort.frag.h	\
-	glib.h	     	\
-	garray.c	\
-	gbytearray.c	\
-	gerror.c	\
-	ghashtable.c 	\
-	giconv.c	\
-	gmem.c       	\
-	gmodule.h	\
-	goutput.c    	\
-	gqsort.c	\
-	gstr.c       	\
-	gslist.c     	\
-	gstring.c    	\
-	gptrarray.c     \
-	glist.c		\
-	gqueue.c	\
-	gpath.c		\
-	gshell.c	\
-	gspawn.c	\
-	gfile.c		\
-	gfile-posix.c	\
-	gpattern.c	\
-	gmarkup.c	\
-	gutf8.c		\
-	gunicode.c	\
-	unicode-data.h	\
-	$(os_files)
-
-eglibdir = $(datadir)/mono-$(API_VER)/mono/eglib
-eglib_DATA = eglib-config.h
-libeglib_la_CFLAGS = -g -Wall -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE
-AM_CPPFLAGS = -I$(srcdir)
-@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@libeglib_la_LIBADD = -lm $(LTLIBICONV)
-@HOST_ANDROID_FALSE@@HOST_WIN32_TRUE@libeglib_la_LIBADD = -lm -lpsapi $(LTLIBICONV)
-@HOST_ANDROID_TRUE@libeglib_la_LIBADD = -lm -llog
-MAINTAINERCLEANFILES = Makefile.in
-EXTRA_DIST = eglib-config.h.in $(win_files) $(unix_files)
+@ENABLE_MSVC_ONLY_FALSE@eglibdir = $(datadir)/mono-$(API_VER)/mono/eglib
+@ENABLE_MSVC_ONLY_FALSE@eglib_DATA = eglib-config.h
+@ENABLE_MSVC_ONLY_FALSE@libeglib_la_CFLAGS = -g -Wall -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE
+@ENABLE_MSVC_ONLY_FALSE@AM_CPPFLAGS = -I$(srcdir)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@libeglib_la_LIBADD = -lm $(LTLIBICONV)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_FALSE@@HOST_WIN32_TRUE@libeglib_la_LIBADD = -lm -lpsapi $(LTLIBICONV)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_TRUE@libeglib_la_LIBADD = -lm -llog
+@ENABLE_MSVC_ONLY_FALSE@MAINTAINERCLEANFILES = Makefile.in
+@ENABLE_MSVC_ONLY_FALSE@EXTRA_DIST = eglib-config.h.in $(win_files) $(unix_files)
 all: all-recursive
 
 .SUFFIXES:
@@ -661,7 +681,7 @@ clean-noinstLTLIBRARIES:
 	}
 
 libeglib.la: $(libeglib_la_OBJECTS) $(libeglib_la_DEPENDENCIES) $(EXTRA_libeglib_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libeglib_la_LINK)  $(libeglib_la_OBJECTS) $(libeglib_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libeglib_la_LINK) $(am_libeglib_la_rpath) $(libeglib_la_OBJECTS) $(libeglib_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -707,25 +727,22 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_la-gutf8.Plo@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
-@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
-@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
-@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
-@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
@@ -1167,7 +1184,8 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-recursive
-all-am: Makefile $(LTLIBRARIES) $(DATA)
+@ENABLE_MSVC_ONLY_FALSE@all-local:
+all-am: Makefile $(LTLIBRARIES) $(DATA) all-local
 installdirs: installdirs-recursive
 installdirs-am:
 	for dir in "$(DESTDIR)$(eglibdir)"; do \
@@ -1204,10 +1222,11 @@ maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+@ENABLE_MSVC_ONLY_FALSE@clean-local:
 clean: clean-recursive
 
-clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
-	mostlyclean-am
+clean-am: clean-generic clean-libtool clean-local \
+	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -rf ./$(DEPDIR)
@@ -1285,8 +1304,8 @@ uninstall-am: uninstall-eglibDATA
 
 .MAKE: $(am__recursive_targets) install-am install-strip
 
-.PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am check \
-	check-am clean clean-generic clean-libtool \
+.PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am all-local \
+	check check-am clean clean-generic clean-libtool clean-local \
 	clean-noinstLTLIBRARIES cscopelist-am ctags ctags-am distclean \
 	distclean-compile distclean-generic distclean-libtool \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
@@ -1303,6 +1322,14 @@ uninstall-am: uninstall-eglibDATA
 
 .PRECIOUS: Makefile
 
+
+@ENABLE_MSVC_ONLY_TRUE@all-local:
+
+@ENABLE_MSVC_ONLY_TRUE@	make -C $(top_srcdir)/msvc eglib
+
+@ENABLE_MSVC_ONLY_TRUE@clean-local:
+
+@ENABLE_MSVC_ONLY_TRUE@	make -C $(top_srcdir)/msvc clean-eglib
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

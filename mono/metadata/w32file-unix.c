@@ -3338,7 +3338,7 @@ retry:
 
 	/* stat next match */
 
-	filename = g_build_filename (findhandle->dir_part, findhandle->namelist[findhandle->count ++], NULL);
+	filename = g_build_filename (findhandle->dir_part, findhandle->namelist[findhandle->count ++], (const char*)NULL);
 
 	result = _wapi_stat (filename, &buf);
 	if (result == -1 && errno == ENOENT) {
@@ -4726,6 +4726,7 @@ GetDriveTypeFromPath (const gchar *utf8_root_path_name)
 }
 #endif
 
+#ifndef ENABLE_NETCORE
 guint32
 ves_icall_System_IO_DriveInfo_GetDriveType (const gunichar2 *root_path_name, gint32 root_path_name_length, MonoError *error)
 {
@@ -4757,6 +4758,7 @@ ves_icall_System_IO_DriveInfo_GetDriveType (const gunichar2 *root_path_name, gin
 
 	return (drive_type);
 }
+#endif
 
 #if defined (HOST_DARWIN) || defined (__linux__) || defined(HOST_BSD) || defined(__FreeBSD_kernel__) || defined(__HAIKU__) || defined(_AIX)
 static gchar*
