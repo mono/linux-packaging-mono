@@ -54,6 +54,7 @@
  mono_inst_name@Base 5.14.0.87
  mono_is_power_of_two@Base 5.14.0.87
  mono_ji_type_to_string@Base 5.14.0.87
+ mono_jit_compile_method@Base 6.8.0.73
  mono_llvm_check_method_supported@Base 5.14.0.87
  mono_llvm_cleanup@Base 5.14.0.87
  mono_llvm_create_aot_module@Base 5.14.0.87
