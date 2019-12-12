@@ -4,7 +4,7 @@
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-AC_INIT(mono, [6.11.0.49],
+AC_INIT(mono, [6.11.0.65],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([Makefile.am])
@@ -63,7 +63,7 @@ MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-MONO_CORLIB_VERSION=97b07b51-46d8-4084-b48e-77aa5c192654
+MONO_CORLIB_VERSION=3bf09a16-d684-401b-ae3c-2015596b0194
 
 #
 # Put a quoted #define in config.h.
@@ -5152,8 +5152,12 @@ AC_SEARCH_LIBS(dlopen, dl)
 #
 export_link_flags=--export-dynamic
 case $host_os in
-	mingw*|cygwin*)
+mingw*|cygwin*)
 	export_link_flags=--export-all-symbols
+	;;
+*-*-darwin*)
+	export_link_flags=--export_dynamic
+	;;
 esac
 AX_APPEND_LINK_FLAGS([-Wl,$export_link_flags -Wl,-Bsymbolic -bsymbolic -Wl,-z,now -Wl,-bind_at_load])
 
