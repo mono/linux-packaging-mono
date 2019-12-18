@@ -1,3 +1,9 @@
+mono (6.8.0.78-0xamarin2) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Wed, 18 Dec 2019 08:55:42 +0000
+
 mono (6.8.0.78-0xamarin1) preview; urgency=medium
 
   * New release - mono-6.8.0.78.tar.xz
