@@ -90,6 +90,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__append_1 = -D_FORTIFY_SOURCE=2
 subdir = mono/eglib
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -625,7 +626,8 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 
 @ENABLE_MSVC_ONLY_FALSE@eglibdir = $(datadir)/mono-$(API_VER)/mono/eglib
 @ENABLE_MSVC_ONLY_FALSE@eglib_DATA = eglib-config.h
-@ENABLE_MSVC_ONLY_FALSE@libeglib_la_CFLAGS = -g -Wall -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE
+@ENABLE_MSVC_ONLY_FALSE@libeglib_la_CFLAGS = -g -Wall -D_GNU_SOURCE \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__append_1)
 @ENABLE_MSVC_ONLY_FALSE@AM_CPPFLAGS = -I$(srcdir)
 @ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@libeglib_la_LIBADD = -lm $(LTLIBICONV)
 @ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_FALSE@@HOST_WIN32_TRUE@libeglib_la_LIBADD = -lm -lpsapi $(LTLIBICONV)
