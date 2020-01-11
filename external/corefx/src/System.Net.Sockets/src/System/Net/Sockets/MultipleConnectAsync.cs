@@ -187,6 +187,15 @@ namespace System.Net.Sockets
 
                         // Keep track of this because it will be overwritten by AttemptConnection
                         SocketError currentFailure = args.SocketError;
+#if MONO
+                        // Make sure we're always resetting the Mono-specific `in_progress` field when
+                        // re-attempting a connection.
+                        // If a previous connection failed asynchronously, then it will already have been
+                        // resetted, but not on synchronous connection failures (such as for instance, the
+                        // host not supporting IPv6 or the network being down).
+                        // This should fix https://github.com/mono/mono/issues/18030.
+                        args.in_progress = 0;
+#endif
                         Exception connectException = AttemptConnection();
 
                         if (connectException == null)
