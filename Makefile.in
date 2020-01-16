@@ -358,6 +358,7 @@ MONO_NATIVE_UNIFIED_CFLAGS = @MONO_NATIVE_UNIFIED_CFLAGS@
 MONO_NATIVE_UNIFIED_CPPFLAGS = @MONO_NATIVE_UNIFIED_CPPFLAGS@
 MONO_NATIVE_UNIFIED_CXXFLAGS = @MONO_NATIVE_UNIFIED_CXXFLAGS@
 MONO_NATIVE_UNIFIED_LDFLAGS = @MONO_NATIVE_UNIFIED_LDFLAGS@
+MONO_NOINST_SUBDIRS = @MONO_NOINST_SUBDIRS@
 MONO_SUBDIRS = @MONO_SUBDIRS@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
@@ -492,6 +493,7 @@ top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I m4
 AM_CFLAGS = $(WERROR_CFLAGS)
 SUBDIRS = @MONO_SUBDIRS@
+noinst_SUBDIRS = @MONO_NOINST_SUBDIRS@
 DIST_SUBDIRS = $(SUBDIRS) m4 netcore netcore/corerun
 @ENABLE_NETCORE_FALSE@EXTRA_DIST = \
 @ENABLE_NETCORE_FALSE@	README.md 		\
@@ -882,7 +884,7 @@ check: check-recursive
 all-am: Makefile $(DATA) config.h
 installdirs: installdirs-recursive
 installdirs-am:
-install: install-recursive
+@ENABLE_NETCORE_TRUE@install: install-recursive
 install-exec: install-exec-recursive
 install-data: install-data-recursive
 uninstall: uninstall-recursive
@@ -1071,6 +1073,11 @@ uninstall-am:
 @ENABLE_NETCORE_FALSE@.PHONY: bootstrap-world
 @ENABLE_NETCORE_FALSE@bootstrap-world: compiler-tests
 @ENABLE_NETCORE_FALSE@	$(MAKE) install
+
+@ENABLE_NETCORE_FALSE@install:
+@ENABLE_NETCORE_FALSE@	for mydir in $(filter-out $(noinst_SUBDIRS),$(SUBDIRS)); do \
+@ENABLE_NETCORE_FALSE@	  (cd $${mydir} && ${MAKE} install) \
+@ENABLE_NETCORE_FALSE@	done
 
 @ENABLE_NETCORE_FALSE@update-csproj:
 @ENABLE_NETCORE_FALSE@	-rm msvc/scripts/order 
