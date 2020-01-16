@@ -334,7 +334,9 @@ typedef gpointer MonoRuntimeGenericContext;
 
 typedef enum {
 	/* array or string */
-	MONO_VT_FLAG_ARRAY_OR_STRING = (1 << 0)
+	MONO_VT_FLAG_ARRAY_OR_STRING = (1 << 0),
+	MONO_VT_FLAG_HAS_REFERENCES = (1 << 1),
+	MONO_VT_FLAG_ARRAY_IS_PRIMITIVE = (1 << 2),
 } MonoVTableFlags;
 
 /* the interface_offsets array is stored in memory before this struct */
@@ -799,8 +801,8 @@ mono_class_is_open_constructed_type (MonoType *t);
 void
 mono_class_get_overrides_full (MonoImage *image, guint32 type_token, MonoMethod ***overrides, gint32 *num_overrides, MonoGenericContext *generic_context, MonoError *error);
 
-MonoMethod*
-mono_class_get_cctor (MonoClass *klass) MONO_LLVM_INTERNAL;
+MONO_LLVM_INTERNAL MonoMethod*
+mono_class_get_cctor (MonoClass *klass);
 
 MonoMethod*
 mono_class_get_finalizer (MonoClass *klass);
@@ -926,6 +928,7 @@ mono_generic_param_get_base_type (MonoClass *klass);
 typedef struct {
 	MonoImage *corlib;
 	MonoClass *object_class;
+	MonoClass *object_class_array; // used via token pasting in mono_array_class_get_cached
 	MonoClass *byte_class;
 	MonoClass *void_class;
 	MonoClass *boolean_class;
@@ -952,6 +955,7 @@ typedef struct {
 	MonoClass *methodhandle_class;
 	MonoClass *systemtype_class;
 	MonoClass *runtimetype_class;
+	MonoClass *runtimetype_class_array; // used via token pasting in mono_array_class_get_cached
 	MonoClass *exception_class;
 	MonoClass *threadabortexception_class;
 	MonoClass *thread_class;
@@ -974,10 +978,13 @@ typedef struct {
 	MonoClass *generic_ilist_class;
 	MonoClass *generic_nullable_class;
 	MonoClass *attribute_class;
+	MonoClass *attribute_class_array; // used via token pasting in mono_array_class_get_cached
 	MonoClass *critical_finalizer_object; /* MAYBE NULL */
 	MonoClass *generic_ireadonlylist_class;
 	MonoClass *generic_ienumerator_class;
+#ifndef ENABLE_NETCORE
 	MonoMethod *threadpool_perform_wait_callback_method;
+#endif
 } MonoDefaults;
 
 #ifdef DISABLE_REMOTING
@@ -1052,6 +1059,7 @@ GENERATE_TRY_GET_CLASS_WITH_CACHE_DECL(handleref)
 
 #ifdef ENABLE_NETCORE
 GENERATE_GET_CLASS_WITH_CACHE_DECL (assembly_load_context)
+GENERATE_GET_CLASS_WITH_CACHE_DECL (native_library)
 #endif
 
 /* If you need a MonoType, use one of the mono_get_*_type () functions in class-inlines.h */
@@ -1063,11 +1071,11 @@ mono_loader_init           (void);
 void
 mono_loader_cleanup        (void);
 
-void
-mono_loader_lock           (void) MONO_LLVM_INTERNAL;
+MONO_LLVM_INTERNAL void
+mono_loader_lock           (void);
 
-void
-mono_loader_unlock         (void) MONO_LLVM_INTERNAL;
+MONO_LLVM_INTERNAL void
+mono_loader_unlock         (void);
 
 void
 mono_loader_lock_track_ownership (gboolean track);
@@ -1127,6 +1135,9 @@ mono_class_set_type_load_failure (MonoClass *klass, const char * fmt, ...) MONO_
 
 MonoException*
 mono_class_get_exception_for_failure (MonoClass *klass);
+
+char*
+mono_identifier_escape_type_name_chars (const char* identifier);
 
 char*
 mono_type_get_name_full (MonoType *type, MonoTypeNameFormat format);
@@ -1309,8 +1320,8 @@ mono_get_image_for_generic_param (MonoGenericParam *param);
 char *
 mono_make_generic_name_string (MonoImage *image, int num);
 
-MonoClass *
-mono_class_load_from_name (MonoImage *image, const char* name_space, const char *name) MONO_LLVM_INTERNAL;
+MONO_LLVM_INTERNAL MonoClass *
+mono_class_load_from_name (MonoImage *image, const char* name_space, const char *name);
 
 MonoClass*
 mono_class_try_load_from_name (MonoImage *image, const char* name_space, const char *name);
@@ -1322,8 +1333,8 @@ gboolean
 mono_class_has_failure (const MonoClass *klass);
 
 /* Kind specific accessors */
-MonoGenericClass*
-mono_class_get_generic_class (MonoClass *klass) MONO_LLVM_INTERNAL;
+MONO_LLVM_INTERNAL MonoGenericClass*
+mono_class_get_generic_class (MonoClass *klass);
 
 MonoGenericClass*
 mono_class_try_get_generic_class (MonoClass *klass);
@@ -1487,8 +1498,14 @@ mono_class_contextbound_bit_offset (int* byte_offset_out, guint8* mask_out);
 gboolean
 mono_class_init_checked (MonoClass *klass, MonoError *error);
 
-MonoType*
-mono_class_enum_basetype_internal (MonoClass *klass) MONO_LLVM_INTERNAL;
+MONO_LLVM_INTERNAL MonoType*
+mono_class_enum_basetype_internal (MonoClass *klass);
+
+gboolean
+mono_method_is_constructor (MonoMethod *method);
+
+gboolean
+mono_class_has_default_constructor (MonoClass *klass, gboolean public_only);
 
 // Enum and static storage for JIT icalls.
 #include "jit-icall-reg.h"

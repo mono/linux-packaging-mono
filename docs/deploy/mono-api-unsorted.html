@@ -306,7 +306,7 @@ mono_dllmap_insert (MonoImage *assembly, const char *dll, const char *func, cons
             <table class="mapi-parameters"><tbody><tr><td><i>assembly</i></td><td> if <code>NULL</code>, this is a global mapping, otherwise the remapping of the dynamic library will only apply to the specified assembly</td></tr><tr><td><i>dll</i></td><td> The name of the external library, as it would be found in the <code>DllImport</code> declaration.  If prefixed with <code>i:</code> the matching of the library name is done without case sensitivity</td></tr><tr><td><i>func</i></td><td> if not null, the mapping will only applied to the named function (the value of <code>EntryPoint</code>)</td></tr><tr><td><i>tdll</i></td><td> The name of the library to map the specified <i>dll</i> if it matches.</td></tr><tr><td><i>tfunc</i></td><td> The name of the function that replaces the invocation.  If <code>NULL</code>, it is replaced with a copy of <i>func</i>.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
              <div>
 <p />
- LOCKING: Acquires the loader lock.
+ LOCKING: Acquires the image lock, or the loader data lock if an image is not passed.
 <p />
  This function is used to programatically add <code>DllImport</code> remapping in either
  a specific assembly, or as a global remapping.   This is done by remapping

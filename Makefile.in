@@ -99,7 +99,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
 	$(top_srcdir)/m4/ax_require_defined.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/m4/mono-output.m4 $(top_srcdir)/m4/nls.m4 \
 	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
 	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -357,6 +358,7 @@ MONO_NATIVE_UNIFIED_CFLAGS = @MONO_NATIVE_UNIFIED_CFLAGS@
 MONO_NATIVE_UNIFIED_CPPFLAGS = @MONO_NATIVE_UNIFIED_CPPFLAGS@
 MONO_NATIVE_UNIFIED_CXXFLAGS = @MONO_NATIVE_UNIFIED_CXXFLAGS@
 MONO_NATIVE_UNIFIED_LDFLAGS = @MONO_NATIVE_UNIFIED_LDFLAGS@
+MONO_SUBDIRS = @MONO_SUBDIRS@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -434,7 +436,6 @@ builddir = @builddir@
 datadir = @datadir@
 datarootdir = @datarootdir@
 docdir = @docdir@
-docs_dir = @docs_dir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 export_ldflags = @export_ldflags@
@@ -445,13 +446,11 @@ host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
 htmldir = @htmldir@
-ikvm_native_dir = @ikvm_native_dir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
-libgc_dir = @libgc_dir@
 libgdiplus_install_loc = @libgdiplus_install_loc@
 libgdiplus_loc = @libgdiplus_loc@
 libmono_cflags = @libmono_cflags@
@@ -492,41 +491,27 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I m4
 AM_CFLAGS = $(WERROR_CFLAGS)
-MONOTOUCH_SUBDIRS = $(libgc_dir) mono
-@CROSS_COMPILING_FALSE@tools_dir = tools
+SUBDIRS = @MONO_SUBDIRS@
+DIST_SUBDIRS = $(SUBDIRS) m4 netcore netcore/corerun
+@ENABLE_NETCORE_FALSE@EXTRA_DIST = \
+@ENABLE_NETCORE_FALSE@	README.md 		\
+@ENABLE_NETCORE_FALSE@	LICENSE 		\
+@ENABLE_NETCORE_FALSE@	autogen.sh 		\
+@ENABLE_NETCORE_FALSE@	mkinstalldirs 		\
+@ENABLE_NETCORE_FALSE@	mono-uninstalled.pc.in 	\
+@ENABLE_NETCORE_FALSE@	winconfig.h 		\
+@ENABLE_NETCORE_FALSE@	code_of_conduct.md 	\
+@ENABLE_NETCORE_FALSE@	external		\
+@ENABLE_NETCORE_FALSE@	netcore/Makefile	\
+@ENABLE_NETCORE_FALSE@	mcs/class/referencesource
 
-# Some tools might not build when cross-compiling
-@CROSS_COMPILING_TRUE@tools_dir = 
-@ENABLE_MSVC_FALSE@build_with_msvc = 
-@ENABLE_MSVC_TRUE@build_with_msvc = msvc
-@ENABLE_MSVC_FALSE@build_without_msvc = msvc
-@ENABLE_MSVC_TRUE@build_without_msvc = 
-@ENABLE_NETCORE_FALSE@update_submodules = update_submodules
-@ENABLE_NETCORE_TRUE@update_submodules = 
-@ENABLE_NETCORE_FALSE@SUBDIRS = $(build_with_msvc) mk po $(libgc_dir) llvm mono $(ikvm_native_dir) support data runtime scripts man samples $(tools_dir) $(build_without_msvc) $(docs_dir) acceptance-tests
-@ENABLE_NETCORE_TRUE@SUBDIRS = mk llvm mono runtime netcore netcore/corerun
-
-# Keep in sync with SUBDIRS
-DIST_SUBDIRS = $(build_with_msvc) m4 mk po $(libgc_dir) llvm mono ikvm-native support data runtime scripts man samples tools $(build_without_msvc) docs acceptance-tests netcore netcore/corerun
-EXTRA_DIST = \
-	README.md 		\
-	LICENSE 		\
-	autogen.sh 		\
-	mkinstalldirs 		\
-	mono-uninstalled.pc.in 	\
-	winconfig.h 		\
-	code_of_conduct.md 	\
-	external		\
-	netcore/Makefile	\
-	mcs/class/referencesource
-
-DISTCHECK_CONFIGURE_FLAGS = EXTERNAL_RUNTIME=false
-pkgconfigdir = $(libdir)/pkgconfig
-noinst_DATA = mono-uninstalled.pc
-DISTCLEANFILES = mono-uninstalled.pc
-@BITCODE_TRUE@BITCODE_CHECK = yes
-@DEFAULT_TESTS_FALSE@CI_TEST_SCRIPT = $(srcdir)/scripts/ci/run-test-$(TEST_PROFILE).sh
-@DEFAULT_TESTS_TRUE@CI_TEST_SCRIPT = $(srcdir)/scripts/ci/run-test-default.sh
+@ENABLE_NETCORE_FALSE@DISTCHECK_CONFIGURE_FLAGS = EXTERNAL_RUNTIME=false
+@ENABLE_NETCORE_FALSE@pkgconfigdir = $(libdir)/pkgconfig
+@ENABLE_NETCORE_FALSE@noinst_DATA = mono-uninstalled.pc
+@ENABLE_NETCORE_FALSE@DISTCLEANFILES = mono-uninstalled.pc
+@BITCODE_TRUE@@ENABLE_NETCORE_FALSE@BITCODE_CHECK = yes
+@DEFAULT_TESTS_FALSE@@ENABLE_NETCORE_FALSE@CI_TEST_SCRIPT = $(srcdir)/scripts/ci/run-test-$(TEST_PROFILE).sh
+@DEFAULT_TESTS_TRUE@@ENABLE_NETCORE_FALSE@CI_TEST_SCRIPT = $(srcdir)/scripts/ci/run-test-default.sh
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -700,6 +685,7 @@ cscopelist-am: $(am__tagged_files)
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 	-rm -f cscope.out cscope.in.out cscope.po.out cscope.files
+@ENABLE_NETCORE_TRUE@dist-hook:
 
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
@@ -1028,124 +1014,105 @@ uninstall-am:
 .PRECIOUS: Makefile
 
 
-all: $(update_submodules)
+@ENABLE_NETCORE_FALSE@all: $(update_submodules)
 
-update_submodules:
-	@cd $(srcdir) && scripts/update_submodules.sh
+@ENABLE_NETCORE_FALSE@update_submodules:
+@ENABLE_NETCORE_FALSE@	@cd $(srcdir) && scripts/update_submodules.sh
 
-.PHONY: update_submodules
+@ENABLE_NETCORE_FALSE@.PHONY: update_submodules
 
 # Distribute the 'mcs' tree too
-GIT_DIR ?= $(srcdir)/.git
-dist-hook:
-	test -d $(distdir)/mcs || mkdir $(distdir)/mcs
-	d=`cd $(distdir)/mcs && pwd`; cd $(mcs_topdir) && $(MAKE) distdir=$$d dist-recursive
-	rm -rf `find $(top_distdir)/external -path '*\.git'`
-	rm -rf `find $(top_distdir)/external -path '*\.libs'`
-	rm -rf `find $(top_distdir)/external -path '*\.deps'`
-	rm -f `find $(top_distdir)/external -path '*\.o'`
-	rm -f `find $(top_distdir)/external -path '*\.so'`
-	rm -f `find $(top_distdir)/external -path '*\.lo'`
-	rm -f `find $(top_distdir)/external -path '*\.Plo'`
-	rm -f `find $(top_distdir)/external -name '\.dirstamp'`
-	rm -f `find $(top_distdir)/external -path '*\.exe' -not -path '*/roslyn-binaries/*'`
-	rm -f `find $(top_distdir)/external -path '*\.dll' -not -path '*/binary-reference-assemblies/*' -not -path '*/roslyn-binaries/*' -not -path '*/helix-binaries/*'`
-	rm -rf "$(top_distdir)/external/linker/test"
+@ENABLE_NETCORE_FALSE@GIT_DIR ?= $(srcdir)/.git
+@ENABLE_NETCORE_FALSE@dist-hook:
+@ENABLE_NETCORE_FALSE@	test -d $(distdir)/mcs || mkdir $(distdir)/mcs
+@ENABLE_NETCORE_FALSE@	d=`cd $(distdir)/mcs && pwd`; cd $(mcs_topdir) && $(MAKE) distdir=$$d dist-recursive
+@ENABLE_NETCORE_FALSE@	rm -rf `find $(top_distdir)/external -path '*\.git'`
+@ENABLE_NETCORE_FALSE@	rm -rf `find $(top_distdir)/external -path '*\.libs'`
+@ENABLE_NETCORE_FALSE@	rm -rf `find $(top_distdir)/external -path '*\.deps'`
+@ENABLE_NETCORE_FALSE@	rm -f `find $(top_distdir)/external -path '*\.o'`
+@ENABLE_NETCORE_FALSE@	rm -f `find $(top_distdir)/external -path '*\.so'`
+@ENABLE_NETCORE_FALSE@	rm -f `find $(top_distdir)/external -path '*\.lo'`
+@ENABLE_NETCORE_FALSE@	rm -f `find $(top_distdir)/external -path '*\.Plo'`
+@ENABLE_NETCORE_FALSE@	rm -f `find $(top_distdir)/external -name '\.dirstamp'`
+@ENABLE_NETCORE_FALSE@	rm -f `find $(top_distdir)/external -path '*\.exe' -not -path '*/roslyn-binaries/*'`
+@ENABLE_NETCORE_FALSE@	rm -f `find $(top_distdir)/external -path '*\.dll' -not -path '*/binary-reference-assemblies/*' -not -path '*/roslyn-binaries/*' -not -path '*/helix-binaries/*'`
+@ENABLE_NETCORE_FALSE@	rm -rf "$(top_distdir)/external/linker/test"
+@ENABLE_NETCORE_FALSE@	rm -rf "$(top_distdir)/external/llvm-project/lldb/test"
+@ENABLE_NETCORE_FALSE@	rm -rf "$(top_distdir)/external/llvm-project/libcxx/test"
+@ENABLE_NETCORE_FALSE@	rm -rf "$(top_distdir)/external/llvm-project/clang/test"
 
 # building with monolite
-.PHONY: get-monolite-latest 
-get-monolite-latest:
-	$(MAKE) -C $(mcs_topdir)/class get-monolite-latest
+@ENABLE_NETCORE_FALSE@.PHONY: get-monolite-latest 
+@ENABLE_NETCORE_FALSE@get-monolite-latest:
+@ENABLE_NETCORE_FALSE@	$(MAKE) -C $(mcs_topdir)/class get-monolite-latest
 
-.PHONY: check-ci
-check-ci:
-	MONO_LLVMONLY=$(BITCODE_CHECK) $(CI_TEST_SCRIPT)
+@ENABLE_NETCORE_FALSE@.PHONY: check-ci
+@ENABLE_NETCORE_FALSE@check-ci:
+@ENABLE_NETCORE_FALSE@	MONO_LLVMONLY=$(BITCODE_CHECK) $(CI_TEST_SCRIPT)
 
-.PHONY: validate do-build-mono-mcs mcs-do-clean mcs-do-tests
-validate: do-build-mono-mcs
-	$(MAKE) mcs-do-tests
-do-build-mono-mcs: mcs-do-clean
-	$(MAKE) all
-mcs-do-clean:
-	cd runtime && $(MAKE) clean-local
-	cd mono/tests && $(MAKE) clean
-mcs-do-tests:
-	cd runtime && $(MAKE) check-local
-	cd mono/tests && $(MAKE) check
+@ENABLE_NETCORE_FALSE@.PHONY: validate do-build-mono-mcs mcs-do-clean mcs-do-tests
+@ENABLE_NETCORE_FALSE@validate: do-build-mono-mcs
+@ENABLE_NETCORE_FALSE@	$(MAKE) mcs-do-tests
+@ENABLE_NETCORE_FALSE@do-build-mono-mcs: mcs-do-clean
+@ENABLE_NETCORE_FALSE@	$(MAKE) all
+@ENABLE_NETCORE_FALSE@mcs-do-clean:
+@ENABLE_NETCORE_FALSE@	cd runtime && $(MAKE) clean-local
+@ENABLE_NETCORE_FALSE@	cd mono/tests && $(MAKE) clean
+@ENABLE_NETCORE_FALSE@mcs-do-tests:
+@ENABLE_NETCORE_FALSE@	cd runtime && $(MAKE) check-local
+@ENABLE_NETCORE_FALSE@	cd mono/tests && $(MAKE) check
 
-.PHONY: compiler-tests mcs-do-compiler-tests
-compiler-tests:
-	$(MAKE) test_select='TEST_SUBDIRS="tests errors"' validate
-mcs-do-compiler-tests:
-	$(MAKE) test_select='TEST_SUBDIRS="tests errors"' mcs-do-tests
+@ENABLE_NETCORE_FALSE@.PHONY: compiler-tests mcs-do-compiler-tests
+@ENABLE_NETCORE_FALSE@compiler-tests:
+@ENABLE_NETCORE_FALSE@	$(MAKE) test_select='TEST_SUBDIRS="tests errors"' validate
+@ENABLE_NETCORE_FALSE@mcs-do-compiler-tests:
+@ENABLE_NETCORE_FALSE@	$(MAKE) test_select='TEST_SUBDIRS="tests errors"' mcs-do-tests
 
-.PHONY: bootstrap-world
-bootstrap-world: compiler-tests
-	$(MAKE) install
+@ENABLE_NETCORE_FALSE@.PHONY: bootstrap-world
+@ENABLE_NETCORE_FALSE@bootstrap-world: compiler-tests
+@ENABLE_NETCORE_FALSE@	$(MAKE) install
 
-@INSTALL_MONOTOUCH_TRUE@monotouch-do-build: config.h
-@INSTALL_MONOTOUCH_TRUE@	@list='$(MONOTOUCH_SUBDIRS)'; for subdir in $$list; do \
-@INSTALL_MONOTOUCH_TRUE@	  case "x$$subdir" in \
-@INSTALL_MONOTOUCH_TRUE@		xmono ) target="monotouch-do-build";; \
-@INSTALL_MONOTOUCH_TRUE@		* ) target="all";; \
-@INSTALL_MONOTOUCH_TRUE@	  esac; \
-@INSTALL_MONOTOUCH_TRUE@	  echo "Making $$target in $$subdir"; \
-@INSTALL_MONOTOUCH_TRUE@	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$target); \
-@INSTALL_MONOTOUCH_TRUE@        done;
-@INSTALL_MONOTOUCH_TRUE@	(cd runtime && $(MAKE) $(AM_MAKEFLAGS) monotouch-do-build)
+@ENABLE_NETCORE_FALSE@update-csproj:
+@ENABLE_NETCORE_FALSE@	-rm msvc/scripts/order 
+@ENABLE_NETCORE_FALSE@	-rm msvc/scripts/order.xml
+@ENABLE_NETCORE_FALSE@	-rm -rf msvc/scripts/inputs
+@ENABLE_NETCORE_FALSE@	-mkdir msvc/scripts/inputs
+@ENABLE_NETCORE_FALSE@	(cd runtime; $(MAKE) V=1 extra_targets=csproj-local)
 
-@INSTALL_MONOTOUCH_TRUE@monotouch-do-clean:
-@INSTALL_MONOTOUCH_TRUE@	@list='$(MONOTOUCH_SUBDIRS)'; for subdir in $$list; do \
-@INSTALL_MONOTOUCH_TRUE@	  case "x$$subdir" in \
-@INSTALL_MONOTOUCH_TRUE@		xmono ) target="monotouch-do-clean";; \
-@INSTALL_MONOTOUCH_TRUE@		* ) target="clean";; \
-@INSTALL_MONOTOUCH_TRUE@	  esac; \
-@INSTALL_MONOTOUCH_TRUE@	  echo "Making $$target in $$subdir"; \
-@INSTALL_MONOTOUCH_TRUE@	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$target); \
-@INSTALL_MONOTOUCH_TRUE@        done;
-@INSTALL_MONOTOUCH_TRUE@	(cd runtime && $(MAKE) $(AM_MAKEFLAGS) monotouch-do-clean)
-
-update-csproj:
-	-rm msvc/scripts/order 
-	-rm msvc/scripts/order.xml
-	-rm -rf msvc/scripts/inputs
-	-mkdir msvc/scripts/inputs
-	(cd runtime; $(MAKE) V=1 extra_targets=csproj-local)
-
-package-inputs:
-	echo '<?xml version="1.0" encoding="utf-8"?>' > msvc/scripts/order.xml
-	echo '<root>' >> msvc/scripts/order.xml
-	for i in `cat msvc/scripts/order`; do \
-		set `echo $$i | sed -e 's/:/ /' -e 's/.input//'`; \
-		cat msvc/scripts/inputs/$$2.input | sed -e 's/\\\\/\\/g' -e 's/\\/\\\\/g' | \
-		(echo "    <project dir=\"$$1\" library=\"$$2\">"; \
-		 read boot;   echo "      <boot>$$boot</boot>"; \
-		 read flags;  echo "      <flags>$$flags</flags>"; \
-		 read sources;echo "      <sources>$$sources</sources>"; \
-		 read output; echo "      <output>$$output</output>"; \
-		 read built;  echo "      <built_sources>`echo $$built | sed 's/\\\/\\\\/g'`</built_sources>"; \
-		 read libou;  echo "      <library_output>$$libou</library_output>"; \
-		 read fx_ver; echo "      <fx_version>$$fx_ver</fx_version>"; \
-		 read profile; echo "      <profile>$$profile</profile>"; \
-		 read resxt;  echo "      <resources>$$resxt</resources>"; \
-		 read resp;   echo "      <response>$$resp</response>"; \
-		 echo "    </project>") >> msvc/scripts/order.xml; \
-	done
-	echo "</root>" >> msvc/scripts/order.xml
+@ENABLE_NETCORE_FALSE@package-inputs:
+@ENABLE_NETCORE_FALSE@	echo '<?xml version="1.0" encoding="utf-8"?>' > msvc/scripts/order.xml
+@ENABLE_NETCORE_FALSE@	echo '<root>' >> msvc/scripts/order.xml
+@ENABLE_NETCORE_FALSE@	for i in `cat msvc/scripts/order`; do \
+@ENABLE_NETCORE_FALSE@		set `echo $$i | sed -e 's/:/ /' -e 's/.input//'`; \
+@ENABLE_NETCORE_FALSE@		cat msvc/scripts/inputs/$$2.input | sed -e 's/\\\\/\\/g' -e 's/\\/\\\\/g' | \
+@ENABLE_NETCORE_FALSE@		(echo "    <project dir=\"$$1\" library=\"$$2\">"; \
+@ENABLE_NETCORE_FALSE@		 read boot;   echo "      <boot>$$boot</boot>"; \
+@ENABLE_NETCORE_FALSE@		 read flags;  echo "      <flags>$$flags</flags>"; \
+@ENABLE_NETCORE_FALSE@		 read sources;echo "      <sources>$$sources</sources>"; \
+@ENABLE_NETCORE_FALSE@		 read output; echo "      <output>$$output</output>"; \
+@ENABLE_NETCORE_FALSE@		 read built;  echo "      <built_sources>`echo $$built | sed 's/\\\/\\\\/g'`</built_sources>"; \
+@ENABLE_NETCORE_FALSE@		 read libou;  echo "      <library_output>$$libou</library_output>"; \
+@ENABLE_NETCORE_FALSE@		 read fx_ver; echo "      <fx_version>$$fx_ver</fx_version>"; \
+@ENABLE_NETCORE_FALSE@		 read profile; echo "      <profile>$$profile</profile>"; \
+@ENABLE_NETCORE_FALSE@		 read resxt;  echo "      <resources>$$resxt</resources>"; \
+@ENABLE_NETCORE_FALSE@		 read resp;   echo "      <response>$$resp</response>"; \
+@ENABLE_NETCORE_FALSE@		 echo "    </project>") >> msvc/scripts/order.xml; \
+@ENABLE_NETCORE_FALSE@	done
+@ENABLE_NETCORE_FALSE@	echo "</root>" >> msvc/scripts/order.xml
 
 # Update llvm version in configure.ac to the output of $LLVM_DIR/bin/llvm-config --version
-update-llvm-version:
-	if test "x$$LLVM_DIR" = "x"; then echo "Set the make variable LLVM_DIR to the directory containing the LLVM installation."; exit 1; fi
-	REV=`$(LLVM_DIR)/bin/llvm-config --version` && sed -e "s,expected_llvm_version=.*,expected_llvm_version=\"$$REV\"," < configure.ac > tmp && mv tmp configure.ac && echo "Version set to $$REV."
+@ENABLE_NETCORE_FALSE@update-llvm-version:
+@ENABLE_NETCORE_FALSE@	if test "x$$LLVM_DIR" = "x"; then echo "Set the make variable LLVM_DIR to the directory containing the LLVM installation."; exit 1; fi
+@ENABLE_NETCORE_FALSE@	REV=`$(LLVM_DIR)/bin/llvm-config --version` && sed -e "s,expected_llvm_version=.*,expected_llvm_version=\"$$REV\"," < configure.ac > tmp && mv tmp configure.ac && echo "Version set to $$REV."
 
-update-solution-files:
-	cd msvc/scripts && $(MAKE) genproj.exe || exit $$?;
-	$(MAKE) update-csproj
-	$(MAKE) package-inputs
-	(cd msvc/scripts; mono --debug genproj.exe $(GENPROJ_ARGS))
+@ENABLE_NETCORE_FALSE@update-solution-files:
+@ENABLE_NETCORE_FALSE@	cd msvc/scripts && $(MAKE) genproj.exe || exit $$?;
+@ENABLE_NETCORE_FALSE@	$(MAKE) update-csproj
+@ENABLE_NETCORE_FALSE@	$(MAKE) package-inputs
+@ENABLE_NETCORE_FALSE@	(cd msvc/scripts; mono --debug genproj.exe $(GENPROJ_ARGS))
 
-update-solution-files-with-tests:
-	$(MAKE) "GENPROJ_ARGS=2012 true true" update-solution-files
+@ENABLE_NETCORE_FALSE@update-solution-files-with-tests:
+@ENABLE_NETCORE_FALSE@	$(MAKE) "GENPROJ_ARGS=2012 true true" update-solution-files
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

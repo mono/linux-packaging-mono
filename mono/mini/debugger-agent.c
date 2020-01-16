@@ -76,6 +76,7 @@
 #include <mono/utils/networking.h>
 #include <mono/utils/mono-proclib.h>
 #include <mono/utils/w32api.h>
+#include <mono/utils/mono-logger-internals.h>
 #include "debugger-state-machine.h"
 #include "debugger-agent.h"
 #include "mini.h"
@@ -902,8 +903,6 @@ mono_debugger_set_thread_state (DebuggerTlsData *tls, MonoDebuggerThreadState ex
 	g_assert (tls->thread_state == expected);
 
 	tls->thread_state = set;
-
-	return;
 }
 
 MonoDebuggerThreadState
@@ -1892,7 +1891,7 @@ send_reply_packet (int id, int error, Buffer *data)
 {
 	ReplyPacket packet;
 
-	memset (&packet, 0, sizeof (ReplyPacket));
+	memset (&packet, 0, sizeof (packet));
 	packet.id = id;
 	packet.error = error;
 	packet.data = data;
@@ -2860,8 +2859,10 @@ suspend_vm (void)
 		tp_suspend = TRUE;
 	mono_loader_unlock ();
 
+#ifndef ENABLE_NETCORE
 	if (tp_suspend)
 		mono_threadpool_suspend ();
+#endif
 }
 
 /*
@@ -2901,8 +2902,10 @@ resume_vm (void)
 		tp_resume = TRUE;
 	mono_loader_unlock ();
 
+#ifndef ENABLE_NETCORE
 	if (tp_resume)
 		mono_threadpool_resume ();
+#endif
 }
 
 /*
@@ -4824,7 +4827,7 @@ debugger_agent_user_break (void)
 		GSList *events;
 		UserBreakCbData data;
 
-		memset (&data, 0, sizeof (UserBreakCbData));
+		memset (&data, 0, sizeof (data));
 		data.ctx = &ctx;
 
 		/* Obtain a context */
@@ -5144,7 +5147,7 @@ mono_debugger_agent_send_crash (char *json_dump, MonoStackHash *hashes, int paus
  * Called from metadata by the icall for System.Diagnostics.Debugger:Log ().
  */
 static void
-debugger_agent_debug_log (int level, MonoStringHandle category, MonoStringHandle message)
+debugger_agent_debug_log (int level, MonoString *category, MonoString *message)
 {
 	ERROR_DECL (error);
 	int suspend_policy;
@@ -5154,19 +5157,20 @@ debugger_agent_debug_log (int level, MonoStringHandle category, MonoStringHandle
 	if (!agent_config.enabled)
 		return;
 
+	memset (&ei, 0, sizeof (ei));
+
 	mono_loader_lock ();
 	events = create_event_list (EVENT_KIND_USER_LOG, NULL, NULL, NULL, &suspend_policy);
 	mono_loader_unlock ();
 
 	ei.level = level;
-	ei.category = NULL;
-	if (!MONO_HANDLE_IS_NULL (category)) {
-		ei.category = mono_string_handle_to_utf8 (category, error);
+	if (category) {
+		ei.category = mono_string_to_utf8_checked_internal (category, error);
 		mono_error_cleanup (error);
+		error_init (error);
 	}
-	ei.message = NULL;
-	if (!MONO_HANDLE_IS_NULL (message)) {
-		ei.message = mono_string_handle_to_utf8 (message, error);
+	if (message) {
+		ei.message = mono_string_to_utf8_checked_internal (message, error);
 		mono_error_cleanup  (error);
 	}
 
@@ -5193,7 +5197,7 @@ debugger_agent_unhandled_exception (MonoException *exc)
 	if (!inited)
 		return;
 
-	memset (&ei, 0, sizeof (EventInfo));
+	memset (&ei, 0, sizeof (ei));
 	ei.exc = (MonoObject*)exc;
 
 	mono_loader_lock ();
@@ -5207,6 +5211,12 @@ static void
 debugger_agent_handle_exception (MonoException *exc, MonoContext *throw_ctx,
 									  MonoContext *catch_ctx, StackFrameInfo *catch_frame)
 {
+	if (catch_ctx == NULL && catch_frame == NULL && mini_debug_options.suspend_on_unhandled && mono_object_class (exc) != mono_defaults.threadabortexception_class) {
+		mono_runtime_printf_err ("Unhandled exception, suspending...");
+		while (1)
+			;
+	}
+	
 	int i, j, suspend_policy;
 	GSList *events;
 	MonoJitInfo *ji, *catch_ji;
@@ -5226,7 +5236,7 @@ debugger_agent_handle_exception (MonoException *exc, MonoContext *throw_ctx,
 			return;
 	}
 
-	memset (&ei, 0, sizeof (EventInfo));
+	memset (&ei, 0, sizeof (ei));
 
 	/* Just-In-Time debugging */
 	if (!catch_ctx) {
@@ -6804,6 +6814,7 @@ get_types (gpointer key, gpointer value, gpointer user_data)
 	MonoType *t;
 	GSList *tmp;
 	MonoDomain *domain = (MonoDomain*)key;
+	MonoAssemblyLoadContext *alc = mono_domain_default_alc (domain);
 	GetTypesArgs *ud = (GetTypesArgs*)user_data;
 
 	mono_domain_assemblies_lock (domain);
@@ -6813,7 +6824,7 @@ get_types (gpointer key, gpointer value, gpointer user_data)
 		if (ass->image) {
 			ERROR_DECL (probe_type_error);
 			/* FIXME really okay to call while holding locks? */
-			t = mono_reflection_get_type_checked (ass->image, ass->image, ud->info, ud->ignore_case, TRUE, &type_resolve, probe_type_error);
+			t = mono_reflection_get_type_checked (alc, ass->image, ass->image, ud->info, ud->ignore_case, TRUE, &type_resolve, probe_type_error);
 			mono_error_cleanup (probe_type_error);
 			if (t) {
 				g_ptr_array_add (ud->res_classes, mono_type_get_class_internal (t));
@@ -7030,8 +7041,10 @@ vm_commands (int command, int id, guint8 *p, guint8 *end, Buffer *buf)
 			mono_environment_exitcode_set (exit_code);
 
 			/* Suspend all managed threads since the runtime is going away */
+#ifndef ENABLE_NETCORE
 			DEBUG_PRINTF (1, "Suspending all threads...\n");
 			mono_thread_suspend_all_other_threads ();
+#endif
 			DEBUG_PRINTF (1, "Shutting down the runtime...\n");
 			mono_runtime_quit_internal ();
 			transport_close2 ();
@@ -7695,6 +7708,7 @@ assembly_commands (int command, guint8 *p, guint8 *end, Buffer *buf)
 		MonoType *t;
 		gboolean type_resolve, res;
 		MonoDomain *d = mono_domain_get ();
+		MonoAssemblyLoadContext *alc = mono_domain_default_alc (d);
 
 		/* This is needed to be able to find referenced assemblies */
 		res = mono_domain_set_fast (domain, FALSE);
@@ -7706,7 +7720,7 @@ assembly_commands (int command, guint8 *p, guint8 *end, Buffer *buf)
 		} else {
 			if (info.assembly.name)
 				NOT_IMPLEMENTED;
-			t = mono_reflection_get_type_checked (ass->image, ass->image, &info, ignorecase, TRUE, &type_resolve, error);
+			t = mono_reflection_get_type_checked (alc, ass->image, ass->image, &info, ignorecase, TRUE, &type_resolve, error);
 			if (!is_ok (error)) {
 				mono_error_cleanup (error); /* FIXME don't swallow the error */
 				mono_reflection_free_type_info (&info);
@@ -10195,7 +10209,7 @@ mono_debugger_agent_init (void)
 {
 	MonoDebuggerCallbacks cbs;
 
-	memset (&cbs, 0, sizeof (MonoDebuggerCallbacks));
+	memset (&cbs, 0, sizeof (cbs));
 	cbs.version = MONO_DBG_CALLBACKS_VERSION;
 	cbs.parse_options = debugger_agent_parse_options;
 	cbs.init = debugger_agent_init;

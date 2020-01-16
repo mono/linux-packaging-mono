@@ -45,6 +45,9 @@
 /* Disable desktop assembly loader semantics. */
 #undef DISABLE_DESKTOP_LOADER
 
+/* Disables use of DllMaps in MonoVM */
+#undef DISABLE_DLLMAP
+
 /* Disable GAC */
 #undef DISABLE_GAC
 
@@ -134,6 +137,9 @@
 /* Do not create structured crash files during unmanaged crashes */
 #undef DISABLE_STRUCTURED_CRASH
 
+/* Disable Threads */
+#undef DISABLE_THREADS
+
 /* Disables the verifier */
 #undef DISABLE_VERIFIER
 
@@ -163,6 +169,9 @@
 
 /* Enable feature experiments */
 #undef ENABLE_EXPERIMENTS
+
+/* Enable experiment 'Tiered Compilation' */
+#undef ENABLE_EXPERIMENT_TIERED
 
 /* Enable experiment 'null' */
 #undef ENABLE_EXPERIMENT_null
@@ -527,6 +536,9 @@
 /* Define to 1 if you have the `getrusage' function. */
 #undef HAVE_GETRUSAGE
 
+/* Define to 1 if you have the <gnu/lib-names.h> header file. */
+#undef HAVE_GNU_LIB_NAMES_H
+
 /* char* strerror(int errnum, char *buf, size_t buflen) */
 #undef HAVE_GNU_STRERROR_R
 
@@ -712,9 +724,6 @@
 
 /* Define to 1 if you have the `mremap' function. */
 #undef HAVE_MREMAP
-
-/* Have MSG_NOSIGNAL */
-#undef HAVE_MSG_NOSIGNAL
 
 /* Define to 1 if you have the `msync' function. */
 #undef HAVE_MSYNC
@@ -1343,6 +1352,9 @@
 
 /* Define to 1 if you have the `writev' function. */
 #undef HAVE_WRITEV
+
+/* Targeting the AIX and PASE platforms */
+#undef HOST_AIX
 
 /* ... */
 #undef HOST_AMD64

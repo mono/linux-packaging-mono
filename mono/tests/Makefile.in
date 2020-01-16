@@ -539,9 +539,19 @@ target_triplet = @target@
 @FULL_AOT_INTERP_TESTS_TRUE@@HOST_WIN32_TRUE@am__append_34 = \
 @FULL_AOT_INTERP_TESTS_TRUE@@HOST_WIN32_TRUE@	assembly_append_ordering.exe
 
-@FULL_AOT_TESTS_TRUE@am__append_35 = $(REMOTING_DISABLED_TESTS)
-@HYBRID_AOT_TESTS_TRUE@am__append_36 = $(REMOTING_DISABLED_TESTS)
-@FULL_AOT_INTERP_TESTS_TRUE@am__append_37 = $(REMOTING_DISABLED_TESTS)
+
+# Test is too sensitive.
+@FULL_AOT_TESTS_TRUE@am__append_35 = $(REMOTING_DISABLED_TESTS) \
+@FULL_AOT_TESTS_TRUE@	localloc-noinit.exe
+
+# Test is too sensitive.
+@HYBRID_AOT_TESTS_TRUE@am__append_36 = $(REMOTING_DISABLED_TESTS) \
+@HYBRID_AOT_TESTS_TRUE@	localloc-noinit.exe
+
+# Test is too sensitive.
+@FULL_AOT_INTERP_TESTS_TRUE@am__append_37 =  \
+@FULL_AOT_INTERP_TESTS_TRUE@	$(REMOTING_DISABLED_TESTS) \
+@FULL_AOT_INTERP_TESTS_TRUE@	localloc-noinit.exe
 
 # https://github.com/mono/mono/issues/12839
 @HOST_WIN32_TRUE@am__append_38 = block_guard_restore_aligment_on_exit.exe
@@ -608,7 +618,13 @@ target_triplet = @target@
 @ARM64_TRUE@	dim-diamondshape.exe \
 @ARM64_TRUE@	pinvoke3.exe
 
-@AMD64_TRUE@am__append_41 = \
+
+# Test is too sensitive.
+@ARM64_TRUE@am__append_41 = localloc-noinit.exe
+
+# Test is too sensitive?
+@HOST_WIN32_TRUE@am__append_42 = localloc-noinit.exe
+@AMD64_TRUE@am__append_43 = \
 @AMD64_TRUE@	assemblyresolve_event6.exe \
 @AMD64_TRUE@	bug-48015.exe \
 @AMD64_TRUE@	bug-60862.exe \
@@ -626,7 +642,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
 	$(top_srcdir)/m4/ax_require_defined.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/m4/mono-output.m4 $(top_srcdir)/m4/nls.m4 \
 	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
 	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -657,10 +674,10 @@ split_tailcall_interface_conservestack_OBJECTS =  \
 	$(am_split_tailcall_interface_conservestack_OBJECTS)
 split_tailcall_interface_conservestack_LDADD = $(LDADD)
 am__tailcall_split_fsharp_SOURCES_DIST = tailcall/split-fsharp.cpp
-@CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@am_tailcall_split_fsharp_OBJECTS = split-fsharp.$(OBJEXT)
+am__dirstamp = $(am__leading_dot)dirstamp
+@CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@am_tailcall_split_fsharp_OBJECTS = tailcall/split-fsharp.$(OBJEXT)
 tailcall_split_fsharp_OBJECTS = $(am_tailcall_split_fsharp_OBJECTS)
 tailcall_split_fsharp_LDADD = $(LDADD)
-am__dirstamp = $(am__leading_dot)dirstamp
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -921,6 +938,7 @@ MONO_NATIVE_UNIFIED_CFLAGS = @MONO_NATIVE_UNIFIED_CFLAGS@
 MONO_NATIVE_UNIFIED_CPPFLAGS = @MONO_NATIVE_UNIFIED_CPPFLAGS@
 MONO_NATIVE_UNIFIED_CXXFLAGS = @MONO_NATIVE_UNIFIED_CXXFLAGS@
 MONO_NATIVE_UNIFIED_LDFLAGS = @MONO_NATIVE_UNIFIED_LDFLAGS@
+MONO_SUBDIRS = @MONO_SUBDIRS@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -998,7 +1016,6 @@ builddir = @builddir@
 datadir = @datadir@
 datarootdir = @datarootdir@
 docdir = @docdir@
-docs_dir = @docs_dir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 export_ldflags = @export_ldflags@
@@ -1009,13 +1026,11 @@ host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
 htmldir = @htmldir@
-ikvm_native_dir = @ikvm_native_dir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
-libgc_dir = @libgc_dir@
 libgdiplus_install_loc = @libgdiplus_install_loc@
 libgdiplus_loc = @libgdiplus_loc@
 libmono_cflags = @libmono_cflags@
@@ -1170,24 +1185,25 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	assembly-load-bytes-bindingredirect.cs \
 	assembly-loadfile-bindingredirect.cs \
 	assembly-loadfrom-bindingredirect.cs \
-	assembly-loadfrom-simplename.cs assemblyresolve_event.cs \
-	assemblyresolve_event3.cs assemblyresolve_event4.cs \
-	assemblyresolve_event5.cs assemblyresolve_event6.cs checked.cs \
-	char-isnumber.cs field-layout.cs pack-layout.cs pack-bug.cs \
-	hash-table.cs test-ops.cs obj.cs test-dup-mp.cs string.cs \
-	stringbuilder.cs switch.cs outparm.cs delegate.cs \
-	bitconverter.cs exception.cs exception2.cs exception3.cs \
-	exception4.cs exception5.cs exception6.cs exception7.cs \
-	exception8.cs exception10.cs exception11.cs exception12.cs \
-	exception13.cs exception14.cs exception15.cs exception16.cs \
-	exception17.cs exception18.cs exception-invokes.cs \
-	merp-json-valid.cs merp-crash-test.cs exception19.cs \
-	exception20.cs exception21.cs typeload-unaligned.cs struct.cs \
-	valuetype-gettype.cs typeof-ptr.cs static-constructor.cs \
-	pinvoke.cs pinvoke-utf8.cs pinvoke3.cs pinvoke11.cs \
-	pinvoke13.cs pinvoke17.cs invoke.cs invoke2.cs \
-	runtime-invoke.cs invoke-string-ctors.cs reinit.cs box.cs \
-	array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
+	assembly-loadfrom-simplename.cs \
+	assembly-refonly-load-bytes-bindingredirect.cs \
+	assemblyresolve_event.cs assemblyresolve_event3.cs \
+	assemblyresolve_event4.cs assemblyresolve_event5.cs \
+	assemblyresolve_event6.cs checked.cs char-isnumber.cs \
+	field-layout.cs pack-layout.cs pack-bug.cs hash-table.cs \
+	test-ops.cs obj.cs test-dup-mp.cs string.cs stringbuilder.cs \
+	switch.cs outparm.cs delegate.cs bitconverter.cs exception.cs \
+	exception2.cs exception3.cs exception4.cs exception5.cs \
+	exception6.cs exception7.cs exception8.cs exception10.cs \
+	exception11.cs exception12.cs exception13.cs exception14.cs \
+	exception15.cs exception16.cs exception17.cs exception18.cs \
+	exception-invokes.cs merp-json-valid.cs merp-crash-test.cs \
+	exception19.cs exception20.cs exception21.cs \
+	typeload-unaligned.cs struct.cs valuetype-gettype.cs \
+	typeof-ptr.cs static-constructor.cs pinvoke.cs pinvoke-utf8.cs \
+	pinvoke3.cs pinvoke11.cs pinvoke13.cs pinvoke17.cs invoke.cs \
+	invoke2.cs runtime-invoke.cs invoke-string-ctors.cs reinit.cs \
+	box.cs array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
 	enumcast.cs assignable-tests.cs array-cast.cs \
 	array-subtype-attr.cs cattr-compile.cs cattr-field.cs \
 	cattr-object.cs custom-attr.cs double-cast.cs \
@@ -1575,6 +1591,7 @@ TESTS_IL_SRC = \
 	gh-13057_mono_local_emulate_ops_av.il \
 	module-cctor-entrypoint.il \
 	bug-gh-9706.il \
+	localloc-noinit.il \
 	calli_native.il
 
 
@@ -1660,6 +1677,7 @@ REMOTING_DISABLED_TESTS = \
 	nullable_boxing.2.exe
 
 AOT_DISABLED_TESTS = \
+	localloc-noinit.exe \
 	constraints-load.exe \
 	calli_sig_check.exe
 
@@ -1756,21 +1774,20 @@ KNOWN_FAILING_TESTS = \
 	tailcall-member-function-in-valuetype.exe \
 	tailcall-rgctxb.exe
 
-DISABLED_TESTS = \
-	$(KNOWN_FAILING_TESTS) \
-	$(PLATFORM_DISABLED_TESTS) \
-	$(PROFILE_DISABLED_TESTS) \
-	$(if $(AOT),$(AOT_DISABLED_TESTS)) \
-	$(if $(CI),$(CI_DISABLED_TESTS)) \
-	$(if $(CI_PR),$(CI_PR_DISABLED_TESTS)) \
-	$(if $(LLVM),$(LLVM_DISABLED_TESTS))
-
+DISABLED_TESTS = $(KNOWN_FAILING_TESTS) $(PLATFORM_DISABLED_TESTS) \
+	$(PROFILE_DISABLED_TESTS) $(if $(AOT),$(AOT_DISABLED_TESTS)) \
+	$(if $(CI),$(CI_DISABLED_TESTS)) $(if \
+	$(CI_PR),$(CI_PR_DISABLED_TESTS)) $(if \
+	$(LLVM),$(LLVM_DISABLED_TESTS)) $(am__append_41) \
+	$(am__append_42)
 
 # Interpreter does not currently implement tailcall.
 # Disable all tailcall tests.
 # FIXME
 
 # expected InvalidProgramException not thrown
+
+# Test is too sensitive.
 INTERP_DISABLED_TESTS = $(DISABLED_TESTS) gptail1.exe itail1.exe \
 	itaili1.exe ivtail1.exe sitail1.exe sirtail1.exe srtail1.exe \
 	stail1.exe tail1.exe taili1.exe vtail1.exe \
@@ -1896,7 +1913,8 @@ INTERP_DISABLED_TESTS = $(DISABLED_TESTS) gptail1.exe itail1.exe \
 	tailcall/interface-conservestack/7.exe \
 	tailcall/interface-conservestack/8.exe \
 	tailcall/interface-conservestack/9.exe calli_sig_check.exe \
-	$(am__append_39) $(am__append_40) $(am__append_41)
+	localloc-noinit.exe $(am__append_39) $(am__append_40) \
+	$(am__append_43)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))
@@ -1968,6 +1986,7 @@ EXTRA_DIST = common_mixed.mk test-driver test-runner.cs \
 	assembly-loadfrom-bindingredirect.exe.config \
 	assembly-loadfile-bindingredirect.exe.config \
 	assembly-load-bytes-bindingredirect.exe.config \
+	assembly-refonly-load-bytes-bindingredirect.exe.config \
 	assembly-load-dir1/LibSimpleName.cs \
 	assembly-load-dir2/LibSimpleName.cs assembly-dep-simplename.cs \
 	async-exceptions.cs modules.cs modules-m1.cs \
@@ -2294,6 +2313,11 @@ split-tailcall-interface-conservestack$(EXEEXT): $(split_tailcall_interface_cons
 tailcall/$(am__dirstamp):
 	@$(MKDIR_P) tailcall
 	@: > tailcall/$(am__dirstamp)
+tailcall/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) tailcall/$(DEPDIR)
+	@: > tailcall/$(DEPDIR)/$(am__dirstamp)
+tailcall/split-fsharp.$(OBJEXT): tailcall/$(am__dirstamp) \
+	tailcall/$(DEPDIR)/$(am__dirstamp)
 
 tailcall/split-fsharp$(EXEEXT): $(tailcall_split_fsharp_OBJECTS) $(tailcall_split_fsharp_DEPENDENCIES) $(EXTRA_tailcall_split_fsharp_DEPENDENCIES) tailcall/$(am__dirstamp)
 	@rm -f tailcall/split-fsharp$(EXEEXT)
@@ -2301,31 +2325,35 @@ tailcall/split-fsharp$(EXEEXT): $(tailcall_split_fsharp_OBJECTS) $(tailcall_spli
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f tailcall/*.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtest_la-libtest.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/split-fsharp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/split-tailcall-interface-conservestack.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tailcall/$(DEPDIR)/split-fsharp.Po@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
@@ -2338,39 +2366,28 @@ libtest_la-libtest.lo: libtest.c
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtest_la_CFLAGS) $(CFLAGS) -c -o libtest_la-libtest.lo `test -f 'libtest.c' || echo '$(srcdir)/'`libtest.c
 
 .cpp.o:
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ $<
 
 .cpp.obj:
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .cpp.lo:
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LTCXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCXX_TRUE@	$(LTCXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LTCXXCOMPILE) -c -o $@ $<
-
-split-fsharp.o: tailcall/split-fsharp.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT split-fsharp.o -MD -MP -MF $(DEPDIR)/split-fsharp.Tpo -c -o split-fsharp.o `test -f 'tailcall/split-fsharp.cpp' || echo '$(srcdir)/'`tailcall/split-fsharp.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/split-fsharp.Tpo $(DEPDIR)/split-fsharp.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tailcall/split-fsharp.cpp' object='split-fsharp.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o split-fsharp.o `test -f 'tailcall/split-fsharp.cpp' || echo '$(srcdir)/'`tailcall/split-fsharp.cpp
-
-split-fsharp.obj: tailcall/split-fsharp.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT split-fsharp.obj -MD -MP -MF $(DEPDIR)/split-fsharp.Tpo -c -o split-fsharp.obj `if test -f 'tailcall/split-fsharp.cpp'; then $(CYGPATH_W) 'tailcall/split-fsharp.cpp'; else $(CYGPATH_W) '$(srcdir)/tailcall/split-fsharp.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/split-fsharp.Tpo $(DEPDIR)/split-fsharp.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tailcall/split-fsharp.cpp' object='split-fsharp.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o split-fsharp.obj `if test -f 'tailcall/split-fsharp.cpp'; then $(CYGPATH_W) 'tailcall/split-fsharp.cpp'; else $(CYGPATH_W) '$(srcdir)/tailcall/split-fsharp.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -2570,6 +2587,7 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f tailcall/$(DEPDIR)/$(am__dirstamp)
 	-rm -f tailcall/$(am__dirstamp)
 
 maintainer-clean-generic:
@@ -2582,7 +2600,7 @@ clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
 	clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-recursive
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR) tailcall/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -2628,7 +2646,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-recursive
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR) tailcall/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -3401,6 +3419,8 @@ assembly-loadfile-bindingredirect.exe$(PLATFORM_AOT_SUFFIX): assembly-load-dir1/
 assembly-loadfile-bindingredirect.exe: assembly-load-dir1/LibStrongName.dll assembly-load-dir2/LibStrongName.dll assembly-loadfile-bindingredirect.exe.config
 
 assembly-load-bytes-bindingredirect.exe: assembly-load-dir1/LibStrongName.dll assembly-load-dir2/LibStrongName.dll assembly-load-bytes-bindingredirect.exe.config
+
+assembly-refonly-load-bytes-bindingredirect.exe: assembly-load-dir1/LibStrongName.dll assembly-load-dir2/LibStrongName.dll assembly-refonly-load-bytes-bindingredirect.exe.config
 
 assembly-load-dir1/LibSimpleName.dll: assembly-load-dir1/LibSimpleName.cs
 	$(MKDIR_P) $(dir $@)

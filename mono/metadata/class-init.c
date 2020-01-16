@@ -767,6 +767,7 @@ check_valid_generic_inst_arguments (MonoGenericInst *inst, MonoError *error)
 /*
  * Create the `MonoClass' for an instantiation of a generic type.
  * We only do this if we actually need it.
+ * This will sometimes return a GTD due to checking the cached_class.
  */
 MonoClass*
 mono_class_create_generic_inst (MonoGenericClass *gclass)
@@ -2871,8 +2872,6 @@ mono_class_setup_vtable_general (MonoClass *klass, MonoMethod **overrides, int o
 	GSList *virt_methods = NULL, *l;
 	int stelemref_slot = 0;
 
-	error_init (error);
-
 	if (klass->vtable)
 		return;
 
@@ -4093,34 +4092,27 @@ mono_class_layout_fields (MonoClass *klass, int base_instance_size, int packing_
 	g_free (fields_has_references);
 }
 
-static MonoMethod *default_ghc = NULL;
-static MonoMethod *default_finalize = NULL;
 static int finalize_slot = -1;
-static int ghc_slot = -1;
 
 static void
 initialize_object_slots (MonoClass *klass)
 {
 	int i;
-	if (default_ghc)
+
+	if (klass != mono_defaults.object_class || finalize_slot >= 0)
 		return;
-	if (klass == mono_defaults.object_class) {
-		mono_class_setup_vtable (klass);
-		for (i = 0; i < klass->vtable_size; ++i) {
-			MonoMethod *cm = klass->vtable [i];
-       
-			if (!strcmp (cm->name, "GetHashCode"))
-				ghc_slot = i;
-			else if (!strcmp (cm->name, "Finalize"))
-				finalize_slot = i;
+
+	mono_class_setup_vtable (klass);
+
+	for (i = 0; i < klass->vtable_size; ++i) {
+		if (!strcmp (klass->vtable [i]->name, "Finalize")) {
+			int const j = finalize_slot;
+			g_assert (j == -1 || j == i);
+			finalize_slot = i;
 		}
-
-		g_assert (ghc_slot >= 0);
-		default_ghc = klass->vtable [ghc_slot];
-
-		g_assert (finalize_slot >= 0);
-		default_finalize = klass->vtable [finalize_slot];
 	}
+
+	g_assert (finalize_slot >= 0);
 }
 
 int
@@ -4132,7 +4124,8 @@ mono_class_get_object_finalize_slot ()
 MonoMethod *
 mono_class_get_default_finalize_method ()
 {
-	return default_finalize;
+	int const i = finalize_slot;
+	return (i < 0) ? NULL : mono_defaults.object_class->vtable [i];
 }
 
 typedef struct {
@@ -4147,10 +4140,20 @@ static void
 setup_generic_array_ifaces (MonoClass *klass, MonoClass *iface, MonoMethod **methods, int pos, GHashTable *cache)
 {
 	MonoGenericContext tmp_context;
+	MonoGenericClass *gclass;
 	int i;
 
+	// The interface can sometimes be a GTD in cases like IList
+	// See: https://github.com/mono/mono/issues/7095#issuecomment-470465597
+	if (mono_class_is_gtd (iface)) {
+		MonoType *ty = mono_class_gtd_get_canonical_inst (iface);
+		g_assert (ty->type == MONO_TYPE_GENERICINST);
+		gclass = ty->data.generic_class;
+	} else
+		gclass = mono_class_get_generic_class (iface);
+
 	tmp_context.class_inst = NULL;
-	tmp_context.method_inst = mono_class_get_generic_class (iface)->context.class_inst;
+	tmp_context.method_inst = gclass->context.class_inst;
 	//g_print ("setting up array interface: %s\n", mono_type_get_name_full (m_class_get_byval_arg (iface), 0));
 
 	for (i = 0; i < generic_array_method_num; i++) {
@@ -4430,8 +4433,7 @@ mono_class_init_internal (MonoClass *klass)
 
 	mono_class_setup_supertypes (klass);
 
-	if (!default_ghc)
-		initialize_object_slots (klass);
+	initialize_object_slots (klass);
 
 	/* 
 	 * Initialize the rest of the data without creating a generic vtable if possible.
@@ -4480,18 +4482,6 @@ mono_class_init_internal (MonoClass *klass)
 		vtable_size = gklass->vtable_size;
 	} else {
 		/* General case */
-
-		/* ghcimpl is not currently used
-		klass->ghcimpl = 1;
-		if (klass->parent) {
-			MonoMethod *cmethod = klass->vtable [ghc_slot];
-			if (cmethod->is_inflated)
-				cmethod = ((MonoMethodInflated*)cmethod)->declaring;
-			if (cmethod == default_ghc) {
-				klass->ghcimpl = 0;
-			}
-		}
-		*/
 
 		/* C# doesn't allow interfaces to have cctors */
 		if (!MONO_CLASS_IS_INTERFACE_INTERNAL (klass) || klass->image != mono_defaults.corlib) {
@@ -5256,8 +5246,6 @@ mono_class_setup_events (MonoClass *klass)
 			ERROR_DECL (error);
 			MonoEvent *event = &events [i];
 			MonoEvent *gevent = &ginfo->events [i];
-
-			error_init (error); //since we do conditional calls, we must ensure the default value is ok
 
 			event->parent = klass;
 			event->name = gevent->name;
