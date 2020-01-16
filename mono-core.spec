@@ -151,9 +151,9 @@ technologies that have been submitted to the ECMA for standardization.
 %{?scl:scl enable %{scl} - << \EOF}
 ./autogen.sh
 # These are only needed if there are patches to the runtime
-#rm -f libgc/libtool.m4
-#autoreconf --force --install
-#autoreconf --force --install libgc
+rm -f libgc/libtool.m4
+autoreconf --force --install
+autoreconf --force --install external/bdwgc
 export CFLAGS=" %{optflags} -fno-strict-aliasing"
 %ifarch armv7l armv7hl
 export MONO_CPU_ARCH="armv7l-thumb"
