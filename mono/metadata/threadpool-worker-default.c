@@ -14,6 +14,8 @@
 #include <config.h>
 #include <glib.h>
 
+#ifndef ENABLE_NETCORE
+
 #include <mono/metadata/class-internals.h>
 #include <mono/metadata/exception.h>
 #include <mono/metadata/gc-internals.h>
@@ -356,19 +358,6 @@ mono_threadpool_worker_request (void)
 
 	mono_refcount_dec (&worker);
 }
-
-#ifdef ENABLE_NETCORE
-gint64 mono_threadpool_worker_get_completed_threads_count (void)
-{
-	return worker.heuristic_completions;
-}
-
-gint32 mono_threadpool_worker_get_threads_count (void)
-{
-	ThreadPoolWorkerCounter const counter = COUNTER_READ ();
-	return counter._.working;
-}
-#endif
 
 /* return TRUE if timeout, FALSE otherwise (worker unpark or interrupt) */
 static gboolean
@@ -1243,3 +1232,5 @@ mono_threadpool_worker_set_suspended (gboolean suspended)
 
 	mono_refcount_dec (&worker);
 }
+
+#endif /* ENABLE_NETCORE */

@@ -129,7 +129,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
 	$(top_srcdir)/m4/ax_require_defined.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/m4/mono-output.m4 $(top_srcdir)/m4/nls.m4 \
 	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
 	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -205,10 +206,10 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	llvm-runtime.h type-checking.c calls.c lldb.h lldb.c \
 	memory-access.c intrinsics.c mini-profiler.c interp-stubs.c \
 	llvmonly-runtime.h llvmonly-runtime.c aot-runtime.h ee.h \
-	mini-runtime.h mini-llvm.c mini-llvm-loaded.c \
-	mini-llvm-cpp.cpp llvm-jit.cpp llvm-runtime.cpp mini-amd64.c \
-	mini-amd64.h exceptions-amd64.c tramp-amd64.c \
-	mini-amd64-gsharedvt.c mini-amd64-gsharedvt.h \
+	tiered.h tiered.c mini-runtime.h mini-llvm.c \
+	mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-jit.cpp \
+	llvm-runtime.cpp mini-amd64.c mini-amd64.h exceptions-amd64.c \
+	tramp-amd64.c mini-amd64-gsharedvt.c mini-amd64-gsharedvt.h \
 	tramp-amd64-gsharedvt.c mini-arm64.c mini-arm64.h \
 	exceptions-arm64.c tramp-arm64.c mini-arm64-gsharedvt.c \
 	mini-arm64-gsharedvt.h tramp-arm64-gsharedvt.c mini-arm.c \
@@ -271,7 +272,8 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmini_la-intrinsics.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-profiler.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmini_la-interp-stubs.lo \
-@ENABLE_MSVC_ONLY_FALSE@	libmini_la-llvmonly-runtime.lo
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-llvmonly-runtime.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-tiered.lo
 @ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@am__objects_3 = libmini_la-mini-llvm.lo \
 @ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm-loaded.lo \
 @ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.lo \
@@ -376,10 +378,11 @@ libmono_dbg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 am__libmono_ee_interp_la_SOURCES_DIST = interp/interp.h \
 	interp/interp-internals.h interp/interp.c interp/mintops.h \
 	interp/mintops.def interp/mintops.c interp/transform.c
+am__dirstamp = $(am__leading_dot)dirstamp
 @ENABLE_MSVC_ONLY_FALSE@am__objects_22 =  \
-@ENABLE_MSVC_ONLY_FALSE@	libmono_ee_interp_la-interp.lo \
-@ENABLE_MSVC_ONLY_FALSE@	libmono_ee_interp_la-mintops.lo \
-@ENABLE_MSVC_ONLY_FALSE@	libmono_ee_interp_la-transform.lo
+@ENABLE_MSVC_ONLY_FALSE@	interp/libmono_ee_interp_la-interp.lo \
+@ENABLE_MSVC_ONLY_FALSE@	interp/libmono_ee_interp_la-mintops.lo \
+@ENABLE_MSVC_ONLY_FALSE@	interp/libmono_ee_interp_la-transform.lo
 @ENABLE_MSVC_ONLY_FALSE@am_libmono_ee_interp_la_OBJECTS =  \
 @ENABLE_MSVC_ONLY_FALSE@	$(am__objects_22)
 libmono_ee_interp_la_OBJECTS = $(am_libmono_ee_interp_la_OBJECTS)
@@ -397,8 +400,7 @@ am__DEPENDENCIES_1 =
 @ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_1)
 am__libmono_llvm_la_SOURCES_DIST = mini-llvm.c mini-llvm-cpp.cpp \
 	llvm-jit.cpp
-@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@am_libmono_llvm_la_OBJECTS =  \
-@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@	mini-llvm.lo \
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@am_libmono_llvm_la_OBJECTS = libmono_llvm_la-mini-llvm.lo \
 @ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@	mini-llvm-cpp.lo \
 @ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@	llvm-jit.lo
 libmono_llvm_la_OBJECTS = $(am_libmono_llvm_la_OBJECTS)
@@ -408,7 +410,7 @@ libmono_llvm_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(LDFLAGS) -o $@
 @ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@am_libmono_llvm_la_rpath =  \
 @ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@	-rpath $(libdir)
-@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_FALSE@am__DEPENDENCIES_2 = $(monodir)/libgc/libmonogc.la
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_FALSE@am__DEPENDENCIES_2 = $(monodir)/external/bdwgc/libgc.la
 @ENABLE_MSVC_ONLY_FALSE@am__DEPENDENCIES_3 = $(monodir)/mono/metadata/libmonoruntime.la \
 @ENABLE_MSVC_ONLY_FALSE@	$(monodir)/mono/utils/libmonoutils.la \
 @ENABLE_MSVC_ONLY_FALSE@	$(glib_libs) $(am__DEPENDENCIES_2)
@@ -725,6 +727,7 @@ MONO_NATIVE_UNIFIED_CFLAGS = @MONO_NATIVE_UNIFIED_CFLAGS@
 MONO_NATIVE_UNIFIED_CPPFLAGS = @MONO_NATIVE_UNIFIED_CPPFLAGS@
 MONO_NATIVE_UNIFIED_CXXFLAGS = @MONO_NATIVE_UNIFIED_CXXFLAGS@
 MONO_NATIVE_UNIFIED_LDFLAGS = @MONO_NATIVE_UNIFIED_LDFLAGS@
+MONO_SUBDIRS = @MONO_SUBDIRS@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -802,7 +805,6 @@ builddir = @builddir@
 datadir = @datadir@
 datarootdir = @datarootdir@
 docdir = @docdir@
-docs_dir = @docs_dir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 export_ldflags = @export_ldflags@
@@ -813,13 +815,11 @@ host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
 htmldir = @htmldir@
-ikvm_native_dir = @ikvm_native_dir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
-libgc_dir = @libgc_dir@
 libgdiplus_install_loc = @libgdiplus_install_loc@
 libgdiplus_loc = @libgdiplus_loc@
 libmono_cflags = @libmono_cflags@
@@ -867,11 +867,11 @@ monodir = $(top_builddir)
 mono = $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),mono)
 @HOST_WIN32_FALSE@PLATFORM_PATH_SEPARATOR = :
 @HOST_WIN32_TRUE@PLATFORM_PATH_SEPARATOR = ;
-@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_FALSE@libgc_libs = $(monodir)/libgc/libmonogc.la
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_FALSE@libgc_libs = $(monodir)/external/bdwgc/libgc.la
 
 # This is needed for automake dependency generation
 @ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_TRUE@libgc_libs = 
-@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_FALSE@libgc_static_libs = $(monodir)/libgc/libmonogc-static.la
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_FALSE@libgc_static_libs = $(monodir)/external/bdwgc/libgc-static.la
 @ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_TRUE@libgc_static_libs = 
 @ENABLE_MSVC_ONLY_FALSE@glib_libs = $(monodir)/mono/eglib/libeglib.la
 @ENABLE_MSVC_ONLY_FALSE@boehm_libs = \
@@ -958,6 +958,7 @@ ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 @ENABLE_MSVC_ONLY_FALSE@libmain_a_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
 @ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@libmono_llvm_la_SOURCES = mini-llvm.c mini-llvm-cpp.cpp llvm-jit.cpp
 @ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@libmono_llvm_la_LIBADD = $(glib_libs) $(LLVM_LIBS) $(LLVM_LDFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_TRUE@libmono_llvm_la_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
 @ENABLE_MSVC_ONLY_FALSE@@HOST_DARWIN_TRUE@@LOADED_LLVM_TRUE@libmono_llvm_la_LDFLAGS = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace 
 
 # we need this to prevent automake from generating a default mono_SOURCES = mono.c
@@ -1213,6 +1214,8 @@ ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 @ENABLE_MSVC_ONLY_FALSE@	llvmonly-runtime.c \
 @ENABLE_MSVC_ONLY_FALSE@	aot-runtime.h	\
 @ENABLE_MSVC_ONLY_FALSE@	ee.h \
+@ENABLE_MSVC_ONLY_FALSE@	tiered.h \
+@ENABLE_MSVC_ONLY_FALSE@	tiered.c \
 @ENABLE_MSVC_ONLY_FALSE@	mini-runtime.h
 
 
@@ -1514,6 +1517,18 @@ libmini.la: $(libmini_la_OBJECTS) $(libmini_la_DEPENDENCIES) $(EXTRA_libmini_la_
 
 libmono-dbg.la: $(libmono_dbg_la_OBJECTS) $(libmono_dbg_la_DEPENDENCIES) $(EXTRA_libmono_dbg_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmono_dbg_la_LINK) $(am_libmono_dbg_la_rpath) $(libmono_dbg_la_OBJECTS) $(libmono_dbg_la_LIBADD) $(LIBS)
+interp/$(am__dirstamp):
+	@$(MKDIR_P) interp
+	@: > interp/$(am__dirstamp)
+interp/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) interp/$(DEPDIR)
+	@: > interp/$(DEPDIR)/$(am__dirstamp)
+interp/libmono_ee_interp_la-interp.lo: interp/$(am__dirstamp) \
+	interp/$(DEPDIR)/$(am__dirstamp)
+interp/libmono_ee_interp_la-mintops.lo: interp/$(am__dirstamp) \
+	interp/$(DEPDIR)/$(am__dirstamp)
+interp/libmono_ee_interp_la-transform.lo: interp/$(am__dirstamp) \
+	interp/$(DEPDIR)/$(am__dirstamp)
 
 libmono-ee-interp.la: $(libmono_ee_interp_la_OBJECTS) $(libmono_ee_interp_la_DEPENDENCIES) $(EXTRA_libmono_ee_interp_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmono_ee_interp_la_LINK) $(am_libmono_ee_interp_la_rpath) $(libmono_ee_interp_la_OBJECTS) $(libmono_ee_interp_la_LIBADD) $(LIBS)
@@ -1603,6 +1618,8 @@ monow$(EXEEXT): $(monow_OBJECTS) $(monow_DEPENDENCIES) $(EXTRA_monow_DEPENDENCIE
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f interp/*.$(OBJEXT)
+	-rm -f interp/*.lo
 
 distclean-compile:
 	-rm -f *.tab.c
@@ -1688,6 +1705,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-simd-intrinsics.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-ssa.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tasklets.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tiered.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-trace.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tramp-amd64-gsharedvt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tramp-amd64.Plo@am__quote@
@@ -1709,31 +1727,34 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_dbg_la-debugger-agent.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_dbg_la-debugger-engine.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_dbg_la-debugger-state-machine.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_ee_interp_la-interp.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_ee_interp_la-mintops.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_ee_interp_la-transform.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_llvm_la-mini-llvm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/llvm-jit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/llvm-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mini-llvm-cpp.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mini-llvm.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmono_ee_interp_la-interp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmono_ee_interp_la-mintops.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmono_ee_interp_la-transform.Plo@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
@@ -2102,6 +2123,13 @@ libmini_la-llvmonly-runtime.lo: llvmonly-runtime.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-llvmonly-runtime.lo `test -f 'llvmonly-runtime.c' || echo '$(srcdir)/'`llvmonly-runtime.c
 
+libmini_la-tiered.lo: tiered.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-tiered.lo -MD -MP -MF $(DEPDIR)/libmini_la-tiered.Tpo -c -o libmini_la-tiered.lo `test -f 'tiered.c' || echo '$(srcdir)/'`tiered.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-tiered.Tpo $(DEPDIR)/libmini_la-tiered.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tiered.c' object='libmini_la-tiered.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-tiered.lo `test -f 'tiered.c' || echo '$(srcdir)/'`tiered.c
+
 libmini_la-mini-llvm.lo: mini-llvm.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-llvm.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-llvm.Tpo -c -o libmini_la-mini-llvm.lo `test -f 'mini-llvm.c' || echo '$(srcdir)/'`mini-llvm.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-mini-llvm.Tpo $(DEPDIR)/libmini_la-mini-llvm.Plo
@@ -2466,44 +2494,54 @@ libmono_dbg_la-debugger-engine.lo: debugger-engine.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_dbg_la_CFLAGS) $(CFLAGS) -c -o libmono_dbg_la-debugger-engine.lo `test -f 'debugger-engine.c' || echo '$(srcdir)/'`debugger-engine.c
 
-libmono_ee_interp_la-interp.lo: interp/interp.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_la_CFLAGS) $(CFLAGS) -MT libmono_ee_interp_la-interp.lo -MD -MP -MF $(DEPDIR)/libmono_ee_interp_la-interp.Tpo -c -o libmono_ee_interp_la-interp.lo `test -f 'interp/interp.c' || echo '$(srcdir)/'`interp/interp.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_ee_interp_la-interp.Tpo $(DEPDIR)/libmono_ee_interp_la-interp.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='interp/interp.c' object='libmono_ee_interp_la-interp.lo' libtool=yes @AMDEPBACKSLASH@
+interp/libmono_ee_interp_la-interp.lo: interp/interp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_la_CFLAGS) $(CFLAGS) -MT interp/libmono_ee_interp_la-interp.lo -MD -MP -MF interp/$(DEPDIR)/libmono_ee_interp_la-interp.Tpo -c -o interp/libmono_ee_interp_la-interp.lo `test -f 'interp/interp.c' || echo '$(srcdir)/'`interp/interp.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) interp/$(DEPDIR)/libmono_ee_interp_la-interp.Tpo interp/$(DEPDIR)/libmono_ee_interp_la-interp.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='interp/interp.c' object='interp/libmono_ee_interp_la-interp.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_la_CFLAGS) $(CFLAGS) -c -o libmono_ee_interp_la-interp.lo `test -f 'interp/interp.c' || echo '$(srcdir)/'`interp/interp.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_la_CFLAGS) $(CFLAGS) -c -o interp/libmono_ee_interp_la-interp.lo `test -f 'interp/interp.c' || echo '$(srcdir)/'`interp/interp.c
 
-libmono_ee_interp_la-mintops.lo: interp/mintops.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_la_CFLAGS) $(CFLAGS) -MT libmono_ee_interp_la-mintops.lo -MD -MP -MF $(DEPDIR)/libmono_ee_interp_la-mintops.Tpo -c -o libmono_ee_interp_la-mintops.lo `test -f 'interp/mintops.c' || echo '$(srcdir)/'`interp/mintops.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_ee_interp_la-mintops.Tpo $(DEPDIR)/libmono_ee_interp_la-mintops.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='interp/mintops.c' object='libmono_ee_interp_la-mintops.lo' libtool=yes @AMDEPBACKSLASH@
+interp/libmono_ee_interp_la-mintops.lo: interp/mintops.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_la_CFLAGS) $(CFLAGS) -MT interp/libmono_ee_interp_la-mintops.lo -MD -MP -MF interp/$(DEPDIR)/libmono_ee_interp_la-mintops.Tpo -c -o interp/libmono_ee_interp_la-mintops.lo `test -f 'interp/mintops.c' || echo '$(srcdir)/'`interp/mintops.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) interp/$(DEPDIR)/libmono_ee_interp_la-mintops.Tpo interp/$(DEPDIR)/libmono_ee_interp_la-mintops.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='interp/mintops.c' object='interp/libmono_ee_interp_la-mintops.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_la_CFLAGS) $(CFLAGS) -c -o libmono_ee_interp_la-mintops.lo `test -f 'interp/mintops.c' || echo '$(srcdir)/'`interp/mintops.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_la_CFLAGS) $(CFLAGS) -c -o interp/libmono_ee_interp_la-mintops.lo `test -f 'interp/mintops.c' || echo '$(srcdir)/'`interp/mintops.c
 
-libmono_ee_interp_la-transform.lo: interp/transform.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_la_CFLAGS) $(CFLAGS) -MT libmono_ee_interp_la-transform.lo -MD -MP -MF $(DEPDIR)/libmono_ee_interp_la-transform.Tpo -c -o libmono_ee_interp_la-transform.lo `test -f 'interp/transform.c' || echo '$(srcdir)/'`interp/transform.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_ee_interp_la-transform.Tpo $(DEPDIR)/libmono_ee_interp_la-transform.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='interp/transform.c' object='libmono_ee_interp_la-transform.lo' libtool=yes @AMDEPBACKSLASH@
+interp/libmono_ee_interp_la-transform.lo: interp/transform.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_la_CFLAGS) $(CFLAGS) -MT interp/libmono_ee_interp_la-transform.lo -MD -MP -MF interp/$(DEPDIR)/libmono_ee_interp_la-transform.Tpo -c -o interp/libmono_ee_interp_la-transform.lo `test -f 'interp/transform.c' || echo '$(srcdir)/'`interp/transform.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) interp/$(DEPDIR)/libmono_ee_interp_la-transform.Tpo interp/$(DEPDIR)/libmono_ee_interp_la-transform.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='interp/transform.c' object='interp/libmono_ee_interp_la-transform.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_la_CFLAGS) $(CFLAGS) -c -o libmono_ee_interp_la-transform.lo `test -f 'interp/transform.c' || echo '$(srcdir)/'`interp/transform.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_la_CFLAGS) $(CFLAGS) -c -o interp/libmono_ee_interp_la-transform.lo `test -f 'interp/transform.c' || echo '$(srcdir)/'`interp/transform.c
+
+libmono_llvm_la-mini-llvm.lo: mini-llvm.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_llvm_la_CFLAGS) $(CFLAGS) -MT libmono_llvm_la-mini-llvm.lo -MD -MP -MF $(DEPDIR)/libmono_llvm_la-mini-llvm.Tpo -c -o libmono_llvm_la-mini-llvm.lo `test -f 'mini-llvm.c' || echo '$(srcdir)/'`mini-llvm.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_llvm_la-mini-llvm.Tpo $(DEPDIR)/libmono_llvm_la-mini-llvm.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-llvm.c' object='libmono_llvm_la-mini-llvm.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_llvm_la_CFLAGS) $(CFLAGS) -c -o libmono_llvm_la-mini-llvm.lo `test -f 'mini-llvm.c' || echo '$(srcdir)/'`mini-llvm.c
 
 .cpp.o:
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ $<
 
 .cpp.obj:
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .cpp.lo:
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LTCXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCXX_TRUE@	$(LTCXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LTCXXCOMPILE) -c -o $@ $<
@@ -2513,6 +2551,7 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+	-rm -rf interp/.libs interp/_libs
 install-libmonoincludeHEADERS: $(libmonoinclude_HEADERS)
 	@$(NORMAL_INSTALL)
 	@list='$(libmonoinclude_HEADERS)'; test -n "$(libmonoincludedir)" || list=; \
@@ -2660,6 +2699,8 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f interp/$(DEPDIR)/$(am__dirstamp)
+	-rm -f interp/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -2673,7 +2714,7 @@ clean-am: clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
 	clean-noinstLTLIBRARIES clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR) interp/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -2720,7 +2761,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR) interp/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

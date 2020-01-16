@@ -24,6 +24,7 @@ MPH_C_SOURCE =					\
 	errno.c					\
 	map.c					\
 	map.h					\
+	map-impl.h				\
 	mph.h					\
 	signal.c				\
 	stdio.c					\
@@ -78,40 +79,16 @@ MINIZIP_SOURCE = \
 	minizip/zip.c	\
 	minizip/zip.h
 
-ZLIB_SOURCES = \
-	adler32.c	\
-	compress.c	\
-	crc32.c		\
-	uncompr.c	\
-	deflate.c	\
-	gzguts.h	\
-	trees.c		\
-	zutil.c		\
-	inflate.c	\
-	infback.c	\
-	inftrees.c	\
-	inffast.c	\
-	crc32.h		\
-	deflate.h  	\
-	inffast.h  	\
-	inffixed.h  	\
-	inflate.h  	\
-	inftrees.h  	\
-	trees.h  	\
-	zconf.h  	\
-	zlib.h  	\
-	zutil.h
+BUNDLE_ZLIB_PATH=$(top_builddir)/mono/zlib/libz.la
+Z_SOURCE=zlib-helper.c
 
 if HAVE_STATIC_ZLIB
-Z_SOURCE = zlib-helper.c
-Z_LIBS = $(STATIC_ZLIB_PATH)
+Z_LIBS=$(STATIC_ZLIB_PATH)
 else
 if HAVE_SYS_ZLIB
-Z_SOURCE = zlib-helper.c
-Z_LIBS= -lz
+Z_LIBS=-lz
 else
-Z_SOURCE = zlib-helper.c $(ZLIB_SOURCES)
-Z_LIBS=
+Z_LIBS=$(BUNDLE_ZLIB_PATH)
 endif
 endif
 
@@ -174,6 +151,7 @@ refresh:
 	--autoconf-header="<utime.h>"                         \
 	--impl-header="<time.h>"                              \
 	--impl-header="\"mph.h\""                             \
+	--impl-header="\"map-impl.h\""                        \
 	--rename-member=st_atime=st_atime_                    \
 	--rename-member=st_ctime=st_ctime_                    \
 	--rename-member=st_mtime=st_mtime_                    \

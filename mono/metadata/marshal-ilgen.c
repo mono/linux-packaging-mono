@@ -59,8 +59,19 @@ enum {
 };
 #undef OPDEF
 
-#define IS_IN(t) ((t->attrs & PARAM_ATTRIBUTE_IN) || !(t->attrs & PARAM_ATTRIBUTE_OUT))
-#define IS_OUT(t) ((t->attrs & PARAM_ATTRIBUTE_OUT) || !(t->attrs & PARAM_ATTRIBUTE_IN))
+static gboolean
+is_in (const MonoType *t)
+{
+	const guint32 attrs = t->attrs;
+	return (attrs & PARAM_ATTRIBUTE_IN) || !(attrs & PARAM_ATTRIBUTE_OUT);
+}
+
+static gboolean
+is_out (const MonoType *t)
+{
+	const guint32 attrs = t->attrs;
+	return (attrs & PARAM_ATTRIBUTE_OUT) || !(attrs & PARAM_ATTRIBUTE_IN);
+}
 
 static GENERATE_GET_CLASS_WITH_CACHE (fixed_buffer_attribute, "System.Runtime.CompilerServices", "FixedBufferAttribute");
 static GENERATE_GET_CLASS_WITH_CACHE (date_time, "System", "DateTime");
@@ -1749,7 +1760,6 @@ mono_mb_emit_auto_layout_exception (MonoMethodBuilder *mb, MonoClass *klass)
 typedef struct EmitGCSafeTransitionBuilder {
 	MonoMethodBuilder *mb;
 	gboolean func_param;
-	int coop_gc_stack_dummy;
 	int coop_gc_var;
 #ifndef DISABLE_COM
 	int coop_cominterop_fnptr;
@@ -1761,7 +1771,6 @@ gc_safe_transition_builder_init (GCSafeTransitionBuilder *builder, MonoMethodBui
 {
 	builder->mb = mb;
 	builder->func_param = func_param;
-	builder->coop_gc_stack_dummy = -1;
 	builder->coop_gc_var = -1;
 #ifndef DISABLE_COM
 	builder->coop_cominterop_fnptr = -1;
@@ -1780,9 +1789,7 @@ static void
 gc_safe_transition_builder_add_locals (GCSafeTransitionBuilder *builder)
 {
 	MonoType *int_type = mono_get_int_type();
-	/* local 4, dummy local used to get a stack address for suspend funcs */
-	builder->coop_gc_stack_dummy = mono_mb_add_local (builder->mb, int_type);
-	/* local 5, the local to be used when calling the suspend funcs */
+	/* local 4, the local to be used when calling the suspend funcs */
 	builder->coop_gc_var = mono_mb_add_local (builder->mb, int_type);
 #ifndef DISABLE_COM
 	if (!builder->func_param && MONO_CLASS_IS_IMPORT (builder->mb->method->klass)) {
@@ -1815,7 +1822,8 @@ gc_safe_transition_builder_emit_enter (GCSafeTransitionBuilder *builder, MonoMet
 	}
 #endif
 
-	mono_mb_emit_ldloc_addr (builder->mb, builder->coop_gc_stack_dummy);
+	mono_mb_emit_byte (builder->mb, MONO_CUSTOM_PREFIX);
+	mono_mb_emit_byte (builder->mb, CEE_MONO_GET_SP);
 	mono_mb_emit_icall (builder->mb, mono_threads_enter_gc_safe_region_unbalanced);
 	mono_mb_emit_stloc (builder->mb, builder->coop_gc_var);
 }
@@ -1829,7 +1837,8 @@ static void
 gc_safe_transition_builder_emit_exit (GCSafeTransitionBuilder *builder)
 {
 	mono_mb_emit_ldloc (builder->mb, builder->coop_gc_var);
-	mono_mb_emit_ldloc_addr (builder->mb, builder->coop_gc_stack_dummy);
+	mono_mb_emit_byte (builder->mb, MONO_CUSTOM_PREFIX);
+	mono_mb_emit_byte (builder->mb, CEE_MONO_GET_SP);
 	mono_mb_emit_icall (builder->mb, mono_threads_exit_gc_safe_region_unbalanced);
 }
 
@@ -1837,7 +1846,6 @@ static void
 gc_safe_transition_builder_cleanup (GCSafeTransitionBuilder *builder)
 {
 	builder->mb = NULL;
-	builder->coop_gc_stack_dummy = -1;
 	builder->coop_gc_var = -1;
 #ifndef DISABLE_COM
 	builder->coop_cominterop_fnptr = -1;
@@ -1854,11 +1862,12 @@ gc_safe_transition_builder_cleanup (GCSafeTransitionBuilder *builder)
  * \param method if non-NULL, the pinvoke method to call
  * \param check_exceptions Whenever to check for pending exceptions after the native call
  * \param func_param the function to call is passed as a boxed IntPtr as the first parameter
+ * \param skip_gc_trans Whenever to skip GC transitions
  *
  * generates IL code for the pinvoke wrapper, the generated code calls \p func .
  */
 static void
-emit_native_wrapper_ilgen (MonoImage *image, MonoMethodBuilder *mb, MonoMethodSignature *sig, MonoMethodPInvoke *piinfo, MonoMarshalSpec **mspecs, gpointer func, gboolean aot, gboolean check_exceptions, gboolean func_param)
+emit_native_wrapper_ilgen (MonoImage *image, MonoMethodBuilder *mb, MonoMethodSignature *sig, MonoMethodPInvoke *piinfo, MonoMarshalSpec **mspecs, gpointer func, gboolean aot, gboolean check_exceptions, gboolean func_param, gboolean skip_gc_trans)
 {
 	EmitMarshalContext m;
 	MonoMethodSignature *csig;
@@ -1873,7 +1882,8 @@ emit_native_wrapper_ilgen (MonoImage *image, MonoMethodBuilder *mb, MonoMethodSi
 	m.sig = sig;
 	m.piinfo = piinfo;
 
-	need_gc_safe = gc_safe_transition_builder_init (&gc_safe_transition_builder, mb, func_param);
+	if (!skip_gc_trans)
+		need_gc_safe = gc_safe_transition_builder_init (&gc_safe_transition_builder, mb, func_param);
 
 	/* we copy the signature, so that we can set pinvoke to 0 */
 	if (func_param) {
@@ -4214,7 +4224,7 @@ emit_thunk_invoke_wrapper_ilgen (MonoMethodBuilder *mb, MonoMethod *method, Mono
 	MonoImage *image = get_method_image (method);
 	MonoMethodSignature *sig = mono_method_signature_internal (method);
 	int param_count = sig->param_count + sig->hasthis + 1;
-	int pos_leave, coop_gc_var = 0, coop_gc_stack_dummy = 0;
+	int pos_leave, coop_gc_var = 0;
 	MonoExceptionClause *clause;
 	MonoType *object_type = mono_get_object_type ();
 #if defined (TARGET_WASM)
@@ -4231,9 +4241,7 @@ emit_thunk_invoke_wrapper_ilgen (MonoMethodBuilder *mb, MonoMethod *method, Mono
 		mono_mb_add_local (mb, sig->ret);
 
 	if (do_blocking_transition) {
-		/* local 4, dummy local used to get a stack address for suspend funcs */
-		coop_gc_stack_dummy = mono_mb_add_local (mb, mono_get_int_type ());
-		/* local 5, the local to be used when calling the suspend funcs */
+		/* local 4, the local to be used when calling the suspend funcs */
 		coop_gc_var = mono_mb_add_local (mb, mono_get_int_type ());
 	}
 
@@ -4243,7 +4251,8 @@ emit_thunk_invoke_wrapper_ilgen (MonoMethodBuilder *mb, MonoMethod *method, Mono
 	mono_mb_emit_byte (mb, CEE_STIND_REF);
 
 	if (do_blocking_transition) {
-		mono_mb_emit_ldloc_addr (mb, coop_gc_stack_dummy);
+		mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
+		mono_mb_emit_byte (mb, CEE_MONO_GET_SP);
 		mono_mb_emit_icall (mb, mono_threads_enter_gc_unsafe_region_unbalanced);
 		mono_mb_emit_stloc (mb, coop_gc_var);
 	}
@@ -4319,7 +4328,8 @@ emit_thunk_invoke_wrapper_ilgen (MonoMethodBuilder *mb, MonoMethod *method, Mono
 
 	if (do_blocking_transition) {
 		mono_mb_emit_ldloc (mb, coop_gc_var);
-		mono_mb_emit_ldloc_addr (mb, coop_gc_stack_dummy);
+		mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
+		mono_mb_emit_byte (mb, CEE_MONO_GET_SP);
 		mono_mb_emit_icall (mb, mono_threads_exit_gc_unsafe_region_unbalanced);
 	}
 
@@ -4362,6 +4372,7 @@ emit_marshal_custom_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 	static MonoMethod *cleanup_native, *cleanup_managed;
 	static MonoMethod *marshal_managed_to_native, *marshal_native_to_managed;
 	MonoMethodBuilder *mb = m->mb;
+	MonoAssemblyLoadContext *alc = mono_domain_ambient_alc (mono_domain_get ());
 	guint32 loc1;
 	int pos2;
 
@@ -4406,9 +4417,10 @@ emit_marshal_custom_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 	}
 
 	if (spec->data.custom_data.image)
-		mtype = mono_reflection_type_from_name_checked (spec->data.custom_data.custom_name, spec->data.custom_data.image, error);
+		mtype = mono_reflection_type_from_name_checked (spec->data.custom_data.custom_name, alc, spec->data.custom_data.image, error);
 	else
-		mtype = mono_reflection_type_from_name_checked (spec->data.custom_data.custom_name, m->image, error);
+		mtype = mono_reflection_type_from_name_checked (spec->data.custom_data.custom_name, alc, m->image, error);
+
 	g_assert (mtype != NULL);
 	mono_error_assert_ok (error);
 	mklass = mono_class_from_mono_type_internal (mtype);
@@ -5148,7 +5160,7 @@ emit_marshal_safehandle_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 		if (t->byref) {
 			int old_handle_value_slot = mono_mb_add_local (mb, int_type);
 
-			if (!IS_IN (t)) {
+			if (!is_in (t)) {
 				mono_mb_emit_icon (mb, 0);
 				mono_mb_emit_stloc (mb, conv_arg);
 			} else {
@@ -5200,7 +5212,7 @@ emit_marshal_safehandle_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 
 		if (t->byref){
 			/* If there was SafeHandle on input we have to release the reference to it */
-			if (IS_IN (t)) {
+			if (is_in (t)) {
 				mono_mb_emit_ldloc (mb, dar_release_slot);
 				label_next = mono_mb_emit_branch (mb, CEE_BRFALSE);
 				mono_mb_emit_ldarg (mb, argnum);
@@ -5209,7 +5221,7 @@ emit_marshal_safehandle_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 				mono_mb_patch_branch (mb, label_next);
 			}
 
-			if (IS_OUT (t)) {
+			if (is_out (t)) {
 				ERROR_DECL (local_error);
 				MonoMethod *ctor;
 			
@@ -5217,7 +5229,7 @@ emit_marshal_safehandle_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 				 * If the SafeHandle was marshalled on input we can skip the marshalling on
 				 * output if the handle value is identical.
 				 */
-				if (IS_IN (t)) {
+				if (is_in (t)) {
 					int old_handle_value_slot = dar_release_slot + 1;
 					mono_mb_emit_ldloc (mb, old_handle_value_slot);
 					mono_mb_emit_ldloc (mb, conv_arg);
@@ -5250,7 +5262,7 @@ emit_marshal_safehandle_ilgen (EmitMarshalContext *m, int argnum, MonoType *t,
 				mono_mb_emit_ldloc (mb, conv_arg);
 				mono_mb_emit_byte (mb, CEE_STIND_I);
 
-				if (IS_IN (t)) {
+				if (is_in (t)) {
 					mono_mb_patch_branch (mb, label_next);
 				}
 			}
@@ -6326,7 +6338,7 @@ typedef enum {
 	/* Wrap the argument (a valuetype reference) in a handle to pin its
 	   enclosing object, but pass the raw reference to the icall.  This is
 	   also how we pass byref generic parameter arguments to generic method
-	   icalls (eg, System.Array:GetGenericValueImpl<T>(int idx, T out value)) */
+	   icalls (e.g. System.Array:GetGenericValue_icall<T>(int idx, T out value)) */
 	ICALL_HANDLES_WRAP_VALUETYPE_REF,
 } IcallHandlesWrap;
 
@@ -6422,21 +6434,14 @@ emit_native_icall_wrapper_ilgen (MonoMethodBuilder *mb, MonoMethod *method, Mono
 			mono_error_assert_ok (error);
 		}
 
-		// Add a MonoError argument (due to a fragile test external/coreclr/tests/src/CoreMangLib/cti/system/weakreference/weakreferenceisaliveb.exe),
-		// vs. on the native side.
 		// FIXME: The stuff from mono_metadata_signature_dup_internal_with_padding ()
-		call_sig = mono_metadata_signature_alloc (get_method_image (method), csig->param_count + 1);
-		call_sig->param_count = csig->param_count + 1;
+		call_sig = mono_metadata_signature_alloc (get_method_image (method), csig->param_count);
+		call_sig->param_count = csig->param_count;
 		call_sig->ret = csig->ret;
 		call_sig->pinvoke = csig->pinvoke;
 
 		/* TODO support adding wrappers to non-static struct methods */
 		g_assert (!sig->hasthis || !m_class_is_valuetype (mono_method_get_class (method)));
-
-		/* Add MonoError* param */
-		MonoClass * const error_class = mono_class_load_from_name (mono_get_corlib (), "Mono", "RuntimeStructs/MonoError");
-		int const error_var = mono_mb_add_local (mb, m_class_get_byval_arg (error_class));
-		call_sig->params [csig->param_count] = mono_class_get_byref_type (error_class);
 
 		handles_locals = g_new0 (IcallHandlesLocal, csig->param_count);
 
@@ -6524,7 +6529,6 @@ emit_native_icall_wrapper_ilgen (MonoMethodBuilder *mb, MonoMethod *method, Mono
 					g_assert_not_reached ();
 			}
 		}
-		mono_mb_emit_ldloc_addr (mb, error_var);
 	} else {
 		for (int i = 0; i < csig->param_count; i++)
 			mono_mb_emit_ldarg (mb, i);

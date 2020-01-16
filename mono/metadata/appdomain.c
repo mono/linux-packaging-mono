@@ -440,8 +440,7 @@ mono_check_corlib_version_internal (void)
 #if defined(MONO_CROSS_COMPILE)
 	/* Can't read the corlib version because we only have the target class layouts */
 	return NULL;
-#endif
-
+#else
 	char *result = NULL;
 	char *version = mono_get_corlib_version ();
 	if (!version) {
@@ -466,6 +465,7 @@ mono_check_corlib_version_internal (void)
 exit:
 	g_free (version);
 	return result;
+#endif
 }
 
 /**
@@ -2104,8 +2104,6 @@ mono_make_shadow_copy (const char *filename, MonoError *oerror)
 	char *shadow_dir;
 	gint32 copy_error;
 
-	error_init (oerror);
-
 	set_domain_search_path (domain);
 
 	if (!mono_is_shadow_copy_enabled (domain, dir_name)) {
@@ -2727,7 +2725,8 @@ mono_alc_load_raw_bytes (MonoAssemblyLoadContext *alc, guint8 *assembly_data, gu
 
 	MonoAssembly* redirected_asm = NULL;
 	MonoImageOpenStatus new_status = MONO_IMAGE_OK;
-	if ((redirected_asm = mono_assembly_binding_applies_to_image (alc, image, &new_status))) {
+	// http://blogs.microsoft.co.il/sasha/2010/06/09/assemblyreflectiononlyload-ignores-assembly-binding-redirects/
+	if (!refonly && (redirected_asm = mono_assembly_binding_applies_to_image (alc, image, &new_status))) {
 		mono_image_close (image);
 		image = redirected_asm->image;
 		mono_image_addref (image); /* so that mono_image close, below, has something to do */
@@ -2808,7 +2807,7 @@ ves_icall_System_AppDomain_LoadAssembly (MonoAppDomainHandle ad, MonoStringHandl
 	req.basedir = basedir;
 	req.no_postload_search = TRUE;
 	ass = mono_assembly_request_byname (&aname, &req, &status);
-	mono_assembly_name_free (&aname);
+	mono_assembly_name_free_internal (&aname);
 
 	if (!ass) {
 		/* MS.NET doesn't seem to call the assembly resolve handler for refonly assemblies */
