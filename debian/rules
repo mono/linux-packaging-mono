@@ -124,7 +124,7 @@ build-arch build: build-stamp
 build-stamp: configure-stamp
 	dh_testdir
 ifndef SKIP_LIBGC
-	cd libgc && $(MAKE) $(LIBGC_MAKE_FLAGS)
+	cd external/bdwgc && $(MAKE) $(LIBGC_MAKE_FLAGS)
 endif
 ifdef LLVM_ARCH
 	cd llvm && $(MAKE)
