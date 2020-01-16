@@ -1,7 +1,6 @@
 libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
- GC_abort@Base 4.1.0.1738
+ GC_FirstDLOpenedLinkMap@Base 6.10.0.52
  GC_add_ext_descriptor@Base 4.1.0.1738
- GC_add_leaked@Base 4.1.0.1738
  GC_add_map_entry@Base 4.1.0.1738
  GC_add_roots@Base 4.1.0.1738
  GC_add_roots_inner@Base 4.1.0.1738
@@ -10,7 +9,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_add_to_black_list_stack@Base 4.1.0.1738
  GC_add_to_fl@Base 4.1.0.1738
  GC_add_to_heap@Base 4.1.0.1738
- GC_adj_words_allocd@Base 4.1.0.1738
+ GC_adj_bytes_allocd@Base 6.10.0.52
  GC_all_bottom_indices@Base 4.1.0.1738
  GC_all_bottom_indices_end@Base 4.1.0.1738
  GC_all_interior_pointers@Base 4.1.0.1738
@@ -23,38 +22,43 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_allow_register_threads@Base 4.3.0.2390
  GC_aobjfreelist_ptr@Base 4.1.0.1738
  GC_apply_to_all_blocks@Base 4.1.0.1738
- GC_apply_to_maps@Base 4.1.0.1738
  GC_approx_sp@Base 4.1.0.1738
- GC_arobjfreelist@Base 4.1.0.1738
  GC_array_kind@Base 4.1.0.1738
  GC_array_mark_proc@Base 4.1.0.1738
  GC_array_mark_proc_index@Base 4.1.0.1738
  GC_arrays@Base 4.1.0.1738
+ GC_atfork_child@Base 6.10.0.52
+ GC_atfork_parent@Base 6.10.0.52
+ GC_atfork_prepare@Base 6.10.0.52
  GC_auobjfreelist_ptr@Base 4.1.0.1738
  GC_avail_descr@Base 4.1.0.1738
  GC_base@Base 4.1.0.1738
  GC_bl_init@Base 4.1.0.1738
+ GC_bl_init_no_interiors@Base 6.10.0.52
  GC_black_list_spacing@Base 4.1.0.1738
  GC_block_empty@Base 4.1.0.1738
- GC_block_nearly_full1@Base 4.1.0.1738
- GC_block_nearly_full3@Base 4.1.0.1738
  GC_block_nearly_full@Base 4.1.0.1738
  GC_block_was_dirty@Base 4.1.0.1738
  GC_bm_table@Base 4.1.0.1738
- GC_build_fl1@Base 4.1.0.1738
+ GC_brief_async_signal_safe_sleep@Base 6.10.0.52
  GC_build_fl2@Base 4.1.0.1738
  GC_build_fl4@Base 4.1.0.1738
  GC_build_fl@Base 4.1.0.1738
  GC_build_fl_clear2@Base 4.1.0.1738
- GC_build_fl_clear3@Base 4.1.0.1738
  GC_build_fl_clear4@Base 4.1.0.1738
+ GC_bytes_allocd_tmp@Base 6.10.0.52
+ GC_bytes_found@Base 6.10.0.52
  GC_call_with_alloc_lock@Base 4.1.0.1738
+ GC_call_with_gc_active@Base 6.10.0.52
+ GC_call_with_stack_base@Base 6.10.0.52
  GC_calloc_explicitly_typed@Base 4.1.0.1738
  GC_change_stubborn@Base 4.1.0.1738
  GC_check_annotated_obj@Base 4.1.0.1738
+ GC_check_finalizer_nested@Base 6.10.0.52
  GC_check_heap@Base 4.1.0.1738
  GC_check_heap_block@Base 4.1.0.1738
  GC_check_heap_proc@Base 4.1.0.1738
+ GC_check_leaked@Base 6.10.0.52
  GC_clear_a_few_frames@Base 4.1.0.1738
  GC_clear_bl@Base 4.1.0.1738
  GC_clear_fl_links@Base 4.1.0.1738
@@ -65,23 +69,28 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_clear_roots@Base 4.1.0.1738
  GC_clear_stack@Base 4.1.0.1738
  GC_clear_stack_inner@Base 4.1.0.1738
+ GC_clear_togglerefs@Base 6.10.0.52
  GC_collect_a_little@Base 4.1.0.1738
  GC_collect_a_little_inner@Base 4.1.0.1738
+ GC_collect_at_heapsize@Base 6.10.0.52
  GC_collect_or_expand@Base 4.1.0.1738
  GC_collecting@Base 4.1.0.1738
  GC_collection_in_progress@Base 4.1.0.1738
+ GC_compute_large_free_bytes@Base 6.10.0.52
+ GC_compute_root_size@Base 6.10.0.52
  GC_cond_register_dynamic_libraries@Base 4.1.0.1738
  GC_continue_reclaim@Base 4.1.0.1738
  GC_copy_bl@Base 4.1.0.1738
  GC_copyright@Base 4.1.0.1738
+ GC_core_gcj_malloc@Base 6.10.0.52
  GC_current_warn_proc@Base 4.1.0.1738
  GC_data_start@Base 4.1.0.1738
  GC_debug_change_stubborn@Base 4.1.0.1738
  GC_debug_end_stubborn_change@Base 4.1.0.1738
  GC_debug_free@Base 4.1.0.1738
- GC_debug_free_inner@Base 4.1.0.1738
- GC_debug_gcj_fast_malloc@Base 4.1.0.1738
  GC_debug_gcj_malloc@Base 4.1.0.1738
+ GC_debug_generic_malloc@Base 6.10.0.52
+ GC_debug_generic_or_special_malloc@Base 6.10.0.52
  GC_debug_header_size@Base 4.1.0.1738
  GC_debug_invoke_finalizer@Base 4.1.0.1738
  GC_debug_malloc@Base 4.1.0.1738
@@ -99,45 +108,58 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_debug_register_finalizer@Base 4.1.0.1738
  GC_debug_register_finalizer_ignore_self@Base 4.1.0.1738
  GC_debug_register_finalizer_no_order@Base 4.1.0.1738
+ GC_debug_register_finalizer_unreachable@Base 6.10.0.52
+ GC_debug_strdup@Base 6.10.0.52
+ GC_debug_strndup@Base 6.10.0.52
  GC_debugging_started@Base 4.1.0.1738
  GC_default_is_valid_displacement_print_proc@Base 4.1.0.1738
  GC_default_is_visible_print_proc@Base 4.1.0.1738
+ GC_default_on_abort@Base 6.10.0.52
  GC_default_oom_fn@Base 4.1.0.1738
  GC_default_print_heap_obj_proc@Base 4.1.0.1738
  GC_default_push_other_roots@Base 4.1.0.1738
  GC_default_same_obj_print_proc@Base 4.1.0.1738
+ GC_default_stop_func@Base 6.10.0.52
  GC_default_warn_proc@Base 4.1.0.1738
  GC_deficit@Base 4.1.0.1738
+ GC_deinit@Base 6.10.0.52
  GC_delete_gc_thread@Base 4.1.0.1738
  GC_delete_thread@Base 4.1.0.1738
  GC_descr_obj_size@Base 4.1.0.1738
+ GC_describe_type_fns@Base 6.10.0.52
  GC_dirty_init@Base 4.1.0.1738
- GC_dirty_maintained@Base 4.1.0.1738
+ GC_dirty_inner@Base 6.10.0.52
  GC_disable@Base 4.1.0.1738
- GC_disable_signals@Base 4.1.0.1738
+ GC_disable_incremental@Base 6.10.0.52
+ GC_disclaim_and_reclaim@Base 6.10.0.52
+ GC_disclaim_and_reclaim_or_free_small_block@Base 6.10.0.52
+ GC_dl_hashtbl@Base 6.10.0.52
  GC_dlopen@Base 4.1.0.1738
- GC_do_nothing@Base 4.1.0.1738
+ GC_do_blocking@Base 6.10.0.52
+ GC_do_blocking_inner@Base 6.10.0.52
+ GC_do_enumerate_reachable_objects@Base 6.10.0.52
  GC_dont_expand@Base 4.1.0.1738
  GC_dont_gc@Base 4.1.0.1738
  GC_dont_precollect@Base 4.1.0.1738
  GC_double_descr@Base 4.1.0.1738
  GC_dump@Base 4.1.0.1738
  GC_dump_finalization@Base 4.1.0.1738
+ GC_dump_finalization_links@Base 6.10.0.52
+ GC_dump_named@Base 6.10.0.52
  GC_dump_regions@Base 4.1.0.1738
  GC_dump_regularly@Base 4.1.0.1738
  GC_ed_size@Base 4.1.0.1738
  GC_enable@Base 4.1.0.1738
  GC_enable_incremental@Base 4.1.0.1738
- GC_enable_signals@Base 4.1.0.1738
- GC_end_blocking@Base 4.1.0.1738
  GC_end_stubborn_change@Base 4.1.0.1738
  GC_enqueue_all_finalizers@Base 4.1.0.1738
+ GC_enumerate_reachable_objects_inner@Base 6.10.0.52
  GC_eobjfreelist@Base 4.1.0.1738
  GC_err_printf@Base 4.1.0.1738
  GC_err_puts@Base 4.1.0.1738
- GC_err_write@Base 4.1.0.1738
  GC_excl_table_entries@Base 4.1.0.1738
  GC_exclude_static_roots@Base 4.1.0.1738
+ GC_exclude_static_roots_inner@Base 6.10.0.52
  GC_exit_check@Base 4.1.0.1738
  GC_expand_hp@Base 4.1.0.1738
  GC_expand_hp_inner@Base 4.1.0.1738
@@ -147,107 +169,171 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_extend_size_map@Base 4.1.0.1738
  GC_fail_count@Base 4.1.0.1738
  GC_fault_handler@Base 4.1.0.1738
- GC_finalization_failures@Base 4.1.0.1738
  GC_finalize@Base 4.1.0.1738
  GC_finalize_all@Base 4.1.0.1738
- GC_finalize_now@Base 4.1.0.1738
  GC_finalize_on_demand@Base 4.1.0.1738
+ GC_finalized_disclaim@Base 6.10.0.52
+ GC_finalized_kind@Base 6.10.0.52
+ GC_finalized_malloc@Base 6.10.0.52
  GC_finalizer_notifier@Base 4.1.0.1738
  GC_find_header@Base 4.1.0.1738
  GC_find_leak@Base 4.1.0.1738
  GC_find_limit@Base 4.1.0.1738
- GC_find_start@Base 4.1.0.1738
+ GC_find_limit_with_bound@Base 6.10.0.52
+ GC_findleak_delay_free@Base 6.10.0.52
  GC_finish_collection@Base 4.1.0.1738
+ GC_fnlz_roots@Base 6.10.0.52
  GC_fo_entries@Base 4.1.0.1738
+ GC_force_unmap_on_gcollect@Base 6.10.0.52
+ GC_foreach_heap_section@Base 6.10.0.52
  GC_free@Base 4.1.0.1738
  GC_free_block_ending_at@Base 4.1.0.1738
+ GC_free_bytes@Base 6.10.0.52
  GC_free_inner@Base 4.1.0.1738
  GC_free_space_divisor@Base 4.1.0.1738
  GC_freehblk@Base 4.1.0.1738
- GC_freehblk_ptr@Base 4.1.0.1738
  GC_full_freq@Base 4.1.0.1738
  GC_gc_no@Base 4.1.0.1738
  GC_gcj_debug_kind@Base 4.1.0.1738
- GC_gcj_fast_malloc@Base 4.1.0.1738
+ GC_gcj_fake_mark_proc@Base 6.10.0.52
  GC_gcj_kind@Base 4.1.0.1738
  GC_gcj_malloc@Base 4.1.0.1738
  GC_gcj_malloc_ignore_off_page@Base 4.1.0.1738
  GC_gcj_malloc_initialized@Base 4.1.0.1738
- GC_gcjdebugobjfreelist@Base 4.1.0.1738
+ GC_gcj_vector_initialized@Base 6.10.0.52
+ GC_gcj_vector_kind@Base 6.10.0.52
+ GC_gcj_vector_malloc@Base 6.10.0.52
+ GC_gcj_vector_mark_proc@Base 6.10.0.52
+ GC_gcj_vector_mp_index@Base 6.10.0.52
  GC_gcjobjfreelist@Base 4.1.0.1738
+ GC_gcjvecfreelist@Base 6.10.0.52
  GC_gcollect@Base 4.1.0.1738
+ GC_gcollect_and_unmap@Base 6.10.0.52
  GC_general_register_disappearing_link@Base 4.1.0.1738
  GC_generic_malloc@Base 4.1.0.1738
  GC_generic_malloc_ignore_off_page@Base 4.1.0.1738
  GC_generic_malloc_inner@Base 4.1.0.1738
  GC_generic_malloc_inner_ignore_off_page@Base 4.1.0.1738
  GC_generic_malloc_many@Base 4.1.0.1738
- GC_generic_malloc_words_small@Base 4.1.0.1738
- GC_generic_malloc_words_small_inner@Base 4.1.0.1738
+ GC_generic_malloc_uncollectable@Base 6.10.0.52
  GC_generic_or_special_malloc@Base 4.1.0.1738
- GC_generic_push_regs@Base 4.1.0.1738
+ GC_get_abort_func@Base 6.10.0.52
+ GC_get_all_interior_pointers@Base 6.10.0.52
+ GC_get_await_finalize_proc@Base 6.10.0.52
  GC_get_bytes_since_gc@Base 4.1.0.1738
+ GC_get_dont_expand@Base 6.10.0.52
+ GC_get_dont_precollect@Base 6.10.0.52
+ GC_get_expl_freed_bytes_since_gc@Base 6.10.0.52
+ GC_get_file_len@Base 6.10.0.52
+ GC_get_finalize_on_demand@Base 6.10.0.52
+ GC_get_finalizer_notifier@Base 6.10.0.52
+ GC_get_find_leak@Base 6.10.0.52
  GC_get_first_part@Base 4.1.0.1738
+ GC_get_force_unmap_on_gcollect@Base 6.10.0.52
  GC_get_free_bytes@Base 4.1.0.1738
+ GC_get_free_space_divisor@Base 6.10.0.52
+ GC_get_full_freq@Base 6.10.0.52
+ GC_get_full_gc_total_time@Base 6.10.0.52
+ GC_get_gc_no@Base 6.10.0.52
+ GC_get_heap_section_count@Base 6.10.0.52
  GC_get_heap_size@Base 4.1.0.1738
+ GC_get_heap_usage_safe@Base 6.10.0.52
+ GC_get_java_finalization@Base 6.10.0.52
+ GC_get_kind_and_size@Base 6.10.0.52
+ GC_get_main_stack_base@Base 6.10.0.52
+ GC_get_maps@Base 6.10.0.52
+ GC_get_maps_len@Base 6.10.0.52
+ GC_get_max_prior_attempts@Base 6.10.0.52
+ GC_get_max_retries@Base 6.10.0.52
+ GC_get_memory_use@Base 6.10.0.52
+ GC_get_min_bytes_allocd@Base 6.10.0.52
+ GC_get_no_dls@Base 6.10.0.52
+ GC_get_non_gc_bytes@Base 6.10.0.52
  GC_get_nprocs@Base 4.1.0.1738
+ GC_get_on_collection_event@Base 6.10.0.52
+ GC_get_on_heap_resize@Base 6.10.0.52
+ GC_get_on_thread_event@Base 6.10.0.52
+ GC_get_oom_fn@Base 6.10.0.52
+ GC_get_pages_executable@Base 6.10.0.52
+ GC_get_parallel@Base 6.10.0.52
+ GC_get_prof_stats@Base 6.10.0.52
+ GC_get_prof_stats_unsafe@Base 6.10.0.52
+ GC_get_push_other_roots@Base 6.10.0.52
+ GC_get_rate@Base 6.10.0.52
+ GC_get_size_map_at@Base 6.10.0.52
  GC_get_stack_base@Base 4.1.0.1738
+ GC_get_start_callback@Base 6.10.0.52
+ GC_get_stop_func@Base 6.10.0.52
  GC_get_suspend_signal@Base 4.1.0.1738
  GC_get_thr_restart_signal@Base 4.3.0.2390
+ GC_get_time_limit@Base 6.10.0.52
+ GC_get_time_limit_ns@Base 6.10.0.52
+ GC_get_toggleref_func@Base 6.10.0.52
  GC_get_total_bytes@Base 4.1.0.1738
+ GC_get_unmapped_bytes@Base 6.10.0.52
+ GC_get_version@Base 6.10.0.52
+ GC_get_warn_proc@Base 6.10.0.52
  GC_greatest_plausible_heap_addr@Base 4.1.0.1738
  GC_grow_table@Base 4.1.0.1738
+ GC_handle_fork@Base 6.10.0.52
  GC_has_other_debug_info@Base 4.1.0.1738
+ GC_has_static_roots@Base 6.10.0.52
  GC_have_errors@Base 4.1.0.1738
  GC_hblk_fl_from_blocks@Base 4.1.0.1738
  GC_hblkfreelist@Base 4.1.0.1738
- GC_hdr_cache_hits@Base 4.1.0.1738
- GC_hdr_cache_misses@Base 4.1.0.1738
- GC_high_water@Base 4.1.0.1738
+ GC_header_cache_miss@Base 6.10.0.52
+ GC_heapsize_at_forced_unmap@Base 6.10.0.52
  GC_ignore_self_finalize_mark_proc@Base 4.1.0.1738
+ GC_ignore_warn_proc@Base 6.10.0.52
  GC_in_thread_creation@Base 4.1.0.1738
  GC_incomplete_normal_bl@Base 4.1.0.1738
  GC_incomplete_stack_bl@Base 4.1.0.1738
- GC_incr_mem_freed@Base 4.1.0.1738
- GC_incr_words_allocd@Base 4.1.0.1738
+ GC_incr_bytes_allocd@Base 6.10.0.52
+ GC_incr_bytes_freed@Base 6.10.0.52
  GC_incremental@Base 4.1.0.1738
  GC_incremental_protection_needs@Base 4.1.0.1738
  GC_init@Base 4.1.0.1738
  GC_init_explicit_typing@Base 4.1.0.1738
+ GC_init_finalized_malloc@Base 6.10.0.52
  GC_init_gcj_malloc@Base 4.1.0.1738
+ GC_init_gcj_vector@Base 6.10.0.52
  GC_init_headers@Base 4.1.0.1738
- GC_init_inner@Base 4.1.0.1738
  GC_init_linux_data_start@Base 4.1.0.1738
  GC_init_parallel@Base 4.1.0.1738
  GC_init_size_map@Base 4.1.0.1738
+ GC_init_time@Base 6.10.0.52
+ GC_initialize_offsets@Base 6.10.0.52
  GC_initiate_gc@Base 4.1.0.1738
+ GC_inner_start_routine@Base 6.10.0.52
  GC_install_counts@Base 4.1.0.1738
  GC_install_header@Base 4.1.0.1738
- GC_invalid_header@Base 4.1.0.1738
- GC_invalid_map@Base 4.1.0.1738
- GC_invalidate_map@Base 4.1.0.1738
  GC_invalidate_mark_state@Base 4.1.0.1738
  GC_invoke_finalizers@Base 4.1.0.1738
  GC_is_black_listed@Base 4.1.0.1738
- GC_is_fresh@Base 4.1.0.1738
+ GC_is_disabled@Base 6.10.0.52
  GC_is_full_gc@Base 4.1.0.1738
+ GC_is_heap_ptr@Base 6.10.0.52
+ GC_is_incremental_mode@Base 6.10.0.52
+ GC_is_init_called@Base 6.10.0.52
  GC_is_initialized@Base 4.1.0.1738
  GC_is_marked@Base 4.1.0.1738
- GC_is_static_root@Base 4.1.0.1738
+ GC_is_thread_suspended@Base 6.10.0.52
+ GC_is_tmp_root@Base 6.10.0.52
  GC_is_valid_displacement@Base 4.1.0.1738
  GC_is_valid_displacement_print_proc@Base 4.1.0.1738
  GC_is_visible@Base 4.1.0.1738
  GC_is_visible_print_proc@Base 4.1.0.1738
  GC_java_finalization@Base 4.1.0.1738
  GC_jmp_buf@Base 4.1.0.1738
- GC_key_create@Base 4.1.0.1738
  GC_large_alloc_warn_interval@Base 4.1.0.1738
  GC_large_alloc_warn_suppressed@Base 4.1.0.1738
  GC_leaked@Base 4.1.0.1738
  GC_least_plausible_heap_addr@Base 4.1.0.1738
- GC_linux_stack_base@Base 4.1.0.1738
+ GC_linux_main_stack_base@Base 6.10.0.52
+ GC_ll_hashtbl@Base 6.10.0.52
  GC_lock@Base 4.1.0.1738
- GC_lock_holder@Base 4.1.0.1738
+ GC_log@Base 6.10.0.52
+ GC_log_printf@Base 6.10.0.52
  GC_lookup_thread@Base 4.1.0.1738
  GC_make_array_descriptor@Base 4.1.0.1738
  GC_make_closure@Base 4.1.0.1738
@@ -260,6 +346,8 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_malloc_explicitly_typed@Base 4.1.0.1738
  GC_malloc_explicitly_typed_ignore_off_page@Base 4.1.0.1738
  GC_malloc_ignore_off_page@Base 4.1.0.1738
+ GC_malloc_kind@Base 6.10.0.52
+ GC_malloc_kind_global@Base 6.10.0.52
  GC_malloc_many@Base 4.1.0.1738
  GC_malloc_stubborn@Base 4.1.0.1738
  GC_malloc_uncollectable@Base 4.1.0.1738
@@ -268,21 +356,18 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_mark_from@Base 4.1.0.1738
  GC_mark_init@Base 4.1.0.1738
  GC_mark_some@Base 4.1.0.1738
- GC_mark_stack@Base 4.1.0.1738
- GC_mark_stack_empty@Base 4.1.0.1738
- GC_mark_stack_limit@Base 4.1.0.1738
  GC_mark_stack_size@Base 4.1.0.1738
  GC_mark_stack_too_small@Base 4.1.0.1738
- GC_mark_stack_top@Base 4.1.0.1738
  GC_mark_state@Base 4.1.0.1738
- GC_max@Base 4.1.0.1738
+ GC_mark_togglerefs@Base 6.10.0.52
+ GC_max_heapsize@Base 6.10.0.52
  GC_max_retries@Base 4.1.0.1738
  GC_maybe_gc@Base 4.1.0.1738
- GC_mem_found@Base 4.1.0.1738
  GC_memalign@Base 4.1.0.1738
  GC_merge_unmapped@Base 4.1.0.1738
- GC_min@Base 4.1.0.1738
- GC_min_sp@Base 4.1.0.1738
+ GC_move_disappearing_link@Base 6.10.0.52
+ GC_move_disappearing_link_inner@Base 6.10.0.52
+ GC_move_long_link@Base 6.10.0.52
  GC_n_attempts@Base 4.1.0.1738
  GC_n_heap_sects@Base 4.1.0.1738
  GC_n_kinds@Base 4.1.0.1738
@@ -292,6 +377,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_n_set_marks@Base 4.1.0.1738
  GC_n_smashed@Base 4.1.0.1738
  GC_need_full_gc@Base 4.1.0.1738
+ GC_need_to_lock@Base 6.10.0.52
  GC_never_stop_func@Base 4.1.0.1738
  GC_new_free_list@Base 4.1.0.1738
  GC_new_free_list_inner@Base 4.1.0.1738
@@ -304,30 +390,34 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_next_exclusion@Base 4.1.0.1738
  GC_next_used_block@Base 4.1.0.1738
  GC_no_dls@Base 4.1.0.1738
- GC_no_sunOS_pthreads@Base 4.1.0.1738
- GC_no_sunOS_threads@Base 4.1.0.1738
  GC_non_gc_bytes@Base 4.1.0.1738
+ GC_non_gc_bytes_at_gc@Base 6.10.0.52
  GC_noop1@Base 4.1.0.1738
- GC_noop@Base 4.1.0.1738
+ GC_noop6@Base 6.10.0.52
+ GC_noop_sink@Base 6.10.0.52
  GC_normal_finalize_mark_proc@Base 4.1.0.1738
- GC_notify_event@Base 4.1.0.1738
- GC_notify_full_gc@Base 4.1.0.1738
  GC_notify_or_invoke_finalizers@Base 4.1.0.1738
  GC_nprocs@Base 4.1.0.1738
  GC_null_finalize_mark_proc@Base 4.1.0.1738
  GC_number_stack_black_listed@Base 4.1.0.1738
  GC_obj_kinds@Base 4.1.0.1738
+ GC_object_finalized_proc@Base 6.10.0.52
  GC_objects_are_marked@Base 4.1.0.1738
  GC_objfreelist_ptr@Base 4.1.0.1738
+ GC_old_dl_entries@Base 6.10.0.52
+ GC_old_ll_entries@Base 6.10.0.52
  GC_old_normal_bl@Base 4.1.0.1738
  GC_old_stack_bl@Base 4.1.0.1738
+ GC_on_abort@Base 6.10.0.52
+ GC_on_collection_event@Base 6.10.0.52
  GC_on_heap_resize@Base 4.1.0.1738
- GC_on_stack@Base 4.1.0.1738
+ GC_on_thread_event@Base 6.10.0.52
  GC_oom_fn@Base 4.1.0.1738
  GC_page_size@Base 4.1.0.1738
  GC_page_was_dirty@Base 4.1.0.1738
- GC_page_was_ever_dirty@Base 4.1.0.1738
+ GC_pages_executable@Base 6.10.0.52
  GC_parallel@Base 4.1.0.1738
+ GC_parse_mem_size_arg@Base 6.10.0.52
  GC_pause@Base 4.1.0.1738
  GC_post_incr@Base 4.1.0.1738
  GC_pre_incr@Base 4.1.0.1738
@@ -340,26 +430,27 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_print_block_descr@Base 4.1.0.1738
  GC_print_block_list@Base 4.1.0.1738
  GC_print_finalization_stats@Base 4.1.0.1738
+ GC_print_free_list@Base 6.10.0.52
  GC_print_hblkfreelist@Base 4.1.0.1738
  GC_print_heap_obj@Base 4.1.0.1738
  GC_print_heap_sects@Base 4.1.0.1738
  GC_print_obj@Base 4.1.0.1738
  GC_print_smashed_obj@Base 4.1.0.1738
- GC_print_source_ptr@Base 4.1.0.1738
  GC_print_static_roots@Base 4.1.0.1738
  GC_print_stats@Base 4.1.0.1738
- GC_print_type@Base 4.1.0.1738
  GC_printf@Base 4.1.0.1738
  GC_process_togglerefs@Base 4.1.0.1738
- GC_project2@Base 4.1.0.1738
  GC_promote_black_lists@Base 4.1.0.1738
+ GC_pthread_cancel@Base 6.10.0.52
  GC_pthread_create@Base 4.1.0.1738
  GC_pthread_detach@Base 4.1.0.1738
+ GC_pthread_exit@Base 6.10.0.52
  GC_pthread_join@Base 4.1.0.1738
  GC_pthread_sigmask@Base 4.1.0.1738
  GC_push_all@Base 4.1.0.1738
  GC_push_all_eager@Base 4.1.0.1738
  GC_push_all_stack@Base 4.1.0.1738
+ GC_push_all_stack_sections@Base 6.10.0.52
  GC_push_all_stacks@Base 4.1.0.1738
  GC_push_complex_descriptor@Base 4.1.0.1738
  GC_push_conditional@Base 4.1.0.1738
@@ -367,148 +458,204 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_push_current_stack@Base 4.1.0.1738
  GC_push_finalizer_structures@Base 4.1.0.1738
  GC_push_gc_structures@Base 4.1.0.1738
- GC_push_marked1@Base 4.1.0.1738
- GC_push_marked2@Base 4.1.0.1738
- GC_push_marked4@Base 4.1.0.1738
  GC_push_marked@Base 4.1.0.1738
  GC_push_next_marked@Base 4.1.0.1738
  GC_push_next_marked_dirty@Base 4.1.0.1738
  GC_push_next_marked_uncollectable@Base 4.1.0.1738
  GC_push_one@Base 4.1.0.1738
  GC_push_other_roots@Base 4.1.0.1738
+ GC_push_regs_and_stack@Base 6.10.0.52
  GC_push_roots@Base 4.1.0.1738
  GC_push_selected@Base 4.1.0.1738
- GC_push_stubborn_structures@Base 4.1.0.1738
  GC_push_thread_structures@Base 4.1.0.1738
+ GC_push_typed_structures@Base 6.10.0.52
+ GC_push_typed_structures_proc@Base 6.10.0.52
+ GC_push_unconditionally@Base 6.10.0.52
  GC_quiet@Base 4.1.0.1738
+ GC_rate@Base 6.10.0.52
  GC_read_dirty@Base 4.1.0.1738
  GC_realloc@Base 4.1.0.1738
- GC_reclaim1@Base 4.1.0.1738
- GC_reclaim_all@Base 4.1.0.1738
+ GC_rebuild_root_index@Base 6.10.0.52 GC_reclaim_all@Base 4.1.0.1738
  GC_reclaim_block@Base 4.1.0.1738
  GC_reclaim_check@Base 4.1.0.1738
- GC_reclaim_clear2@Base 4.1.0.1738
- GC_reclaim_clear4@Base 4.1.0.1738
  GC_reclaim_clear@Base 4.1.0.1738
  GC_reclaim_generic@Base 4.1.0.1738
  GC_reclaim_small_nonempty_block@Base 4.1.0.1738
- GC_reclaim_uninit2@Base 4.1.0.1738
- GC_reclaim_uninit4@Base 4.1.0.1738
+ GC_reclaim_unconditionally_marked@Base 6.10.0.52
  GC_reclaim_uninit@Base 4.1.0.1738
+ GC_reclaimed_bytes_before_gc@Base 6.10.0.52
  GC_register_altstack@Base 4.1.0.1738
  GC_register_data_segments@Base 4.1.0.1738
  GC_register_describe_type_fn@Base 4.1.0.1738
  GC_register_disappearing_link@Base 4.1.0.1738
+ GC_register_disappearing_link_inner@Base 6.10.0.52
+ GC_register_disclaim_proc@Base 6.10.0.52
  GC_register_displacement@Base 4.1.0.1738
  GC_register_displacement_inner@Base 4.1.0.1738
  GC_register_dynamic_libraries@Base 4.1.0.1738
  GC_register_dynamic_libraries_dl_iterate_phdr@Base 4.1.0.1738
+ GC_register_dynlib_callback@Base 6.10.0.52
  GC_register_finalizer@Base 4.1.0.1738
  GC_register_finalizer_ignore_self@Base 4.1.0.1738
  GC_register_finalizer_inner@Base 4.1.0.1738
  GC_register_finalizer_no_order@Base 4.1.0.1738
+ GC_register_finalizer_unreachable@Base 6.10.0.52
+ GC_register_has_static_roots_callback@Base 6.10.0.52
  GC_register_long_link@Base 4.1.0.1738
  GC_register_main_static_data@Base 4.1.0.1738
  GC_register_my_thread@Base 4.3.0.2390
+ GC_register_my_thread_inner@Base 6.10.0.52
  GC_remap@Base 4.1.0.1738
+ GC_remove_all_threads_but_me@Base 6.10.0.5
  GC_remove_allowed_signals@Base 4.1.0.1738
  GC_remove_counts@Base 4.1.0.1738
- GC_remove_from_fl@Base 4.1.0.1738
+ GC_remove_from_fl_at@Base 6.10.0.52
  GC_remove_header@Base 4.1.0.1738
  GC_remove_protection@Base 4.1.0.1738
+ GC_remove_root_at_pos@Base 6.10.0.52
  GC_remove_roots@Base 4.1.0.1738
  GC_remove_roots_inner@Base 4.1.0.1738
- GC_remove_specific@Base 4.1.0.1738
  GC_remove_tmp_roots@Base 4.1.0.1738
  GC_repeat_read@Base 4.1.0.1738
  GC_reset_fault_handler@Base 4.1.0.1738
+ GC_reset_finalizer_nested@Base 6.10.0.52
+ GC_restart_all@Base 6.10.0.52
  GC_restart_handler@Base 4.1.0.1738
+ GC_resume_thread@Base 6.10.0.52
  GC_retry_signals@Base 4.1.0.1738
  GC_root_size@Base 4.1.0.1738
  GC_roots_present@Base 4.1.0.1738
  GC_same_obj@Base 4.1.0.1738
  GC_same_obj_print_proc@Base 4.1.0.1738
  GC_scratch_alloc@Base 4.1.0.1738
+ GC_scratch_recycle_inner@Base 6.10.0.52
+ GC_set_abort_func@Base 6.10.0.52
+ GC_set_all_interior_pointers@Base 6.10.0.52
  GC_set_and_save_fault_handler@Base 4.1.0.1738
  GC_set_await_finalize_proc@Base 4.3.0.2390
+ GC_set_dont_expand@Base 6.10.0.52
+ GC_set_dont_precollect@Base 6.10.0.52
+ GC_set_finalize_on_demand@Base 6.10.0.52
+ GC_set_finalizer_notifier@Base 6.10.0.52
+ GC_set_find_leak@Base 6.10.0.52
  GC_set_fl_marks@Base 4.1.0.1738
+ GC_set_force_unmap_on_gcollect@Base 6.10.0.52
  GC_set_free_space_divisor@Base 4.1.0.1738
+ GC_set_full_freq@Base 6.10.0.52
+ GC_set_handle_fork@Base 6.10.0.52
  GC_set_hdr_marks@Base 4.1.0.1738
+ GC_set_java_finalization@Base 6.10.0.52
+ GC_set_log_fd@Base 6.10.0.52
  GC_set_mark_bit@Base 4.1.0.1738
  GC_set_max_heap_size@Base 4.1.0.1738
+ GC_set_max_prior_attempts@Base 6.10.0.52
+ GC_set_max_retries@Base 6.10.0.52
+ GC_set_min_bytes_allocd@Base 6.10.0.52
+ GC_set_no_dls@Base 6.10.0.52
+ GC_set_non_gc_bytes@Base 6.10.0.52
  GC_set_on_collection_event@Base 4.3.0.2390
- GC_set_stackbottom@Base 4.1.0.1738
+ GC_set_on_heap_resize@Base 6.10.0.52
+ GC_set_on_thread_event@Base 6.10.0.52
+ GC_set_oom_fn@Base 6.10.0.52
+ GC_set_pages_executable@Base 6.10.0.52
+ GC_set_push_other_roots@Base 6.10.0.52
+ GC_set_rate@Base 6.10.0.52
+ GC_set_start_callback@Base 6.10.0.52
+ GC_set_stop_func@Base 6.10.0.52
+ GC_set_suspend_signal@Base 6.10.0.52
+ GC_set_thr_restart_signal@Base 6.10.0.52
+ GC_set_time_limit@Base 6.10.0.52
+ GC_set_time_limit_ns@Base 6.10.0.52
  GC_set_toggleref_func@Base 4.3.0.2390
  GC_set_warn_proc@Base 4.1.0.1738
  GC_setpagesize@Base 4.1.0.1738
- GC_setspecific@Base 4.1.0.1738
  GC_setup_temporary_fault_handler@Base 4.1.0.1738
  GC_should_collect@Base 4.1.0.1738
  GC_should_invoke_finalizers@Base 4.1.0.1738
+ GC_sig_suspend@Base 6.10.0.52
+ GC_sig_thr_restart@Base 6.10.0.52
  GC_signal_mark_stack_overflow@Base 4.1.0.1738
  GC_size@Base 4.1.0.1738
- GC_sleep@Base 4.1.0.1738
- GC_slow_getspecific@Base 4.1.0.1738
  GC_smashed@Base 4.1.0.1738
  GC_split_block@Base 4.1.0.1738
- GC_stack_last_cleared@Base 4.1.0.1738
  GC_stackbottom@Base 4.1.0.1738
- GC_start_blocking@Base 4.1.0.1738
  GC_start_call_back@Base 4.1.0.1738
- GC_start_debugging@Base 4.1.0.1738
+ GC_start_debugging_inner@Base 6.10.0.52
+ GC_start_mark_threads@Base 6.10.0.52
+ GC_start_mark_threads_inner@Base 6.10.0.52
+ GC_start_performance_measurement@Base 6.10.0.52
  GC_start_reclaim@Base 4.1.0.1738
  GC_start_routine@Base 4.1.0.1738
- GC_start_routine_head@Base 4.1.0.1738
+ GC_start_rtn_prepare_thread@Base 6.10.0.52
  GC_start_time@Base 4.1.0.1738
  GC_start_world@Base 4.1.0.1738
+ GC_start_world_external@Base 6.10.0.52
  GC_stderr@Base 4.1.0.1738
  GC_stdout@Base 4.1.0.1738
  GC_stop_count@Base 4.1.0.1738
  GC_stop_init@Base 4.1.0.1738
  GC_stop_world@Base 4.1.0.1738
+ GC_stop_world_external@Base 6.10.0.52
  GC_stopped_mark@Base 4.1.0.1738
- GC_stopping_pid@Base 4.1.0.1738
- GC_stopping_thread@Base 4.1.0.1738
- GC_store_debug_info@Base 4.1.0.1738
+ GC_store_debug_info_inner@Base 6.10.0.52
+ GC_strdup@Base 6.10.0.52
+ GC_strndup@Base 6.10.0.52
  GC_suspend_ack_sem@Base 4.1.0.1738
  GC_suspend_all@Base 4.1.0.1738
  GC_suspend_handler@Base 4.1.0.1738
+ GC_suspend_handler_inner@Base 6.10.0.52
+ GC_suspend_thread@Base 6.10.0.52
  GC_thr_init@Base 4.1.0.1738
  GC_thr_initialized@Base 4.1.0.1738
  GC_thread_exit_proc@Base 4.1.0.1738
  GC_thread_is_registered@Base 4.1.0.1738
+ GC_thread_key@Base 6.10.0.52
  GC_threads@Base 4.1.0.1738
  GC_time_limit@Base 4.1.0.1738
  GC_timeout_stop_func@Base 4.1.0.1738
  GC_toggleref_add@Base 4.1.0.1738
+ GC_toggleref_arr@Base 6.10.0.52
+ GC_toggleref_array_capacity@Base 6.10.0.52
+ GC_toggleref_array_size@Base 6.10.0.52
+ GC_toggleref_callback@Base 6.10.0.52
  GC_total_stack_black_listed@Base 4.1.0.1738
+ GC_total_stacksize@Base 6.10.0.52
  GC_try_to_collect@Base 4.1.0.1738
+ GC_try_to_collect_general@Base 6.10.0.52
  GC_try_to_collect_inner@Base 4.1.0.1738
  GC_typed_mark_proc@Base 4.1.0.1738
  GC_typed_mark_proc_index@Base 4.1.0.1738
+ GC_unblock_gc_signals@Base 6.10.0.52
  GC_unix_get_mem@Base 4.1.0.1738
+ GC_unix_mmap_get_mem@Base 6.10.0.52
  GC_unmap@Base 4.1.0.1738
  GC_unmap_end@Base 4.1.0.1738
  GC_unmap_gap@Base 4.1.0.1738
  GC_unmap_old@Base 4.1.0.1738
  GC_unmap_start@Base 4.1.0.1738
+ GC_unmap_threshold@Base 6.10.0.52
  GC_unpromote_black_lists@Base 4.1.0.1738
+ GC_unreachable_finalize_mark_proc@Base 6.10.0.52
  GC_unregister_disappearing_link@Base 4.1.0.1738
  GC_unregister_long_link@Base 4.1.0.1738
+ GC_unregister_my_thread@Base 6.10.0.52
+ GC_unregister_my_thread_inner@Base 6.10.0.52
  GC_uobjfreelist_ptr@Base 4.1.0.1738
  GC_use_entire_heap@Base 4.1.0.1738
  GC_used_heap_size_after_full@Base 4.1.0.1738
  GC_version@Base 4.1.0.1738
  GC_wait_for_gc_completion@Base 4.1.0.1738
+ GC_wait_for_markers_init@Base 6.10.0.52
  GC_with_callee_saves_pushed@Base 4.1.0.1738
- GC_words_allocd_at_reset@Base 4.1.0.1738
- GC_world_stopped@Base 4.1.0.1738
+ GC_world_is_stopped@Base 6.10.0.52
  GC_write@Base 4.1.0.1738
+ HeapSectionCountIncrementer@Base 6.10.0.52
+ ad@Base 6.10.0.52
  eg_getdtablesize@Base 5.8.0.22
  eg_my_charset@Base 5.14.0.78
  eg_utf8_to_utf16_with_nuls@Base 5.8.0.22
  eg_wtf8_to_utf16@Base 5.11.0.264
- free_list_index_of@Base 4.1.0.1738
+ ld@Base 6.10.0.52
  mini_get_debug_options@Base 4.1.0.1738
  mini_parse_debug_option@Base 4.3.3.38
  mono_add_internal_call@Base 4.1.0.1738
@@ -561,6 +708,9 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_assembly_open_full@Base 4.1.0.1738
  mono_assembly_set_main@Base 4.1.0.1738
  mono_assembly_setrootdir@Base 4.1.0.1738
+ mono_assertion_message@Base 6.10.0.52
+ mono_assertion_message_disabled@Base 6.10.0.52
+ mono_assertion_message_unreachable@Base 6.10.0.52
  mono_bitset_alloc_size@Base 4.1.0.1738
  mono_bitset_clear@Base 4.1.0.1738
  mono_bitset_clear_all@Base 4.1.0.1738
@@ -1035,7 +1185,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_lls_remove@Base 4.7.0.488
  mono_load_remote_field@Base 4.1.0.1738
  mono_load_remote_field_new@Base 4.1.0.1738
- mono_loader_register_module@Base 5.8.0.22
+ mono_loader_save_bundled_library@Base 6.10.0.52
  mono_lock_free_alloc@Base 4.5.2.48-0nightly2
  mono_lock_free_allocator_check_consistency@Base 4.5.2.48
  mono_lock_free_allocator_init_allocator@Base 4.5.2.48
@@ -1375,6 +1525,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_property_hash_remove_object@Base 4.1.0.1738
  mono_property_set_value@Base 4.1.0.1738
  mono_ptr_class_get@Base 4.1.0.1738
+ mono_quash_linker_empty_file_warning_gmodule_aix@Base 6.10.0.52
  mono_raise_exception@Base 4.1.0.1738
  mono_reflection_assembly_get_assembly@Base 4.1.0.1738
  mono_reflection_free_type_info@Base 4.1.0.1738
@@ -1657,6 +1808,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_g_get_user_name@Base 5.8.0.22
  monoeg_g_getenv@Base 5.8.0.22
  monoeg_g_hasenv@Base 5.8.0.22
+ monoeg_g_hash_table_contains@Base 6.10.0.52
  monoeg_g_hash_table_destroy@Base 5.8.0.22
  monoeg_g_hash_table_find@Base 5.8.0.22
  monoeg_g_hash_table_foreach@Base 5.8.0.22
@@ -1720,6 +1872,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_g_memdup@Base 5.8.0.22
  monoeg_g_mkdir_with_parents@Base 5.8.0.22
  monoeg_g_mkdtemp@Base 5.8.0.22
+ monoeg_g_module_address@Base 6.10.0.52
  monoeg_g_module_build_path@Base 5.8.0.22
  monoeg_g_module_close@Base 5.8.0.22
  monoeg_g_module_error@Base 5.8.0.22
@@ -1793,6 +1946,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_g_sprintf@Base 5.8.0.22
  monoeg_g_stpcpy@Base 5.8.0.22
  monoeg_g_str_equal@Base 5.8.0.22
+ monoeg_g_str_from_file_region@Base 6.10.0.52
  monoeg_g_str_has_prefix@Base 5.8.0.22
  monoeg_g_str_has_suffix@Base 5.8.0.22
  monoeg_g_str_hash@Base 5.8.0.22
@@ -1877,3 +2031,4 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_utf16_len@Base 6.0.0.172
  monoeg_utf8_get_char_validated@Base 5.8.0.22
  monoeg_utf8_to_ucs4@Base 5.8.0.22
+ sd@Base 6.10.0.52
