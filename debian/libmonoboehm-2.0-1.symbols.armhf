@@ -4,3 +4,4 @@
  GC_posix_memalign@Base 6.10.0.52
  GC_reclaim_all@Base 6.10.0.52
  mono_arch_get_llvm_call_info@Base 5.14.0.87
+ mono_dl_open@Base 5.8.0.22

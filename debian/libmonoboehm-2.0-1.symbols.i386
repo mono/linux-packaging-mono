@@ -2,3 +2,4 @@
 #include "libmono-llvm.symbols"
  mono_breakpoint_clean_code@Base 4.1.0.1738
  mono_arch_get_llvm_call_info@Base 5.14.0.87
+ mono_dl_open@Base 5.8.0.22

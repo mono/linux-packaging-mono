@@ -944,7 +944,6 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_disasm_code_one@Base 4.1.0.1738
  mono_dl_fallback_register@Base 4.1.0.1738
  mono_dl_fallback_unregister@Base 4.1.0.1738
- mono_dl_open@Base 5.8.0.22
  mono_dllmap_insert@Base 4.1.0.1738
  mono_domain_assembly_open@Base 4.1.0.1738
  mono_domain_create@Base 4.1.0.1738
