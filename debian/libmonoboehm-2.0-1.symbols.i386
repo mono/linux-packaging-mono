@@ -1,31 +1,4 @@
 #include "libmonoboehm-2.0-1.symbols"
 #include "libmono-llvm.symbols"
- GC_acquire_mark_lock@Base 4.1.0.1738
- GC_active_count@Base 4.1.0.1738
- GC_allocate_ml@Base 4.1.0.1738
- GC_destroy_thread_local@Base 4.1.0.1738
- GC_do_local_mark@Base 4.1.0.1738
- GC_do_parallel_mark@Base 4.1.0.1738
- GC_first_nonempty@Base 4.1.0.1738
- GC_fl_builder_count@Base 4.1.0.1738
- GC_generic_lock@Base 4.1.0.1738
- GC_help_marker@Base 4.1.0.1738
- GC_help_wanted@Base 4.1.0.1738
- GC_helper_count@Base 4.1.0.1738
- GC_init_thread_local@Base 4.1.0.1738
- GC_mark_local@Base 4.1.0.1738
- GC_mark_no@Base 4.1.0.1738
- GC_mark_thread@Base 4.1.0.1738
- GC_mark_thread_local_fls_for@Base 6.10.0.52
- GC_mark_thread_local_free_lists@Base 4.1.0.1738
- GC_mark_threads@Base 4.1.0.1738
- GC_notify_all_builder@Base 4.1.0.1738
- GC_notify_all_marker@Base 4.1.0.1738
- GC_release_mark_lock@Base 4.1.0.1738
- GC_return_mark_stack@Base 4.1.0.1738
- GC_steal_mark_stack@Base 4.1.0.1738
- GC_wait_builder@Base 4.1.0.1738
- GC_wait_for_reclaim@Base 4.1.0.1738
- GC_wait_marker@Base 4.1.0.1738
  mono_breakpoint_clean_code@Base 4.1.0.1738
  mono_arch_get_llvm_call_info@Base 5.14.0.87
