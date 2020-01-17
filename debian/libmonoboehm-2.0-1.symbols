@@ -419,6 +419,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_parallel@Base 4.1.0.1738
  GC_parse_mem_size_arg@Base 6.10.0.52
  GC_pause@Base 4.1.0.1738
+ GC_posix_memalign@Base 6.10.0.52
  GC_post_incr@Base 4.1.0.1738
  GC_pre_incr@Base 4.1.0.1738
  GC_prev_block@Base 4.1.0.1738
@@ -475,7 +476,8 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_rate@Base 6.10.0.52
  GC_read_dirty@Base 4.1.0.1738
  GC_realloc@Base 4.1.0.1738
- GC_rebuild_root_index@Base 6.10.0.52 GC_reclaim_all@Base 4.1.0.1738
+ GC_rebuild_root_index@Base 6.10.0.52
+ GC_reclaim_all@Base 4.1.0.1738
  GC_reclaim_block@Base 4.1.0.1738
  GC_reclaim_check@Base 4.1.0.1738
  GC_reclaim_clear@Base 4.1.0.1738
@@ -648,6 +650,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_wait_for_markers_init@Base 6.10.0.52
  GC_with_callee_saves_pushed@Base 4.1.0.1738
  GC_world_is_stopped@Base 6.10.0.52
+ GC_world_stopped@Base 6.10.0.52
  GC_write@Base 4.1.0.1738
  HeapSectionCountIncrementer@Base 6.10.0.52
  ad@Base 6.10.0.52
