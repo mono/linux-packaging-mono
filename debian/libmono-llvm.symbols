@@ -42,6 +42,7 @@
  mono_create_jit_trampoline@Base 5.14.0.87
  mono_debug_get_seq_points@Base 6.4.0.137
  mono_dl_close@Base 5.14.0.87
+ mono_dl_open@Base 5.8.0.22
  mono_dl_symbol@Base 5.14.0.87
  mono_domain_code_reserve@Base 5.14.0.87
  mono_domain_lock@Base 5.14.0.87
