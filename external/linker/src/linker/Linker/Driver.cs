@@ -29,7 +29,6 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Xml.XPath;
 
@@ -159,6 +158,7 @@ namespace Mono.Linker {
 				var disabled_optimizations = new HashSet<string> (StringComparer.Ordinal);
 				var enabled_optimizations = new HashSet<string> (StringComparer.Ordinal);
 				bool dumpDependencies = false;
+				string dependenciesFileName = null;
 				bool ignoreDescriptors = false;
 				bool removeCAS = true;
 
@@ -188,7 +188,7 @@ namespace Mono.Linker {
 							continue;
 
 						case "--dependencies-file":
-							context.Tracer.DependenciesFileName = GetParam ();
+							dependenciesFileName = GetParam ();
 							continue;
 
 						case "--dump-dependencies":
@@ -361,9 +361,9 @@ namespace Mono.Linker {
 
 				if (ignoreDescriptors)
 					p.RemoveStep (typeof (BlacklistStep));
-					
+
 				if (dumpDependencies)
-					context.Tracer.Start ();
+					context.Tracer.AddRecorder (new XmlDependencyRecorder (context, dependenciesFileName));
 
 				foreach (string custom_step in custom_steps)
 					AddCustomStep (p, custom_step);
@@ -417,6 +417,9 @@ namespace Mono.Linker {
 						case "unusedinterfaces":
 							context.DisabledOptimizations |= CodeOptimizations.UnusedInterfaces;
 							break;
+						case "ipconstprop":
+							context.DisabledOptimizations |= CodeOptimizations.IPConstantPropagation;
+							break;
 						}
 					}
 				}
@@ -429,6 +432,9 @@ namespace Mono.Linker {
 							break;
 						case "clearinitlocals":
 							context.DisabledOptimizations &= ~CodeOptimizations.ClearInitLocals;
+							break;
+						case "ipconstprop":
+							context.DisabledOptimizations &= ~CodeOptimizations.IPConstantPropagation;
 							break;
 						}
 					}
@@ -443,8 +449,7 @@ namespace Mono.Linker {
 					p.Process (context);
 				}
 				finally {
-					if (dumpDependencies)
-						context.Tracer.Finish ();
+					context.Tracer.Finish ();
 				}
 			}
 		}
@@ -543,7 +548,7 @@ namespace Mono.Linker {
 			return _queue.Dequeue ();
 		}
 
-		static LinkContext GetDefaultContext (Pipeline pipeline)
+		protected virtual LinkContext GetDefaultContext (Pipeline pipeline)
 		{
 			LinkContext context = new LinkContext (pipeline);
 			context.CoreAction = AssemblyAction.Skip;
@@ -598,6 +603,7 @@ namespace Mono.Linker {
 			Console.WriteLine ("  --deterministic           Produce a deterministic output for linked assemblies");
 			Console.WriteLine ("  --disable-opt <name>      Disable one of the default optimizations");
 			Console.WriteLine ("                              beforefieldinit: Unused static fields are removed if there is no static ctor");
+			Console.WriteLine ("                              ipconstprop: Interprocedural constant propagation on return values");
 			Console.WriteLine ("                              overrideremoval: Overrides of virtual methods on types that are never instantiated are removed");
 			Console.WriteLine ("                              unreachablebodies: Instance methods that are marked but not executed are converted to throws");
 			Console.WriteLine ("                              unusedinterfaces: Removes interface types from declaration when not used");

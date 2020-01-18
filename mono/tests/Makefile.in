@@ -937,6 +937,7 @@ MONO_NATIVE_UNIFIED_CFLAGS = @MONO_NATIVE_UNIFIED_CFLAGS@
 MONO_NATIVE_UNIFIED_CPPFLAGS = @MONO_NATIVE_UNIFIED_CPPFLAGS@
 MONO_NATIVE_UNIFIED_CXXFLAGS = @MONO_NATIVE_UNIFIED_CXXFLAGS@
 MONO_NATIVE_UNIFIED_LDFLAGS = @MONO_NATIVE_UNIFIED_LDFLAGS@
+MONO_NOINST_SUBDIRS = @MONO_NOINST_SUBDIRS@
 MONO_SUBDIRS = @MONO_SUBDIRS@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
@@ -963,6 +964,11 @@ PIDTYPE = @PIDTYPE@
 PKG_CONFIG = @PKG_CONFIG@
 PLATFORM_AOT_PREFIX = @PLATFORM_AOT_PREFIX@
 PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
+PYTHON = @PYTHON@
+PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
+PYTHON_PLATFORM = @PYTHON_PLATFORM@
+PYTHON_PREFIX = @PYTHON_PREFIX@
+PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
 RID = @RID@
 SEARCHSEP = @SEARCHSEP@
@@ -1050,9 +1056,13 @@ mono_runtime = @mono_runtime@
 mono_runtime_wrapper = @mono_runtime_wrapper@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
+pkgpyexecdir = @pkgpyexecdir@
+pkgpythondir = @pkgpythondir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
+pyexecdir = @pyexecdir@
+pythondir = @pythondir@
 reloc_libdir = @reloc_libdir@
 runstatedir = @runstatedir@
 sbindir = @sbindir@
@@ -1184,24 +1194,25 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	assembly-load-bytes-bindingredirect.cs \
 	assembly-loadfile-bindingredirect.cs \
 	assembly-loadfrom-bindingredirect.cs \
-	assembly-loadfrom-simplename.cs assemblyresolve_event.cs \
-	assemblyresolve_event3.cs assemblyresolve_event4.cs \
-	assemblyresolve_event5.cs assemblyresolve_event6.cs checked.cs \
-	char-isnumber.cs field-layout.cs pack-layout.cs pack-bug.cs \
-	hash-table.cs test-ops.cs obj.cs test-dup-mp.cs string.cs \
-	stringbuilder.cs switch.cs outparm.cs delegate.cs \
-	bitconverter.cs exception.cs exception2.cs exception3.cs \
-	exception4.cs exception5.cs exception6.cs exception7.cs \
-	exception8.cs exception10.cs exception11.cs exception12.cs \
-	exception13.cs exception14.cs exception15.cs exception16.cs \
-	exception17.cs exception18.cs exception-invokes.cs \
-	merp-json-valid.cs merp-crash-test.cs exception19.cs \
-	exception20.cs exception21.cs typeload-unaligned.cs struct.cs \
-	valuetype-gettype.cs typeof-ptr.cs static-constructor.cs \
-	pinvoke.cs pinvoke-utf8.cs pinvoke3.cs pinvoke11.cs \
-	pinvoke13.cs pinvoke17.cs invoke.cs invoke2.cs \
-	runtime-invoke.cs invoke-string-ctors.cs reinit.cs box.cs \
-	array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
+	assembly-loadfrom-simplename.cs \
+	assembly-refonly-load-bytes-bindingredirect.cs \
+	assemblyresolve_event.cs assemblyresolve_event3.cs \
+	assemblyresolve_event4.cs assemblyresolve_event5.cs \
+	assemblyresolve_event6.cs checked.cs char-isnumber.cs \
+	field-layout.cs pack-layout.cs pack-bug.cs hash-table.cs \
+	test-ops.cs obj.cs test-dup-mp.cs string.cs stringbuilder.cs \
+	switch.cs outparm.cs delegate.cs bitconverter.cs exception.cs \
+	exception2.cs exception3.cs exception4.cs exception5.cs \
+	exception6.cs exception7.cs exception8.cs exception10.cs \
+	exception11.cs exception12.cs exception13.cs exception14.cs \
+	exception15.cs exception16.cs exception17.cs exception18.cs \
+	exception-invokes.cs merp-json-valid.cs merp-crash-test.cs \
+	exception19.cs exception20.cs exception21.cs \
+	typeload-unaligned.cs struct.cs valuetype-gettype.cs \
+	typeof-ptr.cs static-constructor.cs pinvoke.cs pinvoke-utf8.cs \
+	pinvoke3.cs pinvoke11.cs pinvoke13.cs pinvoke17.cs invoke.cs \
+	invoke2.cs runtime-invoke.cs invoke-string-ctors.cs reinit.cs \
+	box.cs array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
 	enumcast.cs assignable-tests.cs array-cast.cs \
 	array-subtype-attr.cs cattr-compile.cs cattr-field.cs \
 	cattr-object.cs custom-attr.cs double-cast.cs \
@@ -1329,8 +1340,8 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	nested_type_visibility.cs dynamic-method-churn.cs \
 	dynamic-method-delegate.cs verbose.cs \
 	generic-unmanaged-constraint.cs bug-10834.cs bug-10837.cs \
-	bug-gh-9507.cs async-generic-enum.cs last-error.cs \
-	$(am__append_8) $(am__append_9) $(am__append_10) \
+	bug-gh-9507.cs async-generic-enum.cs null-blob-main.cs \
+	last-error.cs $(am__append_8) $(am__append_9) $(am__append_10) \
 	$(am__append_11) $(am__append_12) $(am__append_13)
 # These tests are produced by splitting up tailcall-interface-conservestack.il.
 @CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@TAILCALL_INTERFACE_CONSERVESTACK_IL = \
@@ -1966,7 +1977,9 @@ EXTRA_DIST = common_mixed.mk test-driver test-runner.cs \
 	unhandled-exception-base-configuration.config \
 	unhandled-exception-legacy-configuration.config \
 	appdomain-unload.exe.config unhandled-exception-test-case.2.cs \
-	unhandled-exception-test-runner.2.cs \
+	unhandled-exception-test-runner.2.cs event-il.il \
+	module-cctor.il TestingReferenceAssembly.cs \
+	TestingReferenceReferenceAssembly.cs \
 	assemblyresolve_TestBase.cs assemblyresolve_Test.cs \
 	assemblyresolve_asm.cs assemblyresolve_event5_label.cs \
 	assemblyresolve_event5_helper.cs bug-81673-interface.cs \
@@ -1984,20 +1997,24 @@ EXTRA_DIST = common_mixed.mk test-driver test-runner.cs \
 	assembly-loadfrom-bindingredirect.exe.config \
 	assembly-loadfile-bindingredirect.exe.config \
 	assembly-load-bytes-bindingredirect.exe.config \
+	assembly-refonly-load-bytes-bindingredirect.exe.config \
 	assembly-load-dir1/LibSimpleName.cs \
 	assembly-load-dir2/LibSimpleName.cs assembly-dep-simplename.cs \
 	async-exceptions.cs modules.cs modules-m1.cs \
 	threadpool-in-processexit.cs \
 	threadpool-in-processexit.exe.stdout.expected \
-	appdomain-loader.cs appdomain-tester.cs console-output.cs \
+	$(TESTS_UNHANDLED_EXCEPTION_1_SRC) \
+	$(TESTS_UNHANDLED_EXCEPTION_255_SRC) appdomain-loader.cs \
+	appdomain-tester.cs console-output.cs \
 	console-output.exe.stderr.expected \
-	console-output.exe.stdout.expected test_lldb.py test-lldb.cs \
-	$(INTERNALSVISIBLETO_TEST_SRC) \
+	console-output.exe.stdout.expected $(TESTS_STRESS_PROCESS_SRC) \
+	test_lldb.py test-lldb.cs $(INTERNALSVISIBLETO_TEST_SRC) \
 	$(INTERNALSVISIBLETO_TEST_LIB_SRC) \
 	internalsvisibleto-runtimetest.cs \
 	internalsvisibleto-compilertest.cs \
 	internalsvisibleto-library.cs internalsvisibleto-2048.snk \
-	weakattribute.cs
+	weakattribute.cs null-blob-null-blob-assm.il null-blob-ref.il \
+	null-blob-tgt.cs
 @FULL_AOT_INTERP_TESTS_FALSE@@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:$(CLASS)/Mono.Posix.dll
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_DEPEND = TestDriver.dll
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_TRUE@TEST_DRIVER_DEPEND = TestDriver.dll$(PLATFORM_AOT_SUFFIX)
@@ -3415,6 +3432,8 @@ assembly-loadfile-bindingredirect.exe: assembly-load-dir1/LibStrongName.dll asse
 
 assembly-load-bytes-bindingredirect.exe: assembly-load-dir1/LibStrongName.dll assembly-load-dir2/LibStrongName.dll assembly-load-bytes-bindingredirect.exe.config
 
+assembly-refonly-load-bytes-bindingredirect.exe: assembly-load-dir1/LibStrongName.dll assembly-load-dir2/LibStrongName.dll assembly-refonly-load-bytes-bindingredirect.exe.config
+
 assembly-load-dir1/LibSimpleName.dll: assembly-load-dir1/LibSimpleName.cs
 	$(MKDIR_P) $(dir $@)
 	$(MCS) -target:library -out:$@ $<
@@ -3533,7 +3552,7 @@ test-process-stress: $(TESTS_STRESS_PROCESS) $(TESTSAOT_STRESS_PROCESS) test-run
 coreclr-gcstress:
 	$(MAKE) -C $(mono_build_root)/acceptance-tests coreclr-gcstress
 test-lldb: test-lldb.exe
-	python test_lldb.py $(JITTEST_PROG)
+	$(PYTHON) test_lldb.py $(JITTEST_PROG)
 
 test-internalsvisibleto: test-runner.exe $(INTERNALSVISIBLETO_TEST) $(INTERNALSVISIBLETO_TESTAOT) $(INTERNALSVISIBLETO_TESTAOT_LIBS)
 	$(TOOLS_RUNTIME) $(TEST_RUNNER) --testsuite-name $@ $(INTERNALSVISIBLETO_TEST)
@@ -3561,6 +3580,14 @@ internalsvisibleto-correctcase-2-sign2048.dll internalsvisibleto-wrongcase-2-sig
 	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-correctcase-2-sign2048.dll -target:library -d:CORRECT_CASE -d:SIGN2048 internalsvisibleto-library.cs	
 	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-wrongcase-2-sign2048.dll -target:library -d:WRONG_CASE -d:SIGN2048 internalsvisibleto-library.cs
 	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-compilertest-sign2048.exe -warn:0 -r:internalsvisibleto-correctcase-2-sign2048.dll -r:internalsvisibleto-wrongcase-2-sign2048.dll -d:SIGN2048 internalsvisibleto-compilertest.cs
+
+null-blob-tgt.dll: null-blob-tgt.cs
+	$(MCS) -target:library -out:$@ $<
+
+null-blob-main.exe: null-blob-main.cs null-blob-tgt.dll null-blob-ref.dll null-blob-null-blob-assm.dll
+	$(MCS) -target:exe -out:$@ $<
+
+null-blob-main.exe$(PLATFORM_AOT_SUFFIX): null-blob-tgt.dll$(PLATFORM_AOT_SUFFIX) null-blob-ref.dll$(PLATFORM_AOT_SUFFIX) null-blob-null-blob-assm.dll$(PLATFORM_AOT_SUFFIX)
 
 # Contains copies of types which don't exist in the desktop profile so tests can use them
 Mono.Runtime.Testing.dll: weakattribute.cs

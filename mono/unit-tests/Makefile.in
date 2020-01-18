@@ -673,6 +673,7 @@ MONO_NATIVE_UNIFIED_CFLAGS = @MONO_NATIVE_UNIFIED_CFLAGS@
 MONO_NATIVE_UNIFIED_CPPFLAGS = @MONO_NATIVE_UNIFIED_CPPFLAGS@
 MONO_NATIVE_UNIFIED_CXXFLAGS = @MONO_NATIVE_UNIFIED_CXXFLAGS@
 MONO_NATIVE_UNIFIED_LDFLAGS = @MONO_NATIVE_UNIFIED_LDFLAGS@
+MONO_NOINST_SUBDIRS = @MONO_NOINST_SUBDIRS@
 MONO_SUBDIRS = @MONO_SUBDIRS@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
@@ -699,6 +700,11 @@ PIDTYPE = @PIDTYPE@
 PKG_CONFIG = @PKG_CONFIG@
 PLATFORM_AOT_PREFIX = @PLATFORM_AOT_PREFIX@
 PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
+PYTHON = @PYTHON@
+PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
+PYTHON_PLATFORM = @PYTHON_PLATFORM@
+PYTHON_PREFIX = @PYTHON_PREFIX@
+PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
 RID = @RID@
 SEARCHSEP = @SEARCHSEP@
@@ -786,9 +792,13 @@ mono_runtime = @mono_runtime@
 mono_runtime_wrapper = @mono_runtime_wrapper@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
+pkgpyexecdir = @pkgpyexecdir@
+pkgpythondir = @pkgpythondir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
+pyexecdir = @pyexecdir@
+pythondir = @pythondir@
 reloc_libdir = @reloc_libdir@
 runstatedir = @runstatedir@
 sbindir = @sbindir@
@@ -1598,10 +1608,10 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@CROSS_COMPILE_TRUE@clean-local:
-@HOST_WIN32_TRUE@clean-local:
 @CROSS_COMPILE_TRUE@test-local:
 @HOST_WIN32_TRUE@test-local:
+@CROSS_COMPILE_TRUE@clean-local:
+@HOST_WIN32_TRUE@clean-local:
 clean: clean-am
 
 clean-am: clean-checkPROGRAMS clean-generic clean-libtool clean-local \

@@ -193,6 +193,19 @@ namespace System.Net.Http
                 _readAheadTask = new ValueTask<int>(0);
             }
 
+#if MONO
+            if (!_readAheadTask.Value.IsCompleted && _socket != null)
+            {
+                try
+                {
+                    return _socket.Poll(0, SelectMode.SelectRead);
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+#endif
             return _readAheadTask.Value.IsCompleted; // equivalent to polling
         }
 

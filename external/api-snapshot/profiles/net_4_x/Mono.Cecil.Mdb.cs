@@ -2,12 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-[assembly:System.Reflection.AssemblyVersionAttribute("0.11.0.0")]
+[assembly:System.Reflection.AssemblyVersionAttribute("0.11.1.0")]
 [assembly:System.CLSCompliantAttribute(false)]
 [assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("Copyright © 2008 - 2018 Jb Evain")]
-[assembly:System.Reflection.AssemblyFileVersionAttribute("0.11.0.0")]
-[assembly:System.Reflection.AssemblyInformationalVersionAttribute("0.11.0.0")]
+[assembly:System.Reflection.AssemblyFileVersionAttribute("0.11.1.0")]
+[assembly:System.Reflection.AssemblyInformationalVersionAttribute("0.11.1.0")]
 [assembly:System.Reflection.AssemblyProductAttribute("Mono.Cecil")]
 [assembly:System.Reflection.AssemblyTitleAttribute("Mono.Cecil.Mdb")]
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
