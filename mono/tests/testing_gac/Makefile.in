@@ -274,6 +274,7 @@ MONO_NATIVE_UNIFIED_CFLAGS = @MONO_NATIVE_UNIFIED_CFLAGS@
 MONO_NATIVE_UNIFIED_CPPFLAGS = @MONO_NATIVE_UNIFIED_CPPFLAGS@
 MONO_NATIVE_UNIFIED_CXXFLAGS = @MONO_NATIVE_UNIFIED_CXXFLAGS@
 MONO_NATIVE_UNIFIED_LDFLAGS = @MONO_NATIVE_UNIFIED_LDFLAGS@
+MONO_NOINST_SUBDIRS = @MONO_NOINST_SUBDIRS@
 MONO_SUBDIRS = @MONO_SUBDIRS@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
@@ -300,6 +301,11 @@ PIDTYPE = @PIDTYPE@
 PKG_CONFIG = @PKG_CONFIG@
 PLATFORM_AOT_PREFIX = @PLATFORM_AOT_PREFIX@
 PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
+PYTHON = @PYTHON@
+PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
+PYTHON_PLATFORM = @PYTHON_PLATFORM@
+PYTHON_PREFIX = @PYTHON_PREFIX@
+PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
 RID = @RID@
 SEARCHSEP = @SEARCHSEP@
@@ -387,9 +393,13 @@ mono_runtime = @mono_runtime@
 mono_runtime_wrapper = @mono_runtime_wrapper@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
+pkgpyexecdir = @pkgpyexecdir@
+pkgpythondir = @pkgpythondir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
+pyexecdir = @pyexecdir@
+pythondir = @pythondir@
 reloc_libdir = @reloc_libdir@
 runstatedir = @runstatedir@
 sbindir = @sbindir@
@@ -443,6 +453,7 @@ BASE_MONO_PATH = $(CLASS)
 V1_SRC = v1/gactestlib.cs
 V2_SRC = v2/gactestlib.cs
 APP_V1_SRC = v1/app.cs v1/app-refl-load.cs
+APP_BOTH_SRC = app-both.cs
 APP_SIGNED_V1_EXE = app-v1.exe app-refl-load-v1.exe
 APP_BOTH_EXE = app-both.exe
 UNSIGNED_V1_DLL = unsigned_v1/gactestlib.dll
@@ -468,7 +479,7 @@ GACDIR = .
 SIGN = -delaysign -keyfile:$(SIGNING_KEY)
 
 ### autotools stuff
-EXTRA_DIST = README $(SIGNING_KEY) $(GACTESTLIB_SRCS) 
+EXTRA_DIST = README $(SIGNING_KEY) $(GACTESTLIB_SRCS) $(APP_V1_SRC) $(APP_BOTH_SRC)
 all: all-am
 
 .SUFFIXES:

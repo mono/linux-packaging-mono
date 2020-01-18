@@ -779,20 +779,16 @@ mono_assembly_getrootdir (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean
-mono_assembly_get_assemblyref_checked (MonoImage *image, int index, MonoAssemblyName *aname, MonoError *error)
+            <div class="mapi-prototype">void
+mono_assembly_get_assemblyref (MonoImage *image, int index, MonoAssemblyName *aname)
 
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>image</i></td><td> pointer to the <code>MonoImage</code> to extract the information from.</td></tr><tr><td><i>index</i></td><td> index to the assembly reference in the image.</td></tr><tr><td><i>aname</i></td><td> pointer to a <code>MonoAssemblyName</code> that will hold the returned value.</td></tr><tr><td><i>error</i></td><td> set on error</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	 <code>TRUE</code> on success, otherwise sets <i>error</i> and returns <code>FALSE</code>
-</div>
-             <div class="mapi-section">Description</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>image</i></td><td> pointer to the <code>MonoImage</code> to extract the information from.</td></tr><tr><td><i>index</i></td><td> index to the assembly reference in the image.</td></tr><tr><td><i>aname</i></td><td> pointer to a <code>MonoAssemblyName</code> that will hold the returned value.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
              <div>
 <p />
- Fills out the <i>aname</i> with the assembly name of the <i>index</i> assembly reference in <i>image</i>.
-<p /></div>
+ Fills out the <i>aname</i> with the assembly name of the <i>index</i> assembly reference in <i>image</i>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->

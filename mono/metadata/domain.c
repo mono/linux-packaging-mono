@@ -131,6 +131,7 @@ get_runtime_by_version (const char *version);
 static void
 mono_domain_alcs_destroy (MonoDomain *domain);
 
+#ifdef ENABLE_NETCORE
 static void
 mono_domain_alcs_lock (MonoDomain *domain);
 
@@ -139,6 +140,7 @@ mono_domain_alcs_unlock (MonoDomain *domain);
 
 static void
 mono_domain_create_default_alc (MonoDomain *domain);
+#endif
 
 static LockFreeMempool*
 lock_free_mempool_new (void)
@@ -590,20 +592,27 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 		mono_fixup_exe_image (exe_image);
 #endif
 	} else if (runtime_version != NULL) {
-		runtimes = g_slist_prepend (runtimes, (gpointer)get_runtime_by_version (runtime_version));
+		const MonoRuntimeInfo* rt = get_runtime_by_version (runtime_version);
+		if (rt != NULL)
+			runtimes = g_slist_prepend (runtimes, (gpointer)rt);
 	}
 
 	if (runtimes == NULL) {
 		const MonoRuntimeInfo *default_runtime = get_runtime_by_version (DEFAULT_RUNTIME_VERSION);
+		g_assert (default_runtime);
 		runtimes = g_slist_prepend (runtimes, (gpointer)default_runtime);
-		g_print ("WARNING: The runtime version supported by this application is unavailable.\n");
+		if (runtime_version != NULL)
+			g_print ("WARNING: The requested runtime version \"%s\" is unavailable.\n", runtime_version);
+		else
+			g_print ("WARNING: The runtime version supported by this application is unavailable.\n");
 		g_print ("Using default runtime: %s\n", default_runtime->runtime_version); 
 	}
 
 	/* The selected runtime will be the first one for which there is a mscrolib.dll */
 	GSList *tmp = runtimes;
 	while (tmp != NULL) {
-		current_runtime = (MonoRuntimeInfo*)runtimes->data;
+		current_runtime = (MonoRuntimeInfo*)tmp->data;
+		g_assert (current_runtime);
 		ass = mono_assembly_load_corlib (current_runtime, &status);
 		if (status != MONO_IMAGE_OK && status != MONO_IMAGE_ERROR_ERRNO)
 			break;
@@ -2073,10 +2082,10 @@ mono_domain_alcs_unlock (MonoDomain *domain)
 #endif
 
 
+#ifdef ENABLE_NETCORE
 static MonoAssemblyLoadContext *
 create_alc (MonoDomain *domain, gboolean is_default)
 {
-#ifdef ENABLE_NETCORE
 	MonoAssemblyLoadContext *alc = NULL;
 
 	mono_domain_alcs_lock (domain);
@@ -2092,22 +2101,18 @@ create_alc (MonoDomain *domain, gboolean is_default)
 leave:
 	mono_domain_alcs_unlock (domain);
 	return alc;
-#else
-	return NULL;
-#endif
 }
+#endif
 
+#ifdef ENABLE_NETCORE
 void
 mono_domain_create_default_alc (MonoDomain *domain)
 {
-#ifdef ENABLE_NETCORE
 	if (domain->default_alc)
 		return;
 	create_alc (domain, TRUE);
-#endif
 }
 
-#ifdef ENABLE_NETCORE
 MonoAssemblyLoadContext *
 mono_domain_create_individual_alc (MonoDomain *domain, uint32_t this_gchandle, gboolean collectible, MonoError *error)
 {
@@ -2116,16 +2121,14 @@ mono_domain_create_individual_alc (MonoDomain *domain, uint32_t this_gchandle, g
 	alc->gchandle = this_gchandle;
 	return alc;
 }
-#endif
 
 static void
 mono_alc_free (MonoAssemblyLoadContext *alc)
 {
-#ifdef ENABLE_NETCORE
 	mono_alc_cleanup (alc);
 	g_free (alc);
-#endif
 }
+#endif
 
 void
 mono_domain_alcs_destroy (MonoDomain *domain)

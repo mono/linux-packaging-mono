@@ -2,11 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-[assembly:System.Reflection.AssemblyVersionAttribute("0.11.0.0")]
+[assembly:System.Reflection.AssemblyVersionAttribute("0.11.1.0")]
 [assembly:System.Diagnostics.DebuggableAttribute(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("Copyright © 2008 - 2018 Jb Evain")]
-[assembly:System.Reflection.AssemblyFileVersionAttribute("0.11.0.0")]
-[assembly:System.Reflection.AssemblyInformationalVersionAttribute("0.11.0.0")]
+[assembly:System.Reflection.AssemblyFileVersionAttribute("0.11.1.0")]
+[assembly:System.Reflection.AssemblyInformationalVersionAttribute("0.11.1.0")]
 [assembly:System.Reflection.AssemblyProductAttribute("Mono.Cecil")]
 [assembly:System.Reflection.AssemblyTitleAttribute("Mono.Cecil")]
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
@@ -2060,9 +2060,12 @@ namespace Mono.Cecil.Cil
         public void Emit(Mono.Cecil.Cil.OpCode opcode, float value) { }
         public void Emit(Mono.Cecil.Cil.OpCode opcode, string value) { }
         public void InsertAfter(Mono.Cecil.Cil.Instruction target, Mono.Cecil.Cil.Instruction instruction) { }
+        public void InsertAfter(int index, Mono.Cecil.Cil.Instruction instruction) { }
         public void InsertBefore(Mono.Cecil.Cil.Instruction target, Mono.Cecil.Cil.Instruction instruction) { }
         public void Remove(Mono.Cecil.Cil.Instruction instruction) { }
+        public void RemoveAt(int index) { }
         public void Replace(Mono.Cecil.Cil.Instruction target, Mono.Cecil.Cil.Instruction instruction) { }
+        public void Replace(int index, Mono.Cecil.Cil.Instruction instruction) { }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct ImageDebugDirectory

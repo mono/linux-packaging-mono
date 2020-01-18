@@ -94,7 +94,7 @@ namespace System.Reflection.Tests
         public void Name()
         {
 #if MONO            
-            Assert.EndsWith("corlib_xunit-test.dll", Module.Name);
+            Assert.Contains("corlib_xunit-test", Module.Name);
 #else
             Assert.Equal("system.runtime.tests.dll", Module.Name, ignoreCase: true);
 #endif
@@ -126,7 +126,7 @@ namespace System.Reflection.Tests
         public void TestToString()
         {
 #if MONO
-            Assert.EndsWith("corlib_xunit-test.dll", Module.ToString());
+            Assert.Contains("corlib_xunit-test", Module.ToString());
 #else
             Assert.Equal("System.Runtime.Tests.dll", Module.ToString());
 #endif
