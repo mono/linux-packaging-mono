@@ -1,2 +1,4 @@
 #include "libmonoboehm-2.0-1.symbols"
- GC_allocate_lock@Base 4.1.0.1738
+ GC_get_nprocs_present@Base 6.10.0.52
+ GC_posix_memalign@Base 6.10.0.52
+ GC_reclaim_all@Base 6.10.0.52

@@ -1,14 +1,13 @@
 libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
- eg_getdtablesize@Base 5.7.0.181
- eg_my_charset@Base 5.13.0.451
- eg_utf8_to_utf16_with_nuls@Base 5.7.0.181
+ eg_getdtablesize@Base 5.8.0.22
+ eg_my_charset@Base 5.14.0.78
+ eg_utf8_to_utf16_with_nuls@Base 5.8.0.22
  eg_wtf8_to_utf16@Base 5.11.0.264
- g_module_address@Base 6.9.0.8
  mini_get_debug_options@Base 4.1.0.1738
  mini_parse_debug_option@Base 4.3.3.38
  mono_add_internal_call@Base 4.1.0.1738
- mono_add_internal_call_internal@Base 5.21.0.527
- mono_add_internal_call_with_flags@Base 5.21.0.527
+ mono_add_internal_call_internal@Base 5.18.0.176
+ mono_add_internal_call_with_flags@Base 5.18.0.176
  mono_aot_register_module@Base 4.1.0.1738
  mono_array_addr_with_size@Base 4.1.0.1738
  mono_array_class_get@Base 4.1.0.1738
@@ -26,10 +25,10 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_assembly_foreach@Base 4.1.0.1738
  mono_assembly_get_assemblyref@Base 4.1.0.1738
  mono_assembly_get_image@Base 4.1.0.1738
- mono_assembly_get_image_internal@Base 5.17.0.151
+ mono_assembly_get_image_internal@Base 5.18.0.143
  mono_assembly_get_main@Base 4.1.0.1738
  mono_assembly_get_name@Base 4.3.0.624
- mono_assembly_get_name_internal@Base 5.17.0.151
+ mono_assembly_get_name_internal@Base 5.18.0.143
  mono_assembly_get_object@Base 4.1.0.1738
  mono_assembly_getrootdir@Base 4.1.0.1738
  mono_assembly_invoke_load_hook@Base 4.1.0.1738
@@ -56,9 +55,9 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_assembly_open_full@Base 4.1.0.1738
  mono_assembly_set_main@Base 4.1.0.1738
  mono_assembly_setrootdir@Base 4.1.0.1738
- mono_assertion_message@Base 6.9.0.30
- mono_assertion_message_disabled@Base 6.9.0.30
- mono_assertion_message_unreachable@Base 6.9.0.30
+ mono_assertion_message@Base 6.10.0.52
+ mono_assertion_message_disabled@Base 6.10.0.52
+ mono_assertion_message_unreachable@Base 6.10.0.52
  mono_bitset_alloc_size@Base 4.1.0.1738
  mono_bitset_clear@Base 4.1.0.1738
  mono_bitset_clear_all@Base 4.1.0.1738
@@ -85,11 +84,11 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_bitset_test_bulk@Base 4.1.0.1738
  mono_bitset_union@Base 4.1.0.1738
  mono_bounded_array_class_get@Base 4.1.0.1738
- mono_build_date@Base 5.7.0.378
- mono_callspec_cleanup@Base 5.9.0.0
- mono_callspec_eval@Base 5.9.0.0
- mono_callspec_eval_exception@Base 5.9.0.0
- mono_callspec_parse@Base 5.9.0.0
+ mono_build_date@Base 5.8.0.22
+ mono_callspec_cleanup@Base 5.10.0.53
+ mono_callspec_eval@Base 5.10.0.53
+ mono_callspec_eval_exception@Base 5.10.0.53
+ mono_callspec_parse@Base 5.10.0.53
  mono_check_corlib_version@Base 4.1.0.1738
  mono_class_array_element_size@Base 4.1.0.1738
  mono_class_data_size@Base 4.1.0.1738
@@ -97,14 +96,13 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_class_enum_basetype@Base 4.1.0.1738
  mono_class_from_generic_parameter@Base 4.1.0.1738
  mono_class_from_mono_type@Base 4.1.0.1738
- mono_class_from_mono_type_internal@Base 5.21.0.203
+ mono_class_from_mono_type_internal@Base 6.0.0.172
  mono_class_from_name@Base 4.1.0.1738
  mono_class_from_name_case@Base 4.1.0.1738
  mono_class_from_typeref@Base 4.1.0.1738
  mono_class_from_typeref_checked@Base 4.1.0.1738
  mono_class_get@Base 4.1.0.1738
  mono_class_get_byref_type@Base 4.1.0.1738
- mono_class_get_checked@Base 5.11.0.285
  mono_class_get_checked@Base 5.11.0.284
  mono_class_get_context@Base 4.9.0.1707
  mono_class_get_element_class@Base 4.1.0.1738
@@ -125,7 +123,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_class_get_namespace@Base 4.1.0.1738
  mono_class_get_nested_types@Base 4.1.0.1738
  mono_class_get_nesting_type@Base 4.1.0.1738
- mono_class_get_nullable_param@Base 6.3.0.202
+ mono_class_get_nullable_param@Base 6.4.0.137
  mono_class_get_parent@Base 4.1.0.1738
  mono_class_get_properties@Base 4.1.0.1738
  mono_class_get_property_from_name@Base 4.1.0.1738
@@ -142,7 +140,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_class_is_assignable_from@Base 4.1.0.1738
  mono_class_is_delegate@Base 4.1.0.1738
  mono_class_is_enum@Base 4.1.0.1738
- mono_class_is_nullable@Base 6.3.0.202
+ mono_class_is_nullable@Base 6.4.0.137
  mono_class_is_subclass_of@Base 4.1.0.1738
  mono_class_is_valid_enum@Base 4.1.0.1738
  mono_class_is_valuetype@Base 4.1.0.1738
@@ -195,9 +193,9 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_counters_register@Base 4.1.0.1738
  mono_counters_register_with_size@Base 4.1.0.1738
  mono_counters_sample@Base 4.1.0.1738
- mono_cpu_count@Base 5.5.0.426
- mono_cpu_features_disabled@Base 6.7.0.833
- mono_cpu_features_enabled@Base 6.7.0.833
+ mono_cpu_count@Base 5.8.0.22
+ mono_cpu_features_disabled@Base 6.8.0.73
+ mono_cpu_features_enabled@Base 6.8.0.73
  mono_custom_attrs_construct@Base 4.1.0.1738
  mono_custom_attrs_free@Base 4.1.0.1738
  mono_custom_attrs_from_assembly@Base 4.1.0.1738
@@ -210,7 +208,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_custom_attrs_from_property@Base 4.1.0.1738
  mono_custom_attrs_get_attr@Base 4.1.0.1738
  mono_custom_attrs_has_attr@Base 4.1.0.1738
- mono_dangerous_add_raw_internal_call@Base 5.21.0.527
+ mono_dangerous_add_raw_internal_call@Base 5.18.0.176
  mono_debug_add_delegate_trampoline@Base 4.1.0.1738
  mono_debug_add_method@Base 4.1.0.1738
  mono_debug_cleanup@Base 4.1.0.1738
@@ -223,14 +221,14 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_debug_free_locals@Base 4.1.0.1738
  mono_debug_free_method_jit_info@Base 4.1.0.1738
  mono_debug_free_source_location@Base 4.1.0.1738
- mono_debug_get_handle@Base 5.17.0.98
+ mono_debug_get_handle@Base 5.18.0.143
  mono_debug_il_offset_from_address@Base 4.1.0.1738
  mono_debug_init@Base 4.1.0.1738
  mono_debug_lookup_locals@Base 4.1.0.1738
  mono_debug_lookup_method@Base 4.1.0.1738
  mono_debug_lookup_method_addresses@Base 4.1.0.1738
  mono_debug_lookup_source_location@Base 4.1.0.1738
- mono_debug_method_lookup_location@Base 6.3.0.788
+ mono_debug_method_lookup_location@Base 6.4.0.137
  mono_debug_open_image_from_memory@Base 4.1.0.1738
  mono_debug_open_mono_symbols@Base 4.1.0.1738
  mono_debug_print_stack_frame@Base 4.1.0.1738
@@ -241,8 +239,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_debug_symfile_lookup_locals@Base 4.1.0.1738
  mono_debug_symfile_lookup_location@Base 4.1.0.1738
  mono_debug_symfile_lookup_method@Base 4.1.0.1738
- mono_debugger_agent_init@Base 5.15.0.101
- mono_debugger_agent_parse_options@Base 5.17.0.386
+ mono_debugger_agent_init@Base 5.16.0.100
+ mono_debugger_agent_parse_options@Base 4.1.0.1738
  mono_debugger_agent_register_transport@Base 4.1.0.1738
  mono_debugger_agent_transport_handshake@Base 4.1.0.1738
  mono_debugger_insert_breakpoint@Base 4.1.0.1738
@@ -263,7 +261,6 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_disasm_code_one@Base 4.1.0.1738
  mono_dl_fallback_register@Base 4.1.0.1738
  mono_dl_fallback_unregister@Base 4.1.0.1738
- mono_dl_open@Base 5.5.0.357
  mono_dllmap_insert@Base 4.1.0.1738
  mono_domain_assembly_open@Base 4.1.0.1738
  mono_domain_create@Base 4.1.0.1738
@@ -326,7 +323,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_field_static_set_value@Base 4.1.0.1738
  mono_file_map@Base 4.1.0.1738
  mono_file_map_close@Base 4.1.0.1738
- mono_file_map_error@Base 6.5.0.440
+ mono_file_map_error@Base 6.4.0.137
  mono_file_map_fd@Base 4.1.0.1738
  mono_file_map_fileio@Base 4.1.0.1738
  mono_file_map_open@Base 4.1.0.1738
@@ -436,6 +433,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_get_int32_class@Base 4.1.0.1738
  mono_get_int64_class@Base 4.1.0.1738
  mono_get_intptr_class@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_get_jit_info_from_method@Base 4.1.0.1738
  mono_get_machine_config@Base 4.1.0.1738
  mono_get_method@Base 4.1.0.1738
  mono_get_method_constrained@Base 4.1.0.1738
@@ -455,7 +453,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_guid_to_string@Base 4.1.0.1738
  mono_guid_to_string_minimal@Base 4.5.2.618
  mono_hazard_pointer_get@Base 4.7.0.488
- mono_icall_table_init@Base 5.13.0.136
+ mono_icall_table_init@Base 5.12.0.220
  mono_image_add_to_name_cache@Base 4.1.0.1738
  mono_image_addref@Base 4.1.0.1738
  mono_image_close@Base 4.1.0.1738
@@ -507,10 +505,10 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_install_load_aot_data_hook@Base 4.3.2.147
  mono_install_runtime_cleanup@Base 4.1.0.1738
  mono_install_unhandled_exception_hook@Base 4.1.0.1738
- mono_internal_current_level@Base 5.5.0.426
- mono_internal_current_mask@Base 5.5.0.426
+ mono_internal_current_level@Base 5.8.0.22
+ mono_internal_current_mask@Base 5.8.0.22
  mono_is_debugger_attached@Base 4.1.0.1738
- mono_jit_aot_compiling@Base 5.7.0.181
+ mono_jit_aot_compiling@Base 5.8.0.22
  mono_jit_cleanup@Base 4.1.0.1738
  mono_jit_exec@Base 4.1.0.1738
  mono_jit_info_get_code_size@Base 4.1.0.1738
@@ -519,7 +517,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_jit_info_table_find@Base 4.1.0.1738
  mono_jit_init@Base 4.1.0.1738
  mono_jit_init_version@Base 4.1.0.1738
- mono_jit_init_version_for_test_only@Base 6.7.0.833
+ mono_jit_init_version_for_test_only@Base 6.8.0.73
  mono_jit_parse_options@Base 4.1.0.1738
  mono_jit_set_aot_mode@Base 4.1.0.1738
  mono_jit_set_aot_only@Base 4.1.0.1738
@@ -535,8 +533,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_lls_remove@Base 4.7.0.488
  mono_load_remote_field@Base 4.1.0.1738
  mono_load_remote_field_new@Base 4.1.0.1738
- mono_loader_register_module@Base 5.5.0.357
- mono_lock_free_alloc@Base 4.5.2.48
+ mono_loader_save_bundled_library@Base 6.10.0.52
+ mono_lock_free_alloc@Base 4.5.2.48-0nightly2
  mono_lock_free_allocator_check_consistency@Base 4.5.2.48
  mono_lock_free_allocator_init_allocator@Base 4.5.2.48
  mono_lock_free_allocator_init_size_class@Base 4.5.2.48
@@ -551,8 +549,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_lookup_internal_call@Base 4.1.0.1738
  mono_lookup_pinvoke_call@Base 4.1.0.1738
  mono_main@Base 4.1.0.1738
- mono_marshal_ilgen_init@Base 5.13.0.408
- mono_marshal_set_last_error@Base 5.17.0.386
+ mono_marshal_ilgen_init@Base 5.12.0.220
+ mono_marshal_set_last_error@Base 5.18.0.143
  mono_marshal_string_to_utf16@Base 4.1.0.1738
  mono_md5_final@Base 4.1.0.1738
  mono_md5_get_digest@Base 4.1.0.1738
@@ -636,13 +634,13 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_metadata_typedef_from_method@Base 4.1.0.1738
  mono_metadata_user_string@Base 4.1.0.1738
  mono_method_body_get_object@Base 4.1.0.1738
- mono_method_builder_ilgen_init@Base 5.13.0.408
+ mono_method_builder_ilgen_init@Base 5.12.0.220
  mono_method_can_access_field@Base 4.1.0.1738
  mono_method_can_access_method@Base 4.1.0.1738
  mono_method_desc_free@Base 4.1.0.1738
  mono_method_desc_from_method@Base 4.1.0.1738
  mono_method_desc_full_match@Base 4.1.0.1738
- mono_method_desc_is_full@Base 5.9.0.331
+ mono_method_desc_is_full@Base 5.10.0.53
  mono_method_desc_match@Base 4.1.0.1738
  mono_method_desc_new@Base 4.1.0.1738
  mono_method_desc_search_in_class@Base 4.1.0.1738
@@ -651,7 +649,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_method_get_class@Base 4.1.0.1738
  mono_method_get_context@Base 4.9.0.1707
  mono_method_get_flags@Base 4.1.0.1738
- mono_method_get_full_name@Base 5.21.0.247
+ mono_method_get_full_name@Base 6.0.0.172
  mono_method_get_generic_container@Base 4.1.0.1738
  mono_method_get_header@Base 4.1.0.1738
  mono_method_get_header_checked@Base 4.5.0.149
@@ -662,7 +660,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_method_get_object@Base 4.1.0.1738
  mono_method_get_param_names@Base 4.1.0.1738
  mono_method_get_param_token@Base 4.1.0.1738
- mono_method_get_reflection_name@Base 5.7.0.181
+ mono_method_get_reflection_name@Base 5.8.0.22
  mono_method_get_signature@Base 4.1.0.1738
  mono_method_get_signature_full@Base 4.1.0.1738
  mono_method_get_token@Base 4.1.0.1738
@@ -674,8 +672,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_method_header_get_num_clauses@Base 4.1.0.1738
  mono_method_print_code@Base 4.1.0.1738
  mono_method_signature@Base 4.1.0.1738
- mono_method_signature_checked_slow@Base 6.7.0.747
- mono_method_signature_internal_slow@Base 6.7.0.747
+ mono_method_signature_checked_slow@Base 6.8.0.73
+ mono_method_signature_internal_slow@Base 6.8.0.73
  mono_method_verify@Base 4.1.0.1738
  mono_mlist_alloc@Base 4.1.0.1738
  mono_mlist_append@Base 4.1.0.1738
@@ -707,10 +705,10 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_object_get_class@Base 4.1.0.1738
  mono_object_get_domain@Base 4.1.0.1738
  mono_object_get_size@Base 4.1.0.1738
- mono_object_get_size_internal@Base 5.21.0.247
+ mono_object_get_size_internal@Base 6.0.0.172
  mono_object_get_virtual_method@Base 4.1.0.1738
  mono_object_get_vtable@Base 5.11.0.133
- mono_object_get_vtable_internal@Base 5.21.0.247
+ mono_object_get_vtable_internal@Base 6.0.0.172
  mono_object_hash@Base 4.1.0.1738
  mono_object_isinst@Base 4.1.0.1738
  mono_object_isinst_mbyref@Base 4.1.0.1738
@@ -723,13 +721,13 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_object_unbox@Base 4.1.0.1738
  mono_opcode_name@Base 4.1.0.1738
  mono_opcode_value@Base 4.1.0.1738
- mono_opcodes@Base 4.5.2.363
- mono_os_event_destroy@Base 5.13.0.273
- mono_os_event_init@Base 5.13.0.273
- mono_os_event_reset@Base 5.13.0.273
- mono_os_event_set@Base 5.13.0.273
- mono_os_event_wait_multiple@Base 5.13.0.273
- mono_os_event_wait_one@Base 5.13.0.273
+ mono_opcodes@Base 4.5.2.363-0nightly1
+ mono_os_event_destroy@Base 5.14.0.78
+ mono_os_event_init@Base 5.14.0.78
+ mono_os_event_reset@Base 5.14.0.78
+ mono_os_event_set@Base 5.14.0.78
+ mono_os_event_wait_multiple@Base 5.14.0.78
+ mono_os_event_wait_one@Base 5.14.0.78
  mono_pagesize@Base 4.1.0.1738
  mono_param_get_objects@Base 4.1.0.1738
  mono_parse_default_optimizations@Base 4.1.0.1738
@@ -747,94 +745,120 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_print_thread_dump@Base 4.1.0.1738
  mono_print_thread_dump_from_ctx@Base 4.1.0.1738
  mono_print_unhandled_exception@Base 4.1.0.1738
- mono_profiler_call_context_free_buffer@Base 5.7.0.181
- mono_profiler_call_context_get_argument@Base 5.7.0.181
- mono_profiler_call_context_get_local@Base 5.7.0.181
- mono_profiler_call_context_get_result@Base 5.7.0.181
- mono_profiler_call_context_get_this@Base 5.7.0.181
- mono_profiler_create@Base 5.5.0.527
- mono_profiler_enable_allocations@Base 5.5.0.357
- mono_profiler_enable_call_context_introspection@Base 5.7.0.181
- mono_profiler_enable_clauses@Base 5.15.0.73
- mono_profiler_enable_coverage@Base 5.7.0.181
- mono_profiler_enable_sampling@Base 5.5.0.357
- mono_profiler_get_coverage_data@Base 5.5.0.357
- mono_profiler_get_sample_mode@Base 5.5.0.357
+ mono_profiler_call_context_free_buffer@Base 5.8.0.22
+ mono_profiler_call_context_get_argument@Base 5.8.0.22
+ mono_profiler_call_context_get_local@Base 5.8.0.22
+ mono_profiler_call_context_get_result@Base 5.8.0.22
+ mono_profiler_call_context_get_this@Base 5.8.0.22
+#MISSING: 5.8.0.22# mono_profiler_coverage_get@Base 4.1.0.1738
+ mono_profiler_create@Base 5.8.0.22
+ mono_profiler_enable_allocations@Base 5.8.0.22
+ mono_profiler_enable_call_context_introspection@Base 5.8.0.22
+ mono_profiler_enable_clauses@Base 5.16.0.100
+ mono_profiler_enable_coverage@Base 5.8.0.22
+ mono_profiler_enable_sampling@Base 5.8.0.22
+ mono_profiler_get_coverage_data@Base 5.8.0.22
+#MISSING: 5.8.0.22# mono_profiler_get_events@Base 4.1.0.1738
+ mono_profiler_get_sample_mode@Base 5.8.0.22
  mono_profiler_install@Base 4.1.0.1738
- mono_profiler_install_allocation@Base 5.11.0.133
- mono_profiler_install_enter_leave@Base 5.11.0.133
- mono_profiler_install_exception@Base 5.11.0.133
- mono_profiler_install_gc@Base 5.5.0.527
- mono_profiler_install_jit_end@Base 5.5.0.527
- mono_profiler_install_thread@Base 5.5.0.527
+ mono_profiler_install_allocation@Base 5.10.0.53
+#MISSING: 5.8.0.22# mono_profiler_install_appdomain@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_profiler_install_appdomain_name@Base 4.3.0.624
+#MISSING: 5.8.0.22# mono_profiler_install_assembly@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_profiler_install_class@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_profiler_install_code_buffer_new@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_profiler_install_code_chunk_destroy@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_profiler_install_code_chunk_new@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_profiler_install_context@Base 4.3.0.624
+#MISSING: 5.8.0.22# mono_profiler_install_coverage_filter@Base 4.1.0.1738
+ mono_profiler_install_enter_leave@Base 5.10.0.53
+ mono_profiler_install_exception@Base 5.10.0.53
+ mono_profiler_install_gc@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_profiler_install_gc_finalize@Base 4.7.0.488
+#MISSING: 5.8.0.22# mono_profiler_install_gc_moves@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_profiler_install_gc_roots@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_profiler_install_iomap@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_profiler_install_jit_compile@Base 4.1.0.1738
+ mono_profiler_install_jit_end@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_profiler_install_method_free@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_profiler_install_method_invoke@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_profiler_install_module@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_profiler_install_monitor@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_profiler_install_runtime_initialized@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_profiler_install_statistical@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_profiler_install_statistical_call_chain@Base 4.1.0.1738
+ mono_profiler_install_thread@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_profiler_install_thread_name@Base 4.1.0.1738
+#MISSING: 5.8.0.22# mono_profiler_install_transition@Base 4.1.0.1738
  mono_profiler_load@Base 4.1.0.1738
- mono_profiler_set_assembly_loaded_callback@Base 5.5.0.357
- mono_profiler_set_assembly_loading_callback@Base 5.5.0.357
- mono_profiler_set_assembly_unloaded_callback@Base 5.5.0.357
- mono_profiler_set_assembly_unloading_callback@Base 5.5.0.357
- mono_profiler_set_call_instrumentation_filter_callback@Base 5.5.0.357
- mono_profiler_set_class_failed_callback@Base 5.5.0.357
- mono_profiler_set_class_loaded_callback@Base 5.5.0.357
- mono_profiler_set_class_loading_callback@Base 5.5.0.357
- mono_profiler_set_cleanup_callback@Base 5.7.0.181
- mono_profiler_set_context_loaded_callback@Base 5.5.0.357
- mono_profiler_set_context_unloaded_callback@Base 5.5.0.357
- mono_profiler_set_coverage_filter_callback@Base 5.5.0.357
- mono_profiler_set_domain_loaded_callback@Base 5.5.0.357
- mono_profiler_set_domain_loading_callback@Base 5.5.0.357
- mono_profiler_set_domain_name_callback@Base 5.5.0.357
- mono_profiler_set_domain_unloaded_callback@Base 5.5.0.357
- mono_profiler_set_domain_unloading_callback@Base 5.5.0.357
- mono_profiler_set_events@Base 5.5.0.527
- mono_profiler_set_exception_clause_callback@Base 5.5.0.357
- mono_profiler_set_exception_throw_callback@Base 5.5.0.357
- mono_profiler_set_gc_allocation_callback@Base 5.5.0.357
- mono_profiler_set_gc_event_callback@Base 5.5.0.357
- mono_profiler_set_gc_finalized_callback@Base 5.5.0.357
- mono_profiler_set_gc_finalized_object_callback@Base 5.5.0.357
- mono_profiler_set_gc_finalizing_callback@Base 5.5.0.357
- mono_profiler_set_gc_finalizing_object_callback@Base 5.5.0.357
- mono_profiler_set_gc_handle_created_callback@Base 5.5.0.357
- mono_profiler_set_gc_handle_deleted_callback@Base 5.5.0.357
- mono_profiler_set_gc_moves_callback@Base 5.5.0.357
- mono_profiler_set_gc_resize_callback@Base 5.5.0.357
+ mono_profiler_set_assembly_loaded_callback@Base 5.8.0.22
+ mono_profiler_set_assembly_loading_callback@Base 5.8.0.22
+ mono_profiler_set_assembly_unloaded_callback@Base 5.8.0.22
+ mono_profiler_set_assembly_unloading_callback@Base 5.8.0.22
+ mono_profiler_set_call_instrumentation_filter_callback@Base 5.8.0.22
+ mono_profiler_set_class_failed_callback@Base 5.8.0.22
+ mono_profiler_set_class_loaded_callback@Base 5.8.0.22
+ mono_profiler_set_class_loading_callback@Base 5.8.0.22
+ mono_profiler_set_cleanup_callback@Base 5.8.0.22
+ mono_profiler_set_context_loaded_callback@Base 5.8.0.22
+ mono_profiler_set_context_unloaded_callback@Base 5.8.0.22
+ mono_profiler_set_coverage_filter_callback@Base 5.8.0.22
+ mono_profiler_set_domain_loaded_callback@Base 5.8.0.22
+ mono_profiler_set_domain_loading_callback@Base 5.8.0.22
+ mono_profiler_set_domain_name_callback@Base 5.8.0.22
+ mono_profiler_set_domain_unloaded_callback@Base 5.8.0.22
+ mono_profiler_set_domain_unloading_callback@Base 5.8.0.22
+ mono_profiler_set_events@Base 4.1.0.1738
+ mono_profiler_set_exception_clause_callback@Base 5.8.0.22
+ mono_profiler_set_exception_throw_callback@Base 5.8.0.22
+ mono_profiler_set_gc_allocation_callback@Base 5.8.0.22
+ mono_profiler_set_gc_event_callback@Base 5.8.0.22
+ mono_profiler_set_gc_finalized_callback@Base 5.8.0.22
+ mono_profiler_set_gc_finalized_object_callback@Base 5.8.0.22
+ mono_profiler_set_gc_finalizing_callback@Base 5.8.0.22
+ mono_profiler_set_gc_finalizing_object_callback@Base 5.8.0.22
+ mono_profiler_set_gc_handle_created_callback@Base 5.8.0.22
+ mono_profiler_set_gc_handle_deleted_callback@Base 5.8.0.22
+ mono_profiler_set_gc_moves_callback@Base 5.8.0.22
+ mono_profiler_set_gc_resize_callback@Base 5.8.0.22
  mono_profiler_set_gc_root_register_callback@Base 5.11.0.133
  mono_profiler_set_gc_root_unregister_callback@Base 5.11.0.133
- mono_profiler_set_gc_roots_callback@Base 5.5.0.357
- mono_profiler_set_image_failed_callback@Base 5.5.0.357
- mono_profiler_set_image_loaded_callback@Base 5.5.0.357
- mono_profiler_set_image_loading_callback@Base 5.5.0.357
- mono_profiler_set_image_unloaded_callback@Base 5.5.0.357
- mono_profiler_set_image_unloading_callback@Base 5.5.0.357
- mono_profiler_set_jit_begin_callback@Base 5.5.0.357
- mono_profiler_set_jit_chunk_created_callback@Base 5.5.0.357
- mono_profiler_set_jit_chunk_destroyed_callback@Base 5.5.0.357
- mono_profiler_set_jit_code_buffer_callback@Base 5.5.0.357
- mono_profiler_set_jit_done_callback@Base 5.5.0.357
- mono_profiler_set_jit_failed_callback@Base 5.5.0.357
- mono_profiler_set_method_begin_invoke_callback@Base 5.5.0.357
- mono_profiler_set_method_end_invoke_callback@Base 5.5.0.357
- mono_profiler_set_method_enter_callback@Base 5.5.0.357
- mono_profiler_set_method_exception_leave_callback@Base 5.5.0.357
- mono_profiler_set_method_free_callback@Base 5.5.0.357
- mono_profiler_set_method_leave_callback@Base 5.5.0.357
- mono_profiler_set_method_tail_call_callback@Base 5.7.0.181
- mono_profiler_set_monitor_acquired_callback@Base 5.5.0.357
- mono_profiler_set_monitor_contention_callback@Base 5.5.0.357
- mono_profiler_set_monitor_failed_callback@Base 5.5.0.357
- mono_profiler_set_runtime_initialized_callback@Base 5.5.0.357
- mono_profiler_set_runtime_shutdown_begin_callback@Base 5.5.0.357
- mono_profiler_set_runtime_shutdown_end_callback@Base 5.5.0.357
- mono_profiler_set_sample_hit_callback@Base 5.5.0.357
- mono_profiler_set_sample_mode@Base 5.5.0.357
- mono_profiler_set_thread_exited_callback@Base 5.11.0.133
- mono_profiler_set_thread_name_callback@Base 5.5.0.357
- mono_profiler_set_thread_started_callback@Base 5.5.0.357
- mono_profiler_set_thread_stopped_callback@Base 5.5.0.357
- mono_profiler_set_thread_stopping_callback@Base 5.11.0.133
+ mono_profiler_set_gc_roots_callback@Base 5.8.0.22
+ mono_profiler_set_image_failed_callback@Base 5.8.0.22
+ mono_profiler_set_image_loaded_callback@Base 5.8.0.22
+ mono_profiler_set_image_loading_callback@Base 5.8.0.22
+ mono_profiler_set_image_unloaded_callback@Base 5.8.0.22
+ mono_profiler_set_image_unloading_callback@Base 5.8.0.22
+ mono_profiler_set_jit_begin_callback@Base 5.8.0.22
+ mono_profiler_set_jit_chunk_created_callback@Base 5.8.0.22
+ mono_profiler_set_jit_chunk_destroyed_callback@Base 5.8.0.22
+ mono_profiler_set_jit_code_buffer_callback@Base 5.8.0.22
+ mono_profiler_set_jit_done_callback@Base 5.8.0.22
+ mono_profiler_set_jit_failed_callback@Base 5.8.0.22
+ mono_profiler_set_method_begin_invoke_callback@Base 5.8.0.22
+ mono_profiler_set_method_end_invoke_callback@Base 5.8.0.22
+ mono_profiler_set_method_enter_callback@Base 5.8.0.22
+ mono_profiler_set_method_exception_leave_callback@Base 5.8.0.22
+ mono_profiler_set_method_free_callback@Base 5.8.0.22
+ mono_profiler_set_method_leave_callback@Base 5.8.0.22
+ mono_profiler_set_method_tail_call_callback@Base 5.8.0.22
+ mono_profiler_set_monitor_acquired_callback@Base 5.8.0.22
+ mono_profiler_set_monitor_contention_callback@Base 5.8.0.22
+ mono_profiler_set_monitor_failed_callback@Base 5.8.0.22
+ mono_profiler_set_runtime_initialized_callback@Base 5.8.0.22
+ mono_profiler_set_runtime_shutdown_begin_callback@Base 5.8.0.22
+ mono_profiler_set_runtime_shutdown_end_callback@Base 5.8.0.22
+ mono_profiler_set_sample_hit_callback@Base 5.8.0.22
+ mono_profiler_set_sample_mode@Base 5.8.0.22
+#MISSING: 5.8.0.22# mono_profiler_set_statistical_mode@Base 4.1.0.1738
+ mono_profiler_set_thread_exited_callback@Base 5.10.0.53
+ mono_profiler_set_thread_name_callback@Base 5.8.0.22
+ mono_profiler_set_thread_started_callback@Base 5.8.0.22
+ mono_profiler_set_thread_stopped_callback@Base 5.8.0.22
  mono_profiler_set_vtable_failed_callback@Base 5.11.0.133
  mono_profiler_set_vtable_loaded_callback@Base 5.11.0.133
  mono_profiler_set_vtable_loading_callback@Base 5.11.0.133
+ mono_profiler_set_thread_stopping_callback@Base 5.10.0.53
  mono_property_get_flags@Base 4.1.0.1738
  mono_property_get_get_method@Base 4.1.0.1738
  mono_property_get_name@Base 4.1.0.1738
@@ -849,6 +873,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_property_hash_remove_object@Base 4.1.0.1738
  mono_property_set_value@Base 4.1.0.1738
  mono_ptr_class_get@Base 4.1.0.1738
+ mono_quash_linker_empty_file_warning_gmodule_aix@Base 6.10.0.52
  mono_raise_exception@Base 4.1.0.1738
  mono_reflection_assembly_get_assembly@Base 4.1.0.1738
  mono_reflection_free_type_info@Base 4.1.0.1738
@@ -866,14 +891,14 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_register_config_for_assembly@Base 4.1.0.1738
  mono_register_machine_config@Base 4.1.0.1738
  mono_register_symfile_for_assembly@Base 4.1.0.1738
- mono_regression_test_step@Base 5.21.0.52
+ mono_regression_test_step@Base 5.20.0.184
  mono_reraise_exception@Base 5.4.0.199
  mono_runtime_class_init@Base 4.1.0.1738
  mono_runtime_cleanup@Base 4.1.0.1738
  mono_runtime_delegate_invoke@Base 4.1.0.1738
  mono_runtime_exec_main@Base 4.1.0.1738
  mono_runtime_exec_managed_code@Base 4.1.0.1738
- mono_runtime_get_aotid@Base 5.13.0.308
+ mono_runtime_get_aotid@Base 5.14.0.78
  mono_runtime_get_main_args@Base 4.1.0.1738
  mono_runtime_init@Base 4.1.0.1738
  mono_runtime_invoke@Base 4.1.0.1738
@@ -886,9 +911,9 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_runtime_resource_set_callback@Base 4.1.0.1738
  mono_runtime_run_main@Base 4.1.0.1738
  mono_runtime_set_main_args@Base 4.1.0.1738
- mono_runtime_set_pending_exception@Base 5.15.0.216
+ mono_runtime_set_pending_exception@Base 5.12.0.220
  mono_runtime_set_shutting_down@Base 4.1.0.1738
- mono_runtime_try_invoke@Base 6.5.0.345
+ mono_runtime_try_invoke@Base 6.6.0.97
  mono_security_core_clr_get_options@Base 4.1.0.1738
  mono_security_core_clr_require_elevated_permissions@Base 4.1.0.1738
  mono_security_core_clr_set_options@Base 4.1.0.1738
@@ -904,10 +929,10 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_set_is_debugger_attached@Base 4.1.0.1738
  mono_set_rootdir@Base 4.1.0.1738
  mono_set_signal_chaining@Base 4.1.0.1738
- mono_set_use_llvm@Base 6.5.0.345
- mono_setmmapjit@Base 6.3.0.202
- mono_sgen_mono_ilgen_init@Base 5.13.0.417
+ mono_set_use_llvm@Base 6.4.0.137
+ mono_setmmapjit@Base 6.0.0.172
  mono_sha1_final@Base 4.1.0.1738
+ mono_sgen_mono_ilgen_init@Base 5.12.0.220
  mono_sha1_get_digest@Base 4.1.0.1738
  mono_sha1_get_digest_from_file@Base 4.1.0.1738
  mono_sha1_init@Base 4.1.0.1738
@@ -945,7 +970,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_string_is_interned@Base 4.1.0.1738
  mono_string_length@Base 4.1.0.1738
  mono_string_new@Base 4.1.0.1738
- mono_string_new_checked@Base 5.13.0.273
+ mono_string_new_checked@Base 5.14.0.78
  mono_string_new_len@Base 4.1.0.1738
  mono_string_new_size@Base 4.1.0.1738
  mono_string_new_utf16@Base 4.1.0.1738
@@ -964,7 +989,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_thread_detach@Base 4.1.0.1738
  mono_thread_detach_if_exiting@Base 4.1.0.1738
  mono_thread_exit@Base 4.1.0.1738
- mono_thread_get_coop_aware@Base 6.5.0.345
+ mono_thread_get_coop_aware@Base 6.6.0.97
  mono_thread_get_main@Base 4.1.0.1738
  mono_thread_get_managed_id@Base 4.3.3.735
  mono_thread_get_name_utf8@Base 4.3.3.735
@@ -972,54 +997,56 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_thread_hazardous_queue_free@Base 4.7.0.488
  mono_thread_hazardous_try_free@Base 4.5.2.48
  mono_thread_hazardous_try_free_all@Base 4.7.0.488
- mono_thread_info_set_tools_data@Base 5.17.0.98
- mono_thread_info_attach@Base 5.17.0.113
- mono_thread_info_current_unchecked@Base 6.5.0.345
+ mono_thread_info_attach@Base 5.14.0.116
+ mono_thread_info_current_unchecked@Base 6.0.0.310
  mono_thread_info_detach@Base 4.5.2.48
- mono_thread_info_get_flags@Base 5.13.0.273
- mono_thread_info_get_small_id@Base 5.5.0.263
- mono_thread_info_get_tools_data@Base 5.17.0.113
- mono_thread_info_install_interrupt@Base 5.17.0.386
- mono_thread_info_register_small_id@Base 5.5.0.263
- mono_thread_info_set_flags@Base 5.13.0.273
- mono_thread_info_set_tools_data@Base 5.17.0.98
- mono_thread_info_uninstall_interrupt@Base 5.17.0.386
+ mono_thread_info_get_flags@Base 5.14.0.78
+ mono_thread_info_get_small_id@Base 5.8.0.22
+ mono_thread_info_get_tools_data@Base 5.14.0.116
+ mono_thread_info_install_interrupt@Base 5.18.0.143
+ mono_thread_info_register_small_id@Base 5.8.0.22
+ mono_thread_info_set_flags@Base 5.14.0.78
+ mono_thread_info_set_tools_data@Base 5.14.0.116
+ mono_thread_info_uninstall_interrupt@Base 5.18.0.143
  mono_thread_info_yield@Base 4.7.0.488
  mono_thread_init@Base 4.1.0.1738
- mono_thread_internal_current@Base 5.13.0.273
+ mono_thread_internal_current@Base 5.14.0.78
  mono_thread_is_foreign@Base 4.1.0.1738
  mono_thread_manage@Base 4.1.0.1738
  mono_thread_new_init@Base 4.1.0.1738
- mono_thread_set_coop_aware@Base 6.5.0.345
+ mono_thread_set_coop_aware@Base 6.6.0.97
  mono_thread_set_main@Base 4.1.0.1738
  mono_thread_set_manage_callback@Base 4.1.0.1738
- mono_thread_set_name@Base 6.7.0.200
+ mono_thread_set_name@Base 6.8.0.73
  mono_thread_stop@Base 4.1.0.1738
  mono_threads_assert_gc_safe_region@Base 4.3.3.735
  mono_threads_assert_gc_unsafe_region@Base 4.3.3.735
  mono_threads_attach_coop@Base 4.5.2.48
+ mono_threads_attach_tools_thread@Base 6.8.0.73
  mono_threads_detach_coop@Base 4.5.2.48
  mono_threads_enter_gc_safe_region@Base 4.3.3.735
- mono_threads_enter_gc_safe_region_internal@Base 5.15.0.52
+ mono_threads_enter_gc_safe_region_internal@Base 5.16.0.100
  mono_threads_enter_gc_safe_region_unbalanced@Base 4.5.2.195
- mono_threads_enter_gc_safe_region_with_info@Base 6.5.0.345
+ mono_threads_enter_gc_safe_region_with_info@Base 6.0.0.310
  mono_threads_enter_gc_unsafe_region@Base 4.3.0.1080
  mono_threads_enter_gc_unsafe_region_unbalanced@Base 4.5.2.195
+ mono_threads_enter_gc_unsafe_region_with_info@Base 6.8.0.73
  mono_threads_exit_gc_safe_region@Base 4.3.3.735
- mono_threads_exit_gc_safe_region_internal@Base 5.15.0.52
+ mono_threads_exit_gc_safe_region_internal@Base 5.16.0.100
  mono_threads_exit_gc_safe_region_unbalanced@Base 4.5.2.195
  mono_threads_exit_gc_unsafe_region@Base 4.3.0.1080
+ mono_threads_exit_gc_unsafe_region_internal@Base 6.8.0.73
  mono_threads_exit_gc_unsafe_region_unbalanced@Base 4.5.2.195
  mono_threads_get_default_stacksize@Base 4.1.0.1738
  mono_threads_request_thread_dump@Base 4.1.0.1738
  mono_threads_set_default_stacksize@Base 4.1.0.1738
- mono_trace_init@Base 5.11.0.133
+ mono_trace_init@Base 5.10.0.53
  mono_trace_set_level_string@Base 4.1.0.1738
  mono_trace_set_log_handler@Base 4.1.0.1738
  mono_trace_set_mask_string@Base 4.1.0.1738
  mono_trace_set_print_handler@Base 4.1.0.1738
  mono_trace_set_printerr_handler@Base 4.1.0.1738
- mono_tracev_inner@Base 5.5.0.426
+ mono_tracev_inner@Base 5.8.0.22
  mono_type_create_from_typespec@Base 4.1.0.1738
  mono_type_full_name@Base 4.1.0.1738
  mono_type_generic_inst_is_valuetype@Base 4.1.0.1738
@@ -1034,7 +1061,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_type_get_type@Base 4.1.0.1738
  mono_type_get_underlying_type@Base 4.1.0.1738
  mono_type_is_byref@Base 4.1.0.1738
- mono_type_is_generic_parameter@Base 6.5.0.100
+ mono_type_is_generic_parameter@Base 6.4.0.137
  mono_type_is_pointer@Base 4.1.0.1738
  mono_type_is_primitive@Base 4.9.0.1707
  mono_type_is_reference@Base 4.1.0.1738
@@ -1048,7 +1075,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_unicode_from_external@Base 4.1.0.1738
  mono_unicode_to_external@Base 4.1.0.1738
  mono_upgrade_remote_class_wrapper@Base 4.1.0.1738
- mono_use_fast_math@Base 6.7.0.448
+ mono_use_fast_math@Base 6.8.0.73
  mono_use_interpreter@Base 4.9.0.1707
  mono_use_llvm@Base 4.1.0.1738
  mono_utf8_from_external@Base 4.1.0.1738
@@ -1064,289 +1091,292 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_verify_corlib@Base 4.1.0.1738
  mono_vfree@Base 4.1.0.1738
  mono_vtable_class@Base 5.11.0.133
- mono_vtable_class_internal@Base 5.21.0.247
+ mono_vtable_class_internal@Base 6.0.0.172
  mono_vtable_domain@Base 5.11.0.133
- mono_vtable_domain_internal@Base 5.21.0.247
+ mono_vtable_domain_internal@Base 6.0.0.172
  mono_vtable_get_static_field_data@Base 4.1.0.1738
  mono_win32_compat_CopyMemory@Base 4.1.0.1738
  mono_win32_compat_FillMemory@Base 4.1.0.1738
  mono_win32_compat_MoveMemory@Base 4.1.0.1738
  mono_win32_compat_ZeroMemory@Base 4.1.0.1738
- monoeg_ascii_strcasecmp@Base 5.7.0.181
- monoeg_ascii_strup@Base 5.7.0.181
- monoeg_ascii_toupper@Base 5.7.0.181
- monoeg_assert_abort@Base 5.23.0.608
- monoeg_assertion_disable_global@Base 5.23.0.608
- monoeg_assertion_message@Base 5.7.0.181
- monoeg_g_array_append_vals@Base 5.7.0.181
- monoeg_g_array_free@Base 5.7.0.181
- monoeg_g_array_insert_vals@Base 5.7.0.181
- monoeg_g_array_new@Base 5.7.0.181
- monoeg_g_array_remove_index@Base 5.7.0.181
- monoeg_g_array_remove_index_fast@Base 5.7.0.181
- monoeg_g_array_set_size@Base 5.7.0.181
- monoeg_g_array_sized_new@Base 5.7.0.181
- monoeg_g_ascii_strdown@Base 5.7.0.181
- monoeg_g_ascii_strdown_no_alloc@Base 6.7.0.562
- monoeg_g_ascii_strncasecmp@Base 5.7.0.181
- monoeg_g_ascii_tolower@Base 5.7.0.181
- monoeg_g_ascii_xdigit_value@Base 5.7.0.181
- monoeg_g_build_path@Base 5.7.0.181
- monoeg_g_byte_array_append@Base 5.7.0.181
- monoeg_g_byte_array_free@Base 5.7.0.181
- monoeg_g_byte_array_new@Base 5.7.0.181
- monoeg_g_byte_array_set_size@Base 5.7.0.181
- monoeg_g_calloc@Base 5.7.0.181
- monoeg_g_clear_error@Base 5.7.0.181
- monoeg_g_convert@Base 5.7.0.181
- monoeg_g_convert_error_quark@Base 5.7.0.181
- monoeg_g_dir_close@Base 5.7.0.181
- monoeg_g_dir_open@Base 5.7.0.181
- monoeg_g_dir_read_name@Base 5.7.0.181
- monoeg_g_dir_rewind@Base 5.7.0.181
- monoeg_g_direct_equal@Base 5.7.0.181
- monoeg_g_direct_hash@Base 5.7.0.181
- monoeg_g_ensure_directory_exists@Base 5.7.0.181
- monoeg_g_error_free@Base 5.7.0.181
- monoeg_g_error_new@Base 5.7.0.181
- monoeg_g_file_error_from_errno@Base 5.7.0.181
- monoeg_g_file_error_quark@Base 5.7.0.181
- monoeg_g_file_get_contents@Base 5.7.0.181
- monoeg_g_file_open_tmp@Base 5.7.0.181
- monoeg_g_file_set_contents@Base 5.7.0.181
- monoeg_g_file_test@Base 5.7.0.181
- monoeg_g_filename_from_uri@Base 5.7.0.181
- monoeg_g_filename_from_utf8@Base 5.7.0.181
- monoeg_g_filename_to_uri@Base 5.7.0.181
- monoeg_g_find_program_in_path@Base 5.7.0.181
- monoeg_g_fprintf@Base 5.7.0.181
- monoeg_g_free@Base 5.7.0.181
- monoeg_g_get_charset@Base 5.7.0.181
- monoeg_g_get_current_dir@Base 5.7.0.181
- monoeg_g_get_current_time@Base 5.7.0.181
- monoeg_g_get_home_dir@Base 5.7.0.181
- monoeg_g_get_prgname@Base 5.7.0.181
- monoeg_g_get_tmp_dir@Base 5.7.0.181
- monoeg_g_get_user_name@Base 5.7.0.181
- monoeg_g_getenv@Base 5.7.0.181
- monoeg_g_hasenv@Base 5.7.0.181
- monoeg_g_hash_table_destroy@Base 5.7.0.181
- monoeg_g_hash_table_find@Base 5.7.0.181
- monoeg_g_hash_table_foreach@Base 5.7.0.181
- monoeg_g_hash_table_foreach_remove@Base 5.7.0.181
- monoeg_g_hash_table_foreach_steal@Base 5.7.0.181
- monoeg_g_hash_table_get_keys@Base 5.7.0.181
- monoeg_g_hash_table_get_values@Base 5.7.0.181
- monoeg_g_hash_table_insert_replace@Base 5.7.0.181
- monoeg_g_hash_table_iter_init@Base 5.7.0.181
- monoeg_g_hash_table_iter_next@Base 5.7.0.181
- monoeg_g_hash_table_lookup@Base 5.7.0.181
- monoeg_g_hash_table_lookup_extended@Base 5.7.0.181
- monoeg_g_hash_table_new@Base 5.7.0.181
- monoeg_g_hash_table_new_full@Base 5.7.0.181
- monoeg_g_hash_table_print_stats@Base 5.7.0.181
- monoeg_g_hash_table_remove@Base 5.7.0.181
- monoeg_g_hash_table_remove_all@Base 5.7.0.181
- monoeg_g_hash_table_size@Base 5.7.0.181
- monoeg_g_hash_table_steal@Base 5.7.0.181
- monoeg_g_iconv@Base 5.7.0.181
- monoeg_g_iconv_close@Base 5.7.0.181
- monoeg_g_iconv_open@Base 5.7.0.181
- monoeg_g_int_equal@Base 5.7.0.181
- monoeg_g_int_hash@Base 5.7.0.181
- monoeg_g_list_alloc@Base 5.7.0.181
- monoeg_g_list_append@Base 5.7.0.181
- monoeg_g_list_concat@Base 5.7.0.181
- monoeg_g_list_copy@Base 5.7.0.181
- monoeg_g_list_delete_link@Base 5.7.0.181
- monoeg_g_list_find@Base 5.7.0.181
- monoeg_g_list_find_custom@Base 5.7.0.181
- monoeg_g_list_first@Base 5.7.0.181
- monoeg_g_list_foreach@Base 5.7.0.181
- monoeg_g_list_free@Base 5.7.0.181
- monoeg_g_list_free_1@Base 5.7.0.181
- monoeg_g_list_index@Base 5.7.0.181
- monoeg_g_list_insert_before@Base 5.7.0.181
- monoeg_g_list_insert_sorted@Base 5.7.0.181
- monoeg_g_list_last@Base 5.7.0.181
- monoeg_g_list_length@Base 5.7.0.181
- monoeg_g_list_nth@Base 5.7.0.181
- monoeg_g_list_nth_data@Base 5.7.0.181
- monoeg_g_list_prepend@Base 5.7.0.181
- monoeg_g_list_remove@Base 5.7.0.181
- monoeg_g_list_remove_all@Base 5.7.0.181
- monoeg_g_list_remove_link@Base 5.7.0.181
- monoeg_g_list_reverse@Base 5.7.0.181
- monoeg_g_list_sort@Base 5.7.0.181
- monoeg_g_locale_from_utf8@Base 5.7.0.181
- monoeg_g_locale_to_utf8@Base 5.7.0.181
- monoeg_g_log@Base 5.7.0.181
- monoeg_g_log_set_always_fatal@Base 5.7.0.181
- monoeg_g_log_set_fatal_mask@Base 5.7.0.181
- monoeg_g_logv@Base 5.7.0.181
- monoeg_g_markup_parse_context_end_parse@Base 5.7.0.181
- monoeg_g_markup_parse_context_free@Base 5.7.0.181
- monoeg_g_markup_parse_context_new@Base 5.7.0.181
- monoeg_g_markup_parse_context_parse@Base 5.7.0.181
- monoeg_g_mem_get_vtable@Base 5.23.0.608
- monoeg_g_mem_set_vtable@Base 5.7.0.181
- monoeg_g_memdup@Base 5.7.0.181
- monoeg_g_mkdir_with_parents@Base 5.7.0.181
- monoeg_g_mkdtemp@Base 5.7.0.181
- monoeg_g_module_build_path@Base 5.7.0.181
- monoeg_g_module_close@Base 5.7.0.181
- monoeg_g_module_error@Base 5.7.0.181
- monoeg_g_module_open@Base 5.7.0.181
- monoeg_g_module_symbol@Base 5.7.0.181
- monoeg_g_path_get_basename@Base 5.7.0.181
- monoeg_g_path_get_dirname@Base 5.7.0.181
- monoeg_g_path_is_absolute@Base 5.7.0.181
- monoeg_g_pattern_match_string@Base 5.7.0.181
- monoeg_g_pattern_spec_free@Base 5.7.0.181
- monoeg_g_pattern_spec_new@Base 5.7.0.181
- monoeg_g_print@Base 5.7.0.181
- monoeg_g_printerr@Base 5.7.0.181
- monoeg_g_printf@Base 5.7.0.181
- monoeg_g_printv@Base 6.1.0.545
- monoeg_g_propagate_error@Base 5.7.0.181
- monoeg_g_ptr_array_add@Base 5.7.0.181
- monoeg_g_ptr_array_capacity@Base 5.9.0.331
- monoeg_g_ptr_array_foreach@Base 5.7.0.181
- monoeg_g_ptr_array_free@Base 5.7.0.181
- monoeg_g_ptr_array_new@Base 5.7.0.181
- monoeg_g_ptr_array_remove@Base 5.7.0.181
- monoeg_g_ptr_array_remove_fast@Base 5.7.0.181
- monoeg_g_ptr_array_remove_index@Base 5.7.0.181
- monoeg_g_ptr_array_remove_index_fast@Base 5.7.0.181
- monoeg_g_ptr_array_set_size@Base 5.7.0.181
- monoeg_g_ptr_array_sized_new@Base 5.7.0.181
- monoeg_g_ptr_array_sort@Base 5.7.0.181
- monoeg_g_ptr_array_sort_with_data@Base 5.7.0.181
- monoeg_g_qsort_with_data@Base 5.7.0.181
- monoeg_g_queue_foreach@Base 5.7.0.181
- monoeg_g_queue_free@Base 5.7.0.181
- monoeg_g_queue_is_empty@Base 5.7.0.181
- monoeg_g_queue_new@Base 5.7.0.181
- monoeg_g_queue_pop_head@Base 5.7.0.181
- monoeg_g_queue_push_head@Base 5.7.0.181
- monoeg_g_queue_push_tail@Base 5.7.0.181
- monoeg_g_set_error@Base 5.7.0.181
- monoeg_g_set_prgname@Base 5.7.0.181
- monoeg_g_setenv@Base 5.7.0.181
- monoeg_g_shell_parse_argv@Base 5.7.0.181
- monoeg_g_shell_quote@Base 5.7.0.181
- monoeg_g_shell_unquote@Base 5.7.0.181
- monoeg_g_slist_alloc@Base 5.7.0.181
- monoeg_g_slist_append@Base 5.7.0.181
- monoeg_g_slist_concat@Base 5.7.0.181
- monoeg_g_slist_copy@Base 5.7.0.181
- monoeg_g_slist_delete_link@Base 5.7.0.181
- monoeg_g_slist_find@Base 5.7.0.181
- monoeg_g_slist_find_custom@Base 5.7.0.181
- monoeg_g_slist_foreach@Base 5.7.0.181
- monoeg_g_slist_free@Base 5.7.0.181
- monoeg_g_slist_free_1@Base 5.7.0.181
- monoeg_g_slist_index@Base 5.7.0.181
- monoeg_g_slist_insert_before@Base 5.7.0.181
- monoeg_g_slist_insert_sorted@Base 5.7.0.181
- monoeg_g_slist_last@Base 5.7.0.181
- monoeg_g_slist_length@Base 5.7.0.181
- monoeg_g_slist_nth@Base 5.7.0.181
- monoeg_g_slist_nth_data@Base 5.7.0.181
- monoeg_g_slist_prepend@Base 5.7.0.181
- monoeg_g_slist_remove@Base 5.7.0.181
- monoeg_g_slist_remove_all@Base 5.7.0.181
- monoeg_g_slist_remove_link@Base 5.7.0.181
- monoeg_g_slist_reverse@Base 5.7.0.181
- monoeg_g_slist_sort@Base 5.7.0.181
- monoeg_g_snprintf@Base 5.7.0.181
- monoeg_g_spaced_primes_closest@Base 5.7.0.181
- monoeg_g_spawn_async_with_pipes@Base 5.7.0.181
- monoeg_g_spawn_command_line_sync@Base 5.7.0.181
- monoeg_g_sprintf@Base 5.7.0.181
- monoeg_g_stpcpy@Base 5.7.0.181
- monoeg_g_str_equal@Base 5.7.0.181
- monoeg_g_str_has_prefix@Base 5.7.0.181
- monoeg_g_str_has_suffix@Base 5.7.0.181
- monoeg_g_str_hash@Base 5.7.0.181
- monoeg_g_strchomp@Base 5.7.0.181
- monoeg_g_strchug@Base 5.7.0.181
- monoeg_g_strconcat@Base 5.7.0.181
- monoeg_g_strdelimit@Base 5.7.0.181
- monoeg_g_strdown@Base 5.7.0.181
- monoeg_g_strdup_printf@Base 5.7.0.181
- monoeg_g_strdup_vprintf@Base 5.7.0.181
- monoeg_g_strdupv@Base 5.7.0.181
- monoeg_g_strerror@Base 5.7.0.181
- monoeg_g_strescape@Base 5.7.0.181
- monoeg_g_strfreev@Base 5.7.0.181
- monoeg_g_string_append@Base 5.7.0.181
- monoeg_g_string_append_c@Base 5.7.0.181
- monoeg_g_string_append_len@Base 5.7.0.181
- monoeg_g_string_append_printf@Base 5.7.0.181
- monoeg_g_string_append_unichar@Base 5.7.0.181
- monoeg_g_string_append_vprintf@Base 5.7.0.181
- monoeg_g_string_free@Base 5.7.0.181
- monoeg_g_string_new@Base 5.7.0.181
- monoeg_g_string_new_len@Base 5.7.0.181
- monoeg_g_string_printf@Base 5.7.0.181
- monoeg_g_string_set_size@Base 5.7.0.181
- monoeg_g_string_sized_new@Base 5.7.0.181
- monoeg_g_string_truncate@Base 5.7.0.181
- monoeg_g_strjoin@Base 5.7.0.181
- monoeg_g_strjoinv@Base 5.7.0.181
- monoeg_g_strlcpy@Base 5.7.0.181
- monoeg_g_strndup@Base 5.7.0.181
- monoeg_g_strnfill@Base 5.7.0.181
- monoeg_g_strnlen@Base 6.5.0.525
- monoeg_g_strreverse@Base 5.7.0.181
- monoeg_g_strsplit@Base 5.7.0.181
- monoeg_g_strsplit_set@Base 5.7.0.181
- monoeg_g_strv_length@Base 5.7.0.181
- monoeg_g_timer_destroy@Base 5.7.0.181
- monoeg_g_timer_elapsed@Base 5.7.0.181
- monoeg_g_timer_new@Base 5.7.0.181
- monoeg_g_timer_start@Base 5.7.0.181
- monoeg_g_timer_stop@Base 5.7.0.181
- monoeg_g_ucs4_to_utf16@Base 5.7.0.181
- monoeg_g_ucs4_to_utf8@Base 5.7.0.181
- monoeg_g_unichar_isxdigit@Base 5.7.0.181
- monoeg_g_unichar_to_utf8@Base 5.7.0.181
- monoeg_g_unichar_tolower@Base 5.7.0.181
- monoeg_g_unichar_totitle@Base 5.7.0.181
- monoeg_g_unichar_toupper@Base 5.7.0.181
- monoeg_g_unichar_type@Base 5.7.0.181
- monoeg_g_unichar_xdigit_value@Base 5.7.0.181
- monoeg_g_unsetenv@Base 5.7.0.181
- monoeg_g_usleep@Base 5.7.0.181
- monoeg_g_utf16_ascii_equal@Base 5.13.0.451
- monoeg_g_utf16_asciiz_equal@Base 5.13.0.451
- monoeg_g_utf16_to_ucs4@Base 5.7.0.181
- monoeg_g_utf16_to_utf8@Base 5.7.0.181
- monoeg_g_utf8_get_char@Base 5.7.0.181
- monoeg_g_utf8_jump_table@Base 5.13.0.451
- monoeg_g_utf8_offset_to_pointer@Base 5.7.0.181
- monoeg_g_utf8_pointer_to_offset@Base 5.7.0.181
- monoeg_g_utf8_strdown@Base 5.7.0.181
- monoeg_g_utf8_strlen@Base 5.7.0.181
- monoeg_g_utf8_strup@Base 5.7.0.181
- monoeg_g_utf8_to_ucs4_fast@Base 5.7.0.181
- monoeg_g_utf8_to_utf16@Base 5.7.0.181
- monoeg_g_utf8_validate@Base 5.7.0.181
- monoeg_g_vasprintf@Base 5.7.0.181
- monoeg_g_win32_getlocale@Base 5.7.0.181
- monoeg_get_assertion_message@Base 5.15.0.406
- monoeg_log_default_handler@Base 5.7.0.181
- monoeg_log_set_default_handler@Base 5.7.0.181
- monoeg_malloc0@Base 5.7.0.181
- monoeg_malloc@Base 5.7.0.181
- monoeg_realloc@Base 5.7.0.181
- monoeg_set_print_handler@Base 5.7.0.181
- monoeg_set_printerr_handler@Base 5.7.0.181
- monoeg_try_malloc@Base 5.7.0.181
- monoeg_try_realloc@Base 5.7.0.181
- monoeg_unichar_break_type@Base 5.7.0.181
- monoeg_unichar_isspace@Base 5.7.0.181
- monoeg_utf16_len@Base 6.1.0.545
- monoeg_utf8_get_char_validated@Base 5.7.0.181
- monoeg_utf8_to_ucs4@Base 5.7.0.181
+ monoeg_ascii_strcasecmp@Base 5.8.0.22
+ monoeg_ascii_strup@Base 5.8.0.22
+ monoeg_ascii_toupper@Base 5.8.0.22
+ monoeg_assert_abort@Base 5.20.0.184
+ monoeg_assertion_disable_global@Base 5.20.0.184
+ monoeg_assertion_message@Base 5.8.0.22
+ monoeg_g_array_append_vals@Base 5.8.0.22
+ monoeg_g_array_free@Base 5.8.0.22
+ monoeg_g_array_insert_vals@Base 5.8.0.22
+ monoeg_g_array_new@Base 5.8.0.22
+ monoeg_g_array_remove_index@Base 5.8.0.22
+ monoeg_g_array_remove_index_fast@Base 5.8.0.22
+ monoeg_g_array_set_size@Base 5.8.0.22
+ monoeg_g_array_sized_new@Base 5.8.0.22
+ monoeg_g_ascii_strdown@Base 5.8.0.22
+ monoeg_g_ascii_strdown_no_alloc@Base 6.8.0.73
+ monoeg_g_ascii_strncasecmp@Base 5.8.0.22
+ monoeg_g_ascii_tolower@Base 5.8.0.22
+ monoeg_g_ascii_xdigit_value@Base 5.8.0.22
+ monoeg_g_build_path@Base 5.8.0.22
+ monoeg_g_byte_array_append@Base 5.8.0.22
+ monoeg_g_byte_array_free@Base 5.8.0.22
+ monoeg_g_byte_array_new@Base 5.8.0.22
+ monoeg_g_byte_array_set_size@Base 5.8.0.22
+ monoeg_g_calloc@Base 5.8.0.22
+ monoeg_g_clear_error@Base 5.8.0.22
+ monoeg_g_convert@Base 5.8.0.22
+ monoeg_g_convert_error_quark@Base 5.8.0.22
+ monoeg_g_dir_close@Base 5.8.0.22
+ monoeg_g_dir_open@Base 5.8.0.22
+ monoeg_g_dir_read_name@Base 5.8.0.22
+ monoeg_g_dir_rewind@Base 5.8.0.22
+ monoeg_g_direct_equal@Base 5.8.0.22
+ monoeg_g_direct_hash@Base 5.8.0.22
+ monoeg_g_ensure_directory_exists@Base 5.8.0.22
+ monoeg_g_error_free@Base 5.8.0.22
+ monoeg_g_error_new@Base 5.8.0.22
+ monoeg_g_file_error_from_errno@Base 5.8.0.22
+ monoeg_g_file_error_quark@Base 5.8.0.22
+ monoeg_g_file_get_contents@Base 5.8.0.22
+ monoeg_g_file_open_tmp@Base 5.8.0.22
+ monoeg_g_file_set_contents@Base 5.8.0.22
+ monoeg_g_file_test@Base 5.8.0.22
+ monoeg_g_filename_from_uri@Base 5.8.0.22
+ monoeg_g_filename_from_utf8@Base 5.8.0.22
+ monoeg_g_filename_to_uri@Base 5.8.0.22
+ monoeg_g_find_program_in_path@Base 5.8.0.22
+ monoeg_g_fprintf@Base 5.8.0.22
+ monoeg_g_free@Base 5.8.0.22
+ monoeg_g_get_charset@Base 5.8.0.22
+ monoeg_g_get_current_dir@Base 5.8.0.22
+ monoeg_g_get_current_time@Base 5.8.0.22
+ monoeg_g_get_home_dir@Base 5.8.0.22
+ monoeg_g_get_prgname@Base 5.8.0.22
+ monoeg_g_get_tmp_dir@Base 5.8.0.22
+ monoeg_g_get_user_name@Base 5.8.0.22
+ monoeg_g_getenv@Base 5.8.0.22
+ monoeg_g_hasenv@Base 5.8.0.22
+ monoeg_g_hash_table_contains@Base 6.10.0.52
+ monoeg_g_hash_table_destroy@Base 5.8.0.22
+ monoeg_g_hash_table_find@Base 5.8.0.22
+ monoeg_g_hash_table_foreach@Base 5.8.0.22
+ monoeg_g_hash_table_foreach_remove@Base 5.8.0.22
+ monoeg_g_hash_table_foreach_steal@Base 5.8.0.22
+ monoeg_g_hash_table_get_keys@Base 5.8.0.22
+ monoeg_g_hash_table_get_values@Base 5.8.0.22
+ monoeg_g_hash_table_insert_replace@Base 5.8.0.22
+ monoeg_g_hash_table_iter_init@Base 5.8.0.22
+ monoeg_g_hash_table_iter_next@Base 5.8.0.22
+ monoeg_g_hash_table_lookup@Base 5.8.0.22
+ monoeg_g_hash_table_lookup_extended@Base 5.8.0.22
+ monoeg_g_hash_table_new@Base 5.8.0.22
+ monoeg_g_hash_table_new_full@Base 5.8.0.22
+ monoeg_g_hash_table_print_stats@Base 5.8.0.22
+ monoeg_g_hash_table_remove@Base 5.8.0.22
+ monoeg_g_hash_table_remove_all@Base 5.8.0.22
+ monoeg_g_hash_table_size@Base 5.8.0.22
+ monoeg_g_hash_table_steal@Base 5.8.0.22
+ monoeg_g_iconv@Base 5.8.0.22
+ monoeg_g_iconv_close@Base 5.8.0.22
+ monoeg_g_iconv_open@Base 5.8.0.22
+ monoeg_g_int_equal@Base 5.8.0.22
+ monoeg_g_int_hash@Base 5.8.0.22
+ monoeg_g_list_alloc@Base 5.8.0.22
+ monoeg_g_list_append@Base 5.8.0.22
+ monoeg_g_list_concat@Base 5.8.0.22
+ monoeg_g_list_copy@Base 5.8.0.22
+ monoeg_g_list_delete_link@Base 5.8.0.22
+ monoeg_g_list_find@Base 5.8.0.22
+ monoeg_g_list_find_custom@Base 5.8.0.22
+ monoeg_g_list_first@Base 5.8.0.22
+ monoeg_g_list_foreach@Base 5.8.0.22
+ monoeg_g_list_free@Base 5.8.0.22
+ monoeg_g_list_free_1@Base 5.8.0.22
+ monoeg_g_list_index@Base 5.8.0.22
+ monoeg_g_list_insert_before@Base 5.8.0.22
+ monoeg_g_list_insert_sorted@Base 5.8.0.22
+ monoeg_g_list_last@Base 5.8.0.22
+ monoeg_g_list_length@Base 5.8.0.22
+ monoeg_g_list_nth@Base 5.8.0.22
+ monoeg_g_list_nth_data@Base 5.8.0.22
+ monoeg_g_list_prepend@Base 5.8.0.22
+ monoeg_g_list_remove@Base 5.8.0.22
+ monoeg_g_list_remove_all@Base 5.8.0.22
+ monoeg_g_list_remove_link@Base 5.8.0.22
+ monoeg_g_list_reverse@Base 5.8.0.22
+ monoeg_g_list_sort@Base 5.8.0.22
+ monoeg_g_locale_from_utf8@Base 5.8.0.22
+ monoeg_g_locale_to_utf8@Base 5.8.0.22
+ monoeg_g_log@Base 5.8.0.22
+ monoeg_g_log_set_always_fatal@Base 5.8.0.22
+ monoeg_g_log_set_fatal_mask@Base 5.8.0.22
+ monoeg_g_logv@Base 5.8.0.22
+ monoeg_g_markup_parse_context_end_parse@Base 5.8.0.22
+ monoeg_g_markup_parse_context_free@Base 5.8.0.22
+ monoeg_g_markup_parse_context_new@Base 5.8.0.22
+ monoeg_g_markup_parse_context_parse@Base 5.8.0.22
+ monoeg_g_mem_get_vtable@Base 5.20.0.184
+ monoeg_g_mem_set_vtable@Base 5.8.0.22
+ monoeg_g_memdup@Base 5.8.0.22
+ monoeg_g_mkdir_with_parents@Base 5.8.0.22
+ monoeg_g_mkdtemp@Base 5.8.0.22
+ monoeg_g_module_address@Base 6.10.0.52
+ monoeg_g_module_build_path@Base 5.8.0.22
+ monoeg_g_module_close@Base 5.8.0.22
+ monoeg_g_module_error@Base 5.8.0.22
+ monoeg_g_module_open@Base 5.8.0.22
+ monoeg_g_module_symbol@Base 5.8.0.22
+ monoeg_g_path_get_basename@Base 5.8.0.22
+ monoeg_g_path_get_dirname@Base 5.8.0.22
+ monoeg_g_path_is_absolute@Base 5.8.0.22
+ monoeg_g_pattern_match_string@Base 5.8.0.22
+ monoeg_g_pattern_spec_free@Base 5.8.0.22
+ monoeg_g_pattern_spec_new@Base 5.8.0.22
+ monoeg_g_print@Base 5.8.0.22
+ monoeg_g_printerr@Base 5.8.0.22
+ monoeg_g_printf@Base 5.8.0.22
+ monoeg_g_printv@Base 6.0.0.172
+ monoeg_g_propagate_error@Base 5.8.0.22
+ monoeg_g_ptr_array_add@Base 5.8.0.22
+ monoeg_g_ptr_array_capacity@Base 5.10.0.53
+ monoeg_g_ptr_array_foreach@Base 5.8.0.22
+ monoeg_g_ptr_array_free@Base 5.8.0.22
+ monoeg_g_ptr_array_new@Base 5.8.0.22
+ monoeg_g_ptr_array_remove@Base 5.8.0.22
+ monoeg_g_ptr_array_remove_fast@Base 5.8.0.22
+ monoeg_g_ptr_array_remove_index@Base 5.8.0.22
+ monoeg_g_ptr_array_remove_index_fast@Base 5.8.0.22
+ monoeg_g_ptr_array_set_size@Base 5.8.0.22
+ monoeg_g_ptr_array_sized_new@Base 5.8.0.22
+ monoeg_g_ptr_array_sort@Base 5.8.0.22
+ monoeg_g_ptr_array_sort_with_data@Base 5.8.0.22
+ monoeg_g_qsort_with_data@Base 5.8.0.22
+ monoeg_g_queue_foreach@Base 5.8.0.22
+ monoeg_g_queue_free@Base 5.8.0.22
+ monoeg_g_queue_is_empty@Base 5.8.0.22
+ monoeg_g_queue_new@Base 5.8.0.22
+ monoeg_g_queue_pop_head@Base 5.8.0.22
+ monoeg_g_queue_push_head@Base 5.8.0.22
+ monoeg_g_queue_push_tail@Base 5.8.0.22
+ monoeg_g_set_error@Base 5.8.0.22
+ monoeg_g_set_prgname@Base 5.8.0.22
+ monoeg_g_setenv@Base 5.8.0.22
+ monoeg_g_shell_parse_argv@Base 5.8.0.22
+ monoeg_g_shell_quote@Base 5.8.0.22
+ monoeg_g_shell_unquote@Base 5.8.0.22
+ monoeg_g_slist_alloc@Base 5.8.0.22
+ monoeg_g_slist_append@Base 5.8.0.22
+ monoeg_g_slist_concat@Base 5.8.0.22
+ monoeg_g_slist_copy@Base 5.8.0.22
+ monoeg_g_slist_delete_link@Base 5.8.0.22
+ monoeg_g_slist_find@Base 5.8.0.22
+ monoeg_g_slist_find_custom@Base 5.8.0.22
+ monoeg_g_slist_foreach@Base 5.8.0.22
+ monoeg_g_slist_free@Base 5.8.0.22
+ monoeg_g_slist_free_1@Base 5.8.0.22
+ monoeg_g_slist_index@Base 5.8.0.22
+ monoeg_g_slist_insert_before@Base 5.8.0.22
+ monoeg_g_slist_insert_sorted@Base 5.8.0.22
+ monoeg_g_slist_last@Base 5.8.0.22
+ monoeg_g_slist_length@Base 5.8.0.22
+ monoeg_g_slist_nth@Base 5.8.0.22
+ monoeg_g_slist_nth_data@Base 5.8.0.22
+ monoeg_g_slist_prepend@Base 5.8.0.22
+ monoeg_g_slist_remove@Base 5.8.0.22
+ monoeg_g_slist_remove_all@Base 5.8.0.22
+ monoeg_g_slist_remove_link@Base 5.8.0.22
+ monoeg_g_slist_reverse@Base 5.8.0.22
+ monoeg_g_slist_sort@Base 5.8.0.22
+ monoeg_g_snprintf@Base 5.8.0.22
+ monoeg_g_spaced_primes_closest@Base 5.8.0.22
+ monoeg_g_spawn_async_with_pipes@Base 5.8.0.22
+ monoeg_g_spawn_command_line_sync@Base 5.8.0.22
+ monoeg_g_sprintf@Base 5.8.0.22
+ monoeg_g_stpcpy@Base 5.8.0.22
+ monoeg_g_str_equal@Base 5.8.0.22
+ monoeg_g_str_from_file_region@Base 6.10.0.52
+ monoeg_g_str_has_prefix@Base 5.8.0.22
+ monoeg_g_str_has_suffix@Base 5.8.0.22
+ monoeg_g_str_hash@Base 5.8.0.22
+ monoeg_g_strchomp@Base 5.8.0.22
+ monoeg_g_strchug@Base 5.8.0.22
+ monoeg_g_strconcat@Base 5.8.0.22
+ monoeg_g_strdelimit@Base 5.8.0.22
+ monoeg_g_strdown@Base 5.8.0.22
+ monoeg_g_strdup_printf@Base 5.8.0.22
+ monoeg_g_strdup_vprintf@Base 5.8.0.22
+ monoeg_g_strdupv@Base 5.8.0.22
+ monoeg_g_strerror@Base 5.8.0.22
+ monoeg_g_strescape@Base 5.8.0.22
+ monoeg_g_strfreev@Base 5.8.0.22
+ monoeg_g_string_append@Base 5.8.0.22
+ monoeg_g_string_append_c@Base 5.8.0.22
+ monoeg_g_string_append_len@Base 5.8.0.22
+ monoeg_g_string_append_printf@Base 5.8.0.22
+ monoeg_g_string_append_unichar@Base 5.8.0.22
+ monoeg_g_string_append_vprintf@Base 5.8.0.22
+ monoeg_g_string_free@Base 5.8.0.22
+ monoeg_g_string_new@Base 5.8.0.22
+ monoeg_g_string_new_len@Base 5.8.0.22
+ monoeg_g_string_printf@Base 5.8.0.22
+ monoeg_g_string_set_size@Base 5.8.0.22
+ monoeg_g_string_sized_new@Base 5.8.0.22
+ monoeg_g_string_truncate@Base 5.8.0.22
+ monoeg_g_strjoin@Base 5.8.0.22
+ monoeg_g_strjoinv@Base 5.8.0.22
+ monoeg_g_strlcpy@Base 5.8.0.22
+ monoeg_g_strndup@Base 5.8.0.22
+ monoeg_g_strnfill@Base 5.8.0.22
+ monoeg_g_strnlen@Base 6.6.0.97
+ monoeg_g_strreverse@Base 5.8.0.22
+ monoeg_g_strsplit@Base 5.8.0.22
+ monoeg_g_strsplit_set@Base 5.8.0.22
+ monoeg_g_strv_length@Base 5.8.0.22
+ monoeg_g_timer_destroy@Base 5.8.0.22
+ monoeg_g_timer_elapsed@Base 5.8.0.22
+ monoeg_g_timer_new@Base 5.8.0.22
+ monoeg_g_timer_start@Base 5.8.0.22
+ monoeg_g_timer_stop@Base 5.8.0.22
+ monoeg_g_ucs4_to_utf16@Base 5.8.0.22
+ monoeg_g_ucs4_to_utf8@Base 5.8.0.22
+ monoeg_g_unichar_isxdigit@Base 5.8.0.22
+ monoeg_g_unichar_to_utf8@Base 5.8.0.22
+ monoeg_g_unichar_tolower@Base 5.8.0.22
+ monoeg_g_unichar_totitle@Base 5.8.0.22
+ monoeg_g_unichar_toupper@Base 5.8.0.22
+ monoeg_g_unichar_type@Base 5.8.0.22
+ monoeg_g_unichar_xdigit_value@Base 5.8.0.22
+ monoeg_g_unsetenv@Base 5.8.0.22
+ monoeg_g_usleep@Base 5.8.0.22
+ monoeg_g_utf16_ascii_equal@Base 5.14.0.78
+ monoeg_g_utf16_asciiz_equal@Base 5.14.0.78
+ monoeg_g_utf16_to_ucs4@Base 5.8.0.22
+ monoeg_g_utf16_to_utf8@Base 5.8.0.22
+ monoeg_g_utf8_get_char@Base 5.8.0.22
+ monoeg_g_utf8_jump_table@Base 5.14.0.78
+ monoeg_g_utf8_offset_to_pointer@Base 5.8.0.22
+ monoeg_g_utf8_pointer_to_offset@Base 5.8.0.22
+ monoeg_g_utf8_strdown@Base 5.8.0.22
+ monoeg_g_utf8_strlen@Base 5.8.0.22
+ monoeg_g_utf8_strup@Base 5.8.0.22
+ monoeg_g_utf8_to_ucs4_fast@Base 5.8.0.22
+ monoeg_g_utf8_to_utf16@Base 5.8.0.22
+ monoeg_g_utf8_validate@Base 5.8.0.22
+ monoeg_g_vasprintf@Base 5.8.0.22
+ monoeg_g_win32_getlocale@Base 5.8.0.22
+ monoeg_get_assertion_message@Base 5.14.0.116
+ monoeg_log_default_handler@Base 5.8.0.22
+ monoeg_log_set_default_handler@Base 5.8.0.22
+ monoeg_malloc0@Base 5.8.0.22
+ monoeg_malloc@Base 5.8.0.22
+ monoeg_realloc@Base 5.8.0.22
+ monoeg_set_print_handler@Base 5.8.0.22
+ monoeg_set_printerr_handler@Base 5.8.0.22
+ monoeg_try_malloc@Base 5.8.0.22
+ monoeg_try_realloc@Base 5.8.0.22
+ monoeg_unichar_break_type@Base 5.8.0.22
+ monoeg_unichar_isspace@Base 5.8.0.22
+ monoeg_utf16_len@Base 6.0.0.172
+ monoeg_utf8_get_char_validated@Base 5.8.0.22
+ monoeg_utf8_to_ucs4@Base 5.8.0.22
