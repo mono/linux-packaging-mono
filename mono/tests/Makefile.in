@@ -1170,24 +1170,25 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	assembly-load-bytes-bindingredirect.cs \
 	assembly-loadfile-bindingredirect.cs \
 	assembly-loadfrom-bindingredirect.cs \
-	assembly-loadfrom-simplename.cs assemblyresolve_event.cs \
-	assemblyresolve_event3.cs assemblyresolve_event4.cs \
-	assemblyresolve_event5.cs assemblyresolve_event6.cs checked.cs \
-	char-isnumber.cs field-layout.cs pack-layout.cs pack-bug.cs \
-	hash-table.cs test-ops.cs obj.cs test-dup-mp.cs string.cs \
-	stringbuilder.cs switch.cs outparm.cs delegate.cs \
-	bitconverter.cs exception.cs exception2.cs exception3.cs \
-	exception4.cs exception5.cs exception6.cs exception7.cs \
-	exception8.cs exception10.cs exception11.cs exception12.cs \
-	exception13.cs exception14.cs exception15.cs exception16.cs \
-	exception17.cs exception18.cs exception-invokes.cs \
-	merp-json-valid.cs merp-crash-test.cs exception19.cs \
-	exception20.cs exception21.cs typeload-unaligned.cs struct.cs \
-	valuetype-gettype.cs typeof-ptr.cs static-constructor.cs \
-	pinvoke.cs pinvoke-utf8.cs pinvoke3.cs pinvoke11.cs \
-	pinvoke13.cs pinvoke17.cs invoke.cs invoke2.cs \
-	runtime-invoke.cs invoke-string-ctors.cs reinit.cs box.cs \
-	array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
+	assembly-loadfrom-simplename.cs \
+	assembly-refonly-load-bytes-bindingredirect.cs \
+	assemblyresolve_event.cs assemblyresolve_event3.cs \
+	assemblyresolve_event4.cs assemblyresolve_event5.cs \
+	assemblyresolve_event6.cs checked.cs char-isnumber.cs \
+	field-layout.cs pack-layout.cs pack-bug.cs hash-table.cs \
+	test-ops.cs obj.cs test-dup-mp.cs string.cs stringbuilder.cs \
+	switch.cs outparm.cs delegate.cs bitconverter.cs exception.cs \
+	exception2.cs exception3.cs exception4.cs exception5.cs \
+	exception6.cs exception7.cs exception8.cs exception10.cs \
+	exception11.cs exception12.cs exception13.cs exception14.cs \
+	exception15.cs exception16.cs exception17.cs exception18.cs \
+	exception-invokes.cs merp-json-valid.cs merp-crash-test.cs \
+	exception19.cs exception20.cs exception21.cs \
+	typeload-unaligned.cs struct.cs valuetype-gettype.cs \
+	typeof-ptr.cs static-constructor.cs pinvoke.cs pinvoke-utf8.cs \
+	pinvoke3.cs pinvoke11.cs pinvoke13.cs pinvoke17.cs invoke.cs \
+	invoke2.cs runtime-invoke.cs invoke-string-ctors.cs reinit.cs \
+	box.cs array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
 	enumcast.cs assignable-tests.cs array-cast.cs \
 	array-subtype-attr.cs cattr-compile.cs cattr-field.cs \
 	cattr-object.cs custom-attr.cs double-cast.cs \
@@ -1968,6 +1969,7 @@ EXTRA_DIST = common_mixed.mk test-driver test-runner.cs \
 	assembly-loadfrom-bindingredirect.exe.config \
 	assembly-loadfile-bindingredirect.exe.config \
 	assembly-load-bytes-bindingredirect.exe.config \
+	assembly-refonly-load-bytes-bindingredirect.exe.config \
 	assembly-load-dir1/LibSimpleName.cs \
 	assembly-load-dir2/LibSimpleName.cs assembly-dep-simplename.cs \
 	async-exceptions.cs modules.cs modules-m1.cs \
@@ -3401,6 +3403,8 @@ assembly-loadfile-bindingredirect.exe$(PLATFORM_AOT_SUFFIX): assembly-load-dir1/
 assembly-loadfile-bindingredirect.exe: assembly-load-dir1/LibStrongName.dll assembly-load-dir2/LibStrongName.dll assembly-loadfile-bindingredirect.exe.config
 
 assembly-load-bytes-bindingredirect.exe: assembly-load-dir1/LibStrongName.dll assembly-load-dir2/LibStrongName.dll assembly-load-bytes-bindingredirect.exe.config
+
+assembly-refonly-load-bytes-bindingredirect.exe: assembly-load-dir1/LibStrongName.dll assembly-load-dir2/LibStrongName.dll assembly-refonly-load-bytes-bindingredirect.exe.config
 
 assembly-load-dir1/LibSimpleName.dll: assembly-load-dir1/LibSimpleName.cs
 	$(MKDIR_P) $(dir $@)
