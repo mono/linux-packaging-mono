@@ -39,7 +39,9 @@ class PangoPackage (GnomeXzPackage):
             'patches/pango-system-font-check-version.patch',
 
             # https://devdiv.visualstudio.com/DevDiv/_workitems/edit/573960
-            'patches/pango-get-shaper-for-ideographic-space.patch'
+            'patches/pango-get-shaper-for-ideographic-space.patch',
+
+            'patches/pango-familyName.patch'
         ])
 
     def prep(self):
