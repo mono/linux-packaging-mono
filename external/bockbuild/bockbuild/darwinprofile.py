@@ -28,8 +28,8 @@ def match_stageable_binary(path, filetype):
     return 'Mach-O' in filetype and not path.endswith('.a') and not 'dSYM' in path
 
 
-def match_symlinks(path, filetype):
-    return os.path.islink(path)
+def match_all(path, filetype):
+    return True
 
 
 def match_real_files(path, filetype):
@@ -248,8 +248,13 @@ class DarwinProfile (UnixProfile):
                 warn ('Critical: Destaging failed for ''%s''' % path)
                 raise
 
+        def nop_harness(path, func):
+            trace('Processing %s' % path)
+            func(path, None)
+
         procs = [self.stage_textfiles(harness=destaging_harness, match=match_text),
-                 self.stage_binaries(harness=destaging_harness, match=match_stageable_binary)]
+                 self.stage_binaries(harness=destaging_harness, match=match_stageable_binary),
+                 self.validate_symlinks(harness=nop_harness, match=match_all)]
 
         Profile.postprocess(self, procs, directory,
                             lambda l: l.endswith('.release'))
@@ -278,10 +283,11 @@ class DarwinProfile (UnixProfile):
     class validate_symlinks (Profile.FileProcessor):
         problem_links = []
 
-        def process(self, path):
-            if path.endswith('.release'):
+        def process(self, path, fixup_func):
+            trace(path)
+            if os.path.islink(path) and path.endswith('.release'):
                 # get rid of these symlinks
-                os.remove(path)
+                os.unlink(path)
                 return
 
             target = os.path.realpath(path)

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2020-01-18 09:20+0000\n"
+"POT-Creation-Date: 2020-02-06 08:38+0000\n"
 "PO-Revision-Date: 2009-03-01 07:52-0300\n"
 "Last-Translator: Rodrigo Luiz Marques Flores <mail@rodrigoflores.org>\n"
 "Language-Team: pt-BR <mono-list@lists.ximian.com>\n"
@@ -564,55 +564,55 @@ msgstr ""
 "O modificador \"parcial\" pode ser utilizado somente imediatamente antesdas "
 "palavras chave \"class\", \"struct\", \"interface\" ou \"void\""
 
-#: mcs/mcs/cs-tokenizer.cs:2137
+#: mcs/mcs/cs-tokenizer.cs:2123
 #, csharp-format
 msgid "Unrecognized escape sequence `\\{0}'"
 msgstr "Sequência de escape não reconhecida \"\\{0}\""
 
-#: mcs/mcs/cs-tokenizer.cs:2156
+#: mcs/mcs/cs-tokenizer.cs:2142
 msgid "Unrecognized escape sequence"
 msgstr "Sequência de escape não reconhecida"
 
-#: mcs/mcs/cs-tokenizer.cs:2421
+#: mcs/mcs/cs-tokenizer.cs:2407
 #, fuzzy
 msgid "Filename, single-line comment or end-of-line expected"
 msgstr "Comentário de linha única ou fim-de-linha esperado"
 
-#: mcs/mcs/cs-tokenizer.cs:2469
+#: mcs/mcs/cs-tokenizer.cs:2455
 msgid "Missing identifier to pre-processor directive"
 msgstr "Identificador faltando para a diretiva do pré-processador"
 
-#: mcs/mcs/cs-tokenizer.cs:2479 mcs/mcs/cs-tokenizer.cs:2483
+#: mcs/mcs/cs-tokenizer.cs:2465 mcs/mcs/cs-tokenizer.cs:2469
 #, csharp-format
 msgid "Identifier expected: {0}"
 msgstr "Identificador esperado: {0}"
 
-#: mcs/mcs/cs-tokenizer.cs:3083
+#: mcs/mcs/cs-tokenizer.cs:3069
 #, fuzzy
 msgid "Integral constant is too large"
 msgstr "Constante numérica muito longa"
 
-#: mcs/mcs/cs-tokenizer.cs:3088
+#: mcs/mcs/cs-tokenizer.cs:3074
 msgid "Invalid number"
 msgstr "Número inválido"
 
-#: mcs/mcs/cs-tokenizer.cs:3093
+#: mcs/mcs/cs-tokenizer.cs:3079
 msgid "Invalid preprocessor directive"
 msgstr "Diretiva de pré-processador inválida"
 
-#: mcs/mcs/cs-tokenizer.cs:3100
+#: mcs/mcs/cs-tokenizer.cs:3086
 #, csharp-format
 msgid "Unexpected processor directive ({0})"
 msgstr "Diretiva de processador inesperada ({0})"
 
-#: mcs/mcs/cs-tokenizer.cs:3106
+#: mcs/mcs/cs-tokenizer.cs:3092
 msgid ""
 "Cannot define or undefine preprocessor symbols after first token in file"
 msgstr ""
 "Não foi possível definir ou indefinir símbolos depois do primeiro token no "
 "arquivo"
 
-#: mcs/mcs/cs-tokenizer.cs:3112
+#: mcs/mcs/cs-tokenizer.cs:3098
 msgid ""
 "Preprocessor directives must appear as the first non-whitespace character on "
 "a line"
@@ -620,94 +620,94 @@ msgstr ""
 "Diretivas de pré-processador devem aparecer como o primeiro caractere não-"
 "branco na linha"
 
-#: mcs/mcs/cs-tokenizer.cs:3117
+#: mcs/mcs/cs-tokenizer.cs:3103
 msgid "Single-line comment or end-of-line expected"
 msgstr "Comentário de linha única ou fim-de-linha esperado"
 
-#: mcs/mcs/cs-tokenizer.cs:3162 mcs/mcs/cs-tokenizer.cs:4400
+#: mcs/mcs/cs-tokenizer.cs:3148 mcs/mcs/cs-tokenizer.cs:4386
 msgid "Expected `#endif' directive"
 msgstr "Esperada diretiva \"#endif\""
 
-#: mcs/mcs/cs-tokenizer.cs:3195 mcs/mcs/cs-tokenizer.cs:3216
-#: mcs/mcs/cs-tokenizer.cs:3247 mcs/mcs/cs-tokenizer.cs:4398
+#: mcs/mcs/cs-tokenizer.cs:3181 mcs/mcs/cs-tokenizer.cs:3202
+#: mcs/mcs/cs-tokenizer.cs:3233 mcs/mcs/cs-tokenizer.cs:4384
 msgid "#endregion directive expected"
 msgstr "diretiva #endregion esperada"
 
-#: mcs/mcs/cs-tokenizer.cs:3296
+#: mcs/mcs/cs-tokenizer.cs:3282
 msgid "Wrong preprocessor directive"
 msgstr "Diretiva do pré-processador incorreta"
 
-#: mcs/mcs/cs-tokenizer.cs:3308
+#: mcs/mcs/cs-tokenizer.cs:3294
 #, csharp-format
 msgid "#error: '{0}'"
 msgstr "#erro: \"{0}\""
 
-#: mcs/mcs/cs-tokenizer.cs:3326
+#: mcs/mcs/cs-tokenizer.cs:3312
 msgid "The line number specified for #line directive is missing or invalid"
 msgstr ""
 "O número da linha especificada para a diretiva #line está faltando ou está "
 "inválida"
 
-#: mcs/mcs/cs-tokenizer.cs:3380 mcs/mcs/cs-tokenizer.cs:4100
+#: mcs/mcs/cs-tokenizer.cs:3366 mcs/mcs/cs-tokenizer.cs:4086
 msgid "Newline in constant"
 msgstr "Quebra de linha em constante"
 
-#: mcs/mcs/cs-tokenizer.cs:3407
+#: mcs/mcs/cs-tokenizer.cs:3393
 msgid "Unterminated string literal"
 msgstr "Literal de string não terminada"
 
-#: mcs/mcs/cs-tokenizer.cs:3451 mcs/mcs/cs-tokenizer.cs:3482
+#: mcs/mcs/cs-tokenizer.cs:3437 mcs/mcs/cs-tokenizer.cs:3468
 #, fuzzy, csharp-format
 msgid "Unexpected character `\\{0}'"
 msgstr "Experado \"{0}\""
 
-#: mcs/mcs/cs-tokenizer.cs:3498
+#: mcs/mcs/cs-tokenizer.cs:3484
 msgid "Identifier too long (limit is 512 chars)"
 msgstr "Identificador muito longo (o limite é 512 caracteres)"
 
-#: mcs/mcs/cs-tokenizer.cs:3845
+#: mcs/mcs/cs-tokenizer.cs:3831
 msgid "A single-line comment may not be used in an interpolated string"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:3915
+#: mcs/mcs/cs-tokenizer.cs:3901
 msgid "End-of-file found, '*/' expected"
 msgstr "Fim de arquivo encontrado, \"*/\" esperado"
 
-#: mcs/mcs/cs-tokenizer.cs:4012
+#: mcs/mcs/cs-tokenizer.cs:3998
 msgid "Missing close delimiter `}' for interpolated expression"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:4033
+#: mcs/mcs/cs-tokenizer.cs:4019
 msgid "Keyword, identifier, or string expected after verbatim specifier: @"
 msgstr ""
 "Palavra-chave, identificador ou string esperado depois do especificador "
 "verbatim: @"
 
-#: mcs/mcs/cs-tokenizer.cs:4070
+#: mcs/mcs/cs-tokenizer.cs:4056
 #, fuzzy, csharp-format
 msgid "Unexpected character `{0}'"
 msgstr "Experado \"{0}\""
 
-#: mcs/mcs/cs-tokenizer.cs:4095
+#: mcs/mcs/cs-tokenizer.cs:4081
 msgid "Empty character literal"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:4116
+#: mcs/mcs/cs-tokenizer.cs:4102
 msgid "Too many characters in character literal"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:4226 mcs/mcs/cs-tokenizer.cs:4289
+#: mcs/mcs/cs-tokenizer.cs:4212 mcs/mcs/cs-tokenizer.cs:4275
 #, csharp-format
 msgid ""
 "A `{0}' character may only be escaped by doubling `{0}{0}' in an "
 "interpolated string"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:4267
+#: mcs/mcs/cs-tokenizer.cs:4253
 msgid "Empty interpolated expression format specifier"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:4269
+#: mcs/mcs/cs-tokenizer.cs:4255
 #, fuzzy
 msgid ""
 "A interpolated expression format specifier may not contain trailing "
