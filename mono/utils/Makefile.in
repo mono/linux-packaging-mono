@@ -195,18 +195,18 @@ am__libmonoutils_la_SOURCES_DIST = dlmalloc.h dlmalloc.c \
 	mono-tls-inline.h mono-tls.c mono-utils-debug.c \
 	mono-utils-debug.h linux_magic.h mono-memory-model.h atomic.h \
 	atomic.c mono-hwcap.h mono-hwcap.c mono-hwcap-vars.h bsearch.h \
-	bsearch.c mono-signal-handler.h mono-conc-hashtable.h \
-	mono-conc-hashtable.c json.h json.c networking.c \
-	networking-posix.c networking-fallback.c networking-missing.c \
-	networking-windows.c networking.h mono-rand.c \
-	mono-rand-windows.c mono-rand.h memfuncs.c memfuncs.h parse.c \
-	parse.h checked-build.c checked-build.h os-event.h refcount.h \
-	w32api.h unlocked.h ward.h mach-support-x86.c \
-	mach-support-amd64.c mach-support-arm.c mach-support-arm64.c \
-	mach-support-unknown.c mono-hwcap-x86.c mono-hwcap-arm.c \
-	mono-hwcap-arm64.c mono-hwcap-mips.c mono-hwcap-ppc.c \
-	mono-hwcap-sparc.c mono-hwcap-s390x.c mono-hwcap-riscv.c \
-	mono-hwcap-wasm.c mono-hwcap-cross.c
+	bsearch.c mono-signal-handler.h mono-signal-handler.c \
+	mono-conc-hashtable.h mono-conc-hashtable.c json.h json.c \
+	networking.c networking-posix.c networking-fallback.c \
+	networking-missing.c networking-windows.c networking.h \
+	mono-rand.c mono-rand-windows.c mono-rand.h memfuncs.c \
+	memfuncs.h parse.c parse.h checked-build.c checked-build.h \
+	os-event.h refcount.h w32api.h unlocked.h ward.h \
+	mach-support-x86.c mach-support-amd64.c mach-support-arm.c \
+	mach-support-arm64.c mach-support-unknown.c mono-hwcap-x86.c \
+	mono-hwcap-arm.c mono-hwcap-arm64.c mono-hwcap-mips.c \
+	mono-hwcap-ppc.c mono-hwcap-sparc.c mono-hwcap-s390x.c \
+	mono-hwcap-riscv.c mono-hwcap-wasm.c mono-hwcap-cross.c
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_1 = libmonoutils_la-dlmalloc.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoutils_la-os-event-unix.lo
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_2 = libmonoutils_la-mono-os-semaphore-win32.lo \
@@ -288,6 +288,7 @@ am__libmonoutils_la_SOURCES_DIST = dlmalloc.h dlmalloc.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-atomic.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-hwcap.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-bsearch.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-signal-handler.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-conc-hashtable.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-json.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-networking.lo \
@@ -920,6 +921,7 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@	bsearch.h	\
 @ENABLE_MSVC_ONLY_FALSE@	bsearch.c	\
 @ENABLE_MSVC_ONLY_FALSE@	mono-signal-handler.h	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-signal-handler.c	\
 @ENABLE_MSVC_ONLY_FALSE@	mono-conc-hashtable.h	\
 @ENABLE_MSVC_ONLY_FALSE@	mono-conc-hashtable.c	\
 @ENABLE_MSVC_ONLY_FALSE@	json.h	\
@@ -1104,6 +1106,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-rand-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-rand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-sha1.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-signal-handler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-state.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-stdlib.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-threads-aix.Plo@am__quote@
@@ -1702,6 +1705,13 @@ libmonoutils_la-bsearch.lo: bsearch.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='bsearch.c' object='libmonoutils_la-bsearch.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-bsearch.lo `test -f 'bsearch.c' || echo '$(srcdir)/'`bsearch.c
+
+libmonoutils_la-mono-signal-handler.lo: mono-signal-handler.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-signal-handler.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-signal-handler.Tpo -c -o libmonoutils_la-mono-signal-handler.lo `test -f 'mono-signal-handler.c' || echo '$(srcdir)/'`mono-signal-handler.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mono-signal-handler.Tpo $(DEPDIR)/libmonoutils_la-mono-signal-handler.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-signal-handler.c' object='libmonoutils_la-mono-signal-handler.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-signal-handler.lo `test -f 'mono-signal-handler.c' || echo '$(srcdir)/'`mono-signal-handler.c
 
 libmonoutils_la-mono-conc-hashtable.lo: mono-conc-hashtable.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-conc-hashtable.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-conc-hashtable.Tpo -c -o libmonoutils_la-mono-conc-hashtable.lo `test -f 'mono-conc-hashtable.c' || echo '$(srcdir)/'`mono-conc-hashtable.c

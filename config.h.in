@@ -1134,6 +1134,9 @@
 /* Define to 1 if you have the <syslog.h> header file. */
 #undef HAVE_SYSLOG_H
 
+/* Have sys_signame */
+#undef HAVE_SYSSIGNAME
+
 /* Define to 1 if you have the `system' function. */
 #undef HAVE_SYSTEM
 
@@ -1531,6 +1534,12 @@
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
+
+/* PowerPC ELFv1 */
+#undef POWERPC_ELF
+
+/* PowerPC ELFv2 */
+#undef POWERPC_ELFV2
 
 /* getpriority with int who */
 #undef PRIORITY_REQUIRES_INT_WHO

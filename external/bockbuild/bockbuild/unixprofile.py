@@ -24,7 +24,7 @@ class UnixProfile (Profile):
                      '%{staged_prefix}/bin',
                      '/usr/bin',
                      '/bin',
-                     '/usr/local/git/bin')
+                     '/usr/local/bin')
 
         self.env.set('C_INCLUDE_PATH',  '%{staged_prefix}/include')
 
