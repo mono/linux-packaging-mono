@@ -1,3 +1,9 @@
+mono (6.10.0.68-0xamarin1) preview; urgency=medium
+
+  * New release - mono-6.10.0.68.tar.xz
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 07 Feb 2020 08:43:15 +0000
+
 mono (6.10.0.65-0xamarin2) preview; urgency=medium
 
   * Packaging bugfix:
