@@ -37,20 +37,20 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <DefineConstants>TRACE;DEBUG;NET_2_0,CLR_2_0,NUNITLITE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET_2_0,CLR_2_0,NUNITLITE;$(AppendConstants)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(RunCodeAnalysis)' != 'false'">AllRules.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>..\..\bin\Debug\net-2.0\nunitlite.xml</DocumentationFile>
     <OutputPath>..\..\bin\Debug\net-2.0\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <DefineConstants>TRACE;NET_2_0,CLR_2_0,NUNITLITE</DefineConstants>
+    <DefineConstants>TRACE;NET_2_0,CLR_2_0,NUNITLITE;$(AppendConstants)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(RunCodeAnalysis)' != 'false'">AllRules.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>..\..\bin\Release\net-2.0\nunitlite.xml</DocumentationFile>
     <OutputPath>..\..\bin\Release\net-2.0\</OutputPath>
   </PropertyGroup>
@@ -247,6 +247,7 @@
     <Compile Include="Extensibility\ISuiteBuilder.cs" />
     <Compile Include="Extensibility\ITestCaseBuilder.cs" />
     <Compile Include="Extensibility\ITestCaseProvider.cs" />
+    <Compile Include="FinallyDelegate.cs" />
     <Compile Include="GlobalSettings.cs" />
     <Compile Include="Guard.cs" />
     <Compile Include="Has.cs" />

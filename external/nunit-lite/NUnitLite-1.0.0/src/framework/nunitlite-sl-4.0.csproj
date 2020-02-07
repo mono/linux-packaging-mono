@@ -30,7 +30,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\bin\Debug\sl-4.0\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;SL_4_0;CLR_2_0;NUNITLITE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;SL_4_0;CLR_2_0;NUNITLITE;$(AppendConstants)</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -41,7 +41,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\bin\Release\sl-4.0\</OutputPath>
-    <DefineConstants>TRACE;SILVERLIGHT;SL_4_0;CLR_2_0;NUNITLITE</DefineConstants>
+    <DefineConstants>TRACE;SILVERLIGHT;SL_4_0;CLR_2_0;NUNITLITE;$(AppendConstants)</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
