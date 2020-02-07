@@ -20,7 +20,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\bin\Debug\net-4.5\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;CLR_4_0</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CLR_4_0;$(AppendConstants)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -29,7 +29,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\bin\Release\net-4.5\</OutputPath>
-    <DefineConstants>TRACE;CLR_4_0</DefineConstants>
+    <DefineConstants>TRACE;CLR_4_0;$(AppendConstants)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>

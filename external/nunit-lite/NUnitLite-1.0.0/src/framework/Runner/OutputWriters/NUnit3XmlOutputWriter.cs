@@ -76,9 +76,7 @@ namespace NUnitLite.Runner
             this.xmlWriter = xmlWriter;
 
             InitializeXmlFile(result);
-
-            result.ToXml(true).WriteTo(xmlWriter);
-
+            WriteResultElement(result);
             TerminateXmlFile();
         }
 
@@ -142,12 +140,160 @@ namespace NUnitLite.Runner
             xmlWriter.WriteEndElement();
         }
 
+        private void WriteTestSuiteAttirbutes(ITestResult result)
+        {
+            var testSuite = result.Test as TestSuite;
+            xmlWriter.WriteAttributeString("type", testSuite.TestType);
+            xmlWriter.WriteAttributeString("id", testSuite.Id.ToString ());
+            xmlWriter.WriteAttributeString("name", testSuite.Name);
+            xmlWriter.WriteAttributeString("fullname", testSuite.FullName);
+            xmlWriter.WriteAttributeString("testcasecount", testSuite.TestCaseCount.ToString ());
+            xmlWriter.WriteAttributeString("result", result.ResultState.Status.ToString ());
+            xmlWriter.WriteAttributeString("time", result.Duration.ToString ());
+            xmlWriter.WriteAttributeString("total", (result.PassCount + result.FailCount + result.SkipCount + result.InconclusiveCount).ToString ());
+            xmlWriter.WriteAttributeString("passed", result.PassCount.ToString ());
+            xmlWriter.WriteAttributeString("failed", result.FailCount.ToString ());
+            xmlWriter.WriteAttributeString("inconclusive", result.InconclusiveCount.ToString ());
+            xmlWriter.WriteAttributeString("skipped", result.SkipCount.ToString ());
+            xmlWriter.WriteAttributeString("asserts", result.AssertCount.ToString ());
+        }
+
+        private void WriteProperties(ITestResult result)
+        {
+            var properties = result.Test.Properties;
+            int nprops = 0;
+
+            foreach (string key in properties.Keys) {
+                foreach (object prop in properties [key]) {
+                    if (nprops++ == 0)
+                        xmlWriter.WriteStartElement ("properties");
+
+                    xmlWriter.WriteStartElement ("property");
+                    xmlWriter.WriteAttributeString ("name", key);
+                    xmlWriter.WriteAttributeString ("value", prop.ToString ());
+                    xmlWriter.WriteEndElement ();
+                }
+            }
+
+            if (nprops > 0)
+                xmlWriter.WriteEndElement (); // properties
+
+        }
+        
+        private void WriteResultElement(ITestResult result)
+        {
+            if (result.Test is TestSuite) { // all test-suites are similar
+                xmlWriter.WriteStartElement("test-suite");
+                WriteTestSuiteAttirbutes(result);
+
+                WriteProperties(result);
+                switch(result.ResultState.Status) {
+                case TestStatus.Skipped:
+                case TestStatus.Inconclusive:
+                        WriteReasonElement(result.Message);
+                        break;
+                case TestStatus.Failed:
+                        WriteFailureElement(result.Message, result.StackTrace, result.ExceptionType ?? "UnknownException");
+                        break;
+                }
+
+                if (result.FailCount > 0) {
+                        xmlWriter.WriteStartElement("failure");
+                        xmlWriter.WriteStartElement("message");
+                        xmlWriter.WriteCData(result.Message);
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
+                }
+                WriteChildResults(result);
+                xmlWriter.WriteEndElement(); // test-suite
+                return;
+            } else {
+                WriteTestElement(result);
+            }
+        }
+
         private void TerminateXmlFile()
         {
             xmlWriter.WriteEndElement(); // test-run
             xmlWriter.WriteEndDocument();
             xmlWriter.Flush();
             xmlWriter.Close();
+        }
+
+        private void WriteTestElement(ITestResult result)
+        {
+            ITest test = result.Test;
+
+            xmlWriter.WriteStartElement("test-case");
+            xmlWriter.WriteAttributeString("id", test.Id.ToString ());
+            xmlWriter.WriteAttributeString("name", test.Name);
+            xmlWriter.WriteAttributeString("fullname", test.FullName);
+            xmlWriter.WriteAttributeString("result", result.ResultState.Status.ToString ());
+            xmlWriter.WriteAttributeString("label", result.ResultState.Status.ToString ());
+            xmlWriter.WriteAttributeString("time", result.Duration.ToString ());
+            xmlWriter.WriteAttributeString("asserts", result.AssertCount.ToString ());
+
+            switch (result.ResultState.Status) {
+            case TestStatus.Skipped:
+            case TestStatus.Inconclusive:
+                    WriteReasonElement (result.Message);
+                    break;
+            case TestStatus.Failed:
+                    WriteFailureElement (result.Message, result.StackTrace, result.ExceptionType ?? "UnknownException");
+                    break;
+            }
+
+            xmlWriter.WriteEndElement ();
+
+        }
+
+        private void WriteReasonElement(string message)
+        {
+            xmlWriter.WriteStartElement("reason");
+            xmlWriter.WriteStartElement("message");
+            xmlWriter.WriteCData(message);
+            xmlWriter.WriteEndElement();
+            xmlWriter.WriteEndElement();
+        }
+
+        private void WriteFailureElement(string message, string stackTrace, string exceptionType)
+        {
+            xmlWriter.WriteStartElement("failure");
+
+            xmlWriter.WriteStartElement("message");
+            WriteCData(message);
+            xmlWriter.WriteEndElement();
+            xmlWriter.WriteStartElement("stack-trace");
+            if (stackTrace != null)
+                WriteCData(stackTrace);
+            xmlWriter.WriteEndElement();
+            xmlWriter.WriteEndElement();
+        }
+
+        private void WriteChildResults(ITestResult result)
+        {
+            foreach (ITestResult childResult in result.Children)
+                WriteResultElement(childResult);
+        }
+
+        private void WriteCData(string text)
+        {
+            int start = 0;
+            while (true)
+            {
+                int illegal = text.IndexOf("]]>", start);
+                if (illegal < 0)
+                    break;
+                xmlWriter.WriteCData(text.Substring(start, illegal - start + 2));
+                start = illegal + 2;
+                if (start >= text.Length)
+                    return;
+            }
+
+            if (start > 0)
+                xmlWriter.WriteCData(text.Substring(start));
+            else
+                xmlWriter.WriteCData(text);
         }
     }
 }

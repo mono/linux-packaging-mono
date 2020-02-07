@@ -253,7 +253,7 @@ namespace NUnitLite.Runner
                                 filter = new AndFilter(filter, excludeFilter);
                         }
 
-#if MONO
+#if (MONO && !MONO_NO_NUNIT24)
                         filter = Xamarin.BabysitterSupport.AddBabysitterFilter(filter);
 #endif
                         RunTests(filter);
@@ -372,7 +372,7 @@ namespace NUnitLite.Runner
                     new NUnit2XmlOutputWriter(startTime).WriteResultFile(result, resultFile);
                 else if (resultFormat == "nunit3")
                     new NUnit3XmlOutputWriter(startTime).WriteResultFile(result, resultFile);
-#if MONO
+#if (MONO && !MONO_NO_XUNIT)
                 else if (resultFormat == "xunit")
                     new XunitXmlOutputWriter(startTime).WriteResultFile(result, resultFile);
 #endif
@@ -422,7 +422,7 @@ namespace NUnitLite.Runner
         /// <param name="test">The test</param>
         public void TestStarted(ITest test)
         {
-#if MONO
+#if (MONO && !MONO_NO_NUNIT24)
             if (!test.IsSuite)
                 Xamarin.BabysitterSupport.RecordEnterTest(test.FullName);
 
@@ -442,7 +442,7 @@ namespace NUnitLite.Runner
         /// <param name="result">The result of the test</param>
         public void TestFinished(ITestResult result)
         {
-#if MONO
+#if (MONO && !MONO_NO_NUNIT24)
             if (!result.Test.IsSuite) {
                 Xamarin.BabysitterSupport.RecordLeaveTest (result.Test.FullName);
                 if (result.ResultState.Status == TestStatus.Failed)
