@@ -27,7 +27,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\bin\Debug\netcf-2.0</OutputPath>
-    <DefineConstants>TRACE;DEBUG;WindowsCE;NETCF;NETCF_2_0;CLR_2_0;NUNITLITE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WindowsCE;NETCF;NETCF_2_0;CLR_2_0;NUNITLITE;$(AppendConstants)</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -39,7 +39,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\bin\Release\netcf-2.0\</OutputPath>
-    <DefineConstants>TRACE;WindowsCE;NETCF;NETCF_2_0;CLR_2_0;NUNITLITE</DefineConstants>
+    <DefineConstants>TRACE;WindowsCE;NETCF;NETCF_2_0;CLR_2_0;NUNITLITE;$(AppendConstants)</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
