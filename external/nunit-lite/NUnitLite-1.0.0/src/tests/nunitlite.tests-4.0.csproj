@@ -39,19 +39,19 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\bin\Debug\net-4.0\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_4_0, CLR_4_0,NUNITLITE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET_4_0, CLR_4_0,NUNITLITE;$(AppendConstants)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(RunCodeAnalysis)' != 'false'">AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\bin\Release\net-4.0\</OutputPath>
-    <DefineConstants>TRACE;NET_4_0, CLR_4_0,NUNITLITE</DefineConstants>
+    <DefineConstants>TRACE;NET_4_0, CLR_4_0,NUNITLITE;$(AppendConstants)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(RunCodeAnalysis)' != 'false'">AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
