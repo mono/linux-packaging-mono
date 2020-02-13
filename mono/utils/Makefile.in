@@ -179,8 +179,9 @@ am__libmonoutils_la_SOURCES_DIST = dlmalloc.h dlmalloc.c \
 	mono-membar.h mono-path.h mono-poll.h mono-uri.h mono-stdlib.h \
 	valgrind.h mach-support.h memcheck.h mono-context.c \
 	mono-context.h mono-stack-unwinding.h hazard-pointer.c \
-	hazard-pointer.h lock-free-queue.c lock-free-queue.h \
-	lock-free-alloc.c lock-free-alloc.h lock-free-array-queue.c \
+	hazard-pointer.h lifo-semaphore.c lifo-semaphore.h \
+	lock-free-queue.c lock-free-queue.h lock-free-alloc.c \
+	lock-free-alloc.h lock-free-array-queue.c \
 	lock-free-array-queue.h mono-linked-list-set.c \
 	mono-linked-list-set.h mono-threads.c \
 	mono-threads-state-machine.c mono-threads-posix.c \
@@ -262,6 +263,7 @@ am__libmonoutils_la_SOURCES_DIST = dlmalloc.h dlmalloc.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-error.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-context.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-hazard-pointer.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-lifo-semaphore.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-lock-free-queue.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-lock-free-alloc.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-lock-free-array-queue.lo \
@@ -876,6 +878,8 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@	mono-stack-unwinding.h	\
 @ENABLE_MSVC_ONLY_FALSE@	hazard-pointer.c	\
 @ENABLE_MSVC_ONLY_FALSE@	hazard-pointer.h	\
+@ENABLE_MSVC_ONLY_FALSE@	lifo-semaphore.c	\
+@ENABLE_MSVC_ONLY_FALSE@	lifo-semaphore.h	\
 @ENABLE_MSVC_ONLY_FALSE@	lock-free-queue.c	\
 @ENABLE_MSVC_ONLY_FALSE@	lock-free-queue.h	\
 @ENABLE_MSVC_ONLY_FALSE@	lock-free-alloc.c	\
@@ -1044,6 +1048,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-dlmalloc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-hazard-pointer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-json.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-lifo-semaphore.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-lock-free-alloc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-lock-free-array-queue.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-lock-free-queue.Plo@am__quote@
@@ -1523,6 +1528,13 @@ libmonoutils_la-hazard-pointer.lo: hazard-pointer.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='hazard-pointer.c' object='libmonoutils_la-hazard-pointer.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-hazard-pointer.lo `test -f 'hazard-pointer.c' || echo '$(srcdir)/'`hazard-pointer.c
+
+libmonoutils_la-lifo-semaphore.lo: lifo-semaphore.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-lifo-semaphore.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-lifo-semaphore.Tpo -c -o libmonoutils_la-lifo-semaphore.lo `test -f 'lifo-semaphore.c' || echo '$(srcdir)/'`lifo-semaphore.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-lifo-semaphore.Tpo $(DEPDIR)/libmonoutils_la-lifo-semaphore.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='lifo-semaphore.c' object='libmonoutils_la-lifo-semaphore.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-lifo-semaphore.lo `test -f 'lifo-semaphore.c' || echo '$(srcdir)/'`lifo-semaphore.c
 
 libmonoutils_la-lock-free-queue.lo: lock-free-queue.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-lock-free-queue.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-lock-free-queue.Tpo -c -o libmonoutils_la-lock-free-queue.lo `test -f 'lock-free-queue.c' || echo '$(srcdir)/'`lock-free-queue.c
