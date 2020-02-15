@@ -559,6 +559,7 @@ CCAS = @CCAS@
 CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
+CCLDFLAGS = @CCLDFLAGS@
 CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@)
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
@@ -1608,10 +1609,10 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@CROSS_COMPILE_TRUE@test-local:
-@HOST_WIN32_TRUE@test-local:
 @CROSS_COMPILE_TRUE@clean-local:
 @HOST_WIN32_TRUE@clean-local:
+@CROSS_COMPILE_TRUE@test-local:
+@HOST_WIN32_TRUE@test-local:
 clean: clean-am
 
 clean-am: clean-checkPROGRAMS clean-generic clean-libtool clean-local \

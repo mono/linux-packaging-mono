@@ -677,6 +677,7 @@ CCAS = $(MONO_NATIVE_CC)
 CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = 
 CCDEPMODE = @CCDEPMODE@
+CCLDFLAGS = @CCLDFLAGS@
 CC_FOR_BUILD = $(MONO_NATIVE_CC)
 
 # clear these flags as we set values for each target separately and automake always appends CFLAGS

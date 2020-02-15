@@ -36,6 +36,9 @@
 /* Disable COM support */
 #undef DISABLE_COM
 
+/* Disable .config file support. */
+#undef DISABLE_CONFIG
+
 /* Disable runtime debugging support */
 #undef DISABLE_DEBUG
 
@@ -93,6 +96,9 @@
 
 /* Disables the IO portability layer */
 #undef DISABLE_PORTABILITY
+
+/* Disable process support */
+#undef DISABLE_PROCESSES
 
 /* Disable default profiler support */
 #undef DISABLE_PROFILER

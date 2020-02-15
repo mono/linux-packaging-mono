@@ -214,7 +214,7 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	llvm-runtime.h type-checking.c calls.c lldb.h lldb.c \
 	memory-access.c intrinsics.c mini-profiler.c interp-stubs.c \
 	llvmonly-runtime.h llvmonly-runtime.c aot-runtime.h ee.h \
-	tiered.h tiered.c mini-runtime.h mini-llvm.c \
+	tiered.h tiered.c mini-runtime.h monovm.h monovm.c mini-llvm.c \
 	mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-jit.cpp \
 	llvm-runtime.cpp mini-amd64.c mini-amd64.h exceptions-amd64.c \
 	tramp-amd64.c mini-amd64-gsharedvt.c mini-amd64-gsharedvt.h \
@@ -281,7 +281,8 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-profiler.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmini_la-interp-stubs.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmini_la-llvmonly-runtime.lo \
-@ENABLE_MSVC_ONLY_FALSE@	libmini_la-tiered.lo
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-tiered.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmini_la-monovm.lo
 @ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@am__objects_3 = libmini_la-mini-llvm.lo \
 @ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm-loaded.lo \
 @ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.lo \
@@ -628,6 +629,7 @@ CCAS = @CCAS@
 CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
+CCLDFLAGS = @CCLDFLAGS@
 CC_FOR_BUILD = @CC_FOR_BUILD@
 
 # Per-library because linking doesn't like -xc++, it treats libraries as C++.
@@ -1244,7 +1246,9 @@ ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 @ENABLE_MSVC_ONLY_FALSE@	ee.h \
 @ENABLE_MSVC_ONLY_FALSE@	tiered.h \
 @ENABLE_MSVC_ONLY_FALSE@	tiered.c \
-@ENABLE_MSVC_ONLY_FALSE@	mini-runtime.h
+@ENABLE_MSVC_ONLY_FALSE@	mini-runtime.h \
+@ENABLE_MSVC_ONLY_FALSE@	monovm.h \
+@ENABLE_MSVC_ONLY_FALSE@	monovm.c
 
 
 # keep in sync with mcs/class/Mono.Runtime.Tests
@@ -1379,11 +1383,11 @@ regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 @ENABLE_MSVC_ONLY_FALSE@libmonoboehm_2_0_la_SOURCES = 
 @ENABLE_MSVC_ONLY_FALSE@libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS) @CXX_ADD_CFLAGS@
 @ENABLE_MSVC_ONLY_FALSE@libmonoboehm_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(boehm_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
-@ENABLE_MSVC_ONLY_FALSE@libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
+@ENABLE_MSVC_ONLY_FALSE@libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) $(CCLDFLAGS)
 @ENABLE_MSVC_ONLY_FALSE@libmonosgen_2_0_la_SOURCES = 
 @ENABLE_MSVC_ONLY_FALSE@libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS) @CXX_ADD_CFLAGS@
 @ENABLE_MSVC_ONLY_FALSE@libmonosgen_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
-@ENABLE_MSVC_ONLY_FALSE@libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
+@ENABLE_MSVC_ONLY_FALSE@libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) $(CCLDFLAGS)
 @ENABLE_MSVC_ONLY_FALSE@libmaintest_a_SOURCES = interp/whitebox.c
 @ENABLE_MSVC_ONLY_FALSE@libmaintest_a_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
 @ENABLE_MSVC_ONLY_FALSE@WHITEBOX_ASSEMBLY = interp/whitebox-snippets.exe
@@ -1756,6 +1760,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-x86-gsharedvt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-x86.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-monovm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-seq-points.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-simd-intrinsics-netcore.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-simd-intrinsics.Plo@am__quote@
@@ -2200,6 +2205,13 @@ libmini_la-tiered.lo: tiered.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tiered.c' object='libmini_la-tiered.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-tiered.lo `test -f 'tiered.c' || echo '$(srcdir)/'`tiered.c
+
+libmini_la-monovm.lo: monovm.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-monovm.lo -MD -MP -MF $(DEPDIR)/libmini_la-monovm.Tpo -c -o libmini_la-monovm.lo `test -f 'monovm.c' || echo '$(srcdir)/'`monovm.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-monovm.Tpo $(DEPDIR)/libmini_la-monovm.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='monovm.c' object='libmini_la-monovm.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-monovm.lo `test -f 'monovm.c' || echo '$(srcdir)/'`monovm.c
 
 libmini_la-mini-llvm.lo: mini-llvm.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-llvm.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-llvm.Tpo -c -o libmini_la-mini-llvm.lo `test -f 'mini-llvm.c' || echo '$(srcdir)/'`mini-llvm.c

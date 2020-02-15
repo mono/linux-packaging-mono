@@ -250,6 +250,7 @@ CCAS = @CCAS@
 CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
+CCLDFLAGS = @CCLDFLAGS@
 CC_FOR_BUILD = @CC_FOR_BUILD@
 
 # Default to C so the executable is linked as C and does not use libstdc++.

@@ -92,6 +92,21 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@bin_PROGRAMS = mprof-report$(EXEEXT)
+
+# On Apple hosts, we want to allow undefined symbols when building the
+# profiler modules as, just like on Linux, we don't link them to libmono,
+# but rather let the dynamic linker sort things out.
+#
+# Bitcode, specifically, doesn't allow undefined symbols at all, even for
+# shared libraries, so we want errors if the profiler modules contain any.
+@BITCODE_TRUE@@HOST_DARWIN_TRUE@am__append_1 = -no-undefined
+@BITCODE_FALSE@@HOST_DARWIN_TRUE@am__append_2 = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
+
+# Versioned libraries are problematic on Android. In particular, we're not
+# allowed to place versioned libraries inside APKs, so if libmono and the
+# profiler modules contain versioned sonames, things will fail to resolve
+# at runtime.
+@HOST_ANDROID_TRUE@am__append_3 = -avoid-version
 subdir = mono/profiler
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -363,6 +378,7 @@ CCAS = @CCAS@
 CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
+CCLDFLAGS = @CCLDFLAGS@
 CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
@@ -626,6 +642,8 @@ AM_CPPFLAGS = \
 	$(SHARED_CFLAGS)
 
 glib_libs = $(top_builddir)/mono/eglib/libeglib.la
+prof_ldflags = $(CCLDFLAGS) $(am__append_1) $(am__append_2) \
+	$(am__append_3)
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@vtune_libs = \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@	libmono-profiler-vtune.la \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@	libmono-profiler-vtune-static.la
@@ -647,21 +665,6 @@ glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 #
 # See: https://bugzilla.xamarin.com/show_bug.cgi?id=57011
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_COOP_SUSPEND_FALSE@@HOST_WIN32_FALSE@check_targets = run-test
-@BITCODE_FALSE@@HOST_DARWIN_TRUE@prof_ldflags = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
-
-# On Apple hosts, we want to allow undefined symbols when building the
-# profiler modules as, just like on Linux, we don't link them to libmono,
-# but rather let the dynamic linker sort things out.
-#
-# Bitcode, specifically, doesn't allow undefined symbols at all, even for
-# shared libraries, so we want errors if the profiler modules contain any.
-@BITCODE_TRUE@@HOST_DARWIN_TRUE@prof_ldflags = -no-undefined
-
-# Versioned libraries are problematic on Android. In particular, we're not
-# allowed to place versioned libraries inside APKs, so if libmono and the
-# profiler modules contain versioned sonames, things will fail to resolve
-# at runtime.
-@HOST_ANDROID_TRUE@prof_ldflags = -avoid-version
 @BITCODE_FALSE@@HOST_ANDROID_FALSE@@HOST_DARWIN_TRUE@@HOST_IOS_FALSE@@HOST_TIZEN_FALSE@libmono_dep = 
 # BITCODE => -no-undefined
 @BITCODE_TRUE@@HOST_ANDROID_FALSE@@HOST_DARWIN_TRUE@@HOST_IOS_FALSE@@HOST_TIZEN_FALSE@libmono_dep = $(top_builddir)/mono/mini/$(LIBMONO_LA)
@@ -716,11 +719,11 @@ mprof_report_LDADD = $(glib_libs) $(zlib_dep)
 mprof_report_LDFLAGS = -no-undefined
 noinst_LTLIBRARIES = libproftest_pinvokes.la
 libproftest_pinvokes_la_SOURCES = proftest-pinvokes.c
-@HOST_WIN32_FALSE@libproftest_pinvokes_la_LDFLAGS = -no-undefined -rpath `pwd`
+@HOST_WIN32_FALSE@libproftest_pinvokes_la_LDFLAGS = -no-undefined -rpath `pwd` $(CCLDFLAGS)
 # (borrowed from mono/tests/Makefile.am libtest_la_LDFLAGS)
 # the exported names created by gcc for stdcall functions are missing the leading _, so MS.NET
 # can't find them. So we use --kill-at to remove the @ suffix as well.
-@HOST_WIN32_TRUE@libproftest_pinvokes_la_LDFLAGS = -no-undefined -rpath `pwd` -Wl,--kill-at
+@HOST_WIN32_TRUE@libproftest_pinvokes_la_LDFLAGS = -no-undefined -rpath `pwd` $(CCLDFLAGS) -Wl,--kill-at
 PLOG_TESTS_SRC = \
 	test-alloc.cs \
 	test-busy.cs \
