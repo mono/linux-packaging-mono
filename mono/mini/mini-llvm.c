@@ -2036,7 +2036,7 @@ get_callee_llvmonly (EmitContext *ctx, LLVMTypeRef llvm_sig, MonoJumpInfoType ty
 	}
 
 	/*
-	 * Change references to jit icalls to the icall wrappers when in corlib, so
+	 * Change references to icalls/pinvokes/jit icalls to their wrappers when in corlib, so
 	 * they can be called directly.
 	 */
 	if (ctx->module->assembly->image == mono_get_corlib () && type == MONO_PATCH_INFO_JIT_ICALL_ID) {
@@ -2046,6 +2046,11 @@ get_callee_llvmonly (EmitContext *ctx, LLVMTypeRef llvm_sig, MonoJumpInfoType ty
 			type = MONO_PATCH_INFO_METHOD;
 			data = mono_icall_get_wrapper_method (info);
 		}
+	}
+	if (ctx->module->assembly->image == mono_get_corlib () && type == MONO_PATCH_INFO_METHOD) {
+		MonoMethod *method = (MonoMethod*)data;
+		if (m_method_is_icall (method) || m_method_is_pinvoke (method))
+			data = mono_marshal_get_native_wrapper (method, TRUE, TRUE);
 	}
 
 	/*
@@ -2057,8 +2062,9 @@ get_callee_llvmonly (EmitContext *ctx, LLVMTypeRef llvm_sig, MonoJumpInfoType ty
 		MonoMethod *method = (MonoMethod*)data;
 		if (m_class_get_image (method->klass)->assembly == ctx->module->assembly) {
 			MonoJumpInfo tmp_ji;
+
 			tmp_ji.type = type;
-			tmp_ji.data.target = data;
+			tmp_ji.data.target = method;
 
 			MonoJumpInfo *ji = mono_aot_patch_info_dup (&tmp_ji);
 			ji->next = ctx->cfg->patch_info;
@@ -2096,7 +2102,7 @@ get_callee_llvmonly (EmitContext *ctx, LLVMTypeRef llvm_sig, MonoJumpInfoType ty
 	}
 
 	/*
-	 * Calls are made through the GOT.
+	 * All other calls are made through the GOT.
 	 */
 	callee = get_aotconst_typed (ctx, type, data, LLVMPointerType (llvm_sig, 0));
 
@@ -8619,6 +8625,7 @@ emit_method_inner (EmitContext *ctx)
 			}
 		}
 	}
+
 #ifndef MONO_LLVM_LOADED
 	if (!cfg->llvm_only && mono_threads_are_safepoints_enabled () && requires_safepoint) {
 		if (!cfg->compile_aot && cfg->method->wrapper_type != MONO_WRAPPER_ALLOC) {
@@ -9914,30 +9921,6 @@ add_intrinsics (LLVMModuleRef module)
 
 		AddFunc (module, "llvm_resume_unwind_trampoline", LLVMVoidType (), NULL, 0);
 	}
-
-	/* Load/Store intrinsics */
-	{
-		LLVMTypeRef arg_types [5];
-		int i;
-		char name [128];
-
-		for (i = 1; i <= 8; i *= 2) {
-			arg_types [0] = LLVMPointerType (LLVMIntType (i * 8), 0);
-			arg_types [1] = LLVMInt32Type ();
-			arg_types [2] = LLVMInt1Type ();
-			arg_types [3] = LLVMInt32Type ();
-			sprintf (name, "llvm.mono.load.i%d.p0i%d", i * 8, i * 8);
-			AddFunc (module, name, LLVMIntType (i * 8), arg_types, 4);
-
-			arg_types [0] = LLVMIntType (i * 8);
-			arg_types [1] = LLVMPointerType (LLVMIntType (i * 8), 0);
-			arg_types [2] = LLVMInt32Type ();
-			arg_types [3] = LLVMInt1Type ();
-			arg_types [4] = LLVMInt32Type ();
-			sprintf (name, "llvm.mono.store.i%d.p0i%d", i * 8, i * 8);
-			AddFunc (module, name, LLVMVoidType (), arg_types, 5);
-		}
-	}
 }
 
 static void
@@ -10191,12 +10174,40 @@ mono_llvm_fixup_aot_module (void)
 		CallSite *site = (CallSite*)g_ptr_array_index (module->callsite_list, sindex);
 		method = site->method;
 		LLVMValueRef lmethod = (LLVMValueRef)g_hash_table_lookup (module->method_to_lmethod, method);
-
 		LLVMValueRef placeholder = (LLVMValueRef)site->load;
 		LLVMValueRef indexes [2], got_entry_addr, load;
 		char *name;
 
-		if (lmethod && !(method->iflags & METHOD_IMPL_ATTRIBUTE_SYNCHRONIZED)) {
+		gboolean can_direct_call = FALSE;
+
+		/* Replace sharable instances with their shared version */
+		if (!lmethod && method->is_inflated) {
+			if (mono_method_is_generic_sharable_full (method, FALSE, TRUE, FALSE)) {
+				ERROR_DECL (error);
+				MonoMethod *shared = mini_get_shared_method_full (method, SHARE_MODE_NONE, error);
+				if (is_ok (error)) {
+					lmethod = (LLVMValueRef)g_hash_table_lookup (module->method_to_lmethod, shared);
+					if (lmethod)
+						method = shared;
+				}
+			}
+		}
+
+		if (lmethod && !m_method_is_synchronized (method)) {
+			can_direct_call = TRUE;
+		} else if (m_method_is_wrapper (method) && !method->is_inflated) {
+			WrapperInfo *info = mono_marshal_get_wrapper_info (method);
+
+			/* This is a call from the synchronized wrapper to the real method */
+			if (info->subtype == WRAPPER_SUBTYPE_SYNCHRONIZED_INNER) {
+				method = info->d.synchronized.method;
+				lmethod = (LLVMValueRef)g_hash_table_lookup (module->method_to_lmethod, method);
+				if (lmethod)
+					can_direct_call = TRUE;
+			}
+		}
+
+		if (can_direct_call) {
 			mono_llvm_replace_uses_of (placeholder, lmethod);
 
 			if (mono_aot_can_specialize (method))
