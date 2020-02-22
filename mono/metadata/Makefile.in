@@ -189,14 +189,15 @@ libmonoruntime_config_la_OBJECTS =  \
 @ENABLE_MSVC_ONLY_FALSE@am_libmonoruntime_config_la_rpath =
 libmonoruntime_support_la_LIBADD =
 am__libmonoruntime_support_la_SOURCES_DIST = support.c
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_FALSE@am_libmonoruntime_support_la_OBJECTS = libmonoruntime_support_la-support.lo
+@ENABLE_MSVC_ONLY_FALSE@am_libmonoruntime_support_la_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_support_la-support.lo
 libmonoruntime_support_la_OBJECTS =  \
 	$(am_libmonoruntime_support_la_OBJECTS)
 libmonoruntime_support_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmonoruntime_support_la_CFLAGS) $(CFLAGS) \
 	$(libmonoruntime_support_la_LDFLAGS) $(LDFLAGS) -o $@
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_FALSE@am_libmonoruntime_support_la_rpath =
+@ENABLE_MSVC_ONLY_FALSE@am_libmonoruntime_support_la_rpath =
 @ENABLE_MSVC_ONLY_FALSE@libmonoruntime_la_DEPENDENCIES =  \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime-config.la \
 @ENABLE_MSVC_ONLY_FALSE@	$(support_libraries)
@@ -1054,10 +1055,10 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 #
 # Support is a separate library because it is not valid C++.
 #
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_FALSE@support_libraries = libmonoruntime-support.la
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_FALSE@libmonoruntime_support_la_SOURCES = support.c
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_FALSE@libmonoruntime_support_la_LDFLAGS = $(Z_LIBS)
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_FALSE@libmonoruntime_support_la_CFLAGS = $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@) @ZLIB_CFLAGS@
+@ENABLE_MSVC_ONLY_FALSE@support_libraries = libmonoruntime-support.la
+@ENABLE_MSVC_ONLY_FALSE@libmonoruntime_support_la_SOURCES = support.c
+@ENABLE_MSVC_ONLY_FALSE@libmonoruntime_support_la_LDFLAGS = $(Z_LIBS)
+@ENABLE_MSVC_ONLY_FALSE@libmonoruntime_support_la_CFLAGS = $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@) @ZLIB_CFLAGS@
 
 #
 # This library contains the icall tables if the runtime was configured with --disable-icall-tables
