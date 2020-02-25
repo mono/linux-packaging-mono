@@ -827,8 +827,7 @@ MCS_NO_UNSAFE = $(TOOLS_RUNTIME) $(CSC) -debug:portable \
 
 MCS_NO_LIB = $(MCS_NO_UNSAFE) -unsafe
 MCS = $(MCS_NO_LIB)
-@LOADED_LLVM_FALSE@LLVMMONOF = $(LLVM_LIBS) $(LLVM_LDFLAGS)
-@LOADED_LLVM_TRUE@LLVMMONOF = 
+LLVMMONOF = $(LLVM_LIBS) $(LLVM_LDFLAGS)
 glib_libs = $(top_builddir)/mono/eglib/libeglib.la
 test_cflags = $(AM_CFLAGS) $(SGEN_DEFINES)
 test_ldadd = libtestlib.la \
