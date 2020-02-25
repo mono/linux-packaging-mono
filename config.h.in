@@ -1496,9 +1496,6 @@
 /* Have __thread keyword */
 #undef MONO_KEYWORD_THREAD
 
-/* The LLVM back end is dynamically loaded */
-#undef MONO_LLVM_LOADED
-
 /* AOT cross offsets file */
 #undef MONO_OFFSETS_FILE
 
