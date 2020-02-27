@@ -346,7 +346,7 @@ namespace Mono.Linker.Steps {
 			if (IsInterfaceOverrideThatDoesNotNeedMarked (overrideInformation, isInstantiated))
 				return;
 
-			if (!isInstantiated && !@base.IsAbstract && _context.IsOptimizationEnabled (CodeOptimizations.OverrideRemoval))
+			if (!isInstantiated && !@base.IsAbstract && _context.IsOptimizationEnabled (CodeOptimizations.OverrideRemoval, method))
 				return;
 
 			MarkMethod (method);
@@ -650,7 +650,7 @@ namespace Mono.Linker.Steps {
 			if (Annotations.HasPreservedStaticCtor (type))
 				return false;
 			
-			if (type.IsBeforeFieldInit && _context.IsOptimizationEnabled (CodeOptimizations.BeforeFieldInit))
+			if (type.IsBeforeFieldInit && _context.IsOptimizationEnabled (CodeOptimizations.BeforeFieldInit, type))
 				return false;
 
 			return true;
@@ -1047,7 +1047,8 @@ namespace Mono.Linker.Steps {
 		protected virtual void MarkSerializable (TypeDefinition type)
 		{
 			MarkDefaultConstructor (type);
-			MarkMethodsIf (type.Methods, IsSpecialSerializationConstructor);
+			if (!_context.IsFeatureExcluded ("deserialization"))
+				MarkMethodsIf (type.Methods, IsSpecialSerializationConstructor);
 		}
 
 		protected virtual TypeDefinition MarkType (TypeReference reference)
@@ -1136,7 +1137,10 @@ namespace Mono.Linker.Steps {
 				if (ShouldMarkTypeStaticConstructor (type))
 					MarkStaticConstructor (type);
 
-				MarkMethodsIf (type.Methods, HasSerializationAttribute);
+				if (_context.IsFeatureExcluded ("deserialization"))
+					MarkMethodsIf (type.Methods, HasOnSerializeAttribute);
+				else
+					MarkMethodsIf (type.Methods, HasOnSerializeOrDeserializeAttribute);
 			}
 
 			DoAdditionalTypeProcessing (type);
@@ -1587,7 +1591,24 @@ namespace Mono.Linker.Steps {
 			return method.Body.Instructions [0].OpCode.Code != Code.Ret;
 		}
 
-		static bool HasSerializationAttribute (MethodDefinition method)
+		static bool HasOnSerializeAttribute (MethodDefinition method)
+		{
+			if (!method.HasCustomAttributes)
+				return false;
+			foreach (var ca in method.CustomAttributes) {
+				var cat = ca.AttributeType;
+				if (cat.Namespace != "System.Runtime.Serialization")
+					continue;
+				switch (cat.Name) {
+				case "OnSerializedAttribute":
+				case "OnSerializingAttribute":
+					return true;
+				}
+			}
+			return false;
+		}
+
+		static bool HasOnSerializeOrDeserializeAttribute (MethodDefinition method)
 		{
 			if (!method.HasCustomAttributes)
 				return false;
@@ -1656,7 +1677,7 @@ namespace Mono.Linker.Steps {
 
 		protected TypeReference GetOriginalType (TypeReference type)
 		{
-			while (type is TypeSpecification) {
+			while (type is TypeSpecification specification) {
 				if (type is GenericInstanceType git)
 					MarkGenericArguments (git);
 
@@ -1669,7 +1690,7 @@ namespace Mono.Linker.Steps {
 					break; // FunctionPointerType is the original type
 				}
 
-				type = ((TypeSpecification)type).ElementType;
+				type = specification.ElementType;
 			}
 
 			return type;
@@ -1894,11 +1915,11 @@ namespace Mono.Linker.Steps {
 
 		protected MethodReference GetOriginalMethod (MethodReference method)
 		{
-			while (method is MethodSpecification) {
+			while (method is MethodSpecification specification) {
 				if (method is GenericInstanceMethod gim)
 					MarkGenericArguments (gim);
 
-				method = ((MethodSpecification) method).ElementMethod;
+				method = specification.ElementMethod;
 			}
 
 			return method;
@@ -2076,10 +2097,7 @@ namespace Mono.Linker.Steps {
 			MarkType (nse);
 
 			var nseCtor = MarkMethodIf (nse.Methods, KnownMembers.IsNotSupportedExceptionCtorString);
-			if (nseCtor == null)
-				throw new MarkException ($"Could not find constructor on '{nse.FullName}'");
-
-			_context.MarkedKnownMembers.NotSupportedExceptionCtorString = nseCtor;
+			_context.MarkedKnownMembers.NotSupportedExceptionCtorString = nseCtor ?? throw new MarkException ($"Could not find constructor on '{nse.FullName}'");
 
 			var objectType = BCL.FindPredefinedType ("System", "Object", _context);
 			if (objectType == null)
@@ -2088,10 +2106,7 @@ namespace Mono.Linker.Steps {
 			MarkType (objectType);
 
 			var objectCtor = MarkMethodIf (objectType.Methods, MethodDefinitionExtensions.IsDefaultConstructor);
-			if (objectCtor == null)
-				throw new MarkException ($"Could not find constructor on '{objectType.FullName}'");
-
-			_context.MarkedKnownMembers.ObjectCtor = objectCtor;
+			_context.MarkedKnownMembers.ObjectCtor = objectCtor ?? throw new MarkException ($"Could not find constructor on '{objectType.FullName}'");
 		}
 
 		bool MarkDisablePrivateReflectionAttribute ()
@@ -2106,10 +2121,7 @@ namespace Mono.Linker.Steps {
 			MarkType (nse);
 
 			var ctor = MarkMethodIf (nse.Methods, MethodDefinitionExtensions.IsDefaultConstructor);
-			if (ctor == null)
-				throw new MarkException ($"Could not find constructor on '{nse.FullName}'");
-
-			_context.MarkedKnownMembers.DisablePrivateReflectionAttributeCtor = ctor;
+			_context.MarkedKnownMembers.DisablePrivateReflectionAttributeCtor = ctor ?? throw new MarkException ($"Could not find constructor on '{nse.FullName}'");
 			return true;
 		}
 
@@ -2207,7 +2219,7 @@ namespace Mono.Linker.Steps {
 
 		protected virtual void MarkMethodBody (MethodBody body)
 		{
-			if (_context.IsOptimizationEnabled (CodeOptimizations.UnreachableBodies) && IsUnreachableBody (body)) {
+			if (_context.IsOptimizationEnabled (CodeOptimizations.UnreachableBodies, body.Method) && IsUnreachableBody (body)) {
 				MarkAndCacheConvertToThrowExceptionCtor ();
 				_unreachableBodies.Add (body);
 				return;
@@ -2264,10 +2276,10 @@ namespace Mono.Linker.Steps {
 				break;
 			case OperandType.InlineTok:
 				object token = instruction.Operand;
-				if (token is TypeReference)
-					MarkType ((TypeReference) token);
-				else if (token is MethodReference)
-					MarkMethod ((MethodReference) token);
+				if (token is TypeReference typeReference)
+					MarkType (typeReference);
+				else if (token is MethodReference methodReference)
+					MarkMethod (methodReference);
 				else
 					MarkField ((FieldReference) token);
 				break;
@@ -2308,7 +2320,7 @@ namespace Mono.Linker.Steps {
 			if (Annotations.IsMarked (resolvedInterfaceType))
 				return true;
 
-			if (!_context.IsOptimizationEnabled (CodeOptimizations.UnusedInterfaces))
+			if (!_context.IsOptimizationEnabled (CodeOptimizations.UnusedInterfaces, type))
 				return true;
 
 			// It's hard to know if a com or windows runtime interface will be needed from managed code alone,
