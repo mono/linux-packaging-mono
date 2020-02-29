@@ -117,20 +117,21 @@ libeglib_la_DEPENDENCIES =
 am__libeglib_la_SOURCES_DIST = eglib-remap.h sort.frag.h glib.h \
 	garray.c gbytearray.c gerror.c ghashtable.c giconv.c gmem.c \
 	gmodule.h goutput.c gqsort.c gstr.c gslist.c gstring.c \
-	gptrarray.c glist.c gqueue.c gpath.c gshell.c gspawn.c gfile.c \
+	gptrarray.c glist.c gqueue.c gpath.c gshell.c gfile.c \
 	gfile-posix.c gpattern.c gmarkup.c gutf8.c gunicode.c \
 	unicode-data.h gdate-unix.c gdir-unix.c gfile-unix.c \
 	gmisc-unix.c gmodule-unix.c gtimer-unix.c gmodule-aix.c \
-	eglib-config.hw gdate-win32.c gdir-win32.c gfile-win32.c \
-	gmisc-win32.c gmodule-win32.c gmodule-win32-internals.h \
-	gtimer-win32.c gunicode-win32.c
+	gspawn.c eglib-config.hw gdate-win32.c gdir-win32.c \
+	gfile-win32.c gmisc-win32.c gmodule-win32.c \
+	gmodule-win32-internals.h gtimer-win32.c gunicode-win32.c
 @ENABLE_MSVC_ONLY_FALSE@am__objects_1 = libeglib_la-gdate-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gdir-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gfile-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gmisc-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gmodule-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gtimer-unix.lo \
-@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gmodule-aix.lo
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gmodule-aix.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gspawn.lo
 @ENABLE_MSVC_ONLY_FALSE@am__objects_2 = libeglib_la-gdate-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gdir-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gfile-win32.lo \
@@ -159,7 +160,6 @@ am__libeglib_la_SOURCES_DIST = eglib-remap.h sort.frag.h glib.h \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gqueue.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gpath.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gshell.lo \
-@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gspawn.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gfile.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gfile-posix.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gpattern.lo \
@@ -599,7 +599,8 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 
 @ENABLE_MSVC_ONLY_FALSE@unix_files = \
 @ENABLE_MSVC_ONLY_FALSE@	gdate-unix.c  gdir-unix.c  gfile-unix.c  gmisc-unix.c	\
-@ENABLE_MSVC_ONLY_FALSE@	gmodule-unix.c gtimer-unix.c gmodule-aix.c
+@ENABLE_MSVC_ONLY_FALSE@	gmodule-unix.c gtimer-unix.c gmodule-aix.c \
+@ENABLE_MSVC_ONLY_FALSE@	gspawn.c
 
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@os_files = $(unix_files)
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@os_files = $(win_files)
@@ -624,7 +625,6 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@	gqueue.c	\
 @ENABLE_MSVC_ONLY_FALSE@	gpath.c		\
 @ENABLE_MSVC_ONLY_FALSE@	gshell.c	\
-@ENABLE_MSVC_ONLY_FALSE@	gspawn.c	\
 @ENABLE_MSVC_ONLY_FALSE@	gfile.c		\
 @ENABLE_MSVC_ONLY_FALSE@	gfile-posix.c	\
 @ENABLE_MSVC_ONLY_FALSE@	gpattern.c	\
@@ -874,13 +874,6 @@ libeglib_la-gshell.lo: gshell.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_la_CFLAGS) $(CFLAGS) -c -o libeglib_la-gshell.lo `test -f 'gshell.c' || echo '$(srcdir)/'`gshell.c
 
-libeglib_la-gspawn.lo: gspawn.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_la_CFLAGS) $(CFLAGS) -MT libeglib_la-gspawn.lo -MD -MP -MF $(DEPDIR)/libeglib_la-gspawn.Tpo -c -o libeglib_la-gspawn.lo `test -f 'gspawn.c' || echo '$(srcdir)/'`gspawn.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_la-gspawn.Tpo $(DEPDIR)/libeglib_la-gspawn.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gspawn.c' object='libeglib_la-gspawn.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_la_CFLAGS) $(CFLAGS) -c -o libeglib_la-gspawn.lo `test -f 'gspawn.c' || echo '$(srcdir)/'`gspawn.c
-
 libeglib_la-gfile.lo: gfile.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_la_CFLAGS) $(CFLAGS) -MT libeglib_la-gfile.lo -MD -MP -MF $(DEPDIR)/libeglib_la-gfile.Tpo -c -o libeglib_la-gfile.lo `test -f 'gfile.c' || echo '$(srcdir)/'`gfile.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_la-gfile.Tpo $(DEPDIR)/libeglib_la-gfile.Plo
@@ -971,6 +964,13 @@ libeglib_la-gmodule-aix.lo: gmodule-aix.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gmodule-aix.c' object='libeglib_la-gmodule-aix.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_la_CFLAGS) $(CFLAGS) -c -o libeglib_la-gmodule-aix.lo `test -f 'gmodule-aix.c' || echo '$(srcdir)/'`gmodule-aix.c
+
+libeglib_la-gspawn.lo: gspawn.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_la_CFLAGS) $(CFLAGS) -MT libeglib_la-gspawn.lo -MD -MP -MF $(DEPDIR)/libeglib_la-gspawn.Tpo -c -o libeglib_la-gspawn.lo `test -f 'gspawn.c' || echo '$(srcdir)/'`gspawn.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_la-gspawn.Tpo $(DEPDIR)/libeglib_la-gspawn.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gspawn.c' object='libeglib_la-gspawn.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_la_CFLAGS) $(CFLAGS) -c -o libeglib_la-gspawn.lo `test -f 'gspawn.c' || echo '$(srcdir)/'`gspawn.c
 
 libeglib_la-gdate-win32.lo: gdate-win32.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_la_CFLAGS) $(CFLAGS) -MT libeglib_la-gdate-win32.lo -MD -MP -MF $(DEPDIR)/libeglib_la-gdate-win32.Tpo -c -o libeglib_la-gdate-win32.lo `test -f 'gdate-win32.c' || echo '$(srcdir)/'`gdate-win32.c
