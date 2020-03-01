@@ -27,7 +27,7 @@
 
 Name:           mono-core
 %define __majorver 6.13.0
-%define __minorver 192
+%define __minorver 193
 Version:	%{__majorver}.%{__minorver}
 Release:	0.nightly.1
 Summary:        Cross-platform, Open Source, .NET development framework
