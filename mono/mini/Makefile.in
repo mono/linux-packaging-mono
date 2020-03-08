@@ -210,13 +210,13 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	debugger-agent.h debugger-engine.h debugger-agent-stubs.c \
 	debugger-state-machine.h xdebug.c mini-llvm.h mini-llvm-cpp.h \
 	llvm-jit.h alias-analysis.c mini-cross-helpers.c arch-stubs.c \
-	llvm-runtime.h type-checking.c calls.c lldb.h lldb.c \
-	memory-access.c intrinsics.c mini-profiler.c interp-stubs.c \
-	llvmonly-runtime.h llvmonly-runtime.c aot-runtime.h ee.h \
-	tiered.h tiered.c mini-runtime.h monovm.h monovm.c mini-llvm.c \
-	mini-llvm-cpp.cpp llvm-jit.cpp llvm-runtime.cpp mini-amd64.c \
-	mini-amd64.h exceptions-amd64.c tramp-amd64.c \
-	mini-amd64-gsharedvt.c mini-amd64-gsharedvt.h \
+	llvm-runtime.h llvm-intrinsics.h type-checking.c calls.c \
+	lldb.h lldb.c memory-access.c intrinsics.c mini-profiler.c \
+	interp-stubs.c llvmonly-runtime.h llvmonly-runtime.c \
+	aot-runtime.h ee.h tiered.h tiered.c mini-runtime.h monovm.h \
+	monovm.c mini-llvm.c mini-llvm-cpp.cpp llvm-jit.cpp \
+	llvm-runtime.cpp mini-amd64.c mini-amd64.h exceptions-amd64.c \
+	tramp-amd64.c mini-amd64-gsharedvt.c mini-amd64-gsharedvt.h \
 	tramp-amd64-gsharedvt.c mini-arm64.c mini-arm64.h \
 	exceptions-arm64.c tramp-arm64.c mini-arm64-gsharedvt.c \
 	mini-arm64-gsharedvt.h tramp-arm64-gsharedvt.c mini-arm.c \
@@ -1202,6 +1202,7 @@ ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 @ENABLE_MSVC_ONLY_FALSE@	mini-cross-helpers.c \
 @ENABLE_MSVC_ONLY_FALSE@	arch-stubs.c		\
 @ENABLE_MSVC_ONLY_FALSE@	llvm-runtime.h	\
+@ENABLE_MSVC_ONLY_FALSE@	llvm-intrinsics.h	\
 @ENABLE_MSVC_ONLY_FALSE@	type-checking.c \
 @ENABLE_MSVC_ONLY_FALSE@	calls.c			\
 @ENABLE_MSVC_ONLY_FALSE@	lldb.h			\
