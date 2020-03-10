@@ -86,7 +86,8 @@ namespace Mono.Linker.Steps {
 				if (ca.ConstructorArguments.Count != 3)
 					continue;
 
-				if (!(ca.ConstructorArguments [2].Value is string assemblyName))
+				var assemblyName = ca.ConstructorArguments [2].Value as string;
+				if (assemblyName == null)
 					continue;
 
 				var newDependency = Context.Resolve (new AssemblyNameReference (assemblyName, new Version ()));

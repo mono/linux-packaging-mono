@@ -28,7 +28,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -43,10 +42,10 @@ namespace Mono.Linker {
 
 	public class LinkContext : IDisposable {
 
-		readonly Pipeline _pipeline;
+		Pipeline _pipeline;
 		AssemblyAction _coreAction;
 		AssemblyAction _userAction;
-		readonly Dictionary<string, AssemblyAction> _actions;
+		Dictionary<string, AssemblyAction> _actions;
 		string _outputDirectory;
 		readonly Dictionary<string, string> _parameters;
 		bool _linkSymbols;
@@ -54,13 +53,13 @@ namespace Mono.Linker {
 		bool _keepMembersForDebugger;
 		bool _ignoreUnresolved;
 
-		readonly AssemblyResolver _resolver;
+		AssemblyResolver _resolver;
 
-		readonly ReaderParameters _readerParameters;
+		ReaderParameters _readerParameters;
 		ISymbolReaderProvider _symbolReaderProvider;
 		ISymbolWriterProvider _symbolWriterProvider;
 
-		readonly AnnotationStore _annotations;
+		AnnotationStore _annotations;
 
 		public Pipeline Pipeline {
 			get { return _pipeline; }
@@ -156,7 +155,7 @@ namespace Mono.Linker {
 
 		public string [] ExcludedFeatures { get; set; }
 
-		public CodeOptimizationsSettings Optimizations { get; set; }
+		public CodeOptimizations DisabledOptimizations { get; set; }
 
 		public bool AddReflectionAnnotations { get; set; }
 
@@ -197,19 +196,16 @@ namespace Mono.Linker {
 			StripResources = true;
 
 			// See https://github.com/mono/linker/issues/612
-			const CodeOptimizations defaultOptimizations =
-				CodeOptimizations.BeforeFieldInit |
-				CodeOptimizations.OverrideRemoval |
-				CodeOptimizations.UnusedInterfaces |
-				CodeOptimizations.IPConstantPropagation;
-
-			Optimizations = new CodeOptimizationsSettings (defaultOptimizations);
+			DisabledOptimizations |= CodeOptimizations.UnreachableBodies;
+			DisabledOptimizations |= CodeOptimizations.ClearInitLocals;
+			DisabledOptimizations |= CodeOptimizations.IPConstantPropagation;
 		}
 
 		public void AddSubstitutionFile (string file)
 		{
 			if (Substitutions == null) {
-				Substitutions = new List<string> { file };
+				Substitutions = new List<string> ();
+				Substitutions.Add (file);
 				return;
 			}
 
@@ -326,8 +322,8 @@ namespace Mono.Linker {
 		static AssemblyNameReference GetReference (IMetadataScope scope)
 		{
 			AssemblyNameReference reference;
-			if (scope is ModuleDefinition moduleDefinition) {
-				AssemblyDefinition asm = moduleDefinition.Assembly;
+			if (scope is ModuleDefinition) {
+				AssemblyDefinition asm = ((ModuleDefinition) scope).Assembly;
 				reference = asm.Name;
 			} else
 				reference = (AssemblyNameReference) scope;
@@ -347,9 +343,11 @@ namespace Mono.Linker {
 
 		protected void SetDefaultAction (AssemblyDefinition assembly)
 		{
+			AssemblyAction action;
+
 			AssemblyNameDefinition name = assembly.Name;
 
-			if (_actions.TryGetValue (name.Name, out AssemblyAction action)) {
+			if (_actions.TryGetValue (name.Name, out action)) {
 			} else if (IsCore (name)) {
 				action = _coreAction;
 			} else {
@@ -401,7 +399,8 @@ namespace Mono.Linker {
 
 		public string GetParameter (string key)
 		{
-			_parameters.TryGetValue (key, out string val);
+			string val = null;
+			_parameters.TryGetValue (key, out val);
 			return val;
 		}
 
@@ -415,14 +414,9 @@ namespace Mono.Linker {
 			return ExcludedFeatures != null && Array.IndexOf (ExcludedFeatures, featureName) >= 0;
 		}
 
-		public bool IsOptimizationEnabled (CodeOptimizations optimization, MemberReference context)
+		public bool IsOptimizationEnabled (CodeOptimizations optimization)
 		{
-			return Optimizations.IsEnabled (optimization, context?.Module.Assembly);
-		}
-
-		public bool IsOptimizationEnabled (CodeOptimizations optimization, AssemblyDefinition context)
-		{
-			return Optimizations.IsEnabled (optimization, context);
+			return (DisabledOptimizations & optimization) == 0;
 		}
 
 		public void LogMessage (string message)
@@ -434,67 +428,6 @@ namespace Mono.Linker {
 		{
 			if (LogMessages && Logger != null)
 				Logger.LogMessage (importance, "{0}", message);
-		}
-	}
-
-	public class CodeOptimizationsSettings
-	{
-		readonly Dictionary<string, CodeOptimizations> perAssembly = new Dictionary<string, CodeOptimizations> ();
-
-		public CodeOptimizationsSettings (CodeOptimizations globalOptimizations)
-		{
-			Global = globalOptimizations;
-		}
-
-		public CodeOptimizations Global { get; set; }
-
-		internal bool IsEnabled (CodeOptimizations optimizations, AssemblyDefinition context)
-		{
-			return IsEnabled (optimizations, context?.Name.Name);
-		}
-
-		public bool IsEnabled (CodeOptimizations optimizations, string assemblyName)
-		{
-			Debug.Assert (assemblyName != null);
-			// Only one bit is set
-			Debug.Assert (optimizations != 0 && (optimizations & (optimizations - 1)) == 0);
-
-			if (perAssembly.Count > 0 &&
-				perAssembly.TryGetValue (assemblyName, out CodeOptimizations assembly)) {
-				return (assembly & optimizations) != 0;
-			}
-
-			return (Global & optimizations) != 0;
-		}
-
-		public void Enable (CodeOptimizations optimizations, string assemblyContext = null)
-		{
-			if (assemblyContext == null) {
-				Global |= optimizations;
-				return;
-			}
-
-			if (!perAssembly.ContainsKey (assemblyContext)) {
-				perAssembly.Add (assemblyContext, optimizations);
-				return;
-			}
-
-			perAssembly [assemblyContext] |= optimizations;
-		}
-
-		public void Disable (CodeOptimizations optimizations, string assemblyContext = null)
-		{
-			if (assemblyContext == null) {
-				Global &= ~optimizations;
-				return;
-			}
-
-			if (!perAssembly.ContainsKey (assemblyContext)) {
-				perAssembly.Add (assemblyContext, ~optimizations);
-				return;
-			}
-
-			perAssembly [assemblyContext] &= ~optimizations;
 		}
 	}
 
@@ -529,6 +462,6 @@ namespace Mono.Linker {
 		/// <summary>
 		/// Option to do interprocedural constant propagation on return values
 		/// </summary>
-		IPConstantPropagation = 1 << 5,
+		IPConstantPropagation = 1 << 5
 	}
 }

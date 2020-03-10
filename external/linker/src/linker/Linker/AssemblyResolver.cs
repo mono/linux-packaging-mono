@@ -107,7 +107,8 @@ namespace Mono.Linker {
 			if (parameters == null)
 				throw new ArgumentNullException ("parameters");
 
-			if (!_assemblies.TryGetValue (name.Name, out AssemblyDefinition asm) && (_unresolvedAssemblies == null || !_unresolvedAssemblies.Contains (name.Name))) {
+			AssemblyDefinition asm = null;
+			if (!_assemblies.TryGetValue (name.Name, out asm) && (_unresolvedAssemblies == null || !_unresolvedAssemblies.Contains (name.Name))) {
 				try {
 					// Any full path explicit reference takes precedence over other look up logic
 					asm = ResolveFromReferences (name, _references, parameters);

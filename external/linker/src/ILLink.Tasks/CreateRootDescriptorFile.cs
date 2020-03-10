@@ -34,10 +34,9 @@ namespace ILLink.Tasks
 
 			var xdoc = new XDocument(roots);
 
-			XmlWriterSettings xws = new XmlWriterSettings {
-				Indent = true,
-				OmitXmlDeclaration = true
-			};
+			XmlWriterSettings xws = new XmlWriterSettings();
+			xws.Indent = true;
+			xws.OmitXmlDeclaration = true;
 
 			using (XmlWriter xw = XmlWriter.Create(RootDescriptorFilePath.ItemSpec, xws)) {
 				xdoc.Save(xw);

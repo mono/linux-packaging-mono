@@ -28,7 +28,8 @@ namespace Mono.Linker {
 	
 		public static TypeReference InflateTypeWithoutException(GenericContext context, TypeReference typeReference)
 		{
-			if (typeReference is GenericParameter genericParameter)
+			var genericParameter = typeReference as GenericParameter;
+			if (genericParameter != null)
 			{
 				if (context.Method == null && genericParameter.Type != GenericParameterType.Type)
 				{
@@ -43,22 +44,28 @@ namespace Mono.Linker {
 				var inflatedType = genericArgumentType;
 				return inflatedType;
 			}
-			if (typeReference is GenericInstanceType genericInstanceType)
-				return InflateType (context, genericInstanceType);
-
-			if (typeReference is ArrayType arrayType)
+			var genericInstanceType = typeReference as GenericInstanceType;
+			if (genericInstanceType != null)
+				return InflateType(context, genericInstanceType);
+	
+			var arrayType = typeReference as ArrayType;
+			if (arrayType != null)
 				return new ArrayType(InflateType(context, arrayType.ElementType), arrayType.Rank);
 	
-			if (typeReference is ByReferenceType byReferenceType)
+			var byReferenceType = typeReference as ByReferenceType;
+			if (byReferenceType != null)
 				return new ByReferenceType(InflateType(context, byReferenceType.ElementType));
 	
-			if (typeReference is PointerType pointerType)
+			var pointerType = typeReference as PointerType;
+			if (pointerType != null)
 				return new PointerType(InflateType(context, pointerType.ElementType));
 	
-			if (typeReference is RequiredModifierType reqModType)
+			var reqModType = typeReference as RequiredModifierType;
+			if (reqModType != null)
 				return InflateTypeWithoutException(context, reqModType.ElementType);
 	
-			if (typeReference is OptionalModifierType optModType)
+			var optModType = typeReference as OptionalModifierType;
+			if (optModType != null)
 				return InflateTypeWithoutException(context, optModType.ElementType);
 	
 			return typeReference.Resolve();

@@ -307,10 +307,12 @@ namespace Mono.Linker.Steps {
 
 		static bool TypeMatch (TypeSpecification a, TypeSpecification b)
 		{
-			if (a is GenericInstanceType gita)
+			var gita = a as GenericInstanceType;
+			if (gita != null)
 				return TypeMatch (gita, (GenericInstanceType) b);
 
-			if (a is IModifierType mta)
+			var mta = a as IModifierType;
+			if (mta != null)
 				return TypeMatch (mta, (IModifierType) b);
 
 			return TypeMatch (a.ElementType, b.ElementType);
@@ -360,8 +362,8 @@ namespace Mono.Linker.Steps {
 				return TypeMatch ((TypeSpecification) a, (TypeSpecification) b);
 			}
 
-			if (a is GenericParameter genericParameterA && b is GenericParameter genericParameterB)
-				return TypeMatch (genericParameterA, genericParameterB);
+			if (a is GenericParameter && b is GenericParameter)
+				return TypeMatch ((GenericParameter)a, (GenericParameter)b);
 
 			return a.FullName == b.FullName;
 		}
