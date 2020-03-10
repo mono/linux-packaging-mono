@@ -52,9 +52,9 @@ namespace ILLink.Tasks
 			public HashSet<string> fields;
 		}
 
-		readonly Dictionary<string, string> namespaceDictionary = new Dictionary<string, string> ();
-		readonly Dictionary<string, string> classIdsToClassNames = new Dictionary<string, string> ();
-		readonly Dictionary<string, ClassMembers> classNamesToClassMembers = new Dictionary<string, ClassMembers> ();
+		Dictionary<string, string> namespaceDictionary = new Dictionary<string, string> ();
+		Dictionary<string, string> classIdsToClassNames = new Dictionary<string, string> ();
+		Dictionary<string, ClassMembers> classNamesToClassMembers = new Dictionary<string, ClassMembers> ();
 
 		public override bool Execute ()
 		{
@@ -133,7 +133,7 @@ namespace ILLink.Tasks
 		void ProcessMscorlib (string typeFile)
 		{
 			string [] types = File.ReadAllLines (typeFile);
-			string classId;
+			string classId = null;
 
 			foreach (string def in types) {
 				string [] defElements = null;
@@ -285,7 +285,8 @@ namespace ILLink.Tasks
 				if ((classId != null) && (classId != "NoClass")) {
 					classIdsToClassNames [classId] = fullClassName;
 				}
-				if (!classNamesToClassMembers.TryGetValue (fullClassName, out ClassMembers members)) {
+				ClassMembers members;
+				if (!classNamesToClassMembers.TryGetValue (fullClassName, out members)) {
 					members = new ClassMembers ();
 					classNamesToClassMembers [fullClassName] = members;
 				}

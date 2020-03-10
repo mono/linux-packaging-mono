@@ -5,7 +5,6 @@
     <RootNamespace>LinkerAnalyzer</RootNamespace>
     <AssemblyName>illinkanalyzer</AssemblyName>
     <Configurations>Debug;Release</Configurations>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(MonoBuild)' == ''">

@@ -41,9 +41,8 @@ namespace ILLink.Tasks
 					continue;
 				}
 				string fileName = Path.GetFileName (unlinkedFile);
-				AssemblySizes assemblySizes = new AssemblySizes {
-					unlinkedSize = new System.IO.FileInfo (unlinkedFile).Length
-				};
+				AssemblySizes assemblySizes = new AssemblySizes ();
+				assemblySizes.unlinkedSize = new System.IO.FileInfo (unlinkedFile).Length;
 				totalUnlinked += assemblySizes.unlinkedSize;
 				sizes[fileName] = assemblySizes;
 			}

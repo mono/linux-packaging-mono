@@ -39,10 +39,9 @@ namespace Mono.Tuner {
 		public override void ProcessType (TypeDefinition type)
 		{
 			ProcessAttributeProvider (type);
-			ProcessGenericParameterProvider (type);
 
-			if (type.HasInterfaces)
-				ProcessAttributeProviderCollection (type.Interfaces);
+			if (type.HasGenericParameters)
+				ProcessAttributeProviderCollection (type.GenericParameters);
 		}
 
 		void ProcessAttributeProviderCollection (IList list)
@@ -54,22 +53,6 @@ namespace Mono.Tuner {
 		public override void ProcessField (FieldDefinition field)
 		{
 			ProcessAttributeProvider (field);
-		}
-
-		void ProcessGenericParameterProvider (IGenericParameterProvider provider)
-		{
-			if (!provider.HasGenericParameters)
-				return;
-
-			foreach (var parameter in provider.GenericParameters) {
-				ProcessAttributeProvider (parameter);
-
-				if (!parameter.HasConstraints)
-					continue;
-
-				foreach (var constraint in parameter.Constraints)
-					ProcessAttributeProvider (constraint);
-			}
 		}
 
 		public override void ProcessMethod (MethodDefinition method)
@@ -85,7 +68,8 @@ namespace Mono.Tuner {
 			if (method.HasParameters)
 				ProcessAttributeProviderCollection (method.Parameters);
 
-			ProcessGenericParameterProvider (method);
+			if (method.HasGenericParameters)
+				ProcessAttributeProviderCollection (method.GenericParameters);
 		}
 
 		public override void ProcessProperty (PropertyDefinition property)
