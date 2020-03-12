@@ -4,7 +4,7 @@
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-AC_INIT(mono, [6.13.0.232],
+AC_INIT(mono, [6.13.0.255],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([Makefile.am])
@@ -1383,7 +1383,9 @@ if test x$with_runtime_preset = xnetcore; then
    mono_feature_disable_gac='yes'
    mono_feature_disable_perfcounters='yes'
    mono_feature_disable_attach='yes'
-   mono_feature_disable_dllmap='yes'
+   if test "x$enable_monodroid" = "x" -a "x$enable_monotouch" = "x"; then
+     mono_feature_disable_dllmap='yes' # FIXME: the mobile products use this
+   fi
    disable_mono_native=yes
    support_boehm=no
 elif test x$with_runtime_preset = xnet_4_x; then
