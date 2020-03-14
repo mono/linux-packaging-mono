@@ -372,6 +372,7 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	xdomain-threads.exe monitor.exe \
 @FULL_AOT_TESTS_TRUE@	generic-xdomain.2.exe \
 @FULL_AOT_TESTS_TRUE@	threadpool-exceptions7.exe \
+@FULL_AOT_TESTS_TRUE@	threadpool-exceptions8.exe \
 @FULL_AOT_TESTS_TRUE@	cross-domain.exe generic-unloading.2.exe \
 @FULL_AOT_TESTS_TRUE@	appdomain-threadpool-unload.exe \
 @FULL_AOT_TESTS_TRUE@	bug-47295.exe loader.exe pinvoke2.exe \
@@ -525,6 +526,7 @@ target_triplet = @target@
 @FULL_AOT_INTERP_TESTS_TRUE@	suspend-stress-test.exe \
 @FULL_AOT_INTERP_TESTS_TRUE@	thread6.exe \
 @FULL_AOT_INTERP_TESTS_TRUE@	threadpool-exceptions7.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	threadpool-exceptions8.exe \
 @FULL_AOT_INTERP_TESTS_TRUE@	unhandled-exception-7.exe \
 @FULL_AOT_INTERP_TESTS_TRUE@	unhandled-exception-test-case.2.exe \
 @FULL_AOT_INTERP_TESTS_TRUE@	unload-appdomain-on-shutdown.exe \
@@ -1319,7 +1321,8 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	bug-36848.cs generic-marshalbyref.2.cs stackframes-async.2.cs \
 	transparentproxy.cs bug-48015.cs delegate9.cs \
 	marshal-valuetypes.cs xdomain-threads.cs monitor.cs \
-	generic-xdomain.2.cs threadpool-exceptions7.cs cross-domain.cs \
+	generic-xdomain.2.cs threadpool-exceptions7.cs \
+	threadpool-exceptions8.cs cross-domain.cs \
 	generic-unloading.2.cs namedmutex-destroy-race.cs thread6.cs \
 	thread7.cs appdomain-threadpool-unload.cs \
 	process-unref-race.cs bug-46661.cs w32message.cs \
