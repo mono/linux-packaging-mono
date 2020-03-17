@@ -1377,8 +1377,7 @@ CSFLAGS = -unsafe -nowarn:0219,0169,0414,0649,0618
 GENMDESC_OPTS = 
 GENMDESC_PRG = $(PYTHON) $(srcdir)/genmdesc.py $(target_define) $(srcdir)
 LLVM_AOT_RUNTIME_OPTS = $(if $(LLVM),--llvm,)
-@AMD64_FALSE@LLVM_AOT_COMPILER_OPTS = 
-@AMD64_TRUE@LLVM_AOT_COMPILER_OPTS = $(if $(LLVM),llvmllc=-mattr=+sse3,)
+LLVM_AOT_COMPILER_OPTS = mcpu=native
 GSHAREDVT_RUNTIME_OPTS = $(if $(GSHAREDVT),-O=gsharedvt,)
 fullaot_regtests = $(regtests)
 fullaot_testing_deps = generics-variant-types.dll TestDriver.dll MemoryIntrinsics.dll
