@@ -647,6 +647,9 @@
 /* Define to 1 if you have the `iconv' library (-liconv). */
 #undef HAVE_LIBICONV
 
+/* FreeBSD libinotify kqueue shim */
+#undef HAVE_LIBINOTIFY
+
 /* Define to 1 if you have the <libproc.h> header file. */
 #undef HAVE_LIBPROC_H
 

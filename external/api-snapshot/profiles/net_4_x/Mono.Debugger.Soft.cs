@@ -103,6 +103,7 @@ namespace Mono.Debugger.Soft
     {
         internal CommandException() { }
         public Mono.Debugger.Soft.ErrorCode ErrorCode { get { throw null; } set { } }
+        public string ErrorMessage { get { throw null; } }
     }
     public abstract partial class Connection
     {
@@ -174,6 +175,7 @@ namespace Mono.Debugger.Soft
     {
         public ErrorHandlerEventArgs() { }
         public Mono.Debugger.Soft.ErrorCode ErrorCode { get { throw null; } set { } }
+        public string ErrorMessage { get { throw null; } set { } }
     }
     public abstract partial class Event
     {
