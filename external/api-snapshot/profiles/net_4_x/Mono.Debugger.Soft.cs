@@ -206,6 +206,7 @@ namespace Mono.Debugger.Soft
         protected void CheckMirror(Mono.Debugger.Soft.VirtualMachine vm, Mono.Debugger.Soft.Mirror m) { }
         public void Disable() { }
         public virtual void Enable() { }
+        public int GetId() { throw null; }
         protected void SetEnabled(int id) { }
     }
     public partial class EventSet

@@ -1349,9 +1349,9 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	dynamic-method-delegate.cs verbose.cs \
 	generic-unmanaged-constraint.cs bug-10834.cs bug-10837.cs \
 	bug-gh-9507.cs async-generic-enum.cs null-blob-main.cs \
-	last-error.cs bug-gh-17285.cs $(am__append_8) $(am__append_9) \
-	$(am__append_10) $(am__append_11) $(am__append_12) \
-	$(am__append_13)
+	last-error.cs rgctx-thread-static.cs bug-gh-17285.cs \
+	$(am__append_8) $(am__append_9) $(am__append_10) \
+	$(am__append_11) $(am__append_12) $(am__append_13)
 # These tests are produced by splitting up tailcall-interface-conservestack.il.
 @CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@TAILCALL_INTERFACE_CONSERVESTACK_IL = \
 @CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@	tailcall/interface-conservestack/1.il \
