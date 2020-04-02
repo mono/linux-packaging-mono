@@ -4,7 +4,7 @@
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-AC_INIT(mono, [6.13.0.354],
+AC_INIT(mono, [6.13.0.369],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([Makefile.am])
@@ -754,6 +754,12 @@ if test x$have_sys_zlib = xyes; then
 fi
 # for mono/metadata/debug-symfile.c
 AC_CHECK_HEADERS(elf.h)
+
+# for perf jit dump support
+AC_CHECK_HEADERS(sys/mman.h)
+if test "x$host_linux" = "xyes" -a x$ac_cv_header_sys_mman_h = xyes -a  x$ac_cv_header_elf_h = xyes -a x$ac_cv_header_sys_syscall_h = xyes; then
+   AC_DEFINE(ENABLE_JIT_DUMP, 1, [Enable jit dump support on Linux])
+fi
 
 # for support
 AC_CHECK_HEADERS(poll.h)

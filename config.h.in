@@ -203,6 +203,9 @@
 /* Some VES is available at runtime */
 #undef ENABLE_ILGEN
 
+/* Enable jit dump support on Linux */
+#undef ENABLE_JIT_DUMP
+
 /* Enable the LLVM back end */
 #undef ENABLE_LLVM
 
