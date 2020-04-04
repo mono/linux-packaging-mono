@@ -967,6 +967,11 @@ PIDTYPE = @PIDTYPE@
 PKG_CONFIG = @PKG_CONFIG@
 PLATFORM_AOT_PREFIX = @PLATFORM_AOT_PREFIX@
 PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
+PYTHON = @PYTHON@
+PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
+PYTHON_PLATFORM = @PYTHON_PLATFORM@
+PYTHON_PREFIX = @PYTHON_PREFIX@
+PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
 RID = @RID@
 SEARCHSEP = @SEARCHSEP@
@@ -1054,9 +1059,13 @@ mono_runtime = @mono_runtime@
 mono_runtime_wrapper = @mono_runtime_wrapper@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
+pkgpyexecdir = @pkgpyexecdir@
+pkgpythondir = @pkgpythondir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
+pyexecdir = @pyexecdir@
+pythondir = @pythondir@
 reloc_libdir = @reloc_libdir@
 runstatedir = @runstatedir@
 sbindir = @sbindir@
@@ -3544,7 +3553,7 @@ test-process-stress: $(TESTS_STRESS_PROCESS) $(TESTSAOT_STRESS_PROCESS) test-run
 coreclr-gcstress:
 	$(MAKE) -C $(mono_build_root)/acceptance-tests coreclr-gcstress
 test-lldb: test-lldb.exe
-	python test_lldb.py $(JITTEST_PROG)
+	$(PYTHON) test_lldb.py $(JITTEST_PROG)
 
 test-internalsvisibleto: test-runner.exe $(INTERNALSVISIBLETO_TEST) $(INTERNALSVISIBLETO_TESTAOT) $(INTERNALSVISIBLETO_TESTAOT_LIBS)
 	$(TOOLS_RUNTIME) $(TEST_RUNNER) --testsuite-name $@ $(INTERNALSVISIBLETO_TEST)
