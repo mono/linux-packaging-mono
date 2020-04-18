@@ -115,10 +115,21 @@ namespace System.Net.Http
                         }
                     }
                 }
+#if MONOTOUCH_WATCH
+                catch (Exception exc)
+                {
+                    if (CancellationHelper.ShouldWrapInOperationCanceledException(exc, cancellationToken))
+                    {
+                        throw CancellationHelper.CreateOperationCanceledException(exc, cancellationToken);
+                    }
+                    throw;
+                }
+#else
                 catch (Exception exc) when (CancellationHelper.ShouldWrapInOperationCanceledException(exc, cancellationToken))
                 {
                     throw CancellationHelper.CreateOperationCanceledException(exc, cancellationToken);
                 }
+#endif
                 finally
                 {
                     ctr.Dispose();
@@ -161,10 +172,21 @@ namespace System.Net.Http
                         await _connection.FillAsync().ConfigureAwait(false);
                     }
                 }
+#if MONOTOUCH_WATCH
+                catch (Exception exc)
+                {
+                    if (CancellationHelper.ShouldWrapInOperationCanceledException(exc, cancellationToken))
+                    {
+                        throw CancellationHelper.CreateOperationCanceledException(exc, cancellationToken);
+                    }
+                    throw;
+                }
+#else
                 catch (Exception exc) when (CancellationHelper.ShouldWrapInOperationCanceledException(exc, cancellationToken))
                 {
                     throw CancellationHelper.CreateOperationCanceledException(exc, cancellationToken);
                 }
+#endif
                 finally
                 {
                     ctr.Dispose();
