@@ -561,10 +561,13 @@ target_triplet = @target@
 # https://github.com/mono/mono/issues/12839
 @HOST_WIN32_TRUE@am__append_39 = block_guard_restore_aligment_on_exit.exe
 
+# https://github.com/mono/mono/issues/19603
+@HOST_WIN32_TRUE@am__append_40 = sgen-bridge.exe
+
 # bug-48015.exe: be careful when re-enabling, it happens that it returns with exit code 0, but doesn't actually execute the test.
 # bug-60862.exe: missing support to map IP->method; only works on platforms with altstack support.
 # bug-60843.exe: something goes wrong when turning the decoded enum value into a boxed enum, so the loaded value ends up being random bytes
-@ARM_TRUE@am__append_40 = \
+@ARM_TRUE@am__append_41 = \
 @ARM_TRUE@	appdomain-unload-callback.exe \
 @ARM_TRUE@	appdomain-unload.exe \
 @ARM_TRUE@	assemblyresolve_event6.exe \
@@ -617,7 +620,7 @@ target_triplet = @target@
 @ARM_TRUE@	vararg2.exe \
 @ARM_TRUE@	vararg3.exe
 
-@ARM64_TRUE@am__append_41 = \
+@ARM64_TRUE@am__append_42 = \
 @ARM64_TRUE@	bug-48015.exe \
 @ARM64_TRUE@	bug-80307.exe \
 @ARM64_TRUE@	dim-diamondshape.exe \
@@ -625,11 +628,11 @@ target_triplet = @target@
 
 
 # Test is too sensitive.
-@ARM64_TRUE@am__append_42 = localloc-noinit.exe
+@ARM64_TRUE@am__append_43 = localloc-noinit.exe
 
 # Test is too sensitive?
-@HOST_WIN32_TRUE@am__append_43 = localloc-noinit.exe
-@AMD64_TRUE@am__append_44 = \
+@HOST_WIN32_TRUE@am__append_44 = localloc-noinit.exe
+@AMD64_TRUE@am__append_45 = \
 @AMD64_TRUE@	assemblyresolve_event6.exe \
 @AMD64_TRUE@	bug-48015.exe \
 @AMD64_TRUE@	bug-60862.exe \
@@ -1730,7 +1733,8 @@ CI_PR_DISABLED_TESTS = finalizer-thread.exe \
 
 # https://github.com/mono/mono/issues/6490
 LLVM_DISABLED_TESTS = finally_block_ending_in_dead_bb.exe \
-	appdomain-threadpool-unload.exe weak-fields.exe
+	appdomain-threadpool-unload.exe weak-fields.exe \
+	$(am__append_40)
 LLVM = $(filter --llvm, $(MONO_ENV_OPTIONS) $(AOT_BUILD_FLAGS))
 
 # The two finalizer tests only work under sgen
@@ -1796,8 +1800,8 @@ DISABLED_TESTS = $(KNOWN_FAILING_TESTS) $(PLATFORM_DISABLED_TESTS) \
 	$(PROFILE_DISABLED_TESTS) $(if $(AOT),$(AOT_DISABLED_TESTS)) \
 	$(if $(CI),$(CI_DISABLED_TESTS)) $(if \
 	$(CI_PR),$(CI_PR_DISABLED_TESTS)) $(if \
-	$(LLVM),$(LLVM_DISABLED_TESTS)) $(am__append_42) \
-	$(am__append_43)
+	$(LLVM),$(LLVM_DISABLED_TESTS)) $(am__append_43) \
+	$(am__append_44)
 
 # Interpreter does not currently implement tailcall.
 # Disable all tailcall tests.
@@ -1931,8 +1935,8 @@ INTERP_DISABLED_TESTS = $(DISABLED_TESTS) gptail1.exe itail1.exe \
 	tailcall/interface-conservestack/7.exe \
 	tailcall/interface-conservestack/8.exe \
 	tailcall/interface-conservestack/9.exe calli_sig_check.exe \
-	localloc-noinit.exe $(am__append_40) $(am__append_41) \
-	$(am__append_44)
+	localloc-noinit.exe $(am__append_41) $(am__append_42) \
+	$(am__append_45)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))
