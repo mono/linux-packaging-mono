@@ -640,6 +640,12 @@ target_triplet = @target@
 @AMD64_TRUE@	dim-diamondshape.exe \
 @AMD64_TRUE@	pinvoke3.exe
 
+@X86_TRUE@am__append_46 = \
+@X86_TRUE@	bug-60862.exe \
+@X86_TRUE@	cominterop.exe \
+@X86_TRUE@	dim-diamondshape.exe \
+@X86_TRUE@	pinvoke3.exe
+
 subdir = mono/tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -1936,7 +1942,7 @@ INTERP_DISABLED_TESTS = $(DISABLED_TESTS) gptail1.exe itail1.exe \
 	tailcall/interface-conservestack/8.exe \
 	tailcall/interface-conservestack/9.exe calli_sig_check.exe \
 	localloc-noinit.exe $(am__append_41) $(am__append_42) \
-	$(am__append_45)
+	$(am__append_45) $(am__append_46)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))
