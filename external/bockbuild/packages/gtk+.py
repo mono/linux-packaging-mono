@@ -226,7 +226,11 @@ class GtkPackage (GitHubPackage):
                 'patches/gtk/nsview-embedding-skip-hidden-subviews.patch',
                 'patches/gtk/0001-gtk-combo-box-native-menu-hook.patch',
 
-                'patches/gtk/gtkviewport-autoscroll.patch'
+                'patches/gtk/gtkviewport-autoscroll.patch',
+
+                # https://devdiv.visualstudio.com/DevDiv/_workitems/edit/993471
+                'patches/gtk/gtk-pboard-types.patch',
+                'patches/gtk/define-NSPasteboardTypeURL.patch'
             ])
 
     def prep(self):

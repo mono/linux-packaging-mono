@@ -6368,8 +6368,7 @@ ves_icall_Mono_Runtime_SendMicrosoftTelemetry (const char *payload, guint64 port
 	hashes.offset_free_hash = portable_hash;
 	hashes.offset_rich_hash = unportable_hash;
 
-	// Tells mono that we want to send the HANG EXC_TYPE.
-	const char *signal = "SIGTERM";
+	const char *signal = "MANAGED_EXCEPTION";
 
 	gboolean success = mono_merp_invoke (crashed_pid, signal, payload, &hashes);
 	if (!success) {
@@ -7666,7 +7665,12 @@ ves_icall_System_Environment_FailFast (MonoStringHandle message, MonoExceptionHa
 	} else {
 		char *msg = mono_string_handle_to_utf8 (message, error);
 		g_warning ("CLR: Managed code called FailFast, saying \"%s\"", msg);
+#ifndef DISABLE_CRASH_REPORTING
+		char *old_msg = mono_crash_save_failfast_msg (msg);
+		g_free (old_msg);
+#else
 		g_free (msg);
+#endif
 	}
 
 	if (!MONO_HANDLE_IS_NULL (exception)) {
