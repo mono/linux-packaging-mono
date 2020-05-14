@@ -49,6 +49,7 @@ namespace Mono.Debugger.Soft
         public int GetLength(int dimension) { throw null; }
         public int GetLowerBound(int dimension) { throw null; }
         public System.Collections.Generic.IList<Mono.Debugger.Soft.Value> GetValues(int index, int length) { throw null; }
+        public void SetByteValues(byte[] bytes) { }
         public void SetValues(int index, Mono.Debugger.Soft.Value[] values) { }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
     }
