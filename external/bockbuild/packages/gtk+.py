@@ -230,7 +230,8 @@ class GtkPackage (GitHubPackage):
 
                 # https://devdiv.visualstudio.com/DevDiv/_workitems/edit/993471
                 'patches/gtk/gtk-pboard-types.patch',
-                'patches/gtk/define-NSPasteboardTypeURL.patch'
+                'patches/gtk/define-NSPasteboardTypeURL.patch',
+                'patches/gtk/Fix-1080409-StackOverflow-exception-opening-Gtk-host.patch'
             ])
 
     def prep(self):
