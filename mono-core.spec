@@ -21,7 +21,7 @@
 %else
 %{!?ext_man: %define ext_man .gz}
 %endif
-#%define llvm yes
+%define llvm no
 %define sgen yes
 %undefine _missing_build_ids_terminate_build
 
