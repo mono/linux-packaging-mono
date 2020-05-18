@@ -52,19 +52,23 @@ ifeq ($(DEB_HOST_ARCH), arm64)
 	MONO_BOEHM_TEST = true
 	CONF_FLAGS += --disable-boehm
 	BTLS_ARCH = true
+	LLVM_ARCH = true
 	SKIP_LIBGC = true
 endif
 
 ifeq ($(DEB_HOST_ARCH), i386)
 	BTLS_ARCH = true
+	LLVM_ARCH = true
 endif
 
 ifeq ($(DEB_HOST_ARCH), armhf)
 	BTLS_ARCH = true
+	LLVM_ARCH = true
 endif
 
 ifeq ($(DEB_HOST_ARCH), amd64)
 	BTLS_ARCH = true
+	LLVM_ARCH = true
 endif
 
 ifeq ($(DEB_HOST_ARCH), ppc64el)

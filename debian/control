@@ -11,6 +11,7 @@ Build-Depends: debhelper (>= 7),
 	cmake (>= 2.8.10),
 	gcc (>= 4:4.7) | gcc-4.7 | gcc-mozilla (>= 4.7),
 	g++ (>= 4:4.7) | g++-4.7 | gcc-mozilla (>= 4.7),
+	mono-llvm-dev [amd64 arm64 armhf i386 ppc64el],
 	tzdata,
 	libxml-dom-perl,
 	libxslt1-dev,
@@ -37,8 +38,8 @@ Conflicts: mono-common (<< 2.4),
            mono-1.0-runtime (<< 2.4),
            mono-2.0-runtime (<< 2.4),
            mono-runtime (<< 3.2.1)
-Suggests: xdg-utils | libgnome2-0 | konqueror
-Recommends: binfmt-support (>= 1.1.2)
+Suggests: xdg-utils | libgnome2-0 | konqueror, mono-llvm-support [armhf arm64]
+Recommends: binfmt-support (>= 1.1.2), mono-llvm-support [i386 amd64]
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          binutils,
@@ -97,6 +98,28 @@ Description: Mono runtime - SGen
  .
  This package uses SGen which is Mono's new simple generational garbage
  collector.
+
+Package: mono-llvm-support
+Architecture: i386 amd64 armhf arm64
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         mono-llvm-tools,
+         mono-runtime-common (= ${binary:Version})
+Homepage: http://www.mono-project.com/Compacting_GC
+Description: Mono runtime - SGen
+ Mono is a platform for running and developing applications based on the
+ ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
+ Mono provides a complete CLR (Common Language Runtime) including compiler and
+ runtime, which can produce and execute CIL (Common Intermediate Language)
+ bytecode (aka assemblies), and a class library.
+ .
+ This package contains the Virtual Machine, JIT (Just-in-Time) and
+ AOT (Ahead-of-Time) code generator "mono-sgen".
+ mono-sgen executes applications for the CLI (Common Language Infrastructure).
+ Mono currently only supports the X86, PowerPC, ARM, S/390x, AMD64 and
+ MIPS architectures.
+ .
+ This package adds LLVM support to Mono (JIT and AOT)
 
 Package: mono-runtime-boehm
 Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
@@ -170,6 +193,7 @@ Architecture: amd64 armel arm64 armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 p
 Depends: ${misc:Depends},
          mono-runtime (= ${binary:Version}),
          mono-runtime-sgen (= ${binary:Version}) [amd64 armel arm64 armhf i386 kfreebsd-amd64 kfreebsd-i386 s390x],
+         mono-llvm-support (= ${binary:Version}) [amd64 i386],
          libmono-2.0-1 (= ${binary:Version}),
          libmono-profiler (= ${binary:Version}),
          mono-utils (= ${binary:Version}),
@@ -185,6 +209,7 @@ Depends: ${misc:Depends},
          referenceassemblies-pcl,
          msbuild,
          ca-certificates-mono (= ${source:Version})
+Suggests: mono-llvm-support (= ${binary:Version}) [armhf arm64]
 Description: complete Mono runtime, development tools and all libraries
  Mono is a platform for running and developing applications based on the
  ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
