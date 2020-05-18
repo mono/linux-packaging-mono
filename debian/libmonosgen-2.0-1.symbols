@@ -37,6 +37,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_assembly_load_from@Base 4.1.0.1738
  mono_assembly_load_from_full@Base 4.1.0.1738
  mono_assembly_load_full@Base 4.1.0.1738
+ mono_assembly_load_full_alc@Base 6.13.0.529
  mono_assembly_load_module@Base 4.1.0.1738
  mono_assembly_load_module_checked@Base 4.9.0.401
  mono_assembly_load_reference@Base 4.1.0.1738
@@ -353,6 +354,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_gc_get_generation@Base 4.1.0.1738
  mono_gc_get_heap_size@Base 4.1.0.1738
  mono_gc_get_used_size@Base 4.1.0.1738
+ mono_gc_init_finalizer_thread@Base 6.13.0.52
  mono_gc_invoke_finalizers@Base 4.1.0.1738
  mono_gc_max_generation@Base 4.1.0.1738
  mono_gc_pending_finalizers@Base 4.7.0.488
@@ -375,9 +377,13 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_gc_wbarrier_set_field@Base 4.1.0.1738
  mono_gc_wbarrier_value_copy@Base 4.1.0.1738
  mono_gchandle_free@Base 4.1.0.1738
+ mono_gchandle_free_v2@Base 6.13.0.529
  mono_gchandle_get_target@Base 4.1.0.1738
+ mono_gchandle_get_target_v2@Base 6.13.0.529
  mono_gchandle_new@Base 4.1.0.1738
+ mono_gchandle_new_v2@Base 6.13.0.529
  mono_gchandle_new_weakref@Base 4.1.0.1738
+ mono_gchandle_new_weakref_v2@Base 6.13.0.529
  mono_get_array_class@Base 4.1.0.1738
  mono_get_boolean_class@Base 4.1.0.1738
  mono_get_byte_class@Base 4.1.0.1738
@@ -498,6 +504,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_install_assembly_postload_refonly_search_hook@Base 4.1.0.1738
  mono_install_assembly_postload_search_hook@Base 4.1.0.1738
  mono_install_assembly_preload_hook@Base 4.1.0.1738
+ mono_install_assembly_preload_hook_v3@Base 6.13.0.529
  mono_install_assembly_refonly_preload_hook@Base 4.1.0.1738
  mono_install_assembly_refonly_search_hook@Base 4.1.0.1738
  mono_install_assembly_search_hook@Base 4.1.0.1738
@@ -874,6 +881,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_property_set_value@Base 4.1.0.1738
  mono_ptr_class_get@Base 4.1.0.1738
  mono_quash_linker_empty_file_warning_gmodule_aix@Base 6.10.0.52
+ mono_quash_linker_empty_file_warning_gspawn@Base 6.13.0.529
  mono_raise_exception@Base 4.1.0.1738
  mono_reflection_assembly_get_assembly@Base 4.1.0.1738
  mono_reflection_free_type_info@Base 4.1.0.1738
@@ -1055,6 +1063,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_type_get_desc@Base 4.1.0.1738
  mono_type_get_modifiers@Base 4.1.0.1738
  mono_type_get_name@Base 4.1.0.1738
+ mono_type_get_name_full@Base 6.13.0.529
  mono_type_get_object@Base 4.1.0.1738
  mono_type_get_ptr_type@Base 4.1.0.1738
  mono_type_get_signature@Base 4.1.0.1738
@@ -1380,3 +1389,6 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  monoeg_utf16_len@Base 6.0.0.172
  monoeg_utf8_get_char_validated@Base 5.8.0.22
  monoeg_utf8_to_ucs4@Base 5.8.0.22
+ monovm_execute_assembly@Base 6.13.0.529
+ monovm_initialize@Base 6.13.0.529
+ monovm_shutdown@Base 6.13.0.529
