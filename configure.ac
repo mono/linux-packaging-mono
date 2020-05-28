@@ -4,7 +4,7 @@
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-AC_INIT(mono, [6.13.0.549],
+AC_INIT(mono, [6.13.0.557],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([Makefile.am])
@@ -942,6 +942,16 @@ if test x$with_core = xonly; then
     with_runtime_preset=netcore
 fi
 AM_CONDITIONAL(ENABLE_NETCORE, test x$with_core = xonly)
+
+if test x$with_core = xonly; then
+	if test -f $srcdir/mono/eventpipe/ep.h; then
+		enable_perftracing=yes
+	fi
+	if test x$enable_perftracing = xyes; then
+		AC_DEFINE(ENABLE_PERFTRACING,1,[Enables support for eventpipe library])
+	fi
+fi
+AM_CONDITIONAL(ENABLE_PERFTRACING, test x$enable_perftracing = xyes)
 
 #
 # A sanity check to catch cases where the package was unpacked
