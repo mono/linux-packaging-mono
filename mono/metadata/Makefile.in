@@ -221,6 +221,7 @@ libmonoruntime_support_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @ENABLE_MSVC_ONLY_FALSE@am_libmonoruntime_support_la_rpath =
 @ENABLE_MSVC_ONLY_FALSE@libmonoruntime_la_DEPENDENCIES =  \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime-config.la \
+@ENABLE_MSVC_ONLY_FALSE@	$(culture_libraries) \
 @ENABLE_MSVC_ONLY_FALSE@	$(support_libraries) $(shim_libraries)
 am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	w32semaphore-unix.c w32event-unix.c w32process-unix.c \
@@ -242,18 +243,18 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	class-getters.h class-init.h class-init.c class-internals.h \
 	class-inlines.h class-private-definition.h class-accessors.c \
 	cominterop.c cominterop.h console-io.h coree.c coree.h \
-	coree-internals.h culture-info.h culture-info-tables.h \
-	debug-helpers.c debug-mono-symfile.h debug-mono-symfile.c \
-	debug-mono-ppdb.h debug-mono-ppdb.c domain-internals.h \
-	environment.c environment.h icall-eventpipe.c exception.c \
-	exception.h exception-internals.h external-only.h w32file.c \
-	w32file.h w32file-internals.h filewatcher.c filewatcher.h \
-	gc-internals.h icall.c icalls.h icall-decl.h icall-def.h \
-	icall-internals.h icall-signatures.h icall-table.h image.c \
-	image-internals.h jit-icall-reg.h jit-info.c loader.c \
-	loader-internals.h loaded-images-internals.h loaded-images.c \
-	loaded-images-global.c loaded-images-netcore.c locales.c \
-	locales.h lock-tracer.c lock-tracer.h marshal.c marshal.h \
+	coree-internals.h debug-helpers.c debug-mono-symfile.h \
+	debug-mono-symfile.c debug-mono-ppdb.h debug-mono-ppdb.c \
+	domain-internals.h environment.c environment.h \
+	icall-eventpipe.c exception.c exception.h \
+	exception-internals.h external-only.h w32file.c w32file.h \
+	w32file-internals.h filewatcher.c filewatcher.h gc-internals.h \
+	icall.c icalls.h icall-decl.h icall-def.h icall-internals.h \
+	icall-signatures.h icall-table.h image.c image-internals.h \
+	jit-icall-reg.h jit-info.c loader.c loader-internals.h \
+	loaded-images-internals.h loaded-images.c \
+	loaded-images-global.c loaded-images-netcore.c locales.h \
+	lock-tracer.c lock-tracer.h marshal.c marshal.h \
 	marshal-internals.h mempool.c mempool.h mempool-internals.h \
 	metadata.c metadata-verify.c metadata-internals.h \
 	method-builder.h method-builder-internals.h method-builder.c \
@@ -351,7 +352,6 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-loaded-images.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-loaded-images-global.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-loaded-images-netcore.lo \
-@ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-locales.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-lock-tracer.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-marshal.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-mempool.lo \
@@ -426,6 +426,7 @@ libmonoruntime_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@am_libmonoruntime_la_rpath =
 @ENABLE_MSVC_ONLY_FALSE@libmonoruntimesgen_la_DEPENDENCIES =  \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime-config.la \
+@ENABLE_MSVC_ONLY_FALSE@	$(culture_libraries) \
 @ENABLE_MSVC_ONLY_FALSE@	$(support_libraries) $(shim_libraries)
 am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	w32mutex-unix.c w32semaphore-unix.c w32event-unix.c \
@@ -447,18 +448,18 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	class-getters.h class-init.h class-init.c class-internals.h \
 	class-inlines.h class-private-definition.h class-accessors.c \
 	cominterop.c cominterop.h console-io.h coree.c coree.h \
-	coree-internals.h culture-info.h culture-info-tables.h \
-	debug-helpers.c debug-mono-symfile.h debug-mono-symfile.c \
-	debug-mono-ppdb.h debug-mono-ppdb.c domain-internals.h \
-	environment.c environment.h icall-eventpipe.c exception.c \
-	exception.h exception-internals.h external-only.h w32file.c \
-	w32file.h w32file-internals.h filewatcher.c filewatcher.h \
-	gc-internals.h icall.c icalls.h icall-decl.h icall-def.h \
-	icall-internals.h icall-signatures.h icall-table.h image.c \
-	image-internals.h jit-icall-reg.h jit-info.c loader.c \
-	loader-internals.h loaded-images-internals.h loaded-images.c \
-	loaded-images-global.c loaded-images-netcore.c locales.c \
-	locales.h lock-tracer.c lock-tracer.h marshal.c marshal.h \
+	coree-internals.h debug-helpers.c debug-mono-symfile.h \
+	debug-mono-symfile.c debug-mono-ppdb.h debug-mono-ppdb.c \
+	domain-internals.h environment.c environment.h \
+	icall-eventpipe.c exception.c exception.h \
+	exception-internals.h external-only.h w32file.c w32file.h \
+	w32file-internals.h filewatcher.c filewatcher.h gc-internals.h \
+	icall.c icalls.h icall-decl.h icall-def.h icall-internals.h \
+	icall-signatures.h icall-table.h image.c image-internals.h \
+	jit-icall-reg.h jit-info.c loader.c loader-internals.h \
+	loaded-images-internals.h loaded-images.c \
+	loaded-images-global.c loaded-images-netcore.c locales.h \
+	lock-tracer.c lock-tracer.h marshal.c marshal.h \
 	marshal-internals.h mempool.c mempool.h mempool-internals.h \
 	metadata.c metadata-verify.c metadata-internals.h \
 	method-builder.h method-builder-internals.h method-builder.c \
@@ -559,7 +560,6 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-loaded-images.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-loaded-images-global.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-loaded-images-netcore.lo \
-@ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-locales.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-lock-tracer.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-marshal.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-mempool.lo \
@@ -1101,6 +1101,7 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@									@ICU_SHIM_PATH@/pal_icushim.c
 
 @ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@libmonoruntime_shimglobalization_la_CFLAGS = @ICU_CFLAGS@ -I$(top_srcdir)/../libraries/Native/Unix/Common/
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_FALSE@culture_libraries = ../culture/libmono-culture.la
 
 #
 # This library contains the icall tables if the runtime was configured with --disable-icall-tables
@@ -1177,8 +1178,6 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@	coree.c 		\
 @ENABLE_MSVC_ONLY_FALSE@	coree.h 		\
 @ENABLE_MSVC_ONLY_FALSE@	coree-internals.h \
-@ENABLE_MSVC_ONLY_FALSE@	culture-info.h  	\
-@ENABLE_MSVC_ONLY_FALSE@	culture-info-tables.h	\
 @ENABLE_MSVC_ONLY_FALSE@	debug-helpers.c		\
 @ENABLE_MSVC_ONLY_FALSE@	debug-mono-symfile.h	\
 @ENABLE_MSVC_ONLY_FALSE@	debug-mono-symfile.c	\
@@ -1215,7 +1214,6 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@	loaded-images.c		\
 @ENABLE_MSVC_ONLY_FALSE@	loaded-images-global.c	\
 @ENABLE_MSVC_ONLY_FALSE@	loaded-images-netcore.c	\
-@ENABLE_MSVC_ONLY_FALSE@	locales.c		\
 @ENABLE_MSVC_ONLY_FALSE@	locales.h		\
 @ENABLE_MSVC_ONLY_FALSE@	lock-tracer.c		\
 @ENABLE_MSVC_ONLY_FALSE@	lock-tracer.h		\
@@ -1365,11 +1363,11 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@libmonoruntime_la_SOURCES = $(common_sources) $(icall_tables_sources) $(ilgen_sources) $(gc_dependent_sources) $(null_gc_sources) $(boehm_sources)
 # Add CXX_ADD_CFLAGS per-library until/unless https://github.com/dotnet/corefx/pull/31342.
 @ENABLE_MSVC_ONLY_FALSE@libmonoruntime_la_CFLAGS = $(BOEHM_DEFINES) @CXX_ADD_CFLAGS@
-@ENABLE_MSVC_ONLY_FALSE@libmonoruntime_la_LIBADD = libmonoruntime-config.la $(support_libraries) $(shim_libraries)
+@ENABLE_MSVC_ONLY_FALSE@libmonoruntime_la_LIBADD = libmonoruntime-config.la $(culture_libraries) $(support_libraries) $(shim_libraries)
 @ENABLE_MSVC_ONLY_FALSE@libmonoruntimesgen_la_SOURCES = $(common_sources) $(icall_tables_sources) $(ilgen_sources) $(gc_dependent_sources) $(sgen_sources)
 # Add CXX_ADD_CFLAGS per-library until/unless https://github.com/dotnet/corefx/pull/31342.
 @ENABLE_MSVC_ONLY_FALSE@libmonoruntimesgen_la_CFLAGS = $(SGEN_DEFINES) @CXX_ADD_CFLAGS@
-@ENABLE_MSVC_ONLY_FALSE@libmonoruntimesgen_la_LIBADD = libmonoruntime-config.la $(support_libraries) $(shim_libraries)
+@ENABLE_MSVC_ONLY_FALSE@libmonoruntimesgen_la_LIBADD = libmonoruntime-config.la $(culture_libraries) $(support_libraries) $(shim_libraries)
 libmonoruntimeincludedir = $(includedir)/mono-$(API_VER)/mono/metadata
 
 # This list is sorted for easier searching.
@@ -1599,7 +1597,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-loaded-images-netcore.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-loaded-images.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-loader.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-locales.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-lock-tracer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-marshal-ilgen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-marshal-windows.Plo@am__quote@
@@ -1712,7 +1709,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-loaded-images-netcore.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-loaded-images.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-loader.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-locales.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-lock-tracer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-marshal-ilgen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-marshal-windows.Plo@am__quote@
@@ -2293,13 +2289,6 @@ libmonoruntime_la-loaded-images-netcore.lo: loaded-images-netcore.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='loaded-images-netcore.c' object='libmonoruntime_la-loaded-images-netcore.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-loaded-images-netcore.lo `test -f 'loaded-images-netcore.c' || echo '$(srcdir)/'`loaded-images-netcore.c
-
-libmonoruntime_la-locales.lo: locales.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-locales.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-locales.Tpo -c -o libmonoruntime_la-locales.lo `test -f 'locales.c' || echo '$(srcdir)/'`locales.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-locales.Tpo $(DEPDIR)/libmonoruntime_la-locales.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='locales.c' object='libmonoruntime_la-locales.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-locales.lo `test -f 'locales.c' || echo '$(srcdir)/'`locales.c
 
 libmonoruntime_la-lock-tracer.lo: lock-tracer.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-lock-tracer.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-lock-tracer.Tpo -c -o libmonoruntime_la-lock-tracer.lo `test -f 'lock-tracer.c' || echo '$(srcdir)/'`lock-tracer.c
@@ -3084,13 +3073,6 @@ libmonoruntimesgen_la-loaded-images-netcore.lo: loaded-images-netcore.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='loaded-images-netcore.c' object='libmonoruntimesgen_la-loaded-images-netcore.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-loaded-images-netcore.lo `test -f 'loaded-images-netcore.c' || echo '$(srcdir)/'`loaded-images-netcore.c
-
-libmonoruntimesgen_la-locales.lo: locales.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-locales.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-locales.Tpo -c -o libmonoruntimesgen_la-locales.lo `test -f 'locales.c' || echo '$(srcdir)/'`locales.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-locales.Tpo $(DEPDIR)/libmonoruntimesgen_la-locales.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='locales.c' object='libmonoruntimesgen_la-locales.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-locales.lo `test -f 'locales.c' || echo '$(srcdir)/'`locales.c
 
 libmonoruntimesgen_la-lock-tracer.lo: lock-tracer.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-lock-tracer.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-lock-tracer.Tpo -c -o libmonoruntimesgen_la-lock-tracer.lo `test -f 'lock-tracer.c' || echo '$(srcdir)/'`lock-tracer.c
