@@ -1520,6 +1520,9 @@
 /* Length of zero length arrays */
 #undef MONO_ZERO_LEN_ARRAY
 
+/* musl libc */
+#undef MUSL
+
 /* Name of /dev/random */
 #undef NAME_DEV_RANDOM
 

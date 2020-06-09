@@ -4,7 +4,7 @@
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-AC_INIT(mono, [6.13.0.588],
+AC_INIT(mono, [6.13.0.594],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([Makefile.am])
@@ -320,6 +320,11 @@ case "$host" in
                 	# available during cross-compilation
                 	mono_cv_uscore=no
                 fi
+                case "$host" in
+                *-musl)
+                        AC_DEFINE(MUSL, 1, [musl libc])
+                        ;;
+                esac
 		case "$host" in
 		*-tizen-linux-*)
 			platform_tizen=yes
