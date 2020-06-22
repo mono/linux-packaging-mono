@@ -1,3 +1,9 @@
+mono (6.10.0.105-0xamarin26) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 22 Jun 2020 08:05:32 +0000
+
 mono (6.10.0.105-0xamarin25) preview; urgency=medium
 
   * Packaging bugfix:
