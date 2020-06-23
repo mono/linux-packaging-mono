@@ -190,13 +190,14 @@ am__libmonoutils_la_SOURCES_DIST = dlmalloc.h dlmalloc.c \
 	mono-threads-linux.c mono-threads-freebsd.c \
 	mono-threads-netbsd.c mono-threads-openbsd.c \
 	mono-threads-android.c mono-threads-haiku.c mono-threads-aix.c \
-	mono-threads-wasm.c mono-threads.h mono-threads-debug.h \
-	mono-threads-api.h mono-threads-coop.c mono-threads-coop.h \
-	mono-utility-thread.c mono-utility-thread.h mono-tls.h \
-	mono-tls-inline.h mono-tls.c mono-utils-debug.c \
-	mono-utils-debug.h linux_magic.h mono-memory-model.h atomic.h \
-	atomic.c mono-hwcap.h mono-hwcap.c mono-hwcap-vars.h bsearch.h \
-	bsearch.c mono-signal-handler.h mono-signal-handler.c \
+	mono-threads-wasm.c mono-threads-sunos.c mono-threads.h \
+	mono-threads-debug.h mono-threads-api.h mono-threads-coop.c \
+	mono-threads-coop.h mono-utility-thread.c \
+	mono-utility-thread.h mono-tls.h mono-tls-inline.h mono-tls.c \
+	mono-utils-debug.c mono-utils-debug.h linux_magic.h \
+	mono-memory-model.h atomic.h atomic.c mono-hwcap.h \
+	mono-hwcap.c mono-hwcap-vars.h bsearch.h bsearch.c \
+	mono-signal-handler.h mono-signal-handler.c \
 	mono-conc-hashtable.h mono-conc-hashtable.c json.h json.c \
 	networking.c networking-posix.c networking-fallback.c \
 	networking-missing.c networking-windows.c networking.h \
@@ -283,6 +284,7 @@ am__libmonoutils_la_SOURCES_DIST = dlmalloc.h dlmalloc.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-haiku.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-aix.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-wasm.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-sunos.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-threads-coop.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-utility-thread.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-tls.lo \
@@ -908,6 +910,7 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@	mono-threads-haiku.c	\
 @ENABLE_MSVC_ONLY_FALSE@	mono-threads-aix.c	\
 @ENABLE_MSVC_ONLY_FALSE@	mono-threads-wasm.c	\
+@ENABLE_MSVC_ONLY_FALSE@	mono-threads-sunos.c	\
 @ENABLE_MSVC_ONLY_FALSE@	mono-threads.h	\
 @ENABLE_MSVC_ONLY_FALSE@	mono-threads-debug.h	\
 @ENABLE_MSVC_ONLY_FALSE@	mono-threads-api.h	\
@@ -1133,6 +1136,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-threads-posix-signals.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-threads-posix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-threads-state-machine.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-threads-sunos.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-threads-wasm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-threads-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-threads.Plo@am__quote@
@@ -1674,6 +1678,13 @@ libmonoutils_la-mono-threads-wasm.lo: mono-threads-wasm.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-threads-wasm.c' object='libmonoutils_la-mono-threads-wasm.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-threads-wasm.lo `test -f 'mono-threads-wasm.c' || echo '$(srcdir)/'`mono-threads-wasm.c
+
+libmonoutils_la-mono-threads-sunos.lo: mono-threads-sunos.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-threads-sunos.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-threads-sunos.Tpo -c -o libmonoutils_la-mono-threads-sunos.lo `test -f 'mono-threads-sunos.c' || echo '$(srcdir)/'`mono-threads-sunos.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mono-threads-sunos.Tpo $(DEPDIR)/libmonoutils_la-mono-threads-sunos.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-threads-sunos.c' object='libmonoutils_la-mono-threads-sunos.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-threads-sunos.lo `test -f 'mono-threads-sunos.c' || echo '$(srcdir)/'`mono-threads-sunos.c
 
 libmonoutils_la-mono-threads-coop.lo: mono-threads-coop.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-threads-coop.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-threads-coop.Tpo -c -o libmonoutils_la-mono-threads-coop.lo `test -f 'mono-threads-coop.c' || echo '$(srcdir)/'`mono-threads-coop.c
