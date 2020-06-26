@@ -36,6 +36,7 @@ Group:          Development/Languages/Mono
 Url:            http://www.mono-project.com
 Source0:        http://download.mono-project.com/sources/mono/mono-%{version}.tar.xz
 Patch0:		llvm_llc_opt_default_path.patch
+Patch1:		0001-Revert-2019-12-Force-Python-3.x-from-env-in-shebang-.patch
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  bison
@@ -142,6 +143,9 @@ technologies that have been submitted to the ECMA for standardization.
 %prep
 %setup -q -n mono-%{version}
 %patch0 -p1
+%if 0%{?rhel} < 8
+%patch1 -p1
+%endif
 
 %build
 %{?scl:scl enable %{scl} - << \EOF}
