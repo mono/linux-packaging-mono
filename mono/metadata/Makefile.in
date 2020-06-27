@@ -241,13 +241,14 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	w32socket-win32.c w32error-win32.c w32subset.h appdomain.c \
 	assembly-load-context.c domain.c appdomain-icalls.h assembly.c \
 	assembly-internals.h attach.h attach.c cil-coff.h class.c \
-	class-getters.h class-init.h class-init.c class-internals.h \
-	class-inlines.h class-private-definition.h class-accessors.c \
-	cominterop.c cominterop.h console-io.h coree.c coree.h \
-	coree-internals.h debug-helpers.c debug-mono-symfile.h \
-	debug-mono-symfile.c debug-mono-ppdb.h debug-mono-ppdb.c \
-	domain-internals.h environment.c environment.h \
-	icall-eventpipe.c exception.c exception.h \
+	class-getters.h class-init.h class-init.c \
+	class-init-internals.h class-internals.h class-inlines.h \
+	class-private-definition.h class-setup-vtable.c \
+	class-accessors.c cominterop.c cominterop.h console-io.h \
+	coree.c coree.h coree-internals.h debug-helpers.c \
+	debug-mono-symfile.h debug-mono-symfile.c debug-mono-ppdb.h \
+	debug-mono-ppdb.c domain-internals.h environment.c \
+	environment.h icall-eventpipe.c exception.c exception.h \
 	exception-internals.h external-only.h w32file.c w32file.h \
 	w32file-internals.h filewatcher.c filewatcher.h gc-internals.h \
 	icall.c icalls.h icall-decl.h icall-def.h icall-internals.h \
@@ -336,6 +337,7 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-attach.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-class.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-class-init.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-class-setup-vtable.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-class-accessors.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-cominterop.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-coree.lo \
@@ -448,13 +450,14 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	w32socket-win32.c w32error-win32.c w32subset.h appdomain.c \
 	assembly-load-context.c domain.c appdomain-icalls.h assembly.c \
 	assembly-internals.h attach.h attach.c cil-coff.h class.c \
-	class-getters.h class-init.h class-init.c class-internals.h \
-	class-inlines.h class-private-definition.h class-accessors.c \
-	cominterop.c cominterop.h console-io.h coree.c coree.h \
-	coree-internals.h debug-helpers.c debug-mono-symfile.h \
-	debug-mono-symfile.c debug-mono-ppdb.h debug-mono-ppdb.c \
-	domain-internals.h environment.c environment.h \
-	icall-eventpipe.c exception.c exception.h \
+	class-getters.h class-init.h class-init.c \
+	class-init-internals.h class-internals.h class-inlines.h \
+	class-private-definition.h class-setup-vtable.c \
+	class-accessors.c cominterop.c cominterop.h console-io.h \
+	coree.c coree.h coree-internals.h debug-helpers.c \
+	debug-mono-symfile.h debug-mono-symfile.c debug-mono-ppdb.h \
+	debug-mono-ppdb.c domain-internals.h environment.c \
+	environment.h icall-eventpipe.c exception.c exception.h \
 	exception-internals.h external-only.h w32file.c w32file.h \
 	w32file-internals.h filewatcher.c filewatcher.h gc-internals.h \
 	icall.c icalls.h icall-decl.h icall-def.h icall-internals.h \
@@ -546,6 +549,7 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-attach.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-class.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-class-init.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-class-setup-vtable.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-class-accessors.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-cominterop.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-coree.lo \
@@ -1175,9 +1179,11 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@	class-getters.h		\
 @ENABLE_MSVC_ONLY_FALSE@	class-init.h		\
 @ENABLE_MSVC_ONLY_FALSE@	class-init.c		\
+@ENABLE_MSVC_ONLY_FALSE@	class-init-internals.h	\
 @ENABLE_MSVC_ONLY_FALSE@	class-internals.h	\
 @ENABLE_MSVC_ONLY_FALSE@	class-inlines.h		\
 @ENABLE_MSVC_ONLY_FALSE@	class-private-definition.h	\
+@ENABLE_MSVC_ONLY_FALSE@	class-setup-vtable.c	\
 @ENABLE_MSVC_ONLY_FALSE@	class-accessors.c	\
 @ENABLE_MSVC_ONLY_FALSE@	cominterop.c		\
 @ENABLE_MSVC_ONLY_FALSE@	cominterop.h		\
@@ -1578,6 +1584,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-callspec.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-class-accessors.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-class-init.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-class-setup-vtable.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-class.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-cominterop.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-console-unix.Plo@am__quote@
@@ -1691,6 +1698,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-callspec.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-class-accessors.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-class-init.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-class-setup-vtable.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-class.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-cominterop.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-console-unix.Plo@am__quote@
@@ -2185,6 +2193,13 @@ libmonoruntime_la-class-init.lo: class-init.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='class-init.c' object='libmonoruntime_la-class-init.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-class-init.lo `test -f 'class-init.c' || echo '$(srcdir)/'`class-init.c
+
+libmonoruntime_la-class-setup-vtable.lo: class-setup-vtable.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-class-setup-vtable.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-class-setup-vtable.Tpo -c -o libmonoruntime_la-class-setup-vtable.lo `test -f 'class-setup-vtable.c' || echo '$(srcdir)/'`class-setup-vtable.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-class-setup-vtable.Tpo $(DEPDIR)/libmonoruntime_la-class-setup-vtable.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='class-setup-vtable.c' object='libmonoruntime_la-class-setup-vtable.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-class-setup-vtable.lo `test -f 'class-setup-vtable.c' || echo '$(srcdir)/'`class-setup-vtable.c
 
 libmonoruntime_la-class-accessors.lo: class-accessors.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-class-accessors.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-class-accessors.Tpo -c -o libmonoruntime_la-class-accessors.lo `test -f 'class-accessors.c' || echo '$(srcdir)/'`class-accessors.c
@@ -2976,6 +2991,13 @@ libmonoruntimesgen_la-class-init.lo: class-init.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='class-init.c' object='libmonoruntimesgen_la-class-init.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-class-init.lo `test -f 'class-init.c' || echo '$(srcdir)/'`class-init.c
+
+libmonoruntimesgen_la-class-setup-vtable.lo: class-setup-vtable.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-class-setup-vtable.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-class-setup-vtable.Tpo -c -o libmonoruntimesgen_la-class-setup-vtable.lo `test -f 'class-setup-vtable.c' || echo '$(srcdir)/'`class-setup-vtable.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-class-setup-vtable.Tpo $(DEPDIR)/libmonoruntimesgen_la-class-setup-vtable.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='class-setup-vtable.c' object='libmonoruntimesgen_la-class-setup-vtable.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-class-setup-vtable.lo `test -f 'class-setup-vtable.c' || echo '$(srcdir)/'`class-setup-vtable.c
 
 libmonoruntimesgen_la-class-accessors.lo: class-accessors.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-class-accessors.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-class-accessors.Tpo -c -o libmonoruntimesgen_la-class-accessors.lo `test -f 'class-accessors.c' || echo '$(srcdir)/'`class-accessors.c
