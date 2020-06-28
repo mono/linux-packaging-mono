@@ -398,9 +398,9 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	assemblyresolve_event5.exe \
 @FULL_AOT_TESTS_TRUE@	dynamic-method-delegate.exe \
 @FULL_AOT_TESTS_TRUE@	dynamic-method-churn.exe bug-666008.exe \
-@FULL_AOT_TESTS_TRUE@	bug-685908.exe bug-80307.exe \
-@FULL_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe thread6.exe \
-@FULL_AOT_TESTS_TRUE@	reference-loader.exe \
+@FULL_AOT_TESTS_TRUE@	ccw-class-iface.exe bug-685908.exe \
+@FULL_AOT_TESTS_TRUE@	bug-80307.exe namedmutex-destroy-race.exe \
+@FULL_AOT_TESTS_TRUE@	thread6.exe reference-loader.exe \
 @FULL_AOT_TESTS_TRUE@	assembly-load-bytes.exe \
 @FULL_AOT_TESTS_TRUE@	assembly-load-bytes-bindingredirect.exe \
 @FULL_AOT_TESTS_TRUE@	test-multi-netmodule-4-exe.exe
@@ -1287,9 +1287,10 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	dynamic-method-delegate.cs verbose.cs \
 	generic-unmanaged-constraint.cs bug-10834.cs bug-10837.cs \
 	bug-gh-9507.cs async-generic-enum.cs null-blob-main.cs \
-	last-error.cs rgctx-thread-static.cs bug-gh-17285.cs \
-	$(am__append_8) $(am__append_9) $(am__append_10) \
-	$(am__append_11) $(am__append_12) $(am__append_13)
+	last-error.cs rgctx-thread-static.cs ccw-class-iface.cs \
+	bug-gh-17285.cs $(am__append_8) $(am__append_9) \
+	$(am__append_10) $(am__append_11) $(am__append_12) \
+	$(am__append_13)
 # These tests are produced by splitting up tailcall-interface-conservestack.il.
 @CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@TAILCALL_INTERFACE_CONSERVESTACK_IL = \
 @CROSS_COMPILING_FALSE@@HOST_WASM_FALSE@@HOST_WIN32_FALSE@	tailcall/interface-conservestack/1.il \
@@ -1873,7 +1874,8 @@ INTERP_DISABLED_TESTS = $(DISABLED_TESTS) gptail1.exe itail1.exe \
 	tailcall/interface-conservestack/8.exe \
 	tailcall/interface-conservestack/9.exe calli_sig_check.exe \
 	localloc-noinit.exe dim-diamondshape.exe pinvoke3.exe \
-	cominterop.exe bug-60862.exe bug-48015.exe $(am__append_41)
+	cominterop.exe ccw-class-iface.exe bug-60862.exe bug-48015.exe \
+	$(am__append_41)
 TESTS_CS = $(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))
 TESTS_IL = $(filter-out $(DISABLED_TESTS),$(TESTS_IL_SRC:.il=.exe))
 TESTS_BENCH = $(filter-out $(DISABLED_TESTS),$(TESTS_BENCH_SRC:.cs=.exe))
@@ -3223,7 +3225,7 @@ test-unhandled-exception: unhandled-exception-test-runner.2.exe
 safehandle.2.exe winx64structs.exe thunks.exe pinvoke3.exe pinvoke2.exe pinvoke-2.2.exe pinvoke17.exe pinvoke13.exe \
 	pinvoke11.exe pinvoke_ppcs.exe pinvoke_ppci.exe pinvoke_ppcf.exe pinvoke_ppcd.exe pinvoke_ppcc.exe pinvoke.exe \
 	marshalbool.exe marshal9.exe marshal5.exe marshal.exe handleref.exe cominterop.exe bug-Xamarin-5278.exe \
-	bug-58782-plain-throw.exe bug-58782-capture-and-throw.exe install_eh_callback.exe: libtest.la
+	bug-58782-plain-throw.exe bug-58782-capture-and-throw.exe install_eh_callback.exe ccw-class-iface.exe: libtest.la
 
 event-get.2.exe$(PLATFORM_AOT_SUFFIX): event-il.exe$(PLATFORM_AOT_SUFFIX)
 event-get.2.exe: event-il.exe
