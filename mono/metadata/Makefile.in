@@ -290,11 +290,11 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	dynamic-image.c sre.c sre-encode.c sre-save.c custom-attrs.c \
 	fdhandle.h fdhandle.c callspec.h callspec.c abi.c \
 	native-library.c native-library.h native-library-qcall.c \
-	icall-table.c method-builder-ilgen.c method-builder-ilgen.h \
-	method-builder-ilgen-internals.h marshal-ilgen.c \
-	marshal-ilgen.h sgen-mono-ilgen.c sgen-mono-ilgen.h gc-stats.c \
-	gc.c monitor.c null-gc.c null-gc-handles.h null-gc-handles.c \
-	boehm-gc.c
+	qcall-def.h icall-table.c method-builder-ilgen.c \
+	method-builder-ilgen.h method-builder-ilgen-internals.h \
+	marshal-ilgen.c marshal-ilgen.h sgen-mono-ilgen.c \
+	sgen-mono-ilgen.h gc-stats.c gc.c monitor.c null-gc.c \
+	null-gc-handles.h null-gc-handles.c boehm-gc.c
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_1 = libmonoruntime_la-console-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntime_la-w32mutex-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntime_la-w32semaphore-unix.lo \
@@ -499,14 +499,14 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	dynamic-image.c sre.c sre-encode.c sre-save.c custom-attrs.c \
 	fdhandle.h fdhandle.c callspec.h callspec.c abi.c \
 	native-library.c native-library.h native-library-qcall.c \
-	icall-table.c method-builder-ilgen.c method-builder-ilgen.h \
-	method-builder-ilgen-internals.h marshal-ilgen.c \
-	marshal-ilgen.h sgen-mono-ilgen.c sgen-mono-ilgen.h gc-stats.c \
-	gc.c monitor.c sgen-bridge.c sgen-bridge.h \
-	sgen-bridge-internals.h sgen-dynarray.h sgen-old-bridge.c \
-	sgen-new-bridge.c sgen-tarjan-bridge.c sgen-toggleref.c \
-	sgen-toggleref.h sgen-stw.c sgen-mono.c sgen-mono.h \
-	sgen-client-mono.h
+	qcall-def.h icall-table.c method-builder-ilgen.c \
+	method-builder-ilgen.h method-builder-ilgen-internals.h \
+	marshal-ilgen.c marshal-ilgen.h sgen-mono-ilgen.c \
+	sgen-mono-ilgen.h gc-stats.c gc.c monitor.c sgen-bridge.c \
+	sgen-bridge.h sgen-bridge-internals.h sgen-dynarray.h \
+	sgen-old-bridge.c sgen-new-bridge.c sgen-tarjan-bridge.c \
+	sgen-toggleref.c sgen-toggleref.h sgen-stw.c sgen-mono.c \
+	sgen-mono.h sgen-client-mono.h
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_12 = libmonoruntimesgen_la-console-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32mutex-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32semaphore-unix.lo \
@@ -1348,7 +1348,8 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@	abi.c	\
 @ENABLE_MSVC_ONLY_FALSE@	native-library.c \
 @ENABLE_MSVC_ONLY_FALSE@	native-library.h \
-@ENABLE_MSVC_ONLY_FALSE@	native-library-qcall.c
+@ENABLE_MSVC_ONLY_FALSE@	native-library-qcall.c \
+@ENABLE_MSVC_ONLY_FALSE@	qcall-def.h 
 
 
 # These source files have compile time dependencies on GC code
