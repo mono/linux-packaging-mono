@@ -1,3 +1,1 @@
 #include "libmonosgen-2.0-1.symbols.i386"
- mono_amd64_get_tls_gs_offset@Base 5.14.0.87
- mono_arch_create_llvm_native_thunk@Base 5.14.0.87
