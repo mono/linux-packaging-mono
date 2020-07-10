@@ -74,7 +74,8 @@ namespace NUnit.Framework.Internal.Commands
 
             if (retries == 0 ||
                 context.CurrentResult.ResultState.Status == TestStatus.Passed ||
-                context.CurrentResult.ResultState.Status == TestStatus.Skipped)
+                context.CurrentResult.ResultState.Status == TestStatus.Skipped ||
+                context.CurrentResult.ResultState.Status == TestStatus.Inconclusive)
                 return context.CurrentResult;
 
             // skip retries after a certain number to avoid retrying mass failures

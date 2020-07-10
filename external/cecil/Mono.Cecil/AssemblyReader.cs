@@ -2278,9 +2278,11 @@ namespace Mono.Cecil {
 			if (call_conv != methodspec_sig)
 				throw new NotSupportedException ();
 
-			var instance = new GenericInstanceMethod (method);
+			var arity = reader.ReadCompressedUInt32 ();
 
-			reader.ReadGenericInstanceSignature (method, instance);
+			var instance = new GenericInstanceMethod (method, (int) arity);
+
+			reader.ReadGenericInstanceSignature (method, instance, arity);
 
 			return instance;
 		}
@@ -3324,10 +3326,8 @@ namespace Mono.Cecil {
 				owner_parameters.Add (new GenericParameter (owner));
 		}
 
-		public void ReadGenericInstanceSignature (IGenericParameterProvider provider, IGenericInstance instance)
+		public void ReadGenericInstanceSignature (IGenericParameterProvider provider, IGenericInstance instance, uint arity)
 		{
-			var arity = ReadCompressedUInt32 ();
-
 			if (!provider.IsDefinition)
 				CheckGenericContext (provider, (int) arity - 1);
 
@@ -3423,9 +3423,11 @@ namespace Mono.Cecil {
 			case ElementType.GenericInst: {
 				var is_value_type = ReadByte () == (byte) ElementType.ValueType;
 				var element_type = GetTypeDefOrRef (ReadTypeTokenSignature ());
-				var generic_instance = new GenericInstanceType (element_type);
 
-				ReadGenericInstanceSignature (element_type, generic_instance);
+				var arity = ReadCompressedUInt32 ();
+				var generic_instance = new GenericInstanceType (element_type, (int) arity);
+
+				ReadGenericInstanceSignature (element_type, generic_instance, arity);
 
 				if (is_value_type) {
 					generic_instance.KnownValueType ();
@@ -3816,8 +3818,6 @@ namespace Mono.Cecil {
 
 		public Collection<SequencePoint> ReadSequencePoints (Document document)
 		{
-			var sequence_points = new Collection<SequencePoint> ();
-
 			ReadCompressedUInt32 (); // local_sig_token
 
 			if (document == null)
@@ -3828,6 +3828,13 @@ namespace Mono.Cecil {
 			var start_column = 0;
 			var first_non_hidden = true;
 
+			//there's about 5 compressed int32's per sequenec points.  we don't know exactly how many
+			//but let's take a conservative guess so we dont end up reallocating the sequence_points collection
+			//as it grows.
+			var bytes_remaining_for_sequencepoints = sig_length - (position - start);
+			var estimated_sequencepoint_amount = (int)bytes_remaining_for_sequencepoints / 5;
+			var sequence_points = new Collection<SequencePoint> (estimated_sequencepoint_amount);
+			
 			for (var i = 0; CanReadMore (); i++) {
 				var delta_il = (int) ReadCompressedUInt32 ();
 				if (i > 0 && delta_il == 0) {
@@ -3874,7 +3881,7 @@ namespace Mono.Cecil {
 
 		public bool CanReadMore ()
 		{
-			return position - start < sig_length;
+			return (position - start) < sig_length;
 		}
 	}
 }

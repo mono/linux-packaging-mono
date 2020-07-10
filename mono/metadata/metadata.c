@@ -516,12 +516,12 @@ static const gint16 tableidx [] = {
 #undef TABLEDEF
 };
 
-/* If TRUE (but also see DISABLE_STICT_STRONG_NAMES #define), Mono will check
+/* On legacy, if TRUE (but also see DISABLE_DESKTOP_LOADER #define), Mono will check
  * that the public key token, culture and version of a candidate assembly matches
- * the requested strong name.  If FALSE, as long as the name matches, the candidate
- * will be allowed.
+ * the requested strong name. On netcore, it will check the culture and version.
+ * If FALSE, as long as the name matches, the candidate will be allowed.
  */
-static gboolean check_strong_names_strictly = FALSE;
+static gboolean check_assembly_names_strictly = FALSE;
 
 // Amount initially reserved in each imageset's mempool.
 // FIXME: This number is arbitrary, a more practical number should be found
@@ -2796,6 +2796,12 @@ delete_image_set (MonoImageSet *set)
 
 	g_hash_table_destroy (set->aggregate_modifiers_cache);
 
+	for (i = 0; i < set->gshared_types_len; ++i) {
+		if (set->gshared_types [i])
+			g_hash_table_destroy (set->gshared_types [i]);
+	}
+	g_free (set->gshared_types);
+
 	mono_wrapper_caches_free (&set->wrapper_caches);
 
 	image_sets_lock ();
@@ -3312,17 +3318,23 @@ mono_metadata_get_inflated_signature (MonoMethodSignature *sig, MonoGenericConte
 }
 
 MonoImageSet *
-mono_metadata_get_image_set_for_class (MonoClass *klass)
+mono_metadata_get_image_set_for_type (MonoType *type)
 {
 	MonoImageSet *set;
 	CollectData image_set_data;
 
 	collect_data_init (&image_set_data);
-	collect_type_images (m_class_get_byval_arg (klass), &image_set_data);
+	collect_type_images (type, &image_set_data);
 	set = get_image_set (image_set_data.images, image_set_data.nimages);
 	collect_data_free (&image_set_data);
 
 	return set;
+}
+
+MonoImageSet *
+mono_metadata_get_image_set_for_class (MonoClass *klass)
+{
+	return mono_metadata_get_image_set_for_type (m_class_get_byval_arg (klass));
 }
 
 MonoImageSet *
@@ -3350,6 +3362,29 @@ mono_metadata_get_image_set_for_aggregate_modifiers (MonoAggregateModContainer *
 	collect_data_free (&image_set_data);
 
 	return set;
+}
+
+MonoImageSet *
+mono_metadata_merge_image_sets (MonoImageSet *set1, MonoImageSet *set2)
+{
+	MonoImage **images = g_newa (MonoImage*, set1->nimages + set2->nimages);
+
+	/* Add images from set1 */
+	memcpy (images, set1->images, sizeof (MonoImage*) * set1->nimages);
+
+	int nimages = set1->nimages;
+	// FIXME: Quaratic
+	/* Add images from set2 */
+	for (int i = 0; i < set2->nimages; ++i) {
+		int j;
+		for (j = 0; j < set1->nimages; ++j) {
+			if (set2->images [i] == set1->images [j])
+				break;
+		}
+		if (j == set1->nimages)
+			images [nimages ++] = set2->images [i];
+	}
+	return get_image_set (images, nimages);
 }
 
 static gboolean
@@ -7586,15 +7621,19 @@ mono_find_image_set_owner (void *ptr)
 }
 
 void
-mono_loader_set_strict_strong_names (gboolean enabled)
+mono_loader_set_strict_assembly_name_check (gboolean enabled)
 {
-	check_strong_names_strictly = enabled;
+	check_assembly_names_strictly = enabled;
 }
 
 gboolean
-mono_loader_get_strict_strong_names (void)
+mono_loader_get_strict_assembly_name_check (void)
 {
-	return check_strong_names_strictly;
+#if !defined(DISABLE_DESKTOP_LOADER) || defined(ENABLE_NETCORE)
+	return check_assembly_names_strictly;
+#else
+	return FALSE;
+#endif
 }
 
 

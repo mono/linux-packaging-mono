@@ -1142,7 +1142,7 @@ mono_delegate_trampoline (host_mgreg_t *regs, guint8 *code, gpointer *arg, guint
 			}
 		}
 
-		if (tramp_info->method == NULL && delegate->target != NULL && method->flags & METHOD_ATTRIBUTE_VIRTUAL) {
+		if (delegate->method_ptr == NULL && tramp_info->method == NULL && delegate->target != NULL && method->flags & METHOD_ATTRIBUTE_VIRTUAL) {
 			/* tramp_info->method == NULL happens when someone asks us to JIT some delegate's
 			 * Invoke method (see compile_special).  In that case if method is virtual, the target
 			 * could be some derived class, so we need to find the correct override.
@@ -1326,7 +1326,7 @@ mono_create_specific_trampoline (gpointer arg1, MonoTrampolineType tramp_type, M
 	guint32 len;
 
 	if (mono_aot_only)
-		code = mono_aot_create_specific_trampoline (mono_defaults.corlib, arg1, tramp_type, domain, &len);
+		code = mono_aot_create_specific_trampoline (arg1, tramp_type, domain, &len);
 	else
 		code = mono_arch_create_specific_trampoline (arg1, tramp_type, domain, &len);
 	mono_lldb_save_specific_trampoline_info (arg1, tramp_type, domain, code, len);

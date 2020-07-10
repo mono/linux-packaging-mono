@@ -158,11 +158,23 @@ namespace System.Net.Http
                 {
                     return _socket.Poll(0, SelectMode.SelectRead);
                 }
+#if MONOTOUCH_WATCH
+                catch (Exception exc)
+                {
+                    if (e is SocketException || e is ObjectDisposedException)
+                    {
+                        // Poll can throw when used on a closed socket.
+                        return true;
+                    }
+                    throw;
+                }
+#else
                 catch (Exception e) when (e is SocketException || e is ObjectDisposedException)
                 {
                     // Poll can throw when used on a closed socket.
                     return true;
                 }
+#endif
             }
             else
             {

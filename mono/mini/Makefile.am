@@ -1,4 +1,4 @@
-include $(top_srcdir)/mk/common.mk
+MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 
 ## Set the C++ linker based on configure settings, see comment in configure.ac
 ## about why we need to do this.
@@ -446,6 +446,7 @@ interp_sources =	\
 	interp/mintops.h	\
 	interp/mintops.def	\
 	interp/mintops.c	\
+	interp/transform.h	\
 	interp/transform.c
 
 interp_libs = libmono-ee-interp.la
@@ -779,6 +780,20 @@ libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS) @CXX_ADD_CFLAGS@
 libmonosgen_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
 libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
 
+noinst_LIBRARIES += libmaintest.a
+
+libmaintest_a_SOURCES = interp/whitebox.c
+libmaintest_a_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
+
+WHITEBOX_ASSEMBLY=interp/whitebox-snippets.exe
+test_mono_interp_whitebox_SOURCES =
+test_mono_interp_whitebox_CFLAGS = $(AM_CFLAGS) @CXX_REMOVE_CFLAGS@
+test_mono_interp_whitebox_LDADD = interp/libmaintest_a-whitebox.$(OBJEXT) libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs)
+test_mono_interp_whitebox_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags)
+test_mono_interp_whitebox_DEPENDENCIES = $(WHITEBOX_ASSEMBLY)
+
+check_PROGRAMS = test-mono-interp-whitebox
+
 endif # !ENABLE_MSVC_ONLY
 
 libmonoincludedir = $(includedir)/mono-$(API_VER)/mono/jit
@@ -899,6 +914,9 @@ rcheck: mono $(regtests)
 
 richeck: mono $(regtests)
 	$(INTERP_RUNTIME) --regression $(regtests)
+
+interp-whitebox: test-mono-interp-whitebox
+	MONO_PATH=$(CLASS) ./$< $(WHITEBOX_ASSEMBLY)
 
 mixedcheck: mono mixed.exe
 	$(MINI_RUNTIME) --interp=jit=JitClass mixed.exe
@@ -1086,8 +1104,13 @@ EXTRA_DIST = TestDriver.cs \
 	$(posix_sources)					\
 	test_op_il_seq_point.sh			\
 	test_op_il_seq_point_headerfooter.sh	\
+	interp/whitebox-snippets.il		\
 	Makefile.am.in
 
+if ENABLE_NETCORE
+version.h: Makefile
+	echo "#define FULL_VERSION \"netcore\"" > version.h
+else
 version.h: Makefile
 	if test -e $(top_srcdir)/.git; then \
 		(cd $(top_srcdir); \
@@ -1107,6 +1130,7 @@ version.h: Makefile
 			echo "#define FULL_VERSION \"$$MONO_BRANCH/$$MONO_BUILD_REVISION\""; \
 		fi \
 	fi > version.h
+endif
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

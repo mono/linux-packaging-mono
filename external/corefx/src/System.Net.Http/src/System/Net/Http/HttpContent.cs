@@ -337,10 +337,21 @@ namespace System.Net.Http
                     return CopyToAsyncCore(new ValueTask(task));
                 }
             }
+#if MONOTOUCH_WATCH
+            catch (Exception e)
+            {
+                if (StreamCopyExceptionNeedsWrapping(e))
+                {
+                    return Task.FromException(GetStreamCopyException(e));
+                }
+                throw;
+            }
+#else
             catch (Exception e) when (StreamCopyExceptionNeedsWrapping(e))
             {
                 return Task.FromException(GetStreamCopyException(e));
             }
+#endif
         }
 
         private static async Task CopyToAsyncCore(ValueTask copyTask)
@@ -349,10 +360,21 @@ namespace System.Net.Http
             {
                 await copyTask.ConfigureAwait(false);
             }
+#if MONOTOUCH_WATCH
+            catch (Exception e)
+            {
+                if (StreamCopyExceptionNeedsWrapping(e))
+                {
+                    throw GetStreamCopyException(e);
+                }
+                throw;
+            }
+#else
             catch (Exception e) when (StreamCopyExceptionNeedsWrapping(e))
             {
                 throw GetStreamCopyException(e);
             }
+#endif
         }
 
         public Task CopyToAsync(Stream stream)
@@ -403,10 +425,21 @@ namespace System.Net.Http
                 CheckTaskNotNull(task);
                 return LoadIntoBufferAsyncCore(task, tempBuffer);
             }
+#if MONOTOUCH_WATCH
+            catch (Exception e)
+            {
+                if (StreamCopyExceptionNeedsWrapping(e))
+                {
+                    return Task.FromException(GetStreamCopyException(e));
+                }
+                throw;
+            }
+#else
             catch (Exception e) when (StreamCopyExceptionNeedsWrapping(e))
             {
                 return Task.FromException(GetStreamCopyException(e));
             }
+#endif
             // other synchronous exceptions from SerializeToStreamAsync/CheckTaskNotNull will propagate
         }
 

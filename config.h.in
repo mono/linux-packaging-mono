@@ -27,6 +27,9 @@
 /* Disable agent attach support */
 #undef DISABLE_ATTACH
 
+/* Disable config directories. */
+#undef DISABLE_CFGDIR_CONFIG
+
 /* Disable runtime cleanup. */
 #undef DISABLE_CLEANUP
 
@@ -1531,6 +1534,12 @@
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
+
+/* PowerPC ELFv1 */
+#undef POWERPC_ELF
+
+/* PowerPC ELFv2 */
+#undef POWERPC_ELFV2
 
 /* getpriority with int who */
 #undef PRIORITY_REQUIRES_INT_WHO

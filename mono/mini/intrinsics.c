@@ -295,6 +295,13 @@ llvm_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 
 	if (in_corlib && !strcmp (m_class_get_name (cmethod->klass), "Buffer")) {
 		if (!strcmp (cmethod->name, "Memmove") && fsig->param_count == 3 && fsig->params [0]->type == MONO_TYPE_PTR && fsig->params [1]->type == MONO_TYPE_PTR) {
+			MonoBasicBlock *end_bb;
+			NEW_BBLOCK (cfg, end_bb);
+
+			// do nothing if len == 0 (even if src or dst are nulls)
+			MONO_EMIT_NEW_BIALU_IMM (cfg, OP_COMPARE_IMM, -1, args [2]->dreg, 0);
+			MONO_EMIT_NEW_BRANCH_BLOCK (cfg, OP_IBEQ, end_bb);
+
 			// throw NRE if src or dst are nulls
 			MONO_EMIT_NEW_BIALU_IMM (cfg, OP_COMPARE_IMM, -1, args [0]->dreg, 0);
 			MONO_EMIT_NEW_COND_EXC (cfg, EQ, "NullReferenceException");
@@ -306,6 +313,7 @@ llvm_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 			ins->sreg2 = args [1]->dreg; // i1* src
 			ins->sreg3 = args [2]->dreg; // i32/i64 len
 			MONO_ADD_INS (cfg->cbb, ins);
+			MONO_START_BB (cfg, end_bb);
 		}
 	}
 
@@ -1036,7 +1044,7 @@ mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 					ins->type = STACK_R8;
 					break;
 				default:
-					g_assert (mini_type_is_reference (fsig->params [0]));
+					g_assert (is_ref);
 					ins->dreg = mono_alloc_ireg_ref (cfg);
 					ins->type = STACK_OBJ;
 					break;
@@ -1859,13 +1867,20 @@ mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 				method_context->method_inst->type_argc == 1 &&
 				cmethod->is_inflated &&
 				!mini_method_check_context_used (cfg, cmethod)) {
-			MonoClass *arg0 = mono_class_from_mono_type_internal (method_context->method_inst->type_argv [0]);
+			MonoType *t = method_context->method_inst->type_argv [0];
+			MonoClass *arg0 = mono_class_from_mono_type_internal (t);
 			if (m_class_is_valuetype (arg0) && !mono_class_has_default_constructor (arg0, FALSE)) {
-				MONO_INST_NEW (cfg, ins, MONO_CLASS_IS_SIMD (cfg, arg0) ? OP_XZERO : OP_VZERO);
-				ins->dreg = mono_alloc_dreg (cfg, STACK_VTYPE);
-				ins->type = STACK_VTYPE;
-				ins->klass = arg0;
-				MONO_ADD_INS (cfg->cbb, ins);
+				if (m_class_is_primitive (arg0)) {
+					int dreg = alloc_dreg (cfg, mini_type_to_stack_type (cfg, t));
+					mini_emit_init_rvar (cfg, dreg, t);
+					ins = cfg->cbb->last_ins;
+				} else {
+					MONO_INST_NEW (cfg, ins, MONO_CLASS_IS_SIMD (cfg, arg0) ? OP_XZERO : OP_VZERO);
+					ins->dreg = mono_alloc_dreg (cfg, STACK_VTYPE);
+					ins->type = STACK_VTYPE;
+					ins->klass = arg0;
+					MONO_ADD_INS (cfg->cbb, ins);
+				}
 				return ins;
 			}
 		}

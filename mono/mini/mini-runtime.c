@@ -104,6 +104,7 @@
 
 static guint32 default_opt = 0;
 static gboolean default_opt_set = FALSE;
+MonoMethodDesc *mono_stats_method_desc;
 
 gboolean mono_compile_aot = FALSE;
 /* If this is set, no code is generated dynamically, everything is taken from AOT files */
@@ -1883,7 +1884,7 @@ void
 mono_emit_jit_tramp (void *start, int size, const char *desc)
 {
 	if (perf_map_file)
-		fprintf (perf_map_file, "%llx %x %s\n", (long long unsigned int)(gsize)start, size, desc);
+		fprintf (perf_map_file, "%" PRIx64 " %x %s\n", (guint64)(gsize)start, size, desc);
 }
 
 void
@@ -2357,6 +2358,7 @@ lookup_start:
 			g_assert (vtable);
 			if (!mono_runtime_class_init_full (vtable, error))
 				return NULL;
+			MONO_PROFILER_RAISE (jit_done, (method, info));
 			return mono_create_ftnptr (target_domain, info->code_start);
 		}
 	}
@@ -3226,11 +3228,8 @@ MONO_SIG_HANDLER_FUNC (, mono_sigfpe_signal_handler)
 
 		mono_sigctx_to_monoctx (ctx, &mctx);
 		if (mono_dump_start ())
-			mono_handle_native_crash (mono_get_signame (SIGFPE), &mctx, info);
-		if (mono_do_crash_chaining) {
-			mono_chain_signal (MONO_SIG_HANDLER_PARAMS);
-			goto exit;
-		}
+			mono_handle_native_crash (mono_get_signame (SIGFPE), &mctx, info, ctx);
+		goto exit;
 	}
 
 	mono_arch_handle_exception (ctx, exc);
@@ -3251,14 +3250,10 @@ MONO_SIG_HANDLER_FUNC (, mono_crashing_signal_handler)
 	mono_sigctx_to_monoctx (ctx, &mctx);
 	if (mono_dump_start ())
 #if defined(HAVE_SIG_INFO) && !defined(HOST_WIN32) // info is a siginfo_t
-		mono_handle_native_crash (mono_get_signame (info->si_signo), &mctx, info);
+		mono_handle_native_crash (mono_get_signame (info->si_signo), &mctx, info, ctx);
 #else
-		mono_handle_native_crash (mono_get_signame (SIGTERM), &mctx, info);
+		mono_handle_native_crash (mono_get_signame (SIGTERM), &mctx, info, ctx);
 #endif
-	if (mono_do_crash_chaining) {
-		mono_chain_signal (MONO_SIG_HANDLER_PARAMS);
-		return;
-	}
 }
 
 #if defined(MONO_ARCH_USE_SIGACTION) || defined(HOST_WIN32)
@@ -3338,11 +3333,7 @@ MONO_SIG_HANDLER_FUNC (, mono_sigsegv_signal_handler)
 		if (!mono_do_crash_chaining && mono_chain_signal (MONO_SIG_HANDLER_PARAMS))
 			return;
 		if (mono_dump_start())
-			mono_handle_native_crash (mono_get_signame (signo), &mctx, info);
-		if (mono_do_crash_chaining) {
-			mono_chain_signal (MONO_SIG_HANDLER_PARAMS);
-			return;
-		}
+			mono_handle_native_crash (mono_get_signame (signo), &mctx, info, ctx);
 	}
 #endif
 
@@ -3381,7 +3372,7 @@ MONO_SIG_HANDLER_FUNC (, mono_sigsegv_signal_handler)
 		} else {
 			// FIXME: This shouldn't run on the altstack
 			if (mono_dump_start ())
-				mono_handle_native_crash (mono_get_signame (SIGSEGV), &mctx, info);
+				mono_handle_native_crash (mono_get_signame (SIGSEGV), &mctx, info, ctx);
 		}
 #endif
 	}
@@ -3392,19 +3383,14 @@ MONO_SIG_HANDLER_FUNC (, mono_sigsegv_signal_handler)
 			return;
 
 		if (mono_dump_start ())
-			mono_handle_native_crash (mono_get_signame (SIGSEGV), &mctx, (MONO_SIG_HANDLER_INFO_TYPE*)info);
-
-		if (mono_do_crash_chaining) {
-			mono_chain_signal (MONO_SIG_HANDLER_PARAMS);
-			return;
-		}
+			mono_handle_native_crash (mono_get_signame (SIGSEGV), &mctx, (MONO_SIG_HANDLER_INFO_TYPE*)info, ctx);
 	}
 
 	if (mono_is_addr_implicit_null_check (fault_addr)) {
 		mono_arch_handle_exception (ctx, NULL);
 	} else {
 		if (mono_dump_start ())
-			mono_handle_native_crash (mono_get_signame (SIGSEGV), &mctx, (MONO_SIG_HANDLER_INFO_TYPE*)info);
+			mono_handle_native_crash (mono_get_signame (SIGSEGV), &mctx, (MONO_SIG_HANDLER_INFO_TYPE*)info, ctx);
 	}
 #endif
 }
@@ -3740,6 +3726,8 @@ mini_parse_debug_option (const char *option)
 		mini_debug_options.weak_memory_model = FALSE;
 	else if (!strcmp (option, "weak-memory-model"))
 		mini_debug_options.weak_memory_model = TRUE;
+	else if (!strcmp (option, "top-runtime-invoke-unhandled"))
+		mini_debug_options.top_runtime_invoke_unhandled = TRUE;
 	else if (!strncmp (option, "thread-dump-dir=", 16))
 		mono_set_thread_dump_dir(g_strdup(option + 16));
 	else if (!strncmp (option, "aot-skip=", 9)) {
@@ -4650,10 +4638,10 @@ register_icalls (void)
 
 	register_dyn_icall (mini_get_dbg_callbacks ()->user_break, mono_debugger_agent_user_break, mono_icall_sig_void, FALSE);
 
-	register_icall (mini_llvm_init_method, mono_icall_sig_void_ptr_int, TRUE);
-	register_icall (mini_llvm_init_gshared_method_this, mono_icall_sig_void_ptr_int_object, TRUE);
-	register_icall (mini_llvm_init_gshared_method_mrgctx, mono_icall_sig_void_ptr_int_ptr, TRUE);
-	register_icall (mini_llvm_init_gshared_method_vtable, mono_icall_sig_void_ptr_int_ptr, TRUE);
+	register_icall (mini_llvm_init_method, mono_icall_sig_void_ptr_ptr_int, TRUE);
+	register_icall (mini_llvm_init_gshared_method_this, mono_icall_sig_void_ptr_ptr_int_object, TRUE);
+	register_icall (mini_llvm_init_gshared_method_mrgctx, mono_icall_sig_void_ptr_ptr_int_ptr, TRUE);
+	register_icall (mini_llvm_init_gshared_method_vtable, mono_icall_sig_void_ptr_ptr_int_ptr, TRUE);
 
 	register_icall_no_wrapper (mini_llvmonly_resolve_iface_call_gsharedvt, mono_icall_sig_ptr_object_int_ptr_ptr);
 	register_icall_no_wrapper (mini_llvmonly_resolve_vcall_gsharedvt, mono_icall_sig_ptr_object_int_ptr_ptr);
@@ -4697,12 +4685,13 @@ register_icalls (void)
 MonoJitStats mono_jit_stats = {0};
 
 /**
- * Counters of mono_stats and mono_jit_stats can be read without locking here.
+ * Counters of mono_stats and mono_jit_stats can be read without locking during shutdown.
+ * For all other contexts, assumes that the domain lock is held.
  * MONO_NO_SANITIZE_THREAD tells Clang's ThreadSanitizer to hide all reports of these (known) races.
  */
 MONO_NO_SANITIZE_THREAD
-static void
-print_jit_stats (void)
+void
+mono_runtime_print_stats (void)
 {
 	if (mono_jit_stats.enabled) {
 		g_print ("Mono Jit statistics\n");
@@ -4742,24 +4731,35 @@ print_jit_stats (void)
 		g_print ("JIT info table removes: %" G_GINT32_FORMAT "\n", mono_stats.jit_info_table_remove_count);
 		g_print ("JIT info table lookups: %" G_GINT32_FORMAT "\n", mono_stats.jit_info_table_lookup_count);
 
-		g_free (mono_jit_stats.max_ratio_method);
-		mono_jit_stats.max_ratio_method = NULL;
-		g_free (mono_jit_stats.biggest_method);
-		mono_jit_stats.biggest_method = NULL;
+		mono_counters_dump (MONO_COUNTER_SECTION_MASK | MONO_COUNTER_MONOTONIC, NULL);
+		g_print ("\n");
 	}
+}
+
+static void
+jit_stats_cleanup (void)
+{
+	g_free (mono_jit_stats.max_ratio_method);
+	mono_jit_stats.max_ratio_method = NULL;
+	g_free (mono_jit_stats.biggest_method);
+	mono_jit_stats.biggest_method = NULL;
 }
 
 #ifdef DISABLE_CLEANUP
 void
 mini_cleanup (MonoDomain *domain)
 {
-	print_jit_stats ();
-	mono_counters_dump (MONO_COUNTER_SECTION_MASK | MONO_COUNTER_MONOTONIC, stdout);
+	if (mono_stats.enabled)
+		g_printf ("Printing runtime stats at shutdown\n");
+	mono_runtime_print_stats ();
+	jit_stats_cleanup ();
 }
 #else
 void
 mini_cleanup (MonoDomain *domain)
 {
+	if (mono_stats.enabled)
+		g_printf ("Printing runtime stats at shutdown\n");
 	if (mono_profiler_sampling_enabled ())
 		mono_runtime_shutdown_stat_profiler ();
 
@@ -4778,7 +4778,8 @@ mini_cleanup (MonoDomain *domain)
 #endif
 
 	/* This accesses metadata so needs to be called before runtime shutdown */
-	print_jit_stats ();
+	mono_runtime_print_stats ();
+	jit_stats_cleanup ();
 
 #ifndef MONO_CROSS_COMPILE
 	mono_runtime_cleanup (domain);
@@ -4833,8 +4834,6 @@ mini_cleanup (MonoDomain *domain)
 	mono_cleanup ();
 
 	mono_trace_cleanup ();
-
-	mono_counters_dump (MONO_COUNTER_SECTION_MASK | MONO_COUNTER_MONOTONIC, stdout);
 
 	if (mono_inject_async_exc_method)
 		mono_method_desc_free (mono_inject_async_exc_method);

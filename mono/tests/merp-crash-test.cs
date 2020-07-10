@@ -59,6 +59,13 @@ class C
 			Crashers.Add(new Crasher ("MerpCrashSnprintf", MerpCrashSnprintf));
 			Crashers.Add(new Crasher ("MerpCrashDomainUnload", MerpCrashDomainUnload));
 			Crashers.Add(new Crasher ("MerpCrashUnbalancedGCSafe", MerpCrashUnbalancedGCSafe));
+			Crashers.Add(new Crasher  ("MerpCrashSignalTerm", MerpCrashSignalTerm));
+			Crashers.Add(new Crasher  ("MerpCrashSignalTerm", MerpCrashSignalAbrt));
+			Crashers.Add(new Crasher  ("MerpCrashSignalKill", MerpCrashSignalFpe));
+			Crashers.Add(new Crasher  ("MerpCrashSignalKill", MerpCrashSignalBus));
+			Crashers.Add(new Crasher  ("MerpCrashSignalSegv", MerpCrashSignalSegv));
+			Crashers.Add(new Crasher  ("MerpCrashSignalIll", MerpCrashSignalIll));
+			Crashers.Add(new Crasher ("MerpCrashTestBreadcrumbs", MerpCrashTestBreadcrumbs, validator: ValidateBreadcrumbs));
 		}
 
 		public static void 
@@ -80,6 +87,22 @@ class C
 			string s = jsonGetKeys (json, "payload", "failfast_message") as string;
 			if (s != failfastMsg)
 				throw new ValidationException (String.Format ("incorrect fail fast message (expected: {0}, got: {1})", failfastMsg, s));
+		}
+
+		public static void ValidateBreadcrumbs (object json)
+		{
+			var monoType = Type.GetType ("Mono.Runtime", false);
+			var m = monoType.GetMethod ("CheckCrashReportReason", BindingFlags.NonPublic | BindingFlags.Static);
+			var m_params = new object [] { "./", false };
+			string o = (string)m.Invoke(null, m_params);
+			if (o != "segv")
+				throw new Exception ("Crash report reason should be 'segv'");
+
+			m = monoType.GetMethod ("CheckCrashReportHash", BindingFlags.NonPublic | BindingFlags.Static);
+			long hash = (long)m.Invoke (null, m_params);
+
+			if (hash == 0)
+				throw new Exception ("Crash hash should not be zero");
 		}
 
 		[DllImport("libtest")]
@@ -149,6 +172,60 @@ class C
 		[DllImport("libtest")]
 		public static extern void mono_test_MerpCrashUnhandledExceptionHook ();
 
+		[DllImport("libtest")]
+		public static extern void mono_test_MerpCrashSignalTerm ();
+
+		public static void
+		MerpCrashSignalTerm ()
+		{
+			mono_test_MerpCrashSignalTerm ();
+		}
+
+		[DllImport("libtest")]
+		public static extern void mono_test_MerpCrashSignalAbrt ();
+
+		public static void
+		MerpCrashSignalAbrt ()
+		{
+			mono_test_MerpCrashSignalAbrt ();
+		}
+
+		[DllImport("libtest")]
+		public static extern void mono_test_MerpCrashSignalFpe ();
+
+		public static void
+		MerpCrashSignalFpe ()
+		{
+			mono_test_MerpCrashSignalFpe ();
+		}
+
+		[DllImport("libtest")]
+		public static extern void mono_test_MerpCrashSignalBus ();
+
+		public static void
+		MerpCrashSignalBus ()
+		{
+			mono_test_MerpCrashSignalBus ();
+		}
+
+		[DllImport("libtest")]
+		public static extern void mono_test_MerpCrashSignalSegv ();
+
+		public static void
+		MerpCrashSignalSegv ()
+		{
+			mono_test_MerpCrashSignalSegv ();
+		}
+
+		[DllImport("libtest")]
+		public static extern void mono_test_MerpCrashSignalIll ();
+
+		public static void
+		MerpCrashSignalIll ()
+		{
+			mono_test_MerpCrashSignalIll ();
+		}
+
 		public static void 
 		MerpCrashUnhandledExceptionHook ()
 		{
@@ -160,6 +237,12 @@ class C
 		{
 			Console.WriteLine ("And now to crash inside the hook");
 			mono_test_MerpCrashUnhandledExceptionHook ();
+		}
+
+		public static void
+		MerpCrashTestBreadcrumbs ()
+		{
+			mono_test_MerpCrashSignalSegv ();
 		}
 
 
@@ -213,8 +296,6 @@ class C
 	public static void 
 	TestValidate (string configDir, bool silent, Action<object> validator = null)
 	{
-		DumpLogCheck ();
-
 		var xmlFilePath = String.Format("{0}CustomLogsMetadata.xml", configDir);
 		var paramsFilePath = String.Format("{0}MERP.uploadparams.txt", configDir);
 		var crashFilePath = String.Format("{0}lastcrashlog.txt", configDir);
@@ -259,7 +340,7 @@ class C
 			} catch (CrasherClass.ValidationException e) {
 				throw new Exception (String.Format ("Validation failed '{0}', json: {1}", e.Message, crashFile));
 			} catch (Exception e) {
-				throw new Exception (String.Format ("Invalid json: {0}", crashFile));
+				throw new Exception (String.Format ("Invalid json  ({0}:{1}): {2}", e.GetType(), e.Message, crashFile));
 			}
 
 			File.Delete (crashFilePath);
@@ -267,6 +348,8 @@ class C
 		} else {
 			Console.WriteLine ("Crash file {0} missing", crashFilePath);
 		}
+
+		DumpLogCheck (expected_level: "MerpInvoke"); // we are expecting merp invoke to fail
 
 		if (!xmlFileExists)
 			throw new Exception (String.Format ("Did not produce {0}", xmlFilePath));
@@ -298,7 +381,7 @@ class C
 		convert.Invoke(null, new object[] { null });
 	}
 
-	static void DumpLogCheck ()
+	static void DumpLogCheck (string expected_level = "Done")
 	{
 		var monoType = Type.GetType ("Mono.Runtime", false);
 		var convert = monoType.GetMethod("CheckCrashReportLog", BindingFlags.NonPublic | BindingFlags.Static);
@@ -306,11 +389,17 @@ class C
 		// Value of enum
 		string [] levels = new string [] { "None", "Setup", "SuspendHandshake", "UnmanagedStacks", "ManagedStacks", "StateWriter", "StateWriterDone", "MerpWriter", "MerpInvoke", "Cleanup", "Done", "DoubleFault" };
 
-		if ("MerpInvoke" == levels [result]) {
-			Console.WriteLine ("Merp invoke command failed, expected failure?");
-		} else if ("Done" != levels [result]) {
-			throw new Exception (String.Format ("Crash level not done, failed in stage: {0}", levels [result]));
-		}
+		if (expected_level != levels [result])
+			throw new Exception (String.Format ("Crash level {0} does not match expected {1}", levels [result], expected_level));
+
+		// also clear hash and reason breadcrumbs
+		convert = monoType.GetMethod("CheckCrashReportHash", BindingFlags.NonPublic | BindingFlags.Static);
+		var hash_result = (long) convert.Invoke(null, new object[] { "./", true });
+		convert = monoType.GetMethod("CheckCrashReportReason", BindingFlags.NonPublic | BindingFlags.Static);
+		var reason_result = (string) convert.Invoke(null, new object[] { "./", true });
+
+		if (reason_result == string.Empty)
+			throw new Exception("Crash reason should not be an empty string");
 	}
 
 
@@ -346,6 +435,40 @@ class C
 		}
 	}
 
+	public static void TestManagedException ()
+	{
+		if (Directory.Exists (configDir)) {
+			Console.WriteLine ("Cleaning up left over configDir {0}", configDir);
+			Cleanup (configDir);
+		}
+		Directory.CreateDirectory (configDir);
+
+		SetupCrash (configDir);
+		var monoType = Type.GetType ("Mono.Runtime", false);
+		var m = monoType.GetMethod ("ExceptionToState", BindingFlags.NonPublic | BindingFlags.Static);
+		var exception = new Exception ("test managed exception");
+		var m_params = new object[] { exception };
+
+		var result = m.Invoke (null, m_params) as Tuple<String, ulong, ulong>;
+		DumpLogCheck (expected_level: "StateWriterDone");
+		Cleanup (configDir);
+	}
+
+	public static Exception RunManagedExceptionTest ()
+	{
+			Console.WriteLine ("Testing ExceptionToState()...");
+			Exception exception_test_failure = null;
+
+			try {
+				TestManagedException();
+			}
+			catch (Exception e)
+			{
+				return e;
+			}
+			return null;
+	}
+
 	public static int Main (string [] args)
 	{
 		if (args.Length == 0) {
@@ -370,9 +493,17 @@ class C
 				}
 			}
 
+			// Also test sending a managed exception
+			Exception exception_test_failure = RunManagedExceptionTest ();
+
 			Console.WriteLine ("\n\n##################");
 			Console.WriteLine ("Merp Test Results:");
 			Console.WriteLine ("##################\n\n");
+
+			if (exception_test_failure != null)
+			{
+				Console.WriteLine ("Sending managed exception to MERP failed: {0}\n{1}\n", exception_test_failure.Message, exception_test_failure.StackTrace);
+			}
 
 			if (failure_count > 0) {
 				for (int i=0; i < CrasherClass.Crashers.Count; i++) {
@@ -383,7 +514,7 @@ class C
 				}
 			}
 
-			if (failure_count > 0)
+			if (failure_count > 0 || exception_test_failure != null)
 				return 1;
 
 			Console.WriteLine ("\n\n##################");

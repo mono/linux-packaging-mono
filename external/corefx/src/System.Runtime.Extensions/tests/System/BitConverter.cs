@@ -226,6 +226,7 @@ namespace System.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Flaky test - OOM")]
         public static void ToString_ByteArrayTooLong_Throws()
         {
             byte[] arr;

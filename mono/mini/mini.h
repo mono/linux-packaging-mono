@@ -783,27 +783,9 @@ struct MonoCallInst {
 	MonoInst *out_args;
 	MonoInst *vret_var;
 	gconstpointer fptr;
+	MonoJitICallId jit_icall_id;
 	guint stack_usage;
 	guint stack_align_amount;
-	guint is_virtual : 1;
-	// FIXME tailcall field is written after read; prefer MONO_IS_TAILCALL_OPCODE.
-	guint tailcall : 1;
-	/* If this is TRUE, 'fptr' points to a MonoJumpInfo instead of an address. */
-	guint fptr_is_patch : 1;
-	MonoJitICallId jit_icall_id;
-	/*
-	 * If this is true, then the call returns a vtype in a register using the same 
-	 * calling convention as OP_CALL.
-	 */
-	guint vret_in_reg : 1;
-	/* Whenever vret_in_reg returns fp values */
-	guint vret_in_reg_fp : 1;
-	/* Whenever there is an IMT argument and it is dynamic */
-	guint dynamic_imt_arg : 1;
-	/* Whenever there is an RGCTX argument */
-	guint32 rgctx_reg : 1;
-	/* Whenever the call will need an unbox trampoline */
-	guint need_unbox_trampoline : 1;
 	regmask_t used_iregs;
 	regmask_t used_fregs;
 	GSList *out_ireg_args;
@@ -818,6 +800,27 @@ struct MonoCallInst {
 	/* See the comment in mini-arm.c!mono_arch_emit_call for RegTypeFP. */
 	GSList *float_args;
 #endif
+	// Bitfields are at the end to minimize padding for alignment,
+	// unless there is a placement to increase locality.
+
+	guint is_virtual : 1;
+	// FIXME tailcall field is written after read; prefer MONO_IS_TAILCALL_OPCODE.
+	guint tailcall : 1;
+	/* If this is TRUE, 'fptr' points to a MonoJumpInfo instead of an address. */
+	guint fptr_is_patch : 1;
+	/*
+	 * If this is true, then the call returns a vtype in a register using the same
+	 * calling convention as OP_CALL.
+	 */
+	guint vret_in_reg : 1;
+	/* Whenever vret_in_reg returns fp values */
+	guint vret_in_reg_fp : 1;
+	/* Whenever there is an IMT argument and it is dynamic */
+	guint dynamic_imt_arg : 1;
+	/* Whenever there is an RGCTX argument */
+	guint32 rgctx_reg : 1;
+	/* Whenever the call will need an unbox trampoline */
+	guint need_unbox_trampoline : 1;
 };
 
 struct MonoCallArgParm {
@@ -858,6 +861,8 @@ enum {
 	MONO_INST_LMF = 32,
 	/* On loads, the source address points to a constant value */
 	MONO_INST_INVARIANT_LOAD = 64,
+	/* On stores, the destination is the stack */
+	MONO_INST_STACK_STORE = 64,
 	/* On variables, the variable needs GC tracking */
 	MONO_INST_GC_TRACK = 128,
 	/*
@@ -1223,6 +1228,8 @@ typedef enum {
 	JIT_FLAG_INTERP = (1 << 9),
 	/* Allow AOT to use all current CPU instructions */
 	JIT_FLAG_USE_CURRENT_CPU = (1 << 10),
+	/* Generate code to self-init the method for AOT */
+	JIT_FLAG_SELF_INIT = (1 << 11)
 } JitFlags;
 
 /* Bit-fields in the MonoBasicBlock.region */
@@ -1438,6 +1445,7 @@ typedef struct {
 	guint            llvm_only : 1;
 	guint            interp : 1;
 	guint            use_current_cpu : 1;
+	guint            self_init : 1;
 	guint            domainvar_inited : 1;
 	guint8           uses_simd_intrinsics;
 	int              r4_stack_type;
@@ -2090,6 +2098,7 @@ guint     mono_type_to_load_membase         (MonoCompile *cfg, MonoType *type);
 guint     mono_type_to_store_membase        (MonoCompile *cfg, MonoType *type);
 guint32   mono_type_to_stloc_coerce         (MonoType *type);
 guint     mini_type_to_stind                (MonoCompile* cfg, MonoType *type);
+MonoStackType mini_type_to_stack_type       (MonoCompile *cfg, MonoType *t);
 MonoJitInfo* mini_lookup_method             (MonoDomain *domain, MonoMethod *method, MonoMethod *shared);
 guint32   mono_reverse_branch_op            (guint32 opcode);
 void      mono_disassemble_code             (MonoCompile *cfg, guint8 *code, int size, char *id);
@@ -2233,6 +2242,7 @@ void              mini_emit_memcpy (MonoCompile *cfg, int destreg, int doffset, 
 void              mini_emit_memset (MonoCompile *cfg, int destreg, int offset, int size, int val, int align);
 void              mini_emit_stobj (MonoCompile *cfg, MonoInst *dest, MonoInst *src, MonoClass *klass, gboolean native);
 void              mini_emit_initobj (MonoCompile *cfg, MonoInst *dest, const guchar *ip, MonoClass *klass);
+void              mini_emit_init_rvar (MonoCompile *cfg, int dreg, MonoType *rtype);
 int               mini_emit_sext_index_reg (MonoCompile *cfg, MonoInst *index);
 MonoInst*         mini_emit_ldelema_1_ins (MonoCompile *cfg, MonoClass *klass, MonoInst *arr, MonoInst *index, gboolean bcheck);
 MonoInst*         mini_emit_get_gsharedvt_info_klass (MonoCompile *cfg, MonoClass *klass, MonoRgctxInfoType rgctx_type);
@@ -2493,7 +2503,7 @@ typedef gboolean (*MonoJitStackWalk)            (StackFrameInfo *frame, MonoCont
 
 void     mono_exceptions_init                   (void);
 gboolean mono_handle_exception                  (MonoContext *ctx, gpointer obj);
-void     mono_handle_native_crash               (const char *signal, MonoContext *mctx, MONO_SIG_HANDLER_INFO_TYPE *siginfo);
+void     mono_handle_native_crash               (const char *signal, MonoContext *mctx, MONO_SIG_HANDLER_INFO_TYPE *siginfo, void *context);
 MONO_API void     mono_print_thread_dump                 (void *sigctx);
 MONO_API void     mono_print_thread_dump_from_ctx        (MonoContext *ctx);
 void     mono_walk_stack_with_ctx               (MonoJitStackWalk func, MonoContext *start_ctx, MonoUnwindOptions unwind_options, void *user_data);

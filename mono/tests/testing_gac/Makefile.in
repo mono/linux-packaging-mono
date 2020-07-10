@@ -132,8 +132,8 @@ am__can_run_installinfo = \
   esac
 am__extra_recursive_targets = test-recursive test-bundle-recursive
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
-am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/mk/common.mk \
-	$(top_srcdir)/mkinstalldirs README
+am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/mkinstalldirs \
+	README
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
@@ -453,6 +453,7 @@ BASE_MONO_PATH = $(CLASS)
 V1_SRC = v1/gactestlib.cs
 V2_SRC = v2/gactestlib.cs
 APP_V1_SRC = v1/app.cs v1/app-refl-load.cs
+APP_BOTH_SRC = app-both.cs
 APP_SIGNED_V1_EXE = app-v1.exe app-refl-load-v1.exe
 APP_BOTH_EXE = app-both.exe
 UNSIGNED_V1_DLL = unsigned_v1/gactestlib.dll
@@ -478,11 +479,11 @@ GACDIR = .
 SIGN = -delaysign -keyfile:$(SIGNING_KEY)
 
 ### autotools stuff
-EXTRA_DIST = README $(SIGNING_KEY) $(GACTESTLIB_SRCS) 
+EXTRA_DIST = README $(SIGNING_KEY) $(GACTESTLIB_SRCS) $(APP_V1_SRC) $(APP_BOTH_SRC)
 all: all-am
 
 .SUFFIXES:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/mk/common.mk $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -502,7 +503,6 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
-$(top_srcdir)/mk/common.mk $(am__empty):
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh

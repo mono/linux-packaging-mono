@@ -78,10 +78,6 @@ namespace System.Globalization
         [OptionalField(VersionAdded = 3)]
         private SortVersion m_SortVersion; // Do not rename (binary serialization)
 
-        // _invariantMode is defined for the perf reason as accessing the instance field is faster than access the static property GlobalizationMode.Invariant
-        [NonSerialized]
-        private readonly bool _invariantMode = GlobalizationMode.Invariant;
-
         private int culture; // Do not rename (binary serialization). The fields sole purpose is to support Desktop serialization.
 
         internal CompareInfo(CultureInfo culture)
@@ -340,7 +336,7 @@ namespace System.Globalization
                 return (1);     // non-null > null
             }
 
-            if (_invariantMode)
+            if (GlobalizationMode.Invariant)
             {
                 if ((options & CompareOptions.IgnoreCase) != 0)
                     return CompareOrdinalIgnoreCase(string1, string2);
@@ -387,7 +383,7 @@ namespace System.Globalization
                 return 1;
             }
 
-            if (_invariantMode)
+            if (GlobalizationMode.Invariant)
             {
                 return (options & CompareOptions.IgnoreCase) != 0 ?
                     CompareOrdinalIgnoreCase(string1, string2.AsSpan()) :
@@ -403,7 +399,7 @@ namespace System.Globalization
             if (string1.Length == 0 || string2.Length == 0)
                 return string1.Length - string2.Length;
 
-            return _invariantMode ?
+            return GlobalizationMode.Invariant ?
                 string.CompareOrdinal(string1, string2) :
                 CompareString(string1, string2, CompareOptions.None);
         }
@@ -414,7 +410,7 @@ namespace System.Globalization
             if (string1.Length == 0 || string2.Length == 0)
                 return string1.Length - string2.Length;
 
-            return _invariantMode ?
+            return GlobalizationMode.Invariant ?
                 CompareOrdinalIgnoreCase(string1, string2) :
                 CompareString(string1, string2, CompareOptions.IgnoreCase);
         }
@@ -515,7 +511,7 @@ namespace System.Globalization
                 return string.CompareOrdinal(span1, span2);
             }
 
-            if (_invariantMode)
+            if (GlobalizationMode.Invariant)
             {
                 if ((options & CompareOptions.IgnoreCase) != 0)
                     return CompareOrdinalIgnoreCase(span1, span2);
@@ -633,7 +629,7 @@ namespace System.Globalization
                 throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
             }
 
-            if (_invariantMode)
+            if (GlobalizationMode.Invariant)
             {
                 return source.StartsWith(prefix, (options & CompareOptions.IgnoreCase) != 0 ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
             }
@@ -646,7 +642,7 @@ namespace System.Globalization
             Debug.Assert(prefix.Length != 0);
             Debug.Assert(source.Length != 0);
             Debug.Assert((options & ValidIndexMaskOffFlags) == 0);
-            Debug.Assert(!_invariantMode);
+            Debug.Assert(!GlobalizationMode.Invariant);
             Debug.Assert((options & (CompareOptions.Ordinal | CompareOptions.OrdinalIgnoreCase)) == 0);
 
             return StartsWith(source, prefix, options);
@@ -698,7 +694,7 @@ namespace System.Globalization
                 throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
             }
 
-            if (_invariantMode)
+            if (GlobalizationMode.Invariant)
             {
                 return source.EndsWith(suffix, (options & CompareOptions.IgnoreCase) != 0 ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
             }
@@ -711,7 +707,7 @@ namespace System.Globalization
             Debug.Assert(suffix.Length != 0);
             Debug.Assert(source.Length != 0);
             Debug.Assert((options & ValidIndexMaskOffFlags) == 0);
-            Debug.Assert(!_invariantMode);
+            Debug.Assert(!GlobalizationMode.Invariant);
             Debug.Assert((options & (CompareOptions.Ordinal | CompareOptions.OrdinalIgnoreCase)) == 0);
 
             return EndsWith(source, suffix, options);
@@ -844,7 +840,7 @@ namespace System.Globalization
             if ((options & ValidIndexMaskOffFlags) != 0 && (options != CompareOptions.Ordinal))
                 throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
 
-            if (_invariantMode)
+            if (GlobalizationMode.Invariant)
                 return IndexOfOrdinal(source, new string(value, 1), startIndex, count, ignoreCase: (options & (CompareOptions.IgnoreCase | CompareOptions.OrdinalIgnoreCase)) != 0);
 
             return IndexOfCore(source, new string(value, 1), startIndex, count, options, null);
@@ -892,7 +888,7 @@ namespace System.Globalization
             if ((options & ValidIndexMaskOffFlags) != 0 && (options != CompareOptions.Ordinal))
                 throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
 
-            if (_invariantMode)
+            if (GlobalizationMode.Invariant)
                 return IndexOfOrdinal(source, value, startIndex, count, ignoreCase: (options & (CompareOptions.IgnoreCase | CompareOptions.OrdinalIgnoreCase)) != 0);
 
             return IndexOfCore(source, value, startIndex, count, options, null);
@@ -900,7 +896,7 @@ namespace System.Globalization
 
         internal int IndexOfOrdinal(ReadOnlySpan<char> source, ReadOnlySpan<char> value, bool ignoreCase)
         {
-            Debug.Assert(!_invariantMode);
+            Debug.Assert(!GlobalizationMode.Invariant);
             Debug.Assert(!source.IsEmpty);
             Debug.Assert(!value.IsEmpty);
             return IndexOfOrdinalCore(source, value, ignoreCase);
@@ -908,7 +904,7 @@ namespace System.Globalization
 
         internal unsafe int IndexOf(ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options)
         {
-            Debug.Assert(!_invariantMode);
+            Debug.Assert(!GlobalizationMode.Invariant);
             Debug.Assert(!source.IsEmpty);
             Debug.Assert(!value.IsEmpty);
             return IndexOfCore(source, value, options, null);
@@ -948,7 +944,7 @@ namespace System.Globalization
                 return res;
             }
 
-            if (_invariantMode)
+            if (GlobalizationMode.Invariant)
             {
                 int res = IndexOfOrdinal(source, value, startIndex, count, ignoreCase: (options & (CompareOptions.IgnoreCase | CompareOptions.OrdinalIgnoreCase)) != 0);
                 if (res >= 0)
@@ -963,7 +959,7 @@ namespace System.Globalization
 
         internal int IndexOfOrdinal(string source, string value, int startIndex, int count, bool ignoreCase)
         {
-            if (_invariantMode)
+            if (GlobalizationMode.Invariant)
             {
                 return InvariantIndexOf(source, value, startIndex, count, ignoreCase);
             }
@@ -1098,7 +1094,7 @@ namespace System.Globalization
                 return source.LastIndexOf(value.ToString(), startIndex, count, StringComparison.OrdinalIgnoreCase);
             }
 
-            if (_invariantMode)
+            if (GlobalizationMode.Invariant)
                 return InvariantLastIndexOf(source, new string(value, 1), startIndex, count, (options & (CompareOptions.IgnoreCase | CompareOptions.OrdinalIgnoreCase)) != 0);
 
             return LastIndexOfCore(source, value.ToString(), startIndex, count, options);
@@ -1149,7 +1145,7 @@ namespace System.Globalization
                 return LastIndexOfOrdinal(source, value, startIndex, count, ignoreCase: true);
             }
 
-            if (_invariantMode)
+            if (GlobalizationMode.Invariant)
                 return InvariantLastIndexOf(source, value, startIndex, count, (options & (CompareOptions.IgnoreCase | CompareOptions.OrdinalIgnoreCase)) != 0);
 
             return LastIndexOfCore(source, value, startIndex, count, options);
@@ -1157,7 +1153,7 @@ namespace System.Globalization
 
         internal int LastIndexOfOrdinal(string source, string value, int startIndex, int count, bool ignoreCase)
         {
-            if (_invariantMode)
+            if (GlobalizationMode.Invariant)
             {
                 return InvariantLastIndexOf(source, value, startIndex, count, ignoreCase);
             }
@@ -1174,7 +1170,7 @@ namespace System.Globalization
         ////////////////////////////////////////////////////////////////////////
         public virtual SortKey GetSortKey(string source, CompareOptions options)
         {
-            if (_invariantMode)
+            if (GlobalizationMode.Invariant)
                 return InvariantCreateSortKey(source, options);
 
             return CreateSortKey(source, options);
@@ -1183,7 +1179,7 @@ namespace System.Globalization
 
         public virtual SortKey GetSortKey(string source)
         {
-            if (_invariantMode)
+            if (GlobalizationMode.Invariant)
                 return InvariantCreateSortKey(source, CompareOptions.None);
 
             return CreateSortKey(source, CompareOptions.None);
@@ -1297,7 +1293,7 @@ namespace System.Globalization
                 throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
             }
 
-            if (_invariantMode)
+            if (GlobalizationMode.Invariant)
             {
                 return ((options & CompareOptions.IgnoreCase) != 0) ? GetIgnoreCaseHash(source) : source.GetHashCode();
             }
@@ -1349,7 +1345,7 @@ namespace System.Globalization
             {
                 if (m_SortVersion == null)
                 {
-                    if (_invariantMode)
+                    if (GlobalizationMode.Invariant)
                     {
                         m_SortVersion = new SortVersion(0, CultureInfo.LOCALE_INVARIANT, new Guid(0, 0, 0, 0, 0, 0, 0,
                                                                         (byte) (CultureInfo.LOCALE_INVARIANT >> 24),

@@ -51,10 +51,21 @@ namespace System.Net.Http
                     {
                         bytesRead = await readTask.ConfigureAwait(false);
                     }
+#if MONOTOUCH_WATCH
+                    catch (Exception exc)
+                    {
+                        if (CancellationHelper.ShouldWrapInOperationCanceledException(exc, cancellationToken))
+                        {
+                            throw CancellationHelper.CreateOperationCanceledException(exc, cancellationToken);
+                        }
+                        throw;
+                    }
+#else
                     catch (Exception exc) when (CancellationHelper.ShouldWrapInOperationCanceledException(exc, cancellationToken))
                     {
                         throw CancellationHelper.CreateOperationCanceledException(exc, cancellationToken);
                     }
+#endif
                     finally
                     {
                         ctr.Dispose();
@@ -115,10 +126,21 @@ namespace System.Net.Http
                 {
                     await copyTask.ConfigureAwait(false);
                 }
+#if MONOTOUCH_WATCH
+                catch (Exception exc)
+                {
+                    if (CancellationHelper.ShouldWrapInOperationCanceledException(exc, cancellationToken))
+                    {
+                        throw CancellationHelper.CreateOperationCanceledException(exc, cancellationToken);
+                    }
+                    throw;
+                }
+#else
                 catch (Exception exc) when (CancellationHelper.ShouldWrapInOperationCanceledException(exc, cancellationToken))
                 {
                     throw CancellationHelper.CreateOperationCanceledException(exc, cancellationToken);
                 }
+#endif
                 finally
                 {
                     ctr.Dispose();

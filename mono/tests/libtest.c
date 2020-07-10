@@ -8,6 +8,7 @@
 #include <time.h>
 #include <math.h>
 #include <setjmp.h>
+#include <signal.h>
 #include "../utils/mono-errno.h"
 #include "../utils/mono-compiler.h"
 
@@ -699,16 +700,6 @@ mono_test_marshal_delegate_struct (DelegateStruct ds)
 	return res;
 }
 
-LIBTEST_API int STDCALL  
-mono_test_marshal_struct (simplestruct ss)
-{
-	if (ss.a == 0 && ss.b == 1 && ss.c == 0 &&
-	    !strcmp (ss.d, "TEST"))
-		return 0;
-
-	return 1;
-}
-
 LIBTEST_API int STDCALL 
 mono_test_marshal_byref_struct (simplestruct *ss, int a, int b, int c, char *d)
 {
@@ -951,6 +942,16 @@ is_utf16_equals (gunichar2 *s1, const char *s2)
 	g_free (s);
 
 	return res == 0;
+}
+
+LIBTEST_API int STDCALL
+mono_test_marshal_struct (simplestruct ss)
+{
+	if (ss.a == 0 && ss.b == 1 && ss.c == 0 &&
+	    !strcmp (ss.d, "TEST") && is_utf16_equals (ss.d2, "OK"))
+		return 0;
+
+	return 1;
 }
 
 LIBTEST_API int STDCALL 
@@ -1833,6 +1834,9 @@ mono_test_asany (void *ptr, int what)
 			g_free (s);
 			return 1;
 		}
+	}
+	case 5: {
+		return (*(intptr_t*)ptr == 5) ? 0 : 1;
 	}
 	default:
 		g_assert_not_reached ();
@@ -3798,7 +3802,9 @@ static gpointer
 lookup_mono_symbol (const char *symbol_name)
 {
 	gpointer symbol = NULL;
-	const gboolean success = g_module_symbol (g_module_open (NULL, G_MODULE_BIND_LAZY), symbol_name, &symbol);
+	GModule *mod = g_module_open (NULL, G_MODULE_BIND_LAZY);
+	g_assert (mod != NULL);
+	const gboolean success = g_module_symbol (mod, symbol_name, &symbol);
 	g_assertf (success, "%s", symbol_name);
 	return success ? symbol : NULL;
 }
@@ -3806,7 +3812,12 @@ lookup_mono_symbol (const char *symbol_name)
 LIBTEST_API gpointer STDCALL
 mono_test_marshal_lookup_symbol (const char *symbol_name)
 {
+#ifndef HOST_WIN32
+	return dlsym (RTLD_DEFAULT, symbol_name);
+#else
+	// This isn't really proper, but it should work
 	return lookup_mono_symbol (symbol_name);
+#endif
 }
 
 
@@ -7999,6 +8010,64 @@ LIBTEST_API void STDCALL
 mono_test_MerpCrashUnhandledExceptionHook (void)
 {
 	g_assert_not_reached ();
+}
+
+LIBTEST_API void STDCALL
+mono_test_MerpCrashSignalTerm (void)
+{
+	raise (SIGTERM);
+}
+
+// for the rest of the signal tests, we use SIGTERM as a fallback
+
+LIBTEST_API void STDCALL
+mono_test_MerpCrashSignalAbrt (void)
+{
+#if defined (SIGABRT)
+	raise (SIGABRT);
+#else
+	raise (SIGTERM);
+#endif
+}
+
+LIBTEST_API void STDCALL
+mono_test_MerpCrashSignalFpe (void)
+{
+#if defined (SIGFPE)
+	raise (SIGFPE);
+#else
+	raise (SIGTERM);
+#endif
+}
+
+LIBTEST_API void STDCALL
+mono_test_MerpCrashSignalBus (void)
+{
+#if defined (SIGBUS)
+	raise (SIGBUS);
+#else
+	raise (SIGTERM);
+#endif
+}
+
+LIBTEST_API void STDCALL
+mono_test_MerpCrashSignalSegv (void)
+{
+#if defined (SIGSEGV)
+	raise (SIGSEGV);
+#else
+	raise (SIGTERM);
+#endif
+}
+
+LIBTEST_API void STDCALL
+mono_test_MerpCrashSignalIll (void)
+{
+#if defined (SIGILL)
+	raise (SIGILL);
+#else
+	raise (SIGTERM);
+#endif
 }
 
 #ifdef __cplusplus

@@ -46,11 +46,11 @@ namespace Mono.Linker.Steps {
 					continue;
 
 				try {
-					Context.LogMessage ("Processing resource linker descriptor: {0}", name);
+					Context.LogMessage ($"Processing resource linker descriptor: {name}");
 					AddToPipeline (GetResolveStep (name));
 				} catch (XmlException ex) {
 					/* This could happen if some broken XML file is included. */
-					Context.LogMessage ("Error processing {0}: {1}", name, ex);
+					Context.LogMessage ($"Error processing {name}: {ex}");
 				}
 			}
 
@@ -62,12 +62,12 @@ namespace Mono.Linker.Steps {
 									.Where (res => ShouldProcessAssemblyResource (GetAssemblyName (res.Name)))
 									.Cast<EmbeddedResource> ()) {
 					try {
-						Context.LogMessage ("Processing embedded resource linker descriptor: {0}", rsc.Name);
+						Context.LogMessage ($"Processing embedded resource linker descriptor: {rsc.Name}");
 
 						AddToPipeline (GetExternalResolveStep (rsc, asm));
 					} catch (XmlException ex) {
 						/* This could happen if some broken XML file is embedded. */
-						Context.LogMessage ("Error processing {0}: {1}", rsc.Name, ex);
+						Context.LogMessage ($"Error processing {rsc.Name}: {ex}");
 					}
 				}
 			}
@@ -127,14 +127,14 @@ namespace Mono.Linker.Steps {
 		protected static XPathDocument GetExternalDescriptor (EmbeddedResource resource)
 		{
 			using (var sr = new StreamReader (resource.GetResourceStream ())) {
-				return new XPathDocument (new StringReader (sr.ReadToEnd ()));
+				return new XPathDocument (sr);
 			}
 		}
 
 		static XPathDocument GetDescriptor (string descriptor)
 		{
 			using (StreamReader sr = new StreamReader (GetResource (descriptor))) {
-				return new XPathDocument (new StringReader (sr.ReadToEnd ()));
+				return new XPathDocument (sr);
 			}
 		}
 
