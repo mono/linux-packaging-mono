@@ -1,4 +1,4 @@
-include $(top_srcdir)/mk/common.mk
+MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 
 SUBDIRS = gc-descriptors . testing_gac assembly-load-reference llvmonly-mixed fullaot-mixed
 
@@ -386,6 +386,7 @@ TESTS_CS_SRC=		\
 	interface.cs		\
 	interface-2.cs		\
 	dim-generic.cs		\
+	dim-issue-18917.cs		\
 	iface.cs		\
 	iface2.cs		\
 	iface3.cs		\
@@ -725,6 +726,7 @@ TESTS_CS_SRC=		\
 	bug-gh-9507.cs	\
 	async-generic-enum.cs \
 	null-blob-main.cs \
+	rgctx-thread-static.cs \
 	last-error.cs
 
 # some tests fail to compile on mcs
@@ -1109,6 +1111,12 @@ PLATFORM_DISABLED_TESTS += bug-58782-plain-throw.exe bug-58782-capture-and-throw
 
 # see https://github.com/mono/mono/issues/9739
 PLATFORM_DISABLED_TESTS += verbose.exe
+
+if ENABLE_CXX
+# see https://github.com/mono/mono/issues/18827
+PLATFORM_DISABLED_TESTS += bug-10127.exe
+endif
+
 endif
 
 
@@ -2803,11 +2811,17 @@ safehandle.2.exe winx64structs.exe thunks.exe pinvoke3.exe pinvoke2.exe pinvoke-
 	marshalbool.exe marshal9.exe marshal5.exe marshal.exe handleref.exe cominterop.exe bug-Xamarin-5278.exe \
 	bug-58782-plain-throw.exe bug-58782-capture-and-throw.exe install_eh_callback.exe: libtest.la
 
+EXTRA_DIST += event-il.il
+
 event-get.2.exe$(PLATFORM_AOT_SUFFIX): event-il.exe$(PLATFORM_AOT_SUFFIX)
 event-get.2.exe: event-il.exe
 
+EXTRA_DIST += module-cctor.il
+
 module-cctor-loader.2.exe$(PLATFORM_AOT_SUFFIX): module-cctor.exe$(PLATFORM_AOT_SUFFIX)
 module-cctor-loader.2.exe: module-cctor.exe
+
+EXTRA_DIST += TestingReferenceAssembly.cs TestingReferenceReferenceAssembly.cs
 
 reference-loader.exe$(PLATFORM_AOT_SUFFIX): TestingReferenceAssembly.dll$(PLATFORM_AOT_SUFFIX) TestingReferenceReferenceAssembly.dll$(PLATFORM_AOT_SUFFIX)
 reference-loader.exe: TestingReferenceAssembly.dll TestingReferenceReferenceAssembly.dll
@@ -3092,6 +3106,8 @@ TESTS_UNHANDLED_EXCEPTION_255_SRC =	\
 	threadpool-exceptions2.cs	\
 	threadpool-exceptions5.cs
 
+EXTRA_DIST += $(TESTS_UNHANDLED_EXCEPTION_1_SRC) $(TESTS_UNHANDLED_EXCEPTION_255_SRC)
+
 TESTS_UNHANDLED_EXCEPTION_1=$(filter-out $(DISABLED_TESTS),$(TESTS_UNHANDLED_EXCEPTION_1_SRC:.cs=.exe))
 TESTS_UNHANDLED_EXCEPTION_255=$(filter-out $(DISABLED_TESTS),$(TESTS_UNHANDLED_EXCEPTION_255_SRC:.cs=.exe))
 
@@ -3166,6 +3182,8 @@ TESTS_STRESS_PROCESS_SRC=	\
 		process-stress-2.cs	\
 		process-stress-3.cs	\
 		process-leak.cs
+
+EXTRA_DIST += $(TESTS_STRESS_PROCESS_SRC)
 
 TESTS_STRESS_PROCESS=$(filter-out $(DISABLED_TESTS),$(TESTS_STRESS_PROCESS_SRC:.cs=.exe))
 

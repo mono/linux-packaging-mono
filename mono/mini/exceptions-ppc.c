@@ -676,7 +676,7 @@ mono_arch_handle_altstack_exception (void *sigctx, MONO_SIG_HANDLER_INFO_TYPE *s
 	}
 	if (!ji)
 		if (mono_dump_start ())
-			mono_handle_native_crash (mono_get_signame (SIGSEGV), (MonoContext*)sigctx, siginfo);
+			mono_handle_native_crash (mono_get_signame (SIGSEGV), (MonoContext*)sigctx, siginfo, sigctx);
 	/* setup a call frame on the real stack so that control is returned there
 	 * and exception handling can continue.
 	 * The frame looks like:
@@ -692,10 +692,7 @@ mono_arch_handle_altstack_exception (void *sigctx, MONO_SIG_HANDLER_INFO_TYPE *s
 	/* may need to adjust pointers in the new struct copy, depending on the OS */
 	uc_copy = (MonoContext*)(sp + 16);
 	mono_sigctx_to_monoctx (uc, uc_copy);
-#if defined(__linux__) && !defined(__mono_ppc64__)
-	uc_copy->uc_mcontext.uc_regs = (gpointer)((char*)uc_copy + ((char*)uc->uc_mcontext.uc_regs - (char*)uc));
-#endif
-	g_assert (mono_arch_ip_from_context (uc) == mono_arch_ip_from_context (uc_copy));
+	g_assert (mono_arch_ip_from_context (uc) == MONO_CONTEXT_GET_IP (uc_copy));
 	/* at the return form the signal handler execution starts in altstack_handle_and_restore() */
 	UCONTEXT_REG_LNK(uc) = UCONTEXT_REG_NIP(uc);
 #ifdef PPC_USES_FUNCTION_DESCRIPTOR

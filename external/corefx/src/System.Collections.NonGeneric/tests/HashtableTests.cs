@@ -234,6 +234,7 @@ namespace System.Collections.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Mono, "Flaky test - OOM")]
         public void Ctor_Int_Int_GenerateNewPrime()
         {
             // The ctor for Hashtable performs the following calculation:

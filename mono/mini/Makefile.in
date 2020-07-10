@@ -107,6 +107,8 @@ target_triplet = @target@
 @ENABLE_MSVC_ONLY_FALSE@@MONO_JEMALLOC_ENABLED_TRUE@am__append_7 = $(JEMALLOC_LDFLAGS)
 @DISABLE_DEBUGGER_AGENT_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__append_8 = $(dbg_libs)
 @DISABLE_DEBUGGER_AGENT_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__append_9 = $(dbg_libs)
+@ENABLE_MSVC_ONLY_FALSE@check_PROGRAMS =  \
+@ENABLE_MSVC_ONLY_FALSE@	test-mono-interp-whitebox$(EXEEXT)
 
 # Skip aoting the tests that aren't compiled 
 # on the full aot profiles because they're skipped
@@ -155,6 +157,12 @@ am__libmain_a_SOURCES_DIST = main-sgen.c main.c
 @ENABLE_MSVC_ONLY_FALSE@	libmain_a-main-sgen.$(OBJEXT) \
 @ENABLE_MSVC_ONLY_FALSE@	$(am__objects_1)
 libmain_a_OBJECTS = $(am_libmain_a_OBJECTS)
+libmaintest_a_AR = $(AR) $(ARFLAGS)
+libmaintest_a_LIBADD =
+am__libmaintest_a_SOURCES_DIST = interp/whitebox.c
+am__dirstamp = $(am__leading_dot)dirstamp
+@ENABLE_MSVC_ONLY_FALSE@am_libmaintest_a_OBJECTS = interp/libmaintest_a-whitebox.$(OBJEXT)
+libmaintest_a_OBJECTS = $(am_libmaintest_a_OBJECTS)
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -377,8 +385,8 @@ libmono_dbg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@@ENABLE_MSVC_ONLY_FALSE@libmono_ee_interp_la_DEPENDENCIES = libmonosgen-2.0.la
 am__libmono_ee_interp_la_SOURCES_DIST = interp/interp.h \
 	interp/interp-internals.h interp/interp.c interp/mintops.h \
-	interp/mintops.def interp/mintops.c interp/transform.c
-am__dirstamp = $(am__leading_dot)dirstamp
+	interp/mintops.def interp/mintops.c interp/transform.h \
+	interp/transform.c
 @ENABLE_MSVC_ONLY_FALSE@am__objects_22 =  \
 @ENABLE_MSVC_ONLY_FALSE@	interp/libmono_ee_interp_la-interp.lo \
 @ENABLE_MSVC_ONLY_FALSE@	interp/libmono_ee_interp_la-mintops.lo \
@@ -502,6 +510,13 @@ monow_OBJECTS = $(am_monow_OBJECTS)
 monow_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(monow_LDFLAGS) $(LDFLAGS) -o $@
+am_test_mono_interp_whitebox_OBJECTS =
+test_mono_interp_whitebox_OBJECTS =  \
+	$(am_test_mono_interp_whitebox_OBJECTS)
+test_mono_interp_whitebox_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_mono_interp_whitebox_CFLAGS) $(CFLAGS) \
+	$(test_mono_interp_whitebox_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -544,19 +559,21 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(libmain_a_SOURCES) $(libmini_la_SOURCES) \
-	$(libmono_dbg_la_SOURCES) $(libmono_ee_interp_la_SOURCES) \
-	$(libmono_llvm_la_SOURCES) $(libmonoboehm_2_0_la_SOURCES) \
-	$(libmonosgen_2_0_la_SOURCES) $(mono_SOURCES) \
-	$(mono_boehm_SOURCES) $(mono_sgen_SOURCES) $(monow_SOURCES)
+SOURCES = $(libmain_a_SOURCES) $(libmaintest_a_SOURCES) \
+	$(libmini_la_SOURCES) $(libmono_dbg_la_SOURCES) \
+	$(libmono_ee_interp_la_SOURCES) $(libmono_llvm_la_SOURCES) \
+	$(libmonoboehm_2_0_la_SOURCES) $(libmonosgen_2_0_la_SOURCES) \
+	$(mono_SOURCES) $(mono_boehm_SOURCES) $(mono_sgen_SOURCES) \
+	$(monow_SOURCES) $(test_mono_interp_whitebox_SOURCES)
 DIST_SOURCES = $(am__libmain_a_SOURCES_DIST) \
+	$(am__libmaintest_a_SOURCES_DIST) \
 	$(am__libmini_la_SOURCES_DIST) \
 	$(am__libmono_dbg_la_SOURCES_DIST) \
 	$(am__libmono_ee_interp_la_SOURCES_DIST) \
 	$(am__libmono_llvm_la_SOURCES_DIST) \
 	$(libmonoboehm_2_0_la_SOURCES) $(libmonosgen_2_0_la_SOURCES) \
 	$(mono_SOURCES) $(mono_boehm_SOURCES) $(mono_sgen_SOURCES) \
-	$(monow_SOURCES)
+	$(monow_SOURCES) $(test_mono_interp_whitebox_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -584,7 +601,7 @@ am__define_uniq_tagged_files = \
 ETAGS = etags
 CTAGS = ctags
 am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/depcomp \
-	$(top_srcdir)/mk/common.mk $(top_srcdir)/mkinstalldirs
+	$(top_srcdir)/mkinstalldirs
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
@@ -962,7 +979,7 @@ ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 @ENABLE_MSVC_ONLY_FALSE@@SHARED_MONO_TRUE@mini_common_lib = libmini.la
 @ENABLE_MSVC_ONLY_FALSE@noinst_LTLIBRARIES = $(mini_common_lib) \
 @ENABLE_MSVC_ONLY_FALSE@	$(am__append_9)
-@ENABLE_MSVC_ONLY_FALSE@noinst_LIBRARIES = libmain.a
+@ENABLE_MSVC_ONLY_FALSE@noinst_LIBRARIES = libmain.a libmaintest.a
 @ENABLE_MSVC_ONLY_FALSE@libmain_a_SOURCES = main-sgen.c \
 @ENABLE_MSVC_ONLY_FALSE@	$(am__append_2)
 @ENABLE_MSVC_ONLY_FALSE@libmain_a_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
@@ -1129,6 +1146,7 @@ ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 @ENABLE_MSVC_ONLY_FALSE@	interp/mintops.h	\
 @ENABLE_MSVC_ONLY_FALSE@	interp/mintops.def	\
 @ENABLE_MSVC_ONLY_FALSE@	interp/mintops.c	\
+@ENABLE_MSVC_ONLY_FALSE@	interp/transform.h	\
 @ENABLE_MSVC_ONLY_FALSE@	interp/transform.c
 
 @ENABLE_MSVC_ONLY_FALSE@interp_libs = libmono-ee-interp.la
@@ -1366,6 +1384,14 @@ regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 @ENABLE_MSVC_ONLY_FALSE@libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS) @CXX_ADD_CFLAGS@
 @ENABLE_MSVC_ONLY_FALSE@libmonosgen_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
 @ENABLE_MSVC_ONLY_FALSE@libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) 
+@ENABLE_MSVC_ONLY_FALSE@libmaintest_a_SOURCES = interp/whitebox.c
+@ENABLE_MSVC_ONLY_FALSE@libmaintest_a_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
+@ENABLE_MSVC_ONLY_FALSE@WHITEBOX_ASSEMBLY = interp/whitebox-snippets.exe
+@ENABLE_MSVC_ONLY_FALSE@test_mono_interp_whitebox_SOURCES = 
+@ENABLE_MSVC_ONLY_FALSE@test_mono_interp_whitebox_CFLAGS = $(AM_CFLAGS) @CXX_REMOVE_CFLAGS@
+@ENABLE_MSVC_ONLY_FALSE@test_mono_interp_whitebox_LDADD = interp/libmaintest_a-whitebox.$(OBJEXT) libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs)
+@ENABLE_MSVC_ONLY_FALSE@test_mono_interp_whitebox_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags)
+@ENABLE_MSVC_ONLY_FALSE@test_mono_interp_whitebox_DEPENDENCIES = $(WHITEBOX_ASSEMBLY)
 libmonoincludedir = $(includedir)/mono-$(API_VER)/mono/jit
 
 # These are public headers.
@@ -1429,6 +1455,7 @@ EXTRA_DIST = TestDriver.cs \
 	$(posix_sources)					\
 	test_op_il_seq_point.sh			\
 	test_op_il_seq_point_headerfooter.sh	\
+	interp/whitebox-snippets.il		\
 	Makefile.am.in
 
 @ENABLE_LLVM_TRUE@llvm_makefile_dep = $(mono_build_root)/llvm/llvm_config.mk
@@ -1437,7 +1464,7 @@ all: $(BUILT_SOURCES)
 
 .SUFFIXES:
 .SUFFIXES: .c .cpp .lo .o .obj
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/mk/common.mk $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -1457,7 +1484,6 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
-$(top_srcdir)/mk/common.mk $(am__empty):
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
@@ -1475,6 +1501,19 @@ libmain.a: $(libmain_a_OBJECTS) $(libmain_a_DEPENDENCIES) $(EXTRA_libmain_a_DEPE
 	$(AM_V_at)-rm -f libmain.a
 	$(AM_V_AR)$(libmain_a_AR) libmain.a $(libmain_a_OBJECTS) $(libmain_a_LIBADD)
 	$(AM_V_at)$(RANLIB) libmain.a
+interp/$(am__dirstamp):
+	@$(MKDIR_P) interp
+	@: > interp/$(am__dirstamp)
+interp/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) interp/$(DEPDIR)
+	@: > interp/$(DEPDIR)/$(am__dirstamp)
+interp/libmaintest_a-whitebox.$(OBJEXT): interp/$(am__dirstamp) \
+	interp/$(DEPDIR)/$(am__dirstamp)
+
+libmaintest.a: $(libmaintest_a_OBJECTS) $(libmaintest_a_DEPENDENCIES) $(EXTRA_libmaintest_a_DEPENDENCIES) 
+	$(AM_V_at)-rm -f libmaintest.a
+	$(AM_V_AR)$(libmaintest_a_AR) libmaintest.a $(libmaintest_a_OBJECTS) $(libmaintest_a_LIBADD)
+	$(AM_V_at)$(RANLIB) libmaintest.a
 
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
@@ -1527,12 +1566,6 @@ libmini.la: $(libmini_la_OBJECTS) $(libmini_la_DEPENDENCIES) $(EXTRA_libmini_la_
 
 libmono-dbg.la: $(libmono_dbg_la_OBJECTS) $(libmono_dbg_la_DEPENDENCIES) $(EXTRA_libmono_dbg_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmono_dbg_la_LINK) $(am_libmono_dbg_la_rpath) $(libmono_dbg_la_OBJECTS) $(libmono_dbg_la_LIBADD) $(LIBS)
-interp/$(am__dirstamp):
-	@$(MKDIR_P) interp
-	@: > interp/$(am__dirstamp)
-interp/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) interp/$(DEPDIR)
-	@: > interp/$(DEPDIR)/$(am__dirstamp)
 interp/libmono_ee_interp_la-interp.lo: interp/$(am__dirstamp) \
 	interp/$(DEPDIR)/$(am__dirstamp)
 interp/libmono_ee_interp_la-mintops.lo: interp/$(am__dirstamp) \
@@ -1601,6 +1634,15 @@ clean-binPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
+clean-checkPROGRAMS:
+	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
+	echo " rm -f" $$list; \
+	rm -f $$list || exit $$?; \
+	test -n "$(EXEEXT)" || exit 0; \
+	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
+	echo " rm -f" $$list; \
+	rm -f $$list
+
 clean-noinstPROGRAMS:
 	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
 	echo " rm -f" $$list; \
@@ -1625,6 +1667,10 @@ mono-sgen$(EXEEXT): $(mono_sgen_OBJECTS) $(mono_sgen_DEPENDENCIES) $(EXTRA_mono_
 monow$(EXEEXT): $(monow_OBJECTS) $(monow_DEPENDENCIES) $(EXTRA_monow_DEPENDENCIES) 
 	@rm -f monow$(EXEEXT)
 	$(AM_V_CCLD)$(monow_LINK) $(monow_OBJECTS) $(monow_LDADD) $(LIBS)
+
+test-mono-interp-whitebox$(EXEEXT): $(test_mono_interp_whitebox_OBJECTS) $(test_mono_interp_whitebox_DEPENDENCIES) $(EXTRA_test_mono_interp_whitebox_DEPENDENCIES) 
+	@rm -f test-mono-interp-whitebox$(EXEEXT)
+	$(AM_V_CCLD)$(test_mono_interp_whitebox_LINK) $(test_mono_interp_whitebox_OBJECTS) $(test_mono_interp_whitebox_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -1741,6 +1787,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/llvm-jit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/llvm-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mini-llvm-cpp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmaintest_a-whitebox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmono_ee_interp_la-interp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmono_ee_interp_la-mintops.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmono_ee_interp_la-transform.Plo@am__quote@
@@ -1796,6 +1843,20 @@ libmain_a-main.obj: main.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='libmain_a-main.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmain_a_CFLAGS) $(CFLAGS) -c -o libmain_a-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+
+interp/libmaintest_a-whitebox.o: interp/whitebox.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmaintest_a_CFLAGS) $(CFLAGS) -MT interp/libmaintest_a-whitebox.o -MD -MP -MF interp/$(DEPDIR)/libmaintest_a-whitebox.Tpo -c -o interp/libmaintest_a-whitebox.o `test -f 'interp/whitebox.c' || echo '$(srcdir)/'`interp/whitebox.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) interp/$(DEPDIR)/libmaintest_a-whitebox.Tpo interp/$(DEPDIR)/libmaintest_a-whitebox.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='interp/whitebox.c' object='interp/libmaintest_a-whitebox.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmaintest_a_CFLAGS) $(CFLAGS) -c -o interp/libmaintest_a-whitebox.o `test -f 'interp/whitebox.c' || echo '$(srcdir)/'`interp/whitebox.c
+
+interp/libmaintest_a-whitebox.obj: interp/whitebox.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmaintest_a_CFLAGS) $(CFLAGS) -MT interp/libmaintest_a-whitebox.obj -MD -MP -MF interp/$(DEPDIR)/libmaintest_a-whitebox.Tpo -c -o interp/libmaintest_a-whitebox.obj `if test -f 'interp/whitebox.c'; then $(CYGPATH_W) 'interp/whitebox.c'; else $(CYGPATH_W) '$(srcdir)/interp/whitebox.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) interp/$(DEPDIR)/libmaintest_a-whitebox.Tpo interp/$(DEPDIR)/libmaintest_a-whitebox.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='interp/whitebox.c' object='interp/libmaintest_a-whitebox.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmaintest_a_CFLAGS) $(CFLAGS) -c -o interp/libmaintest_a-whitebox.obj `if test -f 'interp/whitebox.c'; then $(CYGPATH_W) 'interp/whitebox.c'; else $(CYGPATH_W) '$(srcdir)/interp/whitebox.c'; fi`
 
 libmini_la-mini.lo: mini.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini.Tpo -c -o libmini_la-mini.lo `test -f 'mini.c' || echo '$(srcdir)/'`mini.c
@@ -2668,6 +2729,7 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
 	$(MAKE) $(AM_MAKEFLAGS) check-local
 check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
@@ -2719,9 +2781,10 @@ maintainer-clean-generic:
 @DISABLE_EXECUTABLES_TRUE@install-exec-hook:
 clean: clean-am
 
-clean-am: clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
-	clean-libtool clean-local clean-noinstLIBRARIES \
-	clean-noinstLTLIBRARIES clean-noinstPROGRAMS mostlyclean-am
+clean-am: clean-binPROGRAMS clean-checkPROGRAMS clean-generic \
+	clean-libLTLIBRARIES clean-libtool clean-local \
+	clean-noinstLIBRARIES clean-noinstLTLIBRARIES \
+	clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR) interp/$(DEPDIR)
@@ -2803,8 +2866,8 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	install-strip
 
 .PHONY: CTAGS GTAGS TAGS all all-am all-local check check-am \
-	check-local clean clean-binPROGRAMS clean-generic \
-	clean-libLTLIBRARIES clean-libtool clean-local \
+	check-local clean clean-binPROGRAMS clean-checkPROGRAMS \
+	clean-generic clean-libLTLIBRARIES clean-libtool clean-local \
 	clean-noinstLIBRARIES clean-noinstLTLIBRARIES \
 	clean-noinstPROGRAMS cscopelist-am ctags ctags-am distclean \
 	distclean-compile distclean-generic distclean-libtool \
@@ -2986,6 +3049,9 @@ rcheck: mono $(regtests)
 richeck: mono $(regtests)
 	$(INTERP_RUNTIME) --regression $(regtests)
 
+interp-whitebox: test-mono-interp-whitebox
+	MONO_PATH=$(CLASS) ./$< $(WHITEBOX_ASSEMBLY)
+
 mixedcheck: mono mixed.exe
 	$(MINI_RUNTIME) --interp=jit=JitClass mixed.exe
 
@@ -3086,25 +3152,27 @@ check-local: $(check_local_targets)
 clean-local:
 	rm -f mono mono.exe monow.exe mono-sgen.exe a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
-version.h: Makefile
-	if test -e $(top_srcdir)/.git; then \
-		(cd $(top_srcdir); \
-			LANG=C; export LANG; \
-			if test -z "$$ghprbPullId"; then \
-				branch=`git branch | grep '^\*' | sed 's/.*detached .*/explicit/' | cut -d ' ' -f 2`; \
-			else \
-				branch="pull-request-$$ghprbPullId"; \
-			fi; \
-			version=`git log --no-color --first-parent -n1 --pretty=format:%h`; \
-			echo "#define FULL_VERSION \"$$branch/$$version\""; \
-		); \
-	else \
-		if test -z "$$MONO_BRANCH" -o -z "$$MONO_BUILD_REVISION"; then \
-			echo "#define FULL_VERSION \"tarball\""; \
-		else \
-			echo "#define FULL_VERSION \"$$MONO_BRANCH/$$MONO_BUILD_REVISION\""; \
-		fi \
-	fi > version.h
+@ENABLE_NETCORE_TRUE@version.h: Makefile
+@ENABLE_NETCORE_TRUE@	echo "#define FULL_VERSION \"netcore\"" > version.h
+@ENABLE_NETCORE_FALSE@version.h: Makefile
+@ENABLE_NETCORE_FALSE@	if test -e $(top_srcdir)/.git; then \
+@ENABLE_NETCORE_FALSE@		(cd $(top_srcdir); \
+@ENABLE_NETCORE_FALSE@			LANG=C; export LANG; \
+@ENABLE_NETCORE_FALSE@			if test -z "$$ghprbPullId"; then \
+@ENABLE_NETCORE_FALSE@				branch=`git branch | grep '^\*' | sed 's/.*detached .*/explicit/' | cut -d ' ' -f 2`; \
+@ENABLE_NETCORE_FALSE@			else \
+@ENABLE_NETCORE_FALSE@				branch="pull-request-$$ghprbPullId"; \
+@ENABLE_NETCORE_FALSE@			fi; \
+@ENABLE_NETCORE_FALSE@			version=`git log --no-color --first-parent -n1 --pretty=format:%h`; \
+@ENABLE_NETCORE_FALSE@			echo "#define FULL_VERSION \"$$branch/$$version\""; \
+@ENABLE_NETCORE_FALSE@		); \
+@ENABLE_NETCORE_FALSE@	else \
+@ENABLE_NETCORE_FALSE@		if test -z "$$MONO_BRANCH" -o -z "$$MONO_BUILD_REVISION"; then \
+@ENABLE_NETCORE_FALSE@			echo "#define FULL_VERSION \"tarball\""; \
+@ENABLE_NETCORE_FALSE@		else \
+@ENABLE_NETCORE_FALSE@			echo "#define FULL_VERSION \"$$MONO_BRANCH/$$MONO_BUILD_REVISION\""; \
+@ENABLE_NETCORE_FALSE@		fi \
+@ENABLE_NETCORE_FALSE@	fi > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

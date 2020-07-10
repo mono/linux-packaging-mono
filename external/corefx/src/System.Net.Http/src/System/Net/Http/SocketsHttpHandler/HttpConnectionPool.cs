@@ -295,10 +295,24 @@ namespace System.Net.Http
                 {
                     return await SendWithNtConnectionAuthAsync((HttpConnection)connection, request, doRequestAuth, cancellationToken).ConfigureAwait(false);                    
                 }
+#if MONOTOUCH_WATCH
+                catch (HttpRequestException e)
+                {
+                    if (!isNewConnection && e.InnerException is IOException && connection.CanRetry)
+                    {
+                        // Eat exception and try again.
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+#else
                 catch (HttpRequestException e) when (!isNewConnection && e.InnerException is IOException && connection.CanRetry)
                 {
                     // Eat exception and try again.
                 }
+#endif
                 finally
                 {
                     connection.Release();

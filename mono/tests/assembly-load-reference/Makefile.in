@@ -141,8 +141,8 @@ am__can_run_installinfo = \
   esac
 am__extra_recursive_targets = test-recursive test-bundle-recursive
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
-am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/mk/common.mk \
-	$(top_srcdir)/mkinstalldirs README
+am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/mkinstalldirs \
+	README
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
@@ -448,7 +448,8 @@ SN = $(mcs_topdir)/class/lib/build/sn.exe
 MCS = $(TOOLS_RUNTIME) $(CSC) -noconfig -nologo -debug:portable -target:library $(PROFILE_MCS_FLAGS)
 
 ### testcase stuff
-EXTRA_DIST = README $(SIGNING_KEY) $(GACTESTLIB_SRCS) 
+EXTRA_DIST = README $(SIGNING_KEY) $(GACTESTLIB_SRCS) $(TESTS_CS) \
+	$(LIBRARIES_CS)
 TESTS_CS = \
 	samedir/LoadFromMain.cs \
 	samedir/LoadFileMain.cs \
@@ -456,6 +457,9 @@ TESTS_CS = \
 	separatedir/LoadFileMain.cs \
 	mainanddep/LoadFromMain.cs \
 	mainanddep/LoadFileMain.cs
+
+LIBRARIES_CS = src/Dep.cs \
+	src/Mid.cs
 
 TESTS_EXE = $(TESTS_CS:.cs=.exe)
 TESTS_EXE_AOT = $(TESTS_EXE:.exe=.exe$(PLATFORM_AOT_SUFFIX))
@@ -478,7 +482,7 @@ DISABLED_TESTS = $(am__append_5)
 all: all-am
 
 .SUFFIXES:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/mk/common.mk $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -498,7 +502,6 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
-$(top_srcdir)/mk/common.mk $(am__empty):
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh

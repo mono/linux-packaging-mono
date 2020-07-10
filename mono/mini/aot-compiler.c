@@ -79,6 +79,7 @@ try_get_method_nofail (MonoClass *klass, const char *method_name, int param_coun
 	return result;
 }
 
+// FIXME Consolidate the multiple functions named get_method_nofail.
 static MonoMethod*
 get_method_nofail (MonoClass *klass, const char *method_name, int param_count, int flags)
 {
@@ -202,6 +203,7 @@ typedef struct MonoAotOptions {
 	char *gen_msym_dir_path;
 	gboolean direct_pinvoke;
 	gboolean direct_icalls;
+	gboolean direct_extern_calls;
 	gboolean no_direct_calls;
 	gboolean use_trampolines_page;
 	gboolean no_instances;
@@ -530,6 +532,7 @@ report_loader_error (MonoAotCompile *acfg, MonoError *error, gboolean fatal, con
 
 #define MAX_SYMBOL_SIZE 256
 
+#if defined(TARGET_WIN32) && defined(TARGET_X86)
 static const char *
 mangle_symbol (const char * symbol, char * mangled_symbol, gsize length)
 {
@@ -539,15 +542,11 @@ mangle_symbol (const char * symbol, char * mangled_symbol, gsize length)
 	g_assert (NULL != mangled_symbol);
 	g_assert (0 != length);
 
-#if defined(TARGET_WIN32) && defined(TARGET_X86)
 	if (symbol && '_' != symbol [0]) {
 		needed_size = g_snprintf (mangled_symbol, length, "_%s", symbol);
 	} else {
 		needed_size = g_snprintf (mangled_symbol, length, "%s", symbol);
 	}
-#else
-	needed_size = g_snprintf (mangled_symbol, length, "%s", symbol);
-#endif
 
 	g_assert (0 <= needed_size && needed_size < length);
 	return mangled_symbol;
@@ -558,17 +557,14 @@ mangle_symbol_alloc (const char * symbol)
 {
 	g_assert (NULL != symbol);
 
-#if defined(TARGET_WIN32) && defined(TARGET_X86)
 	if (symbol && '_' != symbol [0]) {
 		return g_strdup_printf ("_%s", symbol);
 	}
 	else {
 		return g_strdup_printf ("%s", symbol);
 	}
-#else
-	return g_strdup_printf ("%s", symbol);
-#endif
 }
+#endif
 
 static void
 emit_section_change (MonoAotCompile *acfg, const char *section_name, int subsection_index)
@@ -748,11 +744,13 @@ emit_global_inner (MonoAotCompile *acfg, const char *name, gboolean func)
 
 #endif
 
+#ifdef TARGET_WIN32_MSVC
 static gboolean
 link_shared_library (MonoAotCompile *acfg)
 {
 	return !acfg->aot_opts.static_link && !acfg->aot_opts.asm_only;
 }
+#endif
 
 static gboolean
 add_to_global_symbol_table (MonoAotCompile *acfg)
@@ -5307,13 +5305,12 @@ add_generic_class_with_depth (MonoAotCompile *acfg, MonoClass *klass, int depth,
 		MonoClass *tclass = mono_class_from_mono_type_internal (mono_class_get_generic_class (klass)->context.class_inst->type_argv [0]);
 		MonoClass *icomparable, *gcomparer, *icomparable_inst;
 		MonoGenericContext ctx;
-		MonoType *args [16];
 
 		memset (&ctx, 0, sizeof (ctx));
 
 		icomparable = mono_class_load_from_name (mono_defaults.corlib, "System", "IComparable`1");
 
-		args [0] = m_class_get_byval_arg (tclass);
+		MonoType *args [ ] = { m_class_get_byval_arg (tclass) };
 		ctx.class_inst = mono_metadata_get_generic_inst (1, args);
 
 		icomparable_inst = mono_class_inflate_generic_class_checked (icomparable, &ctx, error);
@@ -5335,13 +5332,12 @@ add_generic_class_with_depth (MonoAotCompile *acfg, MonoClass *klass, int depth,
 		MonoClass *tclass = mono_class_from_mono_type_internal (mono_class_get_generic_class (klass)->context.class_inst->type_argv [0]);
 		MonoClass *iface, *gcomparer, *iface_inst;
 		MonoGenericContext ctx;
-		MonoType *args [16];
 
 		memset (&ctx, 0, sizeof (ctx));
 
 		iface = mono_class_load_from_name (mono_defaults.corlib, "System", "IEquatable`1");
 		g_assert (iface);
-		args [0] = m_class_get_byval_arg (tclass);
+		MonoType *args [ ] = { m_class_get_byval_arg (tclass) };
 		ctx.class_inst = mono_metadata_get_generic_inst (1, args);
 
 		iface_inst = mono_class_inflate_generic_class_checked (iface, &ctx, error);
@@ -5363,14 +5359,13 @@ add_generic_class_with_depth (MonoAotCompile *acfg, MonoClass *klass, int depth,
 		MonoClass *enum_comparer;
 		MonoClass *tclass = mono_class_from_mono_type_internal (mono_class_get_generic_class (klass)->context.class_inst->type_argv [0]);
 		MonoGenericContext ctx;
-		MonoType *args [16];
 
 		if (m_class_is_enumtype (tclass)) {
 			MonoClass *enum_comparer_inst;
 			ERROR_DECL (error);
 
 			memset (&ctx, 0, sizeof (ctx));
-			args [0] = m_class_get_byval_arg (tclass);
+			MonoType *args [ ] = { m_class_get_byval_arg (tclass) };
 			ctx.class_inst = mono_metadata_get_generic_inst (1, args);
 
 			enum_comparer = mono_class_load_from_name (mono_defaults.corlib, "System.Collections.Generic", "EnumEqualityComparer`1");
@@ -5385,14 +5380,13 @@ add_generic_class_with_depth (MonoAotCompile *acfg, MonoClass *klass, int depth,
 		MonoClass *comparer;
 		MonoClass *tclass = mono_class_from_mono_type_internal (mono_class_get_generic_class (klass)->context.class_inst->type_argv [0]);
 		MonoGenericContext ctx;
-		MonoType *args [16];
 
 		if (m_class_is_enumtype (tclass)) {
 			MonoClass *comparer_inst;
 			ERROR_DECL (error);
 
 			memset (&ctx, 0, sizeof (ctx));
-			args [0] = m_class_get_byval_arg (tclass);
+			MonoType *args [ ] = { m_class_get_byval_arg (tclass) };
 			ctx.class_inst = mono_metadata_get_generic_inst (1, args);
 
 			comparer = mono_class_load_from_name (mono_defaults.corlib, "System.Collections.Generic", "ObjectComparer`1");
@@ -5408,7 +5402,6 @@ add_instances_of (MonoAotCompile *acfg, MonoClass *klass, MonoType **insts, int 
 {
 	int i;
 	MonoGenericContext ctx;
-	MonoType *args [16];
 
 	if (acfg->aot_opts.no_instances)
 		return;
@@ -5418,7 +5411,7 @@ add_instances_of (MonoAotCompile *acfg, MonoClass *klass, MonoType **insts, int 
 	for (i = 0; i < ninsts; ++i) {
 		ERROR_DECL (error);
 		MonoClass *generic_inst;
-		args [0] = insts [i];
+		MonoType *args [ ] = { insts [i] };
 		ctx.class_inst = mono_metadata_get_generic_inst (1, args);
 		generic_inst = mono_class_inflate_generic_class_checked (klass, &ctx, error);
 		mono_error_assert_ok (error); /* FIXME don't swallow the error */
@@ -5808,6 +5801,63 @@ mono_aot_direct_icalls_enabled_for_method (MonoCompile *cfg, MonoMethod *method)
 }
 
 /*
+ * method_is_externally_callable:
+ *
+ *   Return whenever METHOD can be directly called from other AOT images
+ * without going through a PLT.
+ */
+static gboolean
+method_is_externally_callable (MonoAotCompile *acfg, MonoMethod *method)
+{
+	// FIXME: Unify
+	if (acfg->aot_opts.llvm_only) {
+		if (!acfg->aot_opts.static_link)
+			return FALSE;
+		if (method->wrapper_type == MONO_WRAPPER_ALLOC)
+			return TRUE;
+		if (method->wrapper_type == MONO_WRAPPER_MANAGED_TO_NATIVE)
+			return TRUE;
+		if (method->string_ctor)
+			return FALSE;
+		if (method->wrapper_type)
+			return FALSE;
+		if ((method->flags & METHOD_ATTRIBUTE_PINVOKE_IMPL) || (method->iflags & METHOD_IMPL_ATTRIBUTE_INTERNAL_CALL))
+			return FALSE;
+		if (method->is_inflated)
+			return FALSE;
+		if (!((mono_class_get_flags (method->klass) & TYPE_ATTRIBUTE_PUBLIC) && (method->flags & METHOD_ATTRIBUTE_PUBLIC)))
+			return FALSE;
+		/* Can't enable this as the callee might fail llvm compilation */
+		//return TRUE;
+		return FALSE;
+	} else {
+		if (!acfg->aot_opts.direct_extern_calls)
+			return FALSE;
+		if (!acfg->llvm || acfg->aot_opts.llvm_disable_self_init)
+			return FALSE;
+		if (acfg->aot_opts.soft_debug || acfg->aot_opts.no_direct_calls)
+			return FALSE;
+		if (method->wrapper_type == MONO_WRAPPER_ALLOC)
+			return FALSE;
+		if (method->string_ctor)
+			return FALSE;
+		if (method->wrapper_type)
+			return FALSE;
+		if ((method->flags & METHOD_ATTRIBUTE_PINVOKE_IMPL) || (method->iflags & METHOD_IMPL_ATTRIBUTE_INTERNAL_CALL))
+			return FALSE;
+		if (method->iflags & METHOD_IMPL_ATTRIBUTE_SYNCHRONIZED)
+			return FALSE;
+		if (method->iflags & METHOD_IMPL_ATTRIBUTE_RUNTIME)
+			return FALSE;
+		if (method->is_inflated)
+			return FALSE;
+		if (!((mono_class_get_flags (method->klass) & TYPE_ATTRIBUTE_PUBLIC) && (method->flags & METHOD_ATTRIBUTE_PUBLIC)))
+			return FALSE;
+		return TRUE;
+	}
+}
+
+/*
  * is_direct_callable:
  *
  *   Return whenever the method identified by JI is directly callable without 
@@ -5859,6 +5909,9 @@ is_direct_callable (MonoAotCompile *acfg, MonoMethod *method, MonoJumpInfo *patc
 			if (direct_callable)
 				return TRUE;
 		}
+	} else if ((patch_info->type == MONO_PATCH_INFO_METHOD) && (m_class_get_image (patch_info->data.method->klass) != acfg->image)) {
+		/* Cross assembly calls */
+		return method_is_externally_callable (acfg, patch_info->data.method);
 	} else if ((patch_info->type == MONO_PATCH_INFO_ICALL_ADDR_CALL && patch_info->data.method->flags & METHOD_ATTRIBUTE_PINVOKE_IMPL)) {
 		if (acfg->aot_opts.direct_pinvoke)
 			return TRUE;
@@ -6140,13 +6193,28 @@ emit_and_reloc_code (MonoAotCompile *acfg, MonoMethod *method, guint8 *code, gui
 				 */
 				direct_call = FALSE;
 				external_call = FALSE;
-				if ((patch_info->type == MONO_PATCH_INFO_METHOD) && (m_class_get_image (patch_info->data.method->klass) == acfg->image)) {
-					if (!got_only && is_direct_callable (acfg, method, patch_info)) {
-						MonoCompile *callee_cfg = (MonoCompile *)g_hash_table_lookup (acfg->method_to_cfg, patch_info->data.method);
+				if (patch_info->type == MONO_PATCH_INFO_METHOD) {
+					MonoMethod *cmethod = patch_info->data.method;
+					if (cmethod->wrapper_type == MONO_WRAPPER_OTHER && mono_marshal_get_wrapper_info (cmethod)->subtype == WRAPPER_SUBTYPE_AOT_INIT) {
+						WrapperInfo *info = mono_marshal_get_wrapper_info (cmethod);
+
+						/*
+						 * This is a call from a JITted method to the init wrapper emitted by LLVM.
+						 */
+						g_assert (acfg->aot_opts.llvm && acfg->aot_opts.direct_extern_calls);
+
+						const char *init_name = mono_marshal_get_aot_init_wrapper_name (info->d.aot_init.subtype);
+						char *symbol = g_strdup_printf ("%s%s_%s", acfg->user_symbol_prefix, acfg->global_prefix, init_name);
+
+						direct_call = TRUE;
+						direct_call_target = symbol;
+						patch_info->type = MONO_PATCH_INFO_NONE;
+					} else if ((m_class_get_image (patch_info->data.method->klass) == acfg->image) && !got_only && is_direct_callable (acfg, method, patch_info)) {
+						MonoCompile *callee_cfg = (MonoCompile *)g_hash_table_lookup (acfg->method_to_cfg, cmethod);
 
 						// Don't compile inflated methods if we're doing dedup
-						if (acfg->aot_opts.dedup && !mono_aot_can_dedup (patch_info->data.method)) {
-							char *name = mono_aot_get_mangled_method_name (patch_info->data.method);
+						if (acfg->aot_opts.dedup && !mono_aot_can_dedup (cmethod)) {
+							char *name = mono_aot_get_mangled_method_name (cmethod);
 							mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_AOT, "DIRECT CALL: %s by %s", name, method ? mono_method_full_name (method, TRUE) : "");
 							g_free (name);
 
@@ -7476,7 +7544,7 @@ static void
 emit_trampolines (MonoAotCompile *acfg)
 {
 	char symbol [MAX_SYMBOL_SIZE];
-	char end_symbol [MAX_SYMBOL_SIZE];
+	char end_symbol [MAX_SYMBOL_SIZE + 2];
 	int i, tramp_got_offset;
 	int ntype;
 #ifdef MONO_ARCH_HAVE_FULL_AOT_TRAMPOLINES
@@ -8099,6 +8167,8 @@ mono_aot_parse_options (const char *aot_options, MonoAotOptions *opts)
 			opts->direct_pinvoke = TRUE;
 		} else if (str_begins_with (arg, "direct-icalls")) {
 			opts->direct_icalls = TRUE;
+		} else if (str_begins_with (arg, "direct-extern-calls")) {
+			opts->direct_extern_calls = TRUE;
 		} else if (str_begins_with (arg, "no-direct-calls")) {
 			opts->no_direct_calls = TRUE;
 		} else if (str_begins_with (arg, "print-skipped")) {
@@ -8617,6 +8687,8 @@ compile_method (MonoAotCompile *acfg, MonoMethod *method)
 		flags = (JitFlags)(flags | JIT_FLAG_INTERP);
 	if (acfg->aot_opts.use_current_cpu)
 		flags = (JitFlags)(flags | JIT_FLAG_USE_CURRENT_CPU);
+	if (method_is_externally_callable (acfg, method))
+		flags = (JitFlags)(flags | JIT_FLAG_SELF_INIT);
 
 	jit_time_start = mono_time_track_start ();
 	cfg = mini_method_compile (method, acfg->opts, mono_get_root_domain (), flags, 0, index);
@@ -8847,6 +8919,16 @@ compile_method (MonoAotCompile *acfg, MonoMethod *method)
 	if (cfg->llvm_only)
 		acfg->stats.llvm_count ++;
 
+	if (acfg->llvm && !cfg->compile_llvm && method_is_externally_callable (acfg, cfg->method)) {
+		/*
+		 * This is a JITted fallback method for a method which failed LLVM compilation, emit a global
+		 * symbol for it with the same name the LLVM method would get.
+		 */
+		char *name = mono_aot_get_mangled_method_name (cfg->method);
+		char *export_name = g_strdup_printf ("%s%s", acfg->user_symbol_prefix, name);
+		g_hash_table_insert (acfg->export_names, cfg->method, export_name);
+	}
+
 	/* 
 	 * FIXME: Instead of this mess, allocate the patches from the aot mempool.
 	 */
@@ -8970,6 +9052,12 @@ gboolean
 mono_aot_is_shared_got_offset (int offset)
 {
 	return offset < llvm_acfg->nshared_got_entries;
+}
+
+gboolean
+mono_aot_is_externally_callable (MonoMethod *cmethod)
+{
+	return method_is_externally_callable (llvm_acfg, cmethod);
 }
 
 char*
@@ -9337,6 +9425,9 @@ sanitize_mangled_string (const char *input)
 			break;
 		case ':':
 			g_string_append (s, "_colon_");
+			break;
+		case '|':
+			g_string_append (s, "_verbar_");
 			break;
 		default:
 			g_string_append_c (s, c);
@@ -9814,11 +9905,13 @@ emit_llvm_file (MonoAotCompile *acfg)
 		// FIXME: This doesn't work yet
 		opts = g_strdup ("");
 	} else {
-		opts = g_strdup ("-O2 -disable-tail-calls -place-safepoints -spp-all-backedges");
+		opts = g_strdup ("-disable-tail-calls -place-safepoints -spp-all-backedges");
 	}
 
 	if (acfg->aot_opts.llvm_opts) {
-		opts = g_strdup_printf ("%s %s", opts, acfg->aot_opts.llvm_opts);
+		opts = g_strdup_printf ("%s %s", acfg->aot_opts.llvm_opts, opts);
+	} else if (!acfg->aot_opts.llvm_only) {
+		opts = g_strdup_printf ("-O2 %s", opts);
 	}
 
 	if (acfg->aot_opts.use_current_cpu) {
@@ -10381,7 +10474,6 @@ mono_aot_get_array_helper_from_wrapper (MonoMethod *method)
 	MonoMethod *m;
 	const char *prefix;
 	MonoGenericContext ctx;
-	MonoType *args [16];
 	char *mname, *iname, *s, *s2, *helper_name = NULL;
 
 	prefix = "System.Collections.Generic";
@@ -10406,7 +10498,7 @@ mono_aot_get_array_helper_from_wrapper (MonoMethod *method)
 	if (m->is_generic) {
 		ERROR_DECL (error);
 		memset (&ctx, 0, sizeof (ctx));
-		args [0] = m_class_get_byval_arg (m_class_get_element_class (method->klass));
+		MonoType *args [ ] = { m_class_get_byval_arg (m_class_get_element_class (method->klass)) };
 		ctx.method_inst = mono_metadata_get_generic_inst (1, args);
 		m = mono_class_inflate_generic_method_checked (m, &ctx, error);
 		g_assert (is_ok (error)); /* FIXME don't swallow the error */
@@ -12193,29 +12285,32 @@ compile_asm (MonoAotCompile *acfg)
 	g_assert (objfile != NULL);
 	command = g_strdup_printf ("\"%s%s\" %s %s /OUT:%s %s %s", tool_prefix, LD_NAME,
 			acfg->aot_opts.nodebug ? LD_OPTIONS : LD_DEBUG_OPTIONS, ld_flags, wrap_path (tmp_outfile_name), wrap_path (objfile), wrap_path (llvm_ofile));
-#elif defined(LD_NAME)
-	command = g_strdup_printf ("%s%s %s -o %s %s %s %s", tool_prefix, LD_NAME, LD_OPTIONS,
-		wrap_path (tmp_outfile_name), wrap_path (llvm_ofile),
-		wrap_path (g_strdup_printf ("%s." AS_OBJECT_FILE_SUFFIX, acfg->tmpfname)), ld_flags);
+#else
+	GString *str;
+
+	str = g_string_new ("");
+#if defined(LD_NAME)
+	g_string_append_printf (str, "%s%s %s", tool_prefix, LD_NAME, LD_OPTIONS);
 #else
 	// Default (linux)
-	if (acfg->aot_opts.tool_prefix) {
+	if (acfg->aot_opts.tool_prefix)
 		/* Cross compiling */
-		command = g_strdup_printf ("\"%sld\" %s -shared -o %s %s %s %s", tool_prefix, LD_OPTIONS,
-								   wrap_path (tmp_outfile_name), wrap_path (llvm_ofile),
-								   wrap_path (g_strdup_printf ("%s." AS_OBJECT_FILE_SUFFIX, acfg->tmpfname)), ld_flags);
-	} else {
-		char *args = g_strdup_printf ("%s -shared -o %s %s %s %s", LD_OPTIONS,
-									  wrap_path (tmp_outfile_name), wrap_path (llvm_ofile),
-									  wrap_path (g_strdup_printf ("%s." AS_OBJECT_FILE_SUFFIX, acfg->tmpfname)), ld_flags);
+		g_string_append_printf (str, "\"%sld\" %s", tool_prefix, LD_OPTIONS);
+	else if (acfg->aot_opts.llvm_only)
+		g_string_append_printf (str, "%s", acfg->aot_opts.clangxx);
+	else
+		g_string_append_printf (str, "\"%sld\"", tool_prefix);
+	g_string_append_printf (str, " -shared");
+#endif
+	g_string_append_printf (str, " -o %s %s %s %s",
+							wrap_path (tmp_outfile_name), wrap_path (llvm_ofile),
+							wrap_path (g_strdup_printf ("%s." AS_OBJECT_FILE_SUFFIX, acfg->tmpfname)), ld_flags);
 
-		if (acfg->aot_opts.llvm_only) {
-			command = g_strdup_printf ("%s %s", acfg->aot_opts.clangxx, args);
-		} else {
-			command = g_strdup_printf ("\"%sld\" %s", tool_prefix, args);
-		}
-		g_free (args);
-	}
+#if defined(TARGET_MACH)
+	g_string_append_printf (str, " -Wl,-install_name,%s%s", g_path_get_basename (acfg->image->name), MONO_SOLIB_EXT);
+#endif
+
+	command = g_string_free (str, FALSE);
 #endif
 	aot_printf (acfg, "Executing the native linker: %s\n", command);
 	if (execute_system (command) != 0) {
@@ -13033,7 +13128,6 @@ add_preinit_got_slots (MonoAotCompile *acfg)
 	 * Allocate the first few GOT entries to information which is needed frequently, or it is needed
 	 * during method initialization etc.
 	 */
-
 	ji = (MonoJumpInfo *)mono_mempool_alloc0 (acfg->mempool, sizeof (MonoJumpInfo));
 	ji->type = MONO_PATCH_INFO_IMAGE;
 	ji->data.image = acfg->image;
@@ -13150,10 +13244,10 @@ mono_dedup_log_stats (MonoAotCompile *acfg)
 		}
 	}
 
-	aot_printf (acfg, "Dedup Pass: Size Saved From Deduped Wrappers:\t%d methods, %zu bytes\n", wrappers_saved, wrappers_size_saved);
-	aot_printf (acfg, "Dedup Pass: Size Saved From Inflated Methods:\t%d methods, %zu bytes\n", instances_saved, inflated_size_saved);
+	aot_printf (acfg, "Dedup Pass: Size Saved From Deduped Wrappers:\t%d methods, %" G_GSIZE_FORMAT "u bytes\n", wrappers_saved, wrappers_size_saved);
+	aot_printf (acfg, "Dedup Pass: Size Saved From Inflated Methods:\t%d methods, %" G_GSIZE_FORMAT "u bytes\n", instances_saved, inflated_size_saved);
 	if (acfg->dedup_emit_mode)
-		aot_printf (acfg, "Dedup Pass: Size of Moved But Not Deduped (only 1 copy) Methods:\t%d methods, %zu bytes\n", copied, copied_singles);
+		aot_printf (acfg, "Dedup Pass: Size of Moved But Not Deduped (only 1 copy) Methods:\t%d methods, %" G_GSIZE_FORMAT "u bytes\n", copied, copied_singles);
 
 	g_hash_table_destroy (acfg->dedup_stats);
 	acfg->dedup_stats = NULL;
@@ -13477,6 +13571,11 @@ mono_compile_assembly (MonoAssembly *ass, guint32 opts, const char *aot_options,
 	acfg->aot_opts.clangxx = g_strdup ("clang++");
 
 	mono_aot_parse_options (aot_options, &acfg->aot_opts);
+
+	if (acfg->aot_opts.direct_extern_calls && !(acfg->aot_opts.llvm && acfg->aot_opts.static_link)) {
+		aot_printerrf (acfg, "The 'direct-extern-calls' option requires the 'llvm' and 'static' options.\n");
+		return 1;
+	}
 
 	// start dedup
 	MonoAotState *astate = NULL;
@@ -14138,6 +14237,12 @@ mono_aot_is_shared_got_offset (int offset)
 	return FALSE;
 }
 
+gboolean
+mono_aot_is_externally_callable (MonoMethod *cmethod)
+{
+	return FALSE;
+}
+
 int
 mono_compile_deferred_assemblies (guint32 opts, const char *aot_options, gpointer **aot_state)
 {
@@ -14156,6 +14261,13 @@ gboolean
 mono_aot_can_enter_interp (MonoMethod *method)
 {
 	return FALSE;
+}
+
+int
+mono_aot_get_method_index (MonoMethod *method)
+{
+	g_assert_not_reached ();
+	return 0;
 }
 
 #endif
