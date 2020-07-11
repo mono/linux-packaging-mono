@@ -560,7 +560,10 @@ mono_marshal_get_managed_wrapper (MonoMethod *method, MonoClass *delegate_klass,
              <div class="mapi-section">Description</div>
              <div>
  Generates IL code to call managed methods from unmanaged code 
- If <i>target_handle</i> is <code>0</code>, the wrapper info will be a <code>WrapperInfo</code> structure.</div>
+ If <i>target_handle</i> is <code>0</code>, the wrapper info will be a <code>WrapperInfo</code> structure.
+<p />
+ If <i>delegate_klass</i> is <code><code>NULL</code></code>, we're creating a wrapper for a function pointer to a method marked with
+ UnamangedCallersOnlyAttribute.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
