@@ -382,11 +382,13 @@ libmono_dbg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @DISABLE_DEBUGGER_AGENT_TRUE@@ENABLE_MSVC_ONLY_FALSE@	$(libdir)
 @BITCODE_TRUE@@DISABLE_INTERPRETER_TRUE@@ENABLE_MSVC_ONLY_FALSE@libmono_ee_interp_la_DEPENDENCIES = libmonosgen-2.0.la
 am__libmono_ee_interp_la_SOURCES_DIST = interp/interp.h \
-	interp/interp-internals.h interp/interp.c interp/mintops.h \
-	interp/mintops.def interp/mintops.c interp/transform.h \
-	interp/transform.c
+	interp/interp-internals.h interp/interp.c \
+	interp/interp-intrins.h interp/interp-intrins.c \
+	interp/mintops.h interp/mintops.def interp/mintops.c \
+	interp/transform.h interp/transform.c
 @ENABLE_MSVC_ONLY_FALSE@am__objects_22 =  \
 @ENABLE_MSVC_ONLY_FALSE@	interp/libmono_ee_interp_la-interp.lo \
+@ENABLE_MSVC_ONLY_FALSE@	interp/libmono_ee_interp_la-interp-intrins.lo \
 @ENABLE_MSVC_ONLY_FALSE@	interp/libmono_ee_interp_la-mintops.lo \
 @ENABLE_MSVC_ONLY_FALSE@	interp/libmono_ee_interp_la-transform.lo
 @ENABLE_MSVC_ONLY_FALSE@am_libmono_ee_interp_la_OBJECTS =  \
@@ -1121,6 +1123,8 @@ ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 @ENABLE_MSVC_ONLY_FALSE@	interp/interp.h	\
 @ENABLE_MSVC_ONLY_FALSE@	interp/interp-internals.h	\
 @ENABLE_MSVC_ONLY_FALSE@	interp/interp.c	\
+@ENABLE_MSVC_ONLY_FALSE@	interp/interp-intrins.h	\
+@ENABLE_MSVC_ONLY_FALSE@	interp/interp-intrins.c	\
 @ENABLE_MSVC_ONLY_FALSE@	interp/mintops.h	\
 @ENABLE_MSVC_ONLY_FALSE@	interp/mintops.def	\
 @ENABLE_MSVC_ONLY_FALSE@	interp/mintops.c	\
@@ -1551,6 +1555,8 @@ libmono-dbg.la: $(libmono_dbg_la_OBJECTS) $(libmono_dbg_la_DEPENDENCIES) $(EXTRA
 	$(AM_V_CCLD)$(libmono_dbg_la_LINK) $(am_libmono_dbg_la_rpath) $(libmono_dbg_la_OBJECTS) $(libmono_dbg_la_LIBADD) $(LIBS)
 interp/libmono_ee_interp_la-interp.lo: interp/$(am__dirstamp) \
 	interp/$(DEPDIR)/$(am__dirstamp)
+interp/libmono_ee_interp_la-interp-intrins.lo: interp/$(am__dirstamp) \
+	interp/$(DEPDIR)/$(am__dirstamp)
 interp/libmono_ee_interp_la-mintops.lo: interp/$(am__dirstamp) \
 	interp/$(DEPDIR)/$(am__dirstamp)
 interp/libmono_ee_interp_la-transform.lo: interp/$(am__dirstamp) \
@@ -1767,6 +1773,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/llvm-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mini-llvm-cpp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmaintest_a-whitebox.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmono_ee_interp_la-interp-intrins.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmono_ee_interp_la-interp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmono_ee_interp_la-mintops.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmono_ee_interp_la-transform.Plo@am__quote@
@@ -2550,6 +2557,13 @@ interp/libmono_ee_interp_la-interp.lo: interp/interp.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='interp/interp.c' object='interp/libmono_ee_interp_la-interp.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_la_CFLAGS) $(CFLAGS) -c -o interp/libmono_ee_interp_la-interp.lo `test -f 'interp/interp.c' || echo '$(srcdir)/'`interp/interp.c
+
+interp/libmono_ee_interp_la-interp-intrins.lo: interp/interp-intrins.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_la_CFLAGS) $(CFLAGS) -MT interp/libmono_ee_interp_la-interp-intrins.lo -MD -MP -MF interp/$(DEPDIR)/libmono_ee_interp_la-interp-intrins.Tpo -c -o interp/libmono_ee_interp_la-interp-intrins.lo `test -f 'interp/interp-intrins.c' || echo '$(srcdir)/'`interp/interp-intrins.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) interp/$(DEPDIR)/libmono_ee_interp_la-interp-intrins.Tpo interp/$(DEPDIR)/libmono_ee_interp_la-interp-intrins.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='interp/interp-intrins.c' object='interp/libmono_ee_interp_la-interp-intrins.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_la_CFLAGS) $(CFLAGS) -c -o interp/libmono_ee_interp_la-interp-intrins.lo `test -f 'interp/interp-intrins.c' || echo '$(srcdir)/'`interp/interp-intrins.c
 
 interp/libmono_ee_interp_la-mintops.lo: interp/mintops.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_ee_interp_la_CFLAGS) $(CFLAGS) -MT interp/libmono_ee_interp_la-mintops.lo -MD -MP -MF interp/$(DEPDIR)/libmono_ee_interp_la-mintops.Tpo -c -o interp/libmono_ee_interp_la-mintops.lo `test -f 'interp/mintops.c' || echo '$(srcdir)/'`interp/mintops.c
