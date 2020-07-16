@@ -433,8 +433,8 @@ libmonoboehm_2_0_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 am_libmonosgen_2_0_la_OBJECTS =
 libmonosgen_2_0_la_OBJECTS = $(am_libmonosgen_2_0_la_OBJECTS)
 libmonosgen_2_0_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(libmonosgen_2_0_la_CFLAGS) $(CFLAGS) \
+	$(libmonosgen_2_0_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link \
+	$(CCLD) $(libmonosgen_2_0_la_CFLAGS) $(CFLAGS) \
 	$(libmonosgen_2_0_la_LDFLAGS) $(LDFLAGS) -o $@
 @DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@@SHARED_MONO_TRUE@@SUPPORT_SGEN_TRUE@am_libmonosgen_2_0_la_rpath = -rpath \
 @DISABLE_EXECUTABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@@SHARED_MONO_TRUE@@SUPPORT_SGEN_TRUE@	$(libdir)
@@ -709,6 +709,7 @@ MONO_CXXLD = @MONO_CXXLD@
 MONO_JEMALLOC_ASSERT = @MONO_JEMALLOC_ASSERT@
 MONO_JEMALLOC_DEFAULT = @MONO_JEMALLOC_DEFAULT@
 MONO_JEMALLOC_ENABLED = @MONO_JEMALLOC_ENABLED@
+MONO_LIBTOOL_TAG = @MONO_LIBTOOL_TAG@
 MONO_NATIVE_CC = @MONO_NATIVE_CC@
 MONO_NATIVE_CCASFLAGS = @MONO_NATIVE_CCASFLAGS@
 MONO_NATIVE_CFLAGS = @MONO_NATIVE_CFLAGS@
@@ -1369,6 +1370,7 @@ regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 @ENABLE_MSVC_ONLY_FALSE@libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS) @CXX_ADD_CFLAGS@
 @ENABLE_MSVC_ONLY_FALSE@libmonosgen_2_0_la_LIBADD = libmini.la $(interp_libs_with_mini) $(dbg_libs_with_mini) $(sgen_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
 @ENABLE_MSVC_ONLY_FALSE@libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags) $(CCLDFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@libmonosgen_2_0_la_LIBTOOLFLAGS = $(MONO_LIBTOOL_TAG)
 @ENABLE_MSVC_ONLY_FALSE@libmaintest_a_SOURCES = interp/whitebox.c
 @ENABLE_MSVC_ONLY_FALSE@libmaintest_a_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
 @ENABLE_MSVC_ONLY_FALSE@WHITEBOX_ASSEMBLY = interp/whitebox-snippets.exe
