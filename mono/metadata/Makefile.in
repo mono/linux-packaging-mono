@@ -92,6 +92,8 @@ host_triplet = @host@
 target_triplet = @target@
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_TRUE@am__append_1 = threadpool-worker-wasm.c
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_FALSE@am__append_2 = threadpool-worker-default.c
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@@STATIC_ICU_TRUE@am__append_3 = icushim/pal_icushim_static.c
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@@STATIC_ICU_FALSE@am__append_4 = icushim/pal_icushim.c
 subdir = mono/metadata
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -191,17 +193,20 @@ libmonoruntime_config_la_OBJECTS =  \
 @ENABLE_MSVC_ONLY_FALSE@am_libmonoruntime_config_la_rpath =
 libmonoruntime_shimglobalization_la_LIBADD =
 am__dirstamp = $(am__leading_dot)dirstamp
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@nodist_libmonoruntime_shimglobalization_la_OBJECTS = @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_calendarData.lo \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_casing.lo \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_collation.lo \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_idna.lo \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_locale.lo \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_localeNumberData.lo \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_localeStringData.lo \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_normalization.lo \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.lo \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_icushim.lo \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-entrypoints.lo
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@@STATIC_ICU_TRUE@am__objects_1 = icushim/libmonoruntime_shimglobalization_la-pal_icushim_static.lo
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@@STATIC_ICU_FALSE@am__objects_2 = icushim/libmonoruntime_shimglobalization_la-pal_icushim.lo
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@nodist_libmonoruntime_shimglobalization_la_OBJECTS = icushim/libmonoruntime_shimglobalization_la-pal_calendarData.lo \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	icushim/libmonoruntime_shimglobalization_la-pal_casing.lo \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	icushim/libmonoruntime_shimglobalization_la-pal_collation.lo \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	icushim/libmonoruntime_shimglobalization_la-pal_idna.lo \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	icushim/libmonoruntime_shimglobalization_la-pal_locale.lo \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	icushim/libmonoruntime_shimglobalization_la-pal_localeNumberData.lo \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	icushim/libmonoruntime_shimglobalization_la-pal_localeStringData.lo \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	icushim/libmonoruntime_shimglobalization_la-pal_normalization.lo \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	icushim/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.lo \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	icushim/libmonoruntime_shimglobalization_la-entrypoints.lo \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	$(am__objects_1) \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	$(am__objects_2)
 libmonoruntime_shimglobalization_la_OBJECTS =  \
 	$(nodist_libmonoruntime_shimglobalization_la_OBJECTS)
 libmonoruntime_shimglobalization_la_LINK = $(LIBTOOL) $(AM_V_lt) \
@@ -295,7 +300,7 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	marshal-ilgen.c marshal-ilgen.h sgen-mono-ilgen.c \
 	sgen-mono-ilgen.h gc-stats.c gc.c monitor.c null-gc.c \
 	null-gc-handles.h null-gc-handles.c boehm-gc.c
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_1 = libmonoruntime_la-console-unix.lo \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_3 = libmonoruntime_la-console-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntime_la-w32mutex-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntime_la-w32semaphore-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntime_la-w32event-unix.lo \
@@ -308,9 +313,9 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntime_la-w32file-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntime_la-w32file-unix-glob.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntime_la-w32error-unix.lo
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_TRUE@am__objects_2 = libmonoruntime_la-threadpool-worker-wasm.lo
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_FALSE@am__objects_3 = libmonoruntime_la-threadpool-worker-default.lo
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_4 = libmonoruntime_la-console-win32.lo \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_TRUE@am__objects_4 = libmonoruntime_la-threadpool-worker-wasm.lo
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_FALSE@am__objects_5 = libmonoruntime_la-threadpool-worker-default.lo
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_6 = libmonoruntime_la-console-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntime_la-w32file-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntime_la-icall-windows.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntime_la-marshal-windows.lo \
@@ -321,15 +326,15 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntime_la-w32process-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntime_la-w32socket-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntime_la-w32error-win32.lo
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_5 =  \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_1) \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_2) \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_3)
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_5 =  \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_7 =  \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_3) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_4) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_5)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_7 =  \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_6) \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_4) \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_2) \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_3)
-@ENABLE_MSVC_ONLY_FALSE@am__objects_6 = $(am__objects_5) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_5)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_8 = $(am__objects_7) \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-appdomain.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-assembly-load-context.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-domain.lo \
@@ -408,21 +413,22 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-abi.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-native-library.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-native-library-qcall.lo
-@DISABLE_ICALL_TABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__objects_7 = libmonoruntime_la-icall-table.lo
-@ENABLE_ILGEN_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_8 = libmonoruntime_la-method-builder-ilgen.lo \
+@DISABLE_ICALL_TABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__objects_9 = libmonoruntime_la-icall-table.lo
+@ENABLE_ILGEN_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_10 = libmonoruntime_la-method-builder-ilgen.lo \
 @ENABLE_ILGEN_TRUE@@ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-marshal-ilgen.lo \
 @ENABLE_ILGEN_TRUE@@ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-sgen-mono-ilgen.lo
-@ENABLE_MSVC_ONLY_FALSE@am__objects_9 = libmonoruntime_la-gc-stats.lo \
+@ENABLE_MSVC_ONLY_FALSE@am__objects_11 =  \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-gc-stats.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-gc.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-monitor.lo
-@ENABLE_MSVC_ONLY_FALSE@am__objects_10 = libmonoruntime_la-null-gc.lo \
+@ENABLE_MSVC_ONLY_FALSE@am__objects_12 = libmonoruntime_la-null-gc.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-null-gc-handles.lo
-@ENABLE_MSVC_ONLY_FALSE@am__objects_11 =  \
+@ENABLE_MSVC_ONLY_FALSE@am__objects_13 =  \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-boehm-gc.lo
 @ENABLE_MSVC_ONLY_FALSE@am_libmonoruntime_la_OBJECTS =  \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_6) $(am__objects_7) \
 @ENABLE_MSVC_ONLY_FALSE@	$(am__objects_8) $(am__objects_9) \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_10) $(am__objects_11)
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_10) $(am__objects_11) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_12) $(am__objects_13)
 libmonoruntime_la_OBJECTS = $(am_libmonoruntime_la_OBJECTS)
 libmonoruntime_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -507,7 +513,7 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	sgen-old-bridge.c sgen-new-bridge.c sgen-tarjan-bridge.c \
 	sgen-toggleref.c sgen-toggleref.h sgen-stw.c sgen-mono.c \
 	sgen-mono.h sgen-client-mono.h
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_12 = libmonoruntimesgen_la-console-unix.lo \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_14 = libmonoruntimesgen_la-console-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32mutex-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32semaphore-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32event-unix.lo \
@@ -520,9 +526,9 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32file-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32file-unix-glob.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32error-unix.lo
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_TRUE@am__objects_13 = libmonoruntimesgen_la-threadpool-worker-wasm.lo
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_FALSE@am__objects_14 = libmonoruntimesgen_la-threadpool-worker-default.lo
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_15 = libmonoruntimesgen_la-console-win32.lo \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_TRUE@am__objects_15 = libmonoruntimesgen_la-threadpool-worker-wasm.lo
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WASM_FALSE@am__objects_16 = libmonoruntimesgen_la-threadpool-worker-default.lo
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_17 = libmonoruntimesgen_la-console-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32file-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntimesgen_la-icall-windows.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntimesgen_la-marshal-windows.lo \
@@ -533,15 +539,15 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32process-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32socket-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32error-win32.lo
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_16 =  \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_12) \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_13) \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_14)
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_16 =  \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_18 =  \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_14) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_15) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(am__objects_16)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_18 =  \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_17) \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_15) \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_13) \
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_14)
-@ENABLE_MSVC_ONLY_FALSE@am__objects_17 = $(am__objects_16) \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	$(am__objects_16)
+@ENABLE_MSVC_ONLY_FALSE@am__objects_19 = $(am__objects_18) \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-appdomain.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-assembly-load-context.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-domain.lo \
@@ -620,15 +626,15 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-abi.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-native-library.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-native-library-qcall.lo
-@DISABLE_ICALL_TABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__objects_18 = libmonoruntimesgen_la-icall-table.lo
-@ENABLE_ILGEN_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_19 = libmonoruntimesgen_la-method-builder-ilgen.lo \
+@DISABLE_ICALL_TABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__objects_20 = libmonoruntimesgen_la-icall-table.lo
+@ENABLE_ILGEN_TRUE@@ENABLE_MSVC_ONLY_FALSE@am__objects_21 = libmonoruntimesgen_la-method-builder-ilgen.lo \
 @ENABLE_ILGEN_TRUE@@ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-marshal-ilgen.lo \
 @ENABLE_ILGEN_TRUE@@ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-sgen-mono-ilgen.lo
-@ENABLE_MSVC_ONLY_FALSE@am__objects_20 =  \
+@ENABLE_MSVC_ONLY_FALSE@am__objects_22 =  \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-gc-stats.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-gc.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-monitor.lo
-@ENABLE_MSVC_ONLY_FALSE@am__objects_21 =  \
+@ENABLE_MSVC_ONLY_FALSE@am__objects_23 =  \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-sgen-bridge.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-sgen-old-bridge.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-sgen-new-bridge.lo \
@@ -637,9 +643,9 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-sgen-stw.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-sgen-mono.lo
 @ENABLE_MSVC_ONLY_FALSE@am_libmonoruntimesgen_la_OBJECTS =  \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_17) $(am__objects_18) \
 @ENABLE_MSVC_ONLY_FALSE@	$(am__objects_19) $(am__objects_20) \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_21)
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_21) $(am__objects_22) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_23)
 libmonoruntimesgen_la_OBJECTS = $(am_libmonoruntimesgen_la_OBJECTS)
 libmonoruntimesgen_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -1099,19 +1105,18 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@libmonoruntime_support_la_LDFLAGS = $(Z_LIBS)
 @ENABLE_MSVC_ONLY_FALSE@libmonoruntime_support_la_CFLAGS = $(filter-out @CXX_REMOVE_CFLAGS@, @CFLAGS@) @ZLIB_CFLAGS@
 @ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@shim_libraries = libmonoruntime-shimglobalization.la
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@nodist_libmonoruntime_shimglobalization_la_SOURCES = \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@									@ICU_SHIM_PATH@/pal_calendarData.c \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@									@ICU_SHIM_PATH@/pal_casing.c \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@									@ICU_SHIM_PATH@/pal_collation.c \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@									@ICU_SHIM_PATH@/pal_idna.c \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@									@ICU_SHIM_PATH@/pal_locale.c \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@									@ICU_SHIM_PATH@/pal_localeNumberData.c \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@									@ICU_SHIM_PATH@/pal_localeStringData.c \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@									@ICU_SHIM_PATH@/pal_normalization.c \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@									@ICU_SHIM_PATH@/pal_timeZoneInfo.c \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@									@ICU_SHIM_PATH@/pal_icushim.c \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@									@ICU_SHIM_PATH@/entrypoints.c
-
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@nodist_libmonoruntime_shimglobalization_la_SOURCES = icushim/pal_calendarData.c \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	icushim/pal_casing.c \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	icushim/pal_collation.c \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	icushim/pal_idna.c \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	icushim/pal_locale.c \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	icushim/pal_localeNumberData.c \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	icushim/pal_localeStringData.c \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	icushim/pal_normalization.c \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	icushim/pal_timeZoneInfo.c \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	icushim/entrypoints.c \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	$(am__append_3) \
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	$(am__append_4)
 @ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@libmonoruntime_shimglobalization_la_CFLAGS = @ICU_CFLAGS@ -I$(top_srcdir)/../libraries/Native/Unix/System.Globalization.Native/ -I$(top_srcdir)/../libraries/Native/Unix/Common/
 @ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_FALSE@culture_libraries = ../culture/libmono-culture.la
 
@@ -1418,7 +1423,7 @@ libmonoruntimeinclude_HEADERS = \
 	sgen-bridge.h		\
 	threads.h		\
 	tokentype.h		\
-	verify.h		
+	verify.h
 
 @ENABLE_MSVC_ONLY_FALSE@EXTRA_DIST = $(null_sources) \
 @ENABLE_MSVC_ONLY_FALSE@		external-only.c \
@@ -1512,45 +1517,36 @@ libmono-ilgen.la: $(libmono_ilgen_la_OBJECTS) $(libmono_ilgen_la_DEPENDENCIES) $
 
 libmonoruntime-config.la: $(libmonoruntime_config_la_OBJECTS) $(libmonoruntime_config_la_DEPENDENCIES) $(EXTRA_libmonoruntime_config_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK) $(am_libmonoruntime_config_la_rpath) $(libmonoruntime_config_la_OBJECTS) $(libmonoruntime_config_la_LIBADD) $(LIBS)
-@ICU_SHIM_PATH@/$(am__dirstamp):
-	@$(MKDIR_P) @ICU_SHIM_PATH@
-	@: > @ICU_SHIM_PATH@/$(am__dirstamp)
-@ICU_SHIM_PATH@/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) @ICU_SHIM_PATH@/$(DEPDIR)
-	@: > @ICU_SHIM_PATH@/$(DEPDIR)/$(am__dirstamp)
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_calendarData.lo:  \
-	@ICU_SHIM_PATH@/$(am__dirstamp) \
-	@ICU_SHIM_PATH@/$(DEPDIR)/$(am__dirstamp)
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_casing.lo:  \
-	@ICU_SHIM_PATH@/$(am__dirstamp) \
-	@ICU_SHIM_PATH@/$(DEPDIR)/$(am__dirstamp)
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_collation.lo:  \
-	@ICU_SHIM_PATH@/$(am__dirstamp) \
-	@ICU_SHIM_PATH@/$(DEPDIR)/$(am__dirstamp)
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_idna.lo:  \
-	@ICU_SHIM_PATH@/$(am__dirstamp) \
-	@ICU_SHIM_PATH@/$(DEPDIR)/$(am__dirstamp)
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_locale.lo:  \
-	@ICU_SHIM_PATH@/$(am__dirstamp) \
-	@ICU_SHIM_PATH@/$(DEPDIR)/$(am__dirstamp)
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_localeNumberData.lo:  \
-	@ICU_SHIM_PATH@/$(am__dirstamp) \
-	@ICU_SHIM_PATH@/$(DEPDIR)/$(am__dirstamp)
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_localeStringData.lo:  \
-	@ICU_SHIM_PATH@/$(am__dirstamp) \
-	@ICU_SHIM_PATH@/$(DEPDIR)/$(am__dirstamp)
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_normalization.lo:  \
-	@ICU_SHIM_PATH@/$(am__dirstamp) \
-	@ICU_SHIM_PATH@/$(DEPDIR)/$(am__dirstamp)
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.lo:  \
-	@ICU_SHIM_PATH@/$(am__dirstamp) \
-	@ICU_SHIM_PATH@/$(DEPDIR)/$(am__dirstamp)
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_icushim.lo:  \
-	@ICU_SHIM_PATH@/$(am__dirstamp) \
-	@ICU_SHIM_PATH@/$(DEPDIR)/$(am__dirstamp)
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-entrypoints.lo:  \
-	@ICU_SHIM_PATH@/$(am__dirstamp) \
-	@ICU_SHIM_PATH@/$(DEPDIR)/$(am__dirstamp)
+icushim/$(am__dirstamp):
+	@$(MKDIR_P) icushim
+	@: > icushim/$(am__dirstamp)
+icushim/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) icushim/$(DEPDIR)
+	@: > icushim/$(DEPDIR)/$(am__dirstamp)
+icushim/libmonoruntime_shimglobalization_la-pal_calendarData.lo:  \
+	icushim/$(am__dirstamp) icushim/$(DEPDIR)/$(am__dirstamp)
+icushim/libmonoruntime_shimglobalization_la-pal_casing.lo:  \
+	icushim/$(am__dirstamp) icushim/$(DEPDIR)/$(am__dirstamp)
+icushim/libmonoruntime_shimglobalization_la-pal_collation.lo:  \
+	icushim/$(am__dirstamp) icushim/$(DEPDIR)/$(am__dirstamp)
+icushim/libmonoruntime_shimglobalization_la-pal_idna.lo:  \
+	icushim/$(am__dirstamp) icushim/$(DEPDIR)/$(am__dirstamp)
+icushim/libmonoruntime_shimglobalization_la-pal_locale.lo:  \
+	icushim/$(am__dirstamp) icushim/$(DEPDIR)/$(am__dirstamp)
+icushim/libmonoruntime_shimglobalization_la-pal_localeNumberData.lo:  \
+	icushim/$(am__dirstamp) icushim/$(DEPDIR)/$(am__dirstamp)
+icushim/libmonoruntime_shimglobalization_la-pal_localeStringData.lo:  \
+	icushim/$(am__dirstamp) icushim/$(DEPDIR)/$(am__dirstamp)
+icushim/libmonoruntime_shimglobalization_la-pal_normalization.lo:  \
+	icushim/$(am__dirstamp) icushim/$(DEPDIR)/$(am__dirstamp)
+icushim/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.lo:  \
+	icushim/$(am__dirstamp) icushim/$(DEPDIR)/$(am__dirstamp)
+icushim/libmonoruntime_shimglobalization_la-entrypoints.lo:  \
+	icushim/$(am__dirstamp) icushim/$(DEPDIR)/$(am__dirstamp)
+icushim/libmonoruntime_shimglobalization_la-pal_icushim_static.lo:  \
+	icushim/$(am__dirstamp) icushim/$(DEPDIR)/$(am__dirstamp)
+icushim/libmonoruntime_shimglobalization_la-pal_icushim.lo:  \
+	icushim/$(am__dirstamp) icushim/$(DEPDIR)/$(am__dirstamp)
 
 libmonoruntime-shimglobalization.la: $(libmonoruntime_shimglobalization_la_OBJECTS) $(libmonoruntime_shimglobalization_la_DEPENDENCIES) $(EXTRA_libmonoruntime_shimglobalization_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmonoruntime_shimglobalization_la_LINK) $(am_libmonoruntime_shimglobalization_la_rpath) $(libmonoruntime_shimglobalization_la_OBJECTS) $(libmonoruntime_shimglobalization_la_LIBADD) $(LIBS)
@@ -1566,8 +1562,8 @@ libmonoruntimesgen.la: $(libmonoruntimesgen_la_OBJECTS) $(libmonoruntimesgen_la_
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
-	-rm -f @ICU_SHIM_PATH@/*.$(OBJEXT)
-	-rm -f @ICU_SHIM_PATH@/*.lo
+	-rm -f icushim/*.$(OBJEXT)
+	-rm -f icushim/*.lo
 
 distclean-compile:
 	-rm -f *.tab.c
@@ -1810,17 +1806,18 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-w32socket-unix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-w32socket-win32.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-w32socket.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@@ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-entrypoints.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@@ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_calendarData.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@@ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_casing.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@@ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_collation.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@@ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_icushim.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@@ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_idna.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@@ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_locale.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@@ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_localeNumberData.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@@ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_localeStringData.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@@ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_normalization.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@@ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-entrypoints.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_calendarData.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_casing.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_collation.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_icushim.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_icushim_static.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_idna.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_locale.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_localeNumberData.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_localeStringData.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_normalization.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -1881,82 +1878,89 @@ libmonoruntime_config_la-mono-config-dirs.lo: mono-config-dirs.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmonoruntime_config_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libmonoruntime_config_la-mono-config-dirs.lo `test -f 'mono-config-dirs.c' || echo '$(srcdir)/'`mono-config-dirs.c
 
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_calendarData.lo: @ICU_SHIM_PATH@/pal_calendarData.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_calendarData.lo -MD -MP -MF @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_calendarData.Tpo -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_calendarData.lo `test -f '@ICU_SHIM_PATH@/pal_calendarData.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_calendarData.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_calendarData.Tpo @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_calendarData.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='@ICU_SHIM_PATH@/pal_calendarData.c' object='@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_calendarData.lo' libtool=yes @AMDEPBACKSLASH@
+icushim/libmonoruntime_shimglobalization_la-pal_calendarData.lo: icushim/pal_calendarData.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT icushim/libmonoruntime_shimglobalization_la-pal_calendarData.lo -MD -MP -MF icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_calendarData.Tpo -c -o icushim/libmonoruntime_shimglobalization_la-pal_calendarData.lo `test -f 'icushim/pal_calendarData.c' || echo '$(srcdir)/'`icushim/pal_calendarData.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_calendarData.Tpo icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_calendarData.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='icushim/pal_calendarData.c' object='icushim/libmonoruntime_shimglobalization_la-pal_calendarData.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_calendarData.lo `test -f '@ICU_SHIM_PATH@/pal_calendarData.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_calendarData.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o icushim/libmonoruntime_shimglobalization_la-pal_calendarData.lo `test -f 'icushim/pal_calendarData.c' || echo '$(srcdir)/'`icushim/pal_calendarData.c
 
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_casing.lo: @ICU_SHIM_PATH@/pal_casing.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_casing.lo -MD -MP -MF @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_casing.Tpo -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_casing.lo `test -f '@ICU_SHIM_PATH@/pal_casing.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_casing.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_casing.Tpo @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_casing.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='@ICU_SHIM_PATH@/pal_casing.c' object='@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_casing.lo' libtool=yes @AMDEPBACKSLASH@
+icushim/libmonoruntime_shimglobalization_la-pal_casing.lo: icushim/pal_casing.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT icushim/libmonoruntime_shimglobalization_la-pal_casing.lo -MD -MP -MF icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_casing.Tpo -c -o icushim/libmonoruntime_shimglobalization_la-pal_casing.lo `test -f 'icushim/pal_casing.c' || echo '$(srcdir)/'`icushim/pal_casing.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_casing.Tpo icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_casing.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='icushim/pal_casing.c' object='icushim/libmonoruntime_shimglobalization_la-pal_casing.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_casing.lo `test -f '@ICU_SHIM_PATH@/pal_casing.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_casing.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o icushim/libmonoruntime_shimglobalization_la-pal_casing.lo `test -f 'icushim/pal_casing.c' || echo '$(srcdir)/'`icushim/pal_casing.c
 
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_collation.lo: @ICU_SHIM_PATH@/pal_collation.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_collation.lo -MD -MP -MF @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_collation.Tpo -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_collation.lo `test -f '@ICU_SHIM_PATH@/pal_collation.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_collation.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_collation.Tpo @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_collation.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='@ICU_SHIM_PATH@/pal_collation.c' object='@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_collation.lo' libtool=yes @AMDEPBACKSLASH@
+icushim/libmonoruntime_shimglobalization_la-pal_collation.lo: icushim/pal_collation.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT icushim/libmonoruntime_shimglobalization_la-pal_collation.lo -MD -MP -MF icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_collation.Tpo -c -o icushim/libmonoruntime_shimglobalization_la-pal_collation.lo `test -f 'icushim/pal_collation.c' || echo '$(srcdir)/'`icushim/pal_collation.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_collation.Tpo icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_collation.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='icushim/pal_collation.c' object='icushim/libmonoruntime_shimglobalization_la-pal_collation.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_collation.lo `test -f '@ICU_SHIM_PATH@/pal_collation.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_collation.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o icushim/libmonoruntime_shimglobalization_la-pal_collation.lo `test -f 'icushim/pal_collation.c' || echo '$(srcdir)/'`icushim/pal_collation.c
 
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_idna.lo: @ICU_SHIM_PATH@/pal_idna.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_idna.lo -MD -MP -MF @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_idna.Tpo -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_idna.lo `test -f '@ICU_SHIM_PATH@/pal_idna.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_idna.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_idna.Tpo @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_idna.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='@ICU_SHIM_PATH@/pal_idna.c' object='@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_idna.lo' libtool=yes @AMDEPBACKSLASH@
+icushim/libmonoruntime_shimglobalization_la-pal_idna.lo: icushim/pal_idna.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT icushim/libmonoruntime_shimglobalization_la-pal_idna.lo -MD -MP -MF icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_idna.Tpo -c -o icushim/libmonoruntime_shimglobalization_la-pal_idna.lo `test -f 'icushim/pal_idna.c' || echo '$(srcdir)/'`icushim/pal_idna.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_idna.Tpo icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_idna.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='icushim/pal_idna.c' object='icushim/libmonoruntime_shimglobalization_la-pal_idna.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_idna.lo `test -f '@ICU_SHIM_PATH@/pal_idna.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_idna.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o icushim/libmonoruntime_shimglobalization_la-pal_idna.lo `test -f 'icushim/pal_idna.c' || echo '$(srcdir)/'`icushim/pal_idna.c
 
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_locale.lo: @ICU_SHIM_PATH@/pal_locale.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_locale.lo -MD -MP -MF @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_locale.Tpo -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_locale.lo `test -f '@ICU_SHIM_PATH@/pal_locale.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_locale.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_locale.Tpo @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_locale.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='@ICU_SHIM_PATH@/pal_locale.c' object='@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_locale.lo' libtool=yes @AMDEPBACKSLASH@
+icushim/libmonoruntime_shimglobalization_la-pal_locale.lo: icushim/pal_locale.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT icushim/libmonoruntime_shimglobalization_la-pal_locale.lo -MD -MP -MF icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_locale.Tpo -c -o icushim/libmonoruntime_shimglobalization_la-pal_locale.lo `test -f 'icushim/pal_locale.c' || echo '$(srcdir)/'`icushim/pal_locale.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_locale.Tpo icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_locale.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='icushim/pal_locale.c' object='icushim/libmonoruntime_shimglobalization_la-pal_locale.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_locale.lo `test -f '@ICU_SHIM_PATH@/pal_locale.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_locale.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o icushim/libmonoruntime_shimglobalization_la-pal_locale.lo `test -f 'icushim/pal_locale.c' || echo '$(srcdir)/'`icushim/pal_locale.c
 
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_localeNumberData.lo: @ICU_SHIM_PATH@/pal_localeNumberData.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_localeNumberData.lo -MD -MP -MF @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_localeNumberData.Tpo -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_localeNumberData.lo `test -f '@ICU_SHIM_PATH@/pal_localeNumberData.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_localeNumberData.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_localeNumberData.Tpo @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_localeNumberData.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='@ICU_SHIM_PATH@/pal_localeNumberData.c' object='@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_localeNumberData.lo' libtool=yes @AMDEPBACKSLASH@
+icushim/libmonoruntime_shimglobalization_la-pal_localeNumberData.lo: icushim/pal_localeNumberData.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT icushim/libmonoruntime_shimglobalization_la-pal_localeNumberData.lo -MD -MP -MF icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_localeNumberData.Tpo -c -o icushim/libmonoruntime_shimglobalization_la-pal_localeNumberData.lo `test -f 'icushim/pal_localeNumberData.c' || echo '$(srcdir)/'`icushim/pal_localeNumberData.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_localeNumberData.Tpo icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_localeNumberData.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='icushim/pal_localeNumberData.c' object='icushim/libmonoruntime_shimglobalization_la-pal_localeNumberData.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_localeNumberData.lo `test -f '@ICU_SHIM_PATH@/pal_localeNumberData.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_localeNumberData.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o icushim/libmonoruntime_shimglobalization_la-pal_localeNumberData.lo `test -f 'icushim/pal_localeNumberData.c' || echo '$(srcdir)/'`icushim/pal_localeNumberData.c
 
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_localeStringData.lo: @ICU_SHIM_PATH@/pal_localeStringData.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_localeStringData.lo -MD -MP -MF @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_localeStringData.Tpo -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_localeStringData.lo `test -f '@ICU_SHIM_PATH@/pal_localeStringData.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_localeStringData.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_localeStringData.Tpo @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_localeStringData.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='@ICU_SHIM_PATH@/pal_localeStringData.c' object='@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_localeStringData.lo' libtool=yes @AMDEPBACKSLASH@
+icushim/libmonoruntime_shimglobalization_la-pal_localeStringData.lo: icushim/pal_localeStringData.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT icushim/libmonoruntime_shimglobalization_la-pal_localeStringData.lo -MD -MP -MF icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_localeStringData.Tpo -c -o icushim/libmonoruntime_shimglobalization_la-pal_localeStringData.lo `test -f 'icushim/pal_localeStringData.c' || echo '$(srcdir)/'`icushim/pal_localeStringData.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_localeStringData.Tpo icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_localeStringData.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='icushim/pal_localeStringData.c' object='icushim/libmonoruntime_shimglobalization_la-pal_localeStringData.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_localeStringData.lo `test -f '@ICU_SHIM_PATH@/pal_localeStringData.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_localeStringData.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o icushim/libmonoruntime_shimglobalization_la-pal_localeStringData.lo `test -f 'icushim/pal_localeStringData.c' || echo '$(srcdir)/'`icushim/pal_localeStringData.c
 
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_normalization.lo: @ICU_SHIM_PATH@/pal_normalization.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_normalization.lo -MD -MP -MF @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_normalization.Tpo -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_normalization.lo `test -f '@ICU_SHIM_PATH@/pal_normalization.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_normalization.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_normalization.Tpo @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_normalization.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='@ICU_SHIM_PATH@/pal_normalization.c' object='@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_normalization.lo' libtool=yes @AMDEPBACKSLASH@
+icushim/libmonoruntime_shimglobalization_la-pal_normalization.lo: icushim/pal_normalization.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT icushim/libmonoruntime_shimglobalization_la-pal_normalization.lo -MD -MP -MF icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_normalization.Tpo -c -o icushim/libmonoruntime_shimglobalization_la-pal_normalization.lo `test -f 'icushim/pal_normalization.c' || echo '$(srcdir)/'`icushim/pal_normalization.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_normalization.Tpo icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_normalization.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='icushim/pal_normalization.c' object='icushim/libmonoruntime_shimglobalization_la-pal_normalization.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_normalization.lo `test -f '@ICU_SHIM_PATH@/pal_normalization.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_normalization.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o icushim/libmonoruntime_shimglobalization_la-pal_normalization.lo `test -f 'icushim/pal_normalization.c' || echo '$(srcdir)/'`icushim/pal_normalization.c
 
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.lo: @ICU_SHIM_PATH@/pal_timeZoneInfo.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.lo -MD -MP -MF @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.Tpo -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.lo `test -f '@ICU_SHIM_PATH@/pal_timeZoneInfo.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_timeZoneInfo.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.Tpo @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='@ICU_SHIM_PATH@/pal_timeZoneInfo.c' object='@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.lo' libtool=yes @AMDEPBACKSLASH@
+icushim/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.lo: icushim/pal_timeZoneInfo.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT icushim/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.lo -MD -MP -MF icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.Tpo -c -o icushim/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.lo `test -f 'icushim/pal_timeZoneInfo.c' || echo '$(srcdir)/'`icushim/pal_timeZoneInfo.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.Tpo icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='icushim/pal_timeZoneInfo.c' object='icushim/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.lo `test -f '@ICU_SHIM_PATH@/pal_timeZoneInfo.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_timeZoneInfo.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o icushim/libmonoruntime_shimglobalization_la-pal_timeZoneInfo.lo `test -f 'icushim/pal_timeZoneInfo.c' || echo '$(srcdir)/'`icushim/pal_timeZoneInfo.c
 
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_icushim.lo: @ICU_SHIM_PATH@/pal_icushim.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_icushim.lo -MD -MP -MF @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_icushim.Tpo -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_icushim.lo `test -f '@ICU_SHIM_PATH@/pal_icushim.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_icushim.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_icushim.Tpo @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_icushim.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='@ICU_SHIM_PATH@/pal_icushim.c' object='@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_icushim.lo' libtool=yes @AMDEPBACKSLASH@
+icushim/libmonoruntime_shimglobalization_la-entrypoints.lo: icushim/entrypoints.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT icushim/libmonoruntime_shimglobalization_la-entrypoints.lo -MD -MP -MF icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-entrypoints.Tpo -c -o icushim/libmonoruntime_shimglobalization_la-entrypoints.lo `test -f 'icushim/entrypoints.c' || echo '$(srcdir)/'`icushim/entrypoints.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-entrypoints.Tpo icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-entrypoints.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='icushim/entrypoints.c' object='icushim/libmonoruntime_shimglobalization_la-entrypoints.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-pal_icushim.lo `test -f '@ICU_SHIM_PATH@/pal_icushim.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/pal_icushim.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o icushim/libmonoruntime_shimglobalization_la-entrypoints.lo `test -f 'icushim/entrypoints.c' || echo '$(srcdir)/'`icushim/entrypoints.c
 
-@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-entrypoints.lo: @ICU_SHIM_PATH@/entrypoints.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-entrypoints.lo -MD -MP -MF @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-entrypoints.Tpo -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-entrypoints.lo `test -f '@ICU_SHIM_PATH@/entrypoints.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/entrypoints.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-entrypoints.Tpo @ICU_SHIM_PATH@/$(DEPDIR)/libmonoruntime_shimglobalization_la-entrypoints.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='@ICU_SHIM_PATH@/entrypoints.c' object='@ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-entrypoints.lo' libtool=yes @AMDEPBACKSLASH@
+icushim/libmonoruntime_shimglobalization_la-pal_icushim_static.lo: icushim/pal_icushim_static.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT icushim/libmonoruntime_shimglobalization_la-pal_icushim_static.lo -MD -MP -MF icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_icushim_static.Tpo -c -o icushim/libmonoruntime_shimglobalization_la-pal_icushim_static.lo `test -f 'icushim/pal_icushim_static.c' || echo '$(srcdir)/'`icushim/pal_icushim_static.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_icushim_static.Tpo icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_icushim_static.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='icushim/pal_icushim_static.c' object='icushim/libmonoruntime_shimglobalization_la-pal_icushim_static.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o @ICU_SHIM_PATH@/libmonoruntime_shimglobalization_la-entrypoints.lo `test -f '@ICU_SHIM_PATH@/entrypoints.c' || echo '$(srcdir)/'`@ICU_SHIM_PATH@/entrypoints.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o icushim/libmonoruntime_shimglobalization_la-pal_icushim_static.lo `test -f 'icushim/pal_icushim_static.c' || echo '$(srcdir)/'`icushim/pal_icushim_static.c
+
+icushim/libmonoruntime_shimglobalization_la-pal_icushim.lo: icushim/pal_icushim.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -MT icushim/libmonoruntime_shimglobalization_la-pal_icushim.lo -MD -MP -MF icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_icushim.Tpo -c -o icushim/libmonoruntime_shimglobalization_la-pal_icushim.lo `test -f 'icushim/pal_icushim.c' || echo '$(srcdir)/'`icushim/pal_icushim.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_icushim.Tpo icushim/$(DEPDIR)/libmonoruntime_shimglobalization_la-pal_icushim.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='icushim/pal_icushim.c' object='icushim/libmonoruntime_shimglobalization_la-pal_icushim.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_shimglobalization_la_CFLAGS) $(CFLAGS) -c -o icushim/libmonoruntime_shimglobalization_la-pal_icushim.lo `test -f 'icushim/pal_icushim.c' || echo '$(srcdir)/'`icushim/pal_icushim.c
 
 libmonoruntime_support_la-support.lo: support.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_support_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_support_la-support.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_support_la-support.Tpo -c -o libmonoruntime_support_la-support.lo `test -f 'support.c' || echo '$(srcdir)/'`support.c
@@ -3594,7 +3598,7 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
-	-rm -rf @ICU_SHIM_PATH@/.libs @ICU_SHIM_PATH@/_libs
+	-rm -rf icushim/.libs icushim/_libs
 install-libmonoruntimeincludeHEADERS: $(libmonoruntimeinclude_HEADERS)
 	@$(NORMAL_INSTALL)
 	@list='$(libmonoruntimeinclude_HEADERS)'; test -n "$(libmonoruntimeincludedir)" || list=; \
@@ -3736,8 +3740,8 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
-	-rm -f @ICU_SHIM_PATH@/$(DEPDIR)/$(am__dirstamp)
-	-rm -f @ICU_SHIM_PATH@/$(am__dirstamp)
+	-rm -f icushim/$(DEPDIR)/$(am__dirstamp)
+	-rm -f icushim/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -3749,7 +3753,7 @@ clean-am: clean-generic clean-libLTLIBRARIES clean-libtool clean-local \
 	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf ./$(DEPDIR) @ICU_SHIM_PATH@/$(DEPDIR)
+	-rm -rf ./$(DEPDIR) icushim/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -3795,7 +3799,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf ./$(DEPDIR) @ICU_SHIM_PATH@/$(DEPDIR)
+	-rm -rf ./$(DEPDIR) icushim/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -3854,6 +3858,10 @@ uninstall-am: uninstall-libLTLIBRARIES \
 # in configure.ac.
 #
 @ENABLE_MSVC_ONLY_FALSE@mono-config-dirs.lo: Makefile
+
+# symlink ICU sources to a local dir so automake puts intermediates into the target-specific folder
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@icushim/%.c: @ICU_SHIM_PATH@/%.c
+@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@@HAVE_SYS_ICU_TRUE@	$(LN_S) $^ $@
 
 @ENABLE_MSVC_ONLY_TRUE@all-local:
 
