@@ -623,6 +623,12 @@ uninstall-am:
 .PRECIOUS: Makefile
 
 
+test-codegen:
+	$(CC) $(CFLAGS) -I../../.. -I../../eglib/ ../../eglib/.libs/libeglib.a -o codegen-test codegen-test.c
+	./codegen-test > tmp.s
+	$(CC) $(CFLAGS) -c -o tmp.o tmp.s
+	objdump -d --triple=arm64e tmp.o
+
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

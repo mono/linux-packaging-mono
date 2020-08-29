@@ -667,7 +667,7 @@ locale-data:
 	fi
 
 install-culture-table: culture-info-tables.h
-	cp -f culture-info-tables.h ../../mono/metadata/.
+	cp -f culture-info-tables.h ../../mono/culture/.
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

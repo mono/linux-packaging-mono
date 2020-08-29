@@ -6,6 +6,7 @@ class CairoPackage (CairoGraphicsXzPackage):
             'patches/cairo-quartz-crash.patch',
             'patches/cairo-fix-color-bitmap-fonts.patch',
             'patches/cairo-fix-CGFontGetGlyphPath-deprecation.patch',
+            'patches/cairo-bigsur.patch',
             #			'patches/cairo-cglayer.patch',
         ])
 

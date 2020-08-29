@@ -54,6 +54,9 @@
 /* Disables use of DllMaps in MonoVM */
 #undef DISABLE_DLLMAP
 
+/* Disable EventPipe support */
+#undef DISABLE_EVENTPIPE
+
 /* Disable GAC */
 #undef DISABLE_GAC
 
@@ -116,6 +119,9 @@
 /* Disable CAS/CoreCLR security */
 #undef DISABLE_SECURITY
 
+/* Disable binary protocol logging in SGEN. */
+#undef DISABLE_SGEN_BINARY_PROTOCOL
+
 /* Disable debug helpers in SGEN. */
 #undef DISABLE_SGEN_DEBUG_HELPERS
 
@@ -127,6 +133,9 @@
 
 /* Disable minor=split support in SGEN. */
 #undef DISABLE_SGEN_SPLIT_NURSERY
+
+/* Disable toggleref support in SGEN. */
+#undef DISABLE_SGEN_TOGGLEREF
 
 /* Disable Shadow Copy for AppDomains */
 #undef DISABLE_SHADOW_COPY
@@ -851,6 +860,9 @@
 
 /* Define to 1 if you have the <pthread.h> header file. */
 #undef HAVE_PTHREAD_H
+
+/* Define to 1 if you have the `pthread_jit_write_protect_np' function. */
+#undef HAVE_PTHREAD_JIT_WRITE_PROTECT_NP
 
 /* Define to 1 if you have the `pthread_kill' function. */
 #undef HAVE_PTHREAD_KILL
@@ -1591,6 +1603,9 @@
 
 /* The size of `void *', as computed by sizeof. */
 #undef SIZEOF_VOID_P
+
+/* Integrate ICU statically into the runtime. */
+#undef STATIC_ICU
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
