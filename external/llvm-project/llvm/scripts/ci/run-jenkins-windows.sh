@@ -38,4 +38,4 @@ fi
 "$WINDOWS_CMD" /c "$RUN_JENKINS_WINDOWS_SCRIPT_PATH_WINDOWS"
 
 GIT_COMMIT=$(git rev-parse HEAD)
-tar cvzf llvm-llvmwin64-msvc-$GIT_COMMIT-Windows.tar.gz -C $RUN_JENKINS_WINDOWS_SCRIPT_PATH/out/llvm-llvmwin64-msvc .
+tar cvzf llvm-llvmwin64-msvc-$GIT_COMMIT-Windows.tar.gz -C $RUN_JENKINS_WINDOWS_SCRIPT_PATH/../../../out/llvm-llvmwin64-msvc .
