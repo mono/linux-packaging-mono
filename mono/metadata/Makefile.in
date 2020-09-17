@@ -294,12 +294,13 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	w32handle.h w32handle.c w32error.h reflection.c \
 	dynamic-image.c sre.c sre-encode.c sre-save.c custom-attrs.c \
 	fdhandle.h fdhandle.c callspec.h callspec.c abi.c \
-	native-library.c native-library.h native-library-qcall.c \
-	qcall-def.h icall-table.c method-builder-ilgen.c \
-	method-builder-ilgen.h method-builder-ilgen-internals.h \
-	marshal-ilgen.c marshal-ilgen.h sgen-mono-ilgen.c \
-	sgen-mono-ilgen.h gc-stats.c gc.c monitor.c null-gc.c \
-	null-gc-handles.h null-gc-handles.c boehm-gc.c
+	memory-manager.c native-library.c native-library.h \
+	native-library-qcall.c qcall-def.h icall-table.c \
+	method-builder-ilgen.c method-builder-ilgen.h \
+	method-builder-ilgen-internals.h marshal-ilgen.c \
+	marshal-ilgen.h sgen-mono-ilgen.c sgen-mono-ilgen.h gc-stats.c \
+	gc.c monitor.c null-gc.c null-gc-handles.h null-gc-handles.c \
+	boehm-gc.c
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_3 = libmonoruntime_la-console-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntime_la-w32mutex-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntime_la-w32semaphore-unix.lo \
@@ -411,6 +412,7 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-fdhandle.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-callspec.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-abi.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-memory-manager.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-native-library.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-native-library-qcall.lo
 @DISABLE_ICALL_TABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__objects_9 = libmonoruntime_la-icall-table.lo
@@ -504,15 +506,16 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	w32handle.h w32handle.c w32error.h reflection.c \
 	dynamic-image.c sre.c sre-encode.c sre-save.c custom-attrs.c \
 	fdhandle.h fdhandle.c callspec.h callspec.c abi.c \
-	native-library.c native-library.h native-library-qcall.c \
-	qcall-def.h icall-table.c method-builder-ilgen.c \
-	method-builder-ilgen.h method-builder-ilgen-internals.h \
-	marshal-ilgen.c marshal-ilgen.h sgen-mono-ilgen.c \
-	sgen-mono-ilgen.h gc-stats.c gc.c monitor.c sgen-bridge.c \
-	sgen-bridge.h sgen-bridge-internals.h sgen-dynarray.h \
-	sgen-old-bridge.c sgen-new-bridge.c sgen-tarjan-bridge.c \
-	sgen-toggleref.c sgen-toggleref.h sgen-stw.c sgen-mono.c \
-	sgen-mono.h sgen-client-mono.h
+	memory-manager.c native-library.c native-library.h \
+	native-library-qcall.c qcall-def.h icall-table.c \
+	method-builder-ilgen.c method-builder-ilgen.h \
+	method-builder-ilgen-internals.h marshal-ilgen.c \
+	marshal-ilgen.h sgen-mono-ilgen.c sgen-mono-ilgen.h gc-stats.c \
+	gc.c monitor.c sgen-bridge.c sgen-bridge.h \
+	sgen-bridge-internals.h sgen-dynarray.h sgen-old-bridge.c \
+	sgen-new-bridge.c sgen-tarjan-bridge.c sgen-toggleref.c \
+	sgen-toggleref.h sgen-stw.c sgen-mono.c sgen-mono.h \
+	sgen-client-mono.h
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_14 = libmonoruntimesgen_la-console-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32mutex-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32semaphore-unix.lo \
@@ -624,6 +627,7 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-fdhandle.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-callspec.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-abi.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-memory-manager.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-native-library.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-native-library-qcall.lo
 @DISABLE_ICALL_TABLES_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__objects_20 = libmonoruntimesgen_la-icall-table.lo
@@ -922,7 +926,6 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VTUNE_CFLAGS = @VTUNE_CFLAGS@
 VTUNE_LIBS = @VTUNE_LIBS@
-WERROR_CFLAGS = @WERROR_CFLAGS@
 X11 = @X11@
 XATTR_LIB = @XATTR_LIB@
 XGETTEXT = @XGETTEXT@
@@ -1352,6 +1355,7 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@	callspec.h	\
 @ENABLE_MSVC_ONLY_FALSE@	callspec.c	\
 @ENABLE_MSVC_ONLY_FALSE@	abi.c	\
+@ENABLE_MSVC_ONLY_FALSE@	memory-manager.c \
 @ENABLE_MSVC_ONLY_FALSE@	native-library.c \
 @ENABLE_MSVC_ONLY_FALSE@	native-library.h \
 @ENABLE_MSVC_ONLY_FALSE@	native-library-qcall.c \
@@ -1618,6 +1622,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-marshal-ilgen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-marshal-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-marshal.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-memory-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mempool.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-metadata-cross-helpers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-metadata-verify.Plo@am__quote@
@@ -1732,6 +1737,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-marshal-ilgen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-marshal-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-marshal.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-memory-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mempool.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-metadata-cross-helpers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-metadata-verify.Plo@am__quote@
@@ -2683,6 +2689,13 @@ libmonoruntime_la-abi.lo: abi.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-abi.lo `test -f 'abi.c' || echo '$(srcdir)/'`abi.c
 
+libmonoruntime_la-memory-manager.lo: memory-manager.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-memory-manager.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-memory-manager.Tpo -c -o libmonoruntime_la-memory-manager.lo `test -f 'memory-manager.c' || echo '$(srcdir)/'`memory-manager.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-memory-manager.Tpo $(DEPDIR)/libmonoruntime_la-memory-manager.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='memory-manager.c' object='libmonoruntime_la-memory-manager.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-memory-manager.lo `test -f 'memory-manager.c' || echo '$(srcdir)/'`memory-manager.c
+
 libmonoruntime_la-native-library.lo: native-library.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-native-library.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-native-library.Tpo -c -o libmonoruntime_la-native-library.lo `test -f 'native-library.c' || echo '$(srcdir)/'`native-library.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-native-library.Tpo $(DEPDIR)/libmonoruntime_la-native-library.Plo
@@ -3480,6 +3493,13 @@ libmonoruntimesgen_la-abi.lo: abi.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='abi.c' object='libmonoruntimesgen_la-abi.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-abi.lo `test -f 'abi.c' || echo '$(srcdir)/'`abi.c
+
+libmonoruntimesgen_la-memory-manager.lo: memory-manager.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-memory-manager.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-memory-manager.Tpo -c -o libmonoruntimesgen_la-memory-manager.lo `test -f 'memory-manager.c' || echo '$(srcdir)/'`memory-manager.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-memory-manager.Tpo $(DEPDIR)/libmonoruntimesgen_la-memory-manager.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='memory-manager.c' object='libmonoruntimesgen_la-memory-manager.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-memory-manager.lo `test -f 'memory-manager.c' || echo '$(srcdir)/'`memory-manager.c
 
 libmonoruntimesgen_la-native-library.lo: native-library.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-native-library.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-native-library.Tpo -c -o libmonoruntimesgen_la-native-library.lo `test -f 'native-library.c' || echo '$(srcdir)/'`native-library.c

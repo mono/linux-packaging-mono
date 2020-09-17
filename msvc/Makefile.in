@@ -329,7 +329,6 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VTUNE_CFLAGS = @VTUNE_CFLAGS@
 VTUNE_LIBS = @VTUNE_LIBS@
-WERROR_CFLAGS = @WERROR_CFLAGS@
 X11 = @X11@
 XATTR_LIB = @XATTR_LIB@
 XGETTEXT = @XGETTEXT@
@@ -541,8 +540,8 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@ENABLE_MSVC_FALSE@clean-local:
 @ENABLE_MSVC_FALSE@install-exec-local:
+@ENABLE_MSVC_FALSE@clean-local:
 clean: clean-am
 
 clean-am: clean-generic clean-libtool clean-local mostlyclean-am

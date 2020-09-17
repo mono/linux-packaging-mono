@@ -11,9 +11,24 @@ set BUILD_RESULT=1
 
 :: Get path for current running script.
 set RUN_JENKINS_WINDOWS_SCRIPT_PATH=%~dp0
-set MONO_LLVM_SRC_DIR=%RUN_JENKINS_WINDOWS_SCRIPT_PATH%..\..
-set MONO_LLVM_BUILD_DIR=%RUN_JENKINS_WINDOWS_SCRIPT_PATH%builds\llvm-llvmwin64-msvc
-set MONO_LLVM_INSTALL_DIR=%RUN_JENKINS_WINDOWS_SCRIPT_PATH%out\llvm-llvmwin64-msvc
+
+set MONO_LLVM_SRC_DIR=%~1
+shift
+set MONO_LLVM_BUILD_DIR=%~1
+shift
+set MONO_LLVM_INSTALL_DIR=%~1
+
+if "%MONO_LLVM_SRC_DIR%" == "" (
+    set MONO_LLVM_SRC_DIR=%RUN_JENKINS_WINDOWS_SCRIPT_PATH%..\..
+)
+
+if "%MONO_LLVM_BUILD_DIR%" == "" (
+    set MONO_LLVM_BUILD_DIR=%MONO_LLVM_SRC_DIR%\..\builds\llvm-llvmwin64-msvc
+)
+
+if "%MONO_LLVM_INSTALL_DIR%" == "" (
+    set MONO_LLVM_INSTALL_DIR=%MONO_LLVM_SRC_DIR%\..\out\llvm-llvmwin64-msvc
+)
 
 if exist "%MONO_LLVM_BUILD_DIR%" (
     rmdir /S /Q "%MONO_LLVM_BUILD_DIR%"

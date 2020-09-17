@@ -321,6 +321,9 @@
 /* Define to 1 if the system has the type `clockid_t'. */
 #undef HAVE_CLOCKID_T
 
+/* clock_gettime */
+#undef HAVE_CLOCK_GETTIME
+
 /* CLOCK_MONOTONIC */
 #undef HAVE_CLOCK_MONOTONIC
 

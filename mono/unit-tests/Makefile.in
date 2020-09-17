@@ -730,7 +730,6 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VTUNE_CFLAGS = @VTUNE_CFLAGS@
 VTUNE_LIBS = @VTUNE_LIBS@
-WERROR_CFLAGS = @WERROR_CFLAGS@
 X11 = @X11@
 XATTR_LIB = @XATTR_LIB@
 XGETTEXT = @XGETTEXT@
@@ -1613,10 +1612,10 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@CROSS_COMPILE_TRUE@clean-local:
-@HOST_WIN32_TRUE@clean-local:
 @CROSS_COMPILE_TRUE@test-local:
 @HOST_WIN32_TRUE@test-local:
+@CROSS_COMPILE_TRUE@clean-local:
+@HOST_WIN32_TRUE@clean-local:
 clean: clean-am
 
 clean-am: clean-checkPROGRAMS clean-generic clean-libtool clean-local \
