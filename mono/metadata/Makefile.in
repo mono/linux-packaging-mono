@@ -253,13 +253,13 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	coree.c coree.h coree-internals.h debug-helpers.c \
 	debug-mono-symfile.h debug-mono-symfile.c debug-mono-ppdb.h \
 	debug-mono-ppdb.c domain-internals.h environment.c \
-	environment.h icall-eventpipe.c exception.c exception.h \
-	exception-internals.h external-only.h w32file.c w32file.h \
-	w32file-internals.h filewatcher.c filewatcher.h gc-internals.h \
-	icall.c icalls.h icall-decl.h icall-def.h icall-internals.h \
-	icall-signatures.h icall-table.h image.c image-internals.h \
-	jit-icall-reg.h jit-info.c loader.c loader-internals.h \
-	loaded-images-internals.h loaded-images.c \
+	environment.h environment-internals.h icall-eventpipe.c \
+	exception.c exception.h exception-internals.h external-only.h \
+	w32file.c w32file.h w32file-internals.h filewatcher.c \
+	filewatcher.h gc-internals.h icall.c icalls.h icall-decl.h \
+	icall-def.h icall-internals.h icall-signatures.h icall-table.h \
+	image.c image-internals.h jit-icall-reg.h jit-info.c loader.c \
+	loader-internals.h loaded-images-internals.h loaded-images.c \
 	loaded-images-global.c loaded-images-netcore.c locales.h \
 	lock-tracer.c lock-tracer.h marshal.c marshal.h \
 	marshal-internals.h mempool.c mempool.h mempool-internals.h \
@@ -465,13 +465,13 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	coree.c coree.h coree-internals.h debug-helpers.c \
 	debug-mono-symfile.h debug-mono-symfile.c debug-mono-ppdb.h \
 	debug-mono-ppdb.c domain-internals.h environment.c \
-	environment.h icall-eventpipe.c exception.c exception.h \
-	exception-internals.h external-only.h w32file.c w32file.h \
-	w32file-internals.h filewatcher.c filewatcher.h gc-internals.h \
-	icall.c icalls.h icall-decl.h icall-def.h icall-internals.h \
-	icall-signatures.h icall-table.h image.c image-internals.h \
-	jit-icall-reg.h jit-info.c loader.c loader-internals.h \
-	loaded-images-internals.h loaded-images.c \
+	environment.h environment-internals.h icall-eventpipe.c \
+	exception.c exception.h exception-internals.h external-only.h \
+	w32file.c w32file.h w32file-internals.h filewatcher.c \
+	filewatcher.h gc-internals.h icall.c icalls.h icall-decl.h \
+	icall-def.h icall-internals.h icall-signatures.h icall-table.h \
+	image.c image-internals.h jit-icall-reg.h jit-info.c loader.c \
+	loader-internals.h loaded-images-internals.h loaded-images.c \
 	loaded-images-global.c loaded-images-netcore.c locales.h \
 	lock-tracer.c lock-tracer.h marshal.c marshal.h \
 	marshal-internals.h mempool.c mempool.h mempool-internals.h \
@@ -1208,6 +1208,7 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@	domain-internals.h	\
 @ENABLE_MSVC_ONLY_FALSE@	environment.c		\
 @ENABLE_MSVC_ONLY_FALSE@	environment.h		\
+@ENABLE_MSVC_ONLY_FALSE@	environment-internals.h		\
 @ENABLE_MSVC_ONLY_FALSE@	icall-eventpipe.c	\
 @ENABLE_MSVC_ONLY_FALSE@	exception.c		\
 @ENABLE_MSVC_ONLY_FALSE@	exception.h		\
