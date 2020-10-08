@@ -122,8 +122,8 @@ am__libeglib_la_SOURCES_DIST = eglib-remap.h sort.frag.h glib.h \
 	unicode-data.h gdate-unix.c gdir-unix.c gfile-unix.c \
 	gmisc-unix.c gmodule-unix.c gtimer-unix.c gmodule-aix.c \
 	gspawn.c eglib-config.hw gdate-win32.c gdir-win32.c \
-	gfile-win32.c gmisc-win32.c gmodule-win32.c \
-	gmodule-win32-internals.h gtimer-win32.c gunicode-win32.c
+	gfile-win32.c gmisc-win32.c gmodule-win32.c gtimer-win32.c \
+	gunicode-win32.c
 @ENABLE_MSVC_ONLY_FALSE@am__objects_1 = libeglib_la-gdate-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gdir-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gfile-unix.lo \
@@ -599,7 +599,7 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@win_files = \
 @ENABLE_MSVC_ONLY_FALSE@	eglib-config.hw \
 @ENABLE_MSVC_ONLY_FALSE@	gdate-win32.c gdir-win32.c gfile-win32.c gmisc-win32.c \
-@ENABLE_MSVC_ONLY_FALSE@	gmodule-win32.c gmodule-win32-internals.h gtimer-win32.c gunicode-win32.c
+@ENABLE_MSVC_ONLY_FALSE@	gmodule-win32.c gtimer-win32.c gunicode-win32.c
 
 @ENABLE_MSVC_ONLY_FALSE@unix_files = \
 @ENABLE_MSVC_ONLY_FALSE@	gdate-unix.c  gdir-unix.c  gfile-unix.c  gmisc-unix.c	\
