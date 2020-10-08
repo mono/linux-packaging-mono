@@ -160,21 +160,20 @@ am__libmonoutils_la_SOURCES_DIST = dlmalloc.h dlmalloc.c \
 	mono-internal-hash.h mono-io-portability.c \
 	mono-io-portability.h monobitset.c mono-filemap.c mono-mmap.c \
 	mono-mmap-windows.c mono-mmap-wasm.c mono-mmap.h \
-	mono-mmap-internals.h mono-mmap-windows-internals.h \
-	mono-os-mutex.h mono-os-mutex.c mono-flight-recorder.h \
-	mono-flight-recorder.c mono-os-wait.h mono-coop-mutex.h \
-	mono-once.h mono-lazy-init.h mono-networkinterfaces.c \
-	mono-networkinterfaces.h mono-proclib.c mono-proclib-windows.c \
-	mono-proclib.h mono-proclib-windows-internals.h mono-publib.c \
-	mono-jemalloc.c mono-string.h mono-time.c mono-time.h \
-	strenc-internals.h strenc.h strenc.c mono-uri.c mono-poll.c \
-	mono-path.c mono-os-semaphore.h mono-coop-semaphore.h \
-	mono-sigcontext.h mono-stdlib.c mono-property-hash.h \
-	mono-property-hash.c mono-value-hash.h mono-value-hash.c \
-	freebsd-elf_common.h freebsd-elf32.h freebsd-elf64.h \
-	freebsd-dwarf.h dtrace.h gc_wrapper.h mono-error.c \
-	mono-error-internals.h monobitset.h mono-codeman.h \
-	mono-counters.h mono-digest.h mono-error.h \
+	mono-mmap-internals.h mono-os-mutex.h mono-os-mutex.c \
+	mono-flight-recorder.h mono-flight-recorder.c mono-os-wait.h \
+	mono-coop-mutex.h mono-once.h mono-lazy-init.h \
+	mono-networkinterfaces.c mono-networkinterfaces.h \
+	mono-proclib.c mono-proclib-windows.c mono-proclib.h \
+	mono-proclib-windows-internals.h mono-publib.c mono-jemalloc.c \
+	mono-string.h mono-time.c mono-time.h strenc-internals.h \
+	strenc.h strenc.c mono-uri.c mono-poll.c mono-path.c \
+	mono-os-semaphore.h mono-coop-semaphore.h mono-sigcontext.h \
+	mono-stdlib.c mono-property-hash.h mono-property-hash.c \
+	mono-value-hash.h mono-value-hash.c freebsd-elf_common.h \
+	freebsd-elf32.h freebsd-elf64.h freebsd-dwarf.h dtrace.h \
+	gc_wrapper.h mono-error.c mono-error-internals.h monobitset.h \
+	mono-codeman.h mono-counters.h mono-digest.h mono-error.h \
 	mono-forward-internal.h mono-machine.h mono-math.h \
 	mono-membar.h mono-path.h mono-poll.h mono-uri.h mono-stdlib.h \
 	valgrind.h mach-support.h memcheck.h mono-context.c \
@@ -822,7 +821,6 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@	mono-mmap-wasm.c  		\
 @ENABLE_MSVC_ONLY_FALSE@	mono-mmap.h  		\
 @ENABLE_MSVC_ONLY_FALSE@	mono-mmap-internals.h	\
-@ENABLE_MSVC_ONLY_FALSE@	mono-mmap-windows-internals.h	\
 @ENABLE_MSVC_ONLY_FALSE@	mono-os-mutex.h		\
 @ENABLE_MSVC_ONLY_FALSE@	mono-os-mutex.c		\
 @ENABLE_MSVC_ONLY_FALSE@	mono-flight-recorder.h		\
