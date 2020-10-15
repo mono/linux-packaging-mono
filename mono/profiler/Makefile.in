@@ -91,7 +91,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@DISABLE_EXECUTABLES_FALSE@@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@bin_PROGRAMS = mprof-report$(EXEEXT)
+@DISABLE_EXECUTABLES_FALSE@@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@bin_PROGRAMS = mprof-report$(EXEEXT)
 
 # On Apple hosts, we want to allow undefined symbols when building the
 # profiler modules as, just like on Linux, we don't link them to libmono,
@@ -99,14 +99,14 @@ target_triplet = @target@
 #
 # Bitcode, specifically, doesn't allow undefined symbols at all, even for
 # shared libraries, so we want errors if the profiler modules contain any.
-@BITCODE_TRUE@@HOST_DARWIN_TRUE@am__append_1 = -no-undefined
-@BITCODE_FALSE@@HOST_DARWIN_TRUE@am__append_2 = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
+@BITCODE_TRUE@@ENABLE_MSVC_ONLY_FALSE@@HOST_DARWIN_TRUE@am__append_1 = -no-undefined
+@BITCODE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_DARWIN_TRUE@am__append_2 = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
 
 # Versioned libraries are problematic on Android. In particular, we're not
 # allowed to place versioned libraries inside APKs, so if libmono and the
 # profiler modules contain versioned sonames, things will fail to resolve
 # at runtime.
-@HOST_ANDROID_TRUE@am__append_3 = -avoid-version
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_TRUE@am__append_3 = -avoid-version
 subdir = mono/profiler
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -159,7 +159,9 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
 	"$(DESTDIR)$(suppressiondir)"
 LTLIBRARIES = $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
 libmono_profiler_aot_static_la_LIBADD =
-am_libmono_profiler_aot_static_la_OBJECTS = aot.lo helper.lo
+am__libmono_profiler_aot_static_la_SOURCES_DIST = aot.c helper.c
+@ENABLE_MSVC_ONLY_FALSE@am_libmono_profiler_aot_static_la_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@	aot.lo helper.lo
 libmono_profiler_aot_static_la_OBJECTS =  \
 	$(am_libmono_profiler_aot_static_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -170,26 +172,29 @@ libmono_profiler_aot_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) \
 	$(libmono_profiler_aot_static_la_LDFLAGS) $(LDFLAGS) -o $@
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_aot_static_la_rpath = -rpath \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
-@BITCODE_TRUE@@HOST_ANDROID_FALSE@@HOST_DARWIN_TRUE@@HOST_IOS_FALSE@@HOST_TIZEN_FALSE@am__DEPENDENCIES_1 = $(top_builddir)/mono/mini/$(LIBMONO_LA)
-@HOST_ANDROID_FALSE@@HOST_IOS_FALSE@@HOST_TIZEN_TRUE@am__DEPENDENCIES_1 = $(top_builddir)/mono/mini/$(LIBMONO_LA)
-@HOST_ANDROID_FALSE@@HOST_IOS_TRUE@am__DEPENDENCIES_1 = $(top_builddir)/mono/mini/$(LIBMONO_LA)
-@HOST_ANDROID_TRUE@am__DEPENDENCIES_1 =  \
-@HOST_ANDROID_TRUE@	$(top_builddir)/mono/mini/$(LIBMONO_LA)
-libmono_profiler_aot_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(glib_libs)
-am_libmono_profiler_aot_la_OBJECTS = aot.lo helper.lo
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_aot_static_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(libdir)
+@BITCODE_TRUE@@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_FALSE@@HOST_DARWIN_TRUE@@HOST_IOS_FALSE@@HOST_TIZEN_FALSE@am__DEPENDENCIES_1 = $(top_builddir)/mono/mini/$(LIBMONO_LA)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_FALSE@@HOST_IOS_FALSE@@HOST_TIZEN_TRUE@am__DEPENDENCIES_1 = $(top_builddir)/mono/mini/$(LIBMONO_LA)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_FALSE@@HOST_IOS_TRUE@am__DEPENDENCIES_1 = $(top_builddir)/mono/mini/$(LIBMONO_LA)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_TRUE@am__DEPENDENCIES_1 = $(top_builddir)/mono/mini/$(LIBMONO_LA)
+@ENABLE_MSVC_ONLY_FALSE@libmono_profiler_aot_la_DEPENDENCIES =  \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_1) $(glib_libs)
+am__libmono_profiler_aot_la_SOURCES_DIST = aot.c helper.c
+@ENABLE_MSVC_ONLY_FALSE@am_libmono_profiler_aot_la_OBJECTS = aot.lo \
+@ENABLE_MSVC_ONLY_FALSE@	helper.lo
 libmono_profiler_aot_la_OBJECTS =  \
 	$(am_libmono_profiler_aot_la_OBJECTS)
 libmono_profiler_aot_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(libmono_profiler_aot_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_aot_la_rpath = -rpath \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_aot_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 libmono_profiler_coverage_static_la_LIBADD =
-am_libmono_profiler_coverage_static_la_OBJECTS = coverage.lo
+am__libmono_profiler_coverage_static_la_SOURCES_DIST = coverage.c
+@ENABLE_MSVC_ONLY_FALSE@am_libmono_profiler_coverage_static_la_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@	coverage.lo
 libmono_profiler_coverage_static_la_OBJECTS =  \
 	$(am_libmono_profiler_coverage_static_la_OBJECTS)
 libmono_profiler_coverage_static_la_LINK = $(LIBTOOL) $(AM_V_lt) \
@@ -197,82 +202,92 @@ libmono_profiler_coverage_static_la_LINK = $(LIBTOOL) $(AM_V_lt) \
 	$(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(libmono_profiler_coverage_static_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_coverage_static_la_rpath = -rpath \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
-libmono_profiler_coverage_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(glib_libs)
-am_libmono_profiler_coverage_la_OBJECTS = coverage.lo
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_coverage_static_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(libdir)
+@ENABLE_MSVC_ONLY_FALSE@libmono_profiler_coverage_la_DEPENDENCIES =  \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_1) $(glib_libs)
+am__libmono_profiler_coverage_la_SOURCES_DIST = coverage.c
+@ENABLE_MSVC_ONLY_FALSE@am_libmono_profiler_coverage_la_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@	coverage.lo
 libmono_profiler_coverage_la_OBJECTS =  \
 	$(am_libmono_profiler_coverage_la_OBJECTS)
 libmono_profiler_coverage_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(libmono_profiler_coverage_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_coverage_la_rpath = -rpath \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_coverage_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 libmono_profiler_log_static_la_LIBADD =
-am_libmono_profiler_log_static_la_OBJECTS = log.lo log-args.lo \
-	helper.lo
+am__libmono_profiler_log_static_la_SOURCES_DIST = log.c log-args.c \
+	helper.c
+@ENABLE_MSVC_ONLY_FALSE@am_libmono_profiler_log_static_la_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@	log.lo log-args.lo helper.lo
 libmono_profiler_log_static_la_OBJECTS =  \
 	$(am_libmono_profiler_log_static_la_OBJECTS)
 libmono_profiler_log_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) \
 	$(libmono_profiler_log_static_la_LDFLAGS) $(LDFLAGS) -o $@
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_log_static_la_rpath = -rpath \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_log_static_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 am__DEPENDENCIES_2 =
-@HAVE_STATIC_ZLIB_TRUE@am__DEPENDENCIES_3 = $(am__DEPENDENCIES_2)
-libmono_profiler_log_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(glib_libs) $(am__DEPENDENCIES_3)
-am_libmono_profiler_log_la_OBJECTS = log.lo log-args.lo helper.lo
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_STATIC_ZLIB_TRUE@am__DEPENDENCIES_3 = $(am__DEPENDENCIES_2)
+@ENABLE_MSVC_ONLY_FALSE@libmono_profiler_log_la_DEPENDENCIES =  \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_1) $(glib_libs) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_3)
+am__libmono_profiler_log_la_SOURCES_DIST = log.c log-args.c helper.c
+@ENABLE_MSVC_ONLY_FALSE@am_libmono_profiler_log_la_OBJECTS = log.lo \
+@ENABLE_MSVC_ONLY_FALSE@	log-args.lo helper.lo
 libmono_profiler_log_la_OBJECTS =  \
 	$(am_libmono_profiler_log_la_OBJECTS)
 libmono_profiler_log_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(libmono_profiler_log_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_log_la_rpath = -rpath \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
-@HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_DEPENDENCIES =  \
-@HAVE_VTUNE_TRUE@	$(am__DEPENDENCIES_2)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_log_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(libdir)
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am__libmono_profiler_vtune_static_la_SOURCES_DIST = vtune.c
-@HAVE_VTUNE_TRUE@am_libmono_profiler_vtune_static_la_OBJECTS =  \
-@HAVE_VTUNE_TRUE@	libmono_profiler_vtune_static_la-vtune.lo
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@am_libmono_profiler_vtune_static_la_OBJECTS = libmono_profiler_vtune_static_la-vtune.lo
 libmono_profiler_vtune_static_la_OBJECTS =  \
 	$(am_libmono_profiler_vtune_static_la_OBJECTS)
 libmono_profiler_vtune_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmono_profiler_vtune_static_la_CFLAGS) $(CFLAGS) \
 	$(libmono_profiler_vtune_static_la_LDFLAGS) $(LDFLAGS) -o $@
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@am_libmono_profiler_vtune_static_la_rpath = -rpath \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@	$(libdir)
-@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_DEPENDENCIES =  \
-@HAVE_VTUNE_TRUE@	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
-@HAVE_VTUNE_TRUE@	$(glib_libs)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@am_libmono_profiler_vtune_static_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@	$(libdir)
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@	$(am__DEPENDENCIES_1) \
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@	$(glib_libs)
 am__libmono_profiler_vtune_la_SOURCES_DIST = vtune.c
-@HAVE_VTUNE_TRUE@am_libmono_profiler_vtune_la_OBJECTS =  \
-@HAVE_VTUNE_TRUE@	libmono_profiler_vtune_la-vtune.lo
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@am_libmono_profiler_vtune_la_OBJECTS = libmono_profiler_vtune_la-vtune.lo
 libmono_profiler_vtune_la_OBJECTS =  \
 	$(am_libmono_profiler_vtune_la_OBJECTS)
 libmono_profiler_vtune_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmono_profiler_vtune_la_CFLAGS) $(CFLAGS) \
 	$(libmono_profiler_vtune_la_LDFLAGS) $(LDFLAGS) -o $@
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@am_libmono_profiler_vtune_la_rpath = -rpath \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@	$(libdir)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@am_libmono_profiler_vtune_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@	$(libdir)
 libproftest_pinvokes_la_LIBADD =
-am_libproftest_pinvokes_la_OBJECTS = proftest-pinvokes.lo
+am__libproftest_pinvokes_la_SOURCES_DIST = proftest-pinvokes.c
+@ENABLE_MSVC_ONLY_FALSE@am_libproftest_pinvokes_la_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@	proftest-pinvokes.lo
 libproftest_pinvokes_la_OBJECTS =  \
 	$(am_libproftest_pinvokes_la_OBJECTS)
 libproftest_pinvokes_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(libproftest_pinvokes_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
+@ENABLE_MSVC_ONLY_FALSE@am_libproftest_pinvokes_la_rpath =
 PROGRAMS = $(bin_PROGRAMS)
-am_mprof_report_OBJECTS = mprof-report.$(OBJEXT)
+am__mprof_report_SOURCES_DIST = mprof-report.c
+@ENABLE_MSVC_ONLY_FALSE@am_mprof_report_OBJECTS =  \
+@ENABLE_MSVC_ONLY_FALSE@	mprof-report.$(OBJEXT)
 mprof_report_OBJECTS = $(am_mprof_report_OBJECTS)
-mprof_report_DEPENDENCIES = $(glib_libs) $(am__DEPENDENCIES_3)
+@ENABLE_MSVC_ONLY_FALSE@mprof_report_DEPENDENCIES = $(glib_libs) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__DEPENDENCIES_3)
 mprof_report_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(mprof_report_LDFLAGS) $(LDFLAGS) -o $@
@@ -315,15 +330,16 @@ SOURCES = $(libmono_profiler_aot_static_la_SOURCES) \
 	$(libmono_profiler_vtune_static_la_SOURCES) \
 	$(libmono_profiler_vtune_la_SOURCES) \
 	$(libproftest_pinvokes_la_SOURCES) $(mprof_report_SOURCES)
-DIST_SOURCES = $(libmono_profiler_aot_static_la_SOURCES) \
-	$(libmono_profiler_aot_la_SOURCES) \
-	$(libmono_profiler_coverage_static_la_SOURCES) \
-	$(libmono_profiler_coverage_la_SOURCES) \
-	$(libmono_profiler_log_static_la_SOURCES) \
-	$(libmono_profiler_log_la_SOURCES) \
+DIST_SOURCES = $(am__libmono_profiler_aot_static_la_SOURCES_DIST) \
+	$(am__libmono_profiler_aot_la_SOURCES_DIST) \
+	$(am__libmono_profiler_coverage_static_la_SOURCES_DIST) \
+	$(am__libmono_profiler_coverage_la_SOURCES_DIST) \
+	$(am__libmono_profiler_log_static_la_SOURCES_DIST) \
+	$(am__libmono_profiler_log_la_SOURCES_DIST) \
 	$(am__libmono_profiler_vtune_static_la_SOURCES_DIST) \
 	$(am__libmono_profiler_vtune_la_SOURCES_DIST) \
-	$(libproftest_pinvokes_la_SOURCES) $(mprof_report_SOURCES)
+	$(am__libproftest_pinvokes_la_SOURCES_DIST) \
+	$(am__mprof_report_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -639,44 +655,44 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
-AM_CPPFLAGS = \
-	-DSUPPRESSION_DIR=\""$(datadir)/mono-$(API_VER)/mono/profiler"\" \
-	-I$(top_srcdir) \
-	$(GLIB_CFLAGS) \
-	$(SHARED_CFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@AM_CPPFLAGS = \
+@ENABLE_MSVC_ONLY_FALSE@	-DSUPPRESSION_DIR=\""$(datadir)/mono-$(API_VER)/mono/profiler"\" \
+@ENABLE_MSVC_ONLY_FALSE@	-I$(top_srcdir) \
+@ENABLE_MSVC_ONLY_FALSE@	$(GLIB_CFLAGS) \
+@ENABLE_MSVC_ONLY_FALSE@	$(SHARED_CFLAGS)
 
-glib_libs = $(top_builddir)/mono/eglib/libeglib.la
-prof_ldflags = $(CCLDFLAGS) $(am__append_1) $(am__append_2) \
-	$(am__append_3)
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@vtune_libs = \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@	libmono-profiler-vtune.la \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@	libmono-profiler-vtune-static.la
+@ENABLE_MSVC_ONLY_FALSE@glib_libs = $(top_builddir)/mono/eglib/libeglib.la
+@ENABLE_MSVC_ONLY_FALSE@prof_ldflags = $(CCLDFLAGS) $(am__append_1) \
+@ENABLE_MSVC_ONLY_FALSE@	$(am__append_2) $(am__append_3)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@vtune_libs = \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@	libmono-profiler-vtune.la \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@	libmono-profiler-vtune-static.la
 
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@lib_LTLIBRARIES = \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-aot.la \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-aot-static.la \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-log.la \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-log-static.la \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-coverage.la \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-coverage-static.la \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(vtune_libs)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@lib_LTLIBRARIES = \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-aot.la \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-aot-static.la \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-log.la \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-log-static.la \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-coverage.la \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-coverage-static.la \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	$(vtune_libs)
 
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@suppressiondir = $(datadir)/mono-$(API_VER)/mono/profiler
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@suppression_DATA = mono-profiler-coverage.suppression
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@suppressiondir = $(datadir)/mono-$(API_VER)/mono/profiler
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@suppression_DATA = mono-profiler-coverage.suppression
 
 # FIXME: The profiler tests currently don't work with coop because the
 # sampling infrastructure depends on signals being available.
 #
 # See: https://bugzilla.xamarin.com/show_bug.cgi?id=57011
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_COOP_SUSPEND_FALSE@@HOST_WIN32_FALSE@check_targets = run-test
-@BITCODE_FALSE@@HOST_ANDROID_FALSE@@HOST_DARWIN_TRUE@@HOST_IOS_FALSE@@HOST_TIZEN_FALSE@libmono_dep = 
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_COOP_SUSPEND_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@check_targets = run-test
+@BITCODE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_FALSE@@HOST_DARWIN_TRUE@@HOST_IOS_FALSE@@HOST_TIZEN_FALSE@libmono_dep = 
 # BITCODE => -no-undefined
-@BITCODE_TRUE@@HOST_ANDROID_FALSE@@HOST_DARWIN_TRUE@@HOST_IOS_FALSE@@HOST_TIZEN_FALSE@libmono_dep = $(top_builddir)/mono/mini/$(LIBMONO_LA)
-@HOST_ANDROID_FALSE@@HOST_DARWIN_FALSE@@HOST_IOS_FALSE@@HOST_TIZEN_FALSE@libmono_dep = 
-@HOST_ANDROID_FALSE@@HOST_IOS_FALSE@@HOST_TIZEN_TRUE@libmono_dep = $(top_builddir)/mono/mini/$(LIBMONO_LA)
+@BITCODE_TRUE@@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_FALSE@@HOST_DARWIN_TRUE@@HOST_IOS_FALSE@@HOST_TIZEN_FALSE@libmono_dep = $(top_builddir)/mono/mini/$(LIBMONO_LA)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_FALSE@@HOST_DARWIN_FALSE@@HOST_IOS_FALSE@@HOST_TIZEN_FALSE@libmono_dep = 
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_FALSE@@HOST_IOS_FALSE@@HOST_TIZEN_TRUE@libmono_dep = $(top_builddir)/mono/mini/$(LIBMONO_LA)
 # Note that BITCODE implies HOST_IOS, so this case ensures that we link to
 # libmono when building a bitcode runtime.
-@HOST_ANDROID_FALSE@@HOST_IOS_TRUE@libmono_dep = $(top_builddir)/mono/mini/$(LIBMONO_LA)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_FALSE@@HOST_IOS_TRUE@libmono_dep = $(top_builddir)/mono/mini/$(LIBMONO_LA)
 
 # Linking to libmono on desktop can cause problems when loading a profiler
 # module into a statically-linked mono executable, e.g. running library
@@ -685,69 +701,69 @@ prof_ldflags = $(CCLDFLAGS) $(am__append_1) $(am__append_2) \
 # always loaded dynamically, so we do need to link to libmono there or the
 # dynamic linker will have trouble resolving everything. On iOS, the story
 # is similar to Android when running in the simulator.
-@HOST_ANDROID_TRUE@libmono_dep = $(top_builddir)/mono/mini/$(LIBMONO_LA)
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@zlib_dep = 
+@ENABLE_MSVC_ONLY_FALSE@@HOST_ANDROID_TRUE@libmono_dep = $(top_builddir)/mono/mini/$(LIBMONO_LA)
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@zlib_dep = 
 # The log profiler uses zlib for output compression when available.
-@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_TRUE@zlib_dep = -lz
-@HAVE_STATIC_ZLIB_TRUE@zlib_dep = $(STATIC_ZLIB_PATH)
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_TRUE@zlib_dep = -lz
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_STATIC_ZLIB_TRUE@zlib_dep = $(STATIC_ZLIB_PATH)
 
 # We build a separate, static version of each profiler for use on targets
 # which do not support dynamic linking (e.g. iOS). We still want to build
 # the shared version on those targets since it's useful for e.g. simulator
 # builds.
-libmono_profiler_aot_la_SOURCES = aot.c helper.c
-libmono_profiler_aot_la_LIBADD = $(libmono_dep) $(glib_libs)
-libmono_profiler_aot_la_LDFLAGS = $(prof_ldflags)
-libmono_profiler_aot_static_la_SOURCES = aot.c helper.c
-libmono_profiler_aot_static_la_LDFLAGS = -static
-libmono_profiler_log_la_SOURCES = log.c log-args.c helper.c
-libmono_profiler_log_la_LIBADD = $(libmono_dep) $(glib_libs) $(zlib_dep)
-libmono_profiler_log_la_LDFLAGS = $(prof_ldflags)
-libmono_profiler_log_static_la_SOURCES = log.c log-args.c helper.c
-libmono_profiler_log_static_la_LDFLAGS = -static
-libmono_profiler_coverage_la_SOURCES = coverage.c
-libmono_profiler_coverage_la_LIBADD = $(libmono_dep) $(glib_libs)
-libmono_profiler_coverage_la_LDFLAGS = $(prof_ldflags)
-libmono_profiler_coverage_static_la_SOURCES = coverage.c
-libmono_profiler_coverage_static_la_LDFLAGS = -static
-@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_SOURCES = vtune.c
-@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_CFLAGS = $(VTUNE_CFLAGS)
-@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_LIBADD = $(VTUNE_LIBS) $(libmono_dep) $(glib_libs)
-@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_LDFLAGS = $(prof_ldflags)
-@HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_SOURCES = vtune.c
-@HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_LDFLAGS = -static
-@HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_CFLAGS = $(VTUNE_CFLAGS)
-@HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_LIBADD = $(VTUNE_LIBS)
-mprof_report_SOURCES = mprof-report.c
-mprof_report_LDADD = $(glib_libs) $(zlib_dep)
-mprof_report_LDFLAGS = -no-undefined
-noinst_LTLIBRARIES = libproftest_pinvokes.la
-libproftest_pinvokes_la_SOURCES = proftest-pinvokes.c
-@HOST_WIN32_FALSE@libproftest_pinvokes_la_LDFLAGS = -no-undefined -rpath `pwd` $(CCLDFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@libmono_profiler_aot_la_SOURCES = aot.c helper.c
+@ENABLE_MSVC_ONLY_FALSE@libmono_profiler_aot_la_LIBADD = $(libmono_dep) $(glib_libs)
+@ENABLE_MSVC_ONLY_FALSE@libmono_profiler_aot_la_LDFLAGS = $(prof_ldflags)
+@ENABLE_MSVC_ONLY_FALSE@libmono_profiler_aot_static_la_SOURCES = aot.c helper.c
+@ENABLE_MSVC_ONLY_FALSE@libmono_profiler_aot_static_la_LDFLAGS = -static
+@ENABLE_MSVC_ONLY_FALSE@libmono_profiler_log_la_SOURCES = log.c log-args.c helper.c
+@ENABLE_MSVC_ONLY_FALSE@libmono_profiler_log_la_LIBADD = $(libmono_dep) $(glib_libs) $(zlib_dep)
+@ENABLE_MSVC_ONLY_FALSE@libmono_profiler_log_la_LDFLAGS = $(prof_ldflags)
+@ENABLE_MSVC_ONLY_FALSE@libmono_profiler_log_static_la_SOURCES = log.c log-args.c helper.c
+@ENABLE_MSVC_ONLY_FALSE@libmono_profiler_log_static_la_LDFLAGS = -static
+@ENABLE_MSVC_ONLY_FALSE@libmono_profiler_coverage_la_SOURCES = coverage.c
+@ENABLE_MSVC_ONLY_FALSE@libmono_profiler_coverage_la_LIBADD = $(libmono_dep) $(glib_libs)
+@ENABLE_MSVC_ONLY_FALSE@libmono_profiler_coverage_la_LDFLAGS = $(prof_ldflags)
+@ENABLE_MSVC_ONLY_FALSE@libmono_profiler_coverage_static_la_SOURCES = coverage.c
+@ENABLE_MSVC_ONLY_FALSE@libmono_profiler_coverage_static_la_LDFLAGS = -static
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_SOURCES = vtune.c
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_CFLAGS = $(VTUNE_CFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_LIBADD = $(VTUNE_LIBS) $(libmono_dep) $(glib_libs)
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_LDFLAGS = $(prof_ldflags)
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_SOURCES = vtune.c
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_LDFLAGS = -static
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_CFLAGS = $(VTUNE_CFLAGS)
+@ENABLE_MSVC_ONLY_FALSE@@HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_LIBADD = $(VTUNE_LIBS)
+@ENABLE_MSVC_ONLY_FALSE@mprof_report_SOURCES = mprof-report.c
+@ENABLE_MSVC_ONLY_FALSE@mprof_report_LDADD = $(glib_libs) $(zlib_dep)
+@ENABLE_MSVC_ONLY_FALSE@mprof_report_LDFLAGS = -no-undefined
+@ENABLE_MSVC_ONLY_FALSE@noinst_LTLIBRARIES = libproftest_pinvokes.la
+@ENABLE_MSVC_ONLY_FALSE@libproftest_pinvokes_la_SOURCES = proftest-pinvokes.c
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@libproftest_pinvokes_la_LDFLAGS = -no-undefined -rpath `pwd` $(CCLDFLAGS)
 # (borrowed from mono/tests/Makefile.am libtest_la_LDFLAGS)
 # the exported names created by gcc for stdcall functions are missing the leading _, so MS.NET
 # can't find them. So we use --kill-at to remove the @ suffix as well.
-@HOST_WIN32_TRUE@libproftest_pinvokes_la_LDFLAGS = -no-undefined -rpath `pwd` $(CCLDFLAGS) -Wl,--kill-at
-PLOG_TESTS_SRC = \
-	test-alloc.cs \
-	test-busy.cs \
-	test-monitor.cs \
-	test-excleave.cs \
-	test-heapshot.cs \
-	test-pinvokes.cs \
-	test-traces.cs
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@libproftest_pinvokes_la_LDFLAGS = -no-undefined -rpath `pwd` $(CCLDFLAGS) -Wl,--kill-at
+@ENABLE_MSVC_ONLY_FALSE@PLOG_TESTS_SRC = \
+@ENABLE_MSVC_ONLY_FALSE@	test-alloc.cs \
+@ENABLE_MSVC_ONLY_FALSE@	test-busy.cs \
+@ENABLE_MSVC_ONLY_FALSE@	test-monitor.cs \
+@ENABLE_MSVC_ONLY_FALSE@	test-excleave.cs \
+@ENABLE_MSVC_ONLY_FALSE@	test-heapshot.cs \
+@ENABLE_MSVC_ONLY_FALSE@	test-pinvokes.cs \
+@ENABLE_MSVC_ONLY_FALSE@	test-traces.cs
 
-PLOG_TESTS = $(PLOG_TESTS_SRC:.cs=.exe)
-CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
-TOOLS_RUNTIME = MONO_PATH=$(mcs_topdir)/class/lib/build $(top_builddir)/runtime/mono-wrapper
-MCS = $(TOOLS_RUNTIME) $(CSC) -lib:$(CLASS) -unsafe -nologo -noconfig -nowarn:0162 -nowarn:0168 -nowarn:0219 -debug:portable
-EXTRA_DIST = \
-	log.h \
-	aot.h \
-	helper.h \
-	$(PLOG_TESTS_SRC) \
-	ptestrunner.pl \
-	$(suppression_DATA)
+@ENABLE_MSVC_ONLY_FALSE@PLOG_TESTS = $(PLOG_TESTS_SRC:.cs=.exe)
+@ENABLE_MSVC_ONLY_FALSE@CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
+@ENABLE_MSVC_ONLY_FALSE@TOOLS_RUNTIME = MONO_PATH=$(mcs_topdir)/class/lib/build $(top_builddir)/runtime/mono-wrapper
+@ENABLE_MSVC_ONLY_FALSE@MCS = $(TOOLS_RUNTIME) $(CSC) -lib:$(CLASS) -unsafe -nologo -noconfig -nowarn:0162 -nowarn:0168 -nowarn:0219 -debug:portable
+@ENABLE_MSVC_ONLY_FALSE@EXTRA_DIST = \
+@ENABLE_MSVC_ONLY_FALSE@	log.h \
+@ENABLE_MSVC_ONLY_FALSE@	aot.h \
+@ENABLE_MSVC_ONLY_FALSE@	helper.h \
+@ENABLE_MSVC_ONLY_FALSE@	$(PLOG_TESTS_SRC) \
+@ENABLE_MSVC_ONLY_FALSE@	ptestrunner.pl \
+@ENABLE_MSVC_ONLY_FALSE@	$(suppression_DATA)
 
 all: all-am
 
@@ -854,7 +870,7 @@ libmono-profiler-vtune.la: $(libmono_profiler_vtune_la_OBJECTS) $(libmono_profil
 	$(AM_V_CCLD)$(libmono_profiler_vtune_la_LINK) $(am_libmono_profiler_vtune_la_rpath) $(libmono_profiler_vtune_la_OBJECTS) $(libmono_profiler_vtune_la_LIBADD) $(LIBS)
 
 libproftest_pinvokes.la: $(libproftest_pinvokes_la_OBJECTS) $(libproftest_pinvokes_la_DEPENDENCIES) $(EXTRA_libproftest_pinvokes_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libproftest_pinvokes_la_LINK)  $(libproftest_pinvokes_la_OBJECTS) $(libproftest_pinvokes_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libproftest_pinvokes_la_LINK) $(am_libproftest_pinvokes_la_rpath) $(libproftest_pinvokes_la_OBJECTS) $(libproftest_pinvokes_la_LIBADD) $(LIBS)
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
@@ -1074,10 +1090,12 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
+@ENABLE_MSVC_ONLY_TRUE@check-local:
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) check-local
 check: check-am
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA)
+@ENABLE_MSVC_ONLY_FALSE@all-local:
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA) all-local
 install-binPROGRAMS: install-libLTLIBRARIES
 
 installdirs:
@@ -1114,10 +1132,14 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+@ENABLE_MSVC_ONLY_FALSE@clean-local:
+@ENABLE_MSVC_ONLY_TRUE@test-bundle-local:
+@ENABLE_MSVC_ONLY_TRUE@test-local:
 clean: clean-am
 
 clean-am: clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
-	clean-libtool clean-noinstLTLIBRARIES mostlyclean-am
+	clean-libtool clean-local clean-noinstLTLIBRARIES \
+	mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -1196,47 +1218,58 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 
 .MAKE: check-am install-am install-strip
 
-.PHONY: CTAGS GTAGS TAGS all all-am check check-am check-local clean \
-	clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
-	clean-libtool clean-noinstLTLIBRARIES cscopelist-am ctags \
-	ctags-am distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-binPROGRAMS \
-	install-data install-data-am install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-libLTLIBRARIES \
-	install-man install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip install-suppressionDATA \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-am test-am test-bundle-am test-bundle-local \
-	test-local uninstall uninstall-am uninstall-binPROGRAMS \
-	uninstall-libLTLIBRARIES uninstall-suppressionDATA
+.PHONY: CTAGS GTAGS TAGS all all-am all-local check check-am \
+	check-local clean clean-binPROGRAMS clean-generic \
+	clean-libLTLIBRARIES clean-libtool clean-local \
+	clean-noinstLTLIBRARIES cscopelist-am ctags ctags-am distclean \
+	distclean-compile distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
+	install install-am install-binPROGRAMS install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-libLTLIBRARIES install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	install-suppressionDATA installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am test-am \
+	test-bundle-am test-bundle-local test-local uninstall \
+	uninstall-am uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
+	uninstall-suppressionDATA
 
 .PRECIOUS: Makefile
 
 
-%.exe: %.cs
-	$(MCS) -out:$@ $<
+@ENABLE_MSVC_ONLY_FALSE@%.exe: %.cs
+@ENABLE_MSVC_ONLY_FALSE@	$(MCS) -out:$@ $<
 
-test-pinvokes.exe: libproftest_pinvokes.la
+@ENABLE_MSVC_ONLY_FALSE@test-pinvokes.exe: libproftest_pinvokes.la
 
-test-local: $(PLOG_TESTS)
+@ENABLE_MSVC_ONLY_FALSE@test-local: $(PLOG_TESTS)
 
-test-bundle-local:
-	mkdir -p $(TEST_BUNDLE_PATH)/tests/profiler/
-	cp -L .libs/libmono-profiler-log$(libsuffix) $(TEST_BUNDLE_PATH)/
-	cp -L $(PLOG_TESTS) $(TEST_BUNDLE_PATH)/tests/profiler/
-	cp -L .libs/libproftest_pinvokes$(libsuffix) $(TEST_BUNDLE_PATH)/tests/profiler/
-	cp -L ptestrunner.pl $(TEST_BUNDLE_PATH)/tests/profiler/
-	cp -L mprof-report $(TEST_BUNDLE_PATH)/
-	chmod +x $(TEST_BUNDLE_PATH)/mprof-report
+@ENABLE_MSVC_ONLY_FALSE@test-bundle-local:
+@ENABLE_MSVC_ONLY_FALSE@	mkdir -p $(TEST_BUNDLE_PATH)/tests/profiler/
+@ENABLE_MSVC_ONLY_FALSE@	cp -L .libs/libmono-profiler-log$(libsuffix) $(TEST_BUNDLE_PATH)/
+@ENABLE_MSVC_ONLY_FALSE@	cp -L $(PLOG_TESTS) $(TEST_BUNDLE_PATH)/tests/profiler/
+@ENABLE_MSVC_ONLY_FALSE@	cp -L .libs/libproftest_pinvokes$(libsuffix) $(TEST_BUNDLE_PATH)/tests/profiler/
+@ENABLE_MSVC_ONLY_FALSE@	cp -L ptestrunner.pl $(TEST_BUNDLE_PATH)/tests/profiler/
+@ENABLE_MSVC_ONLY_FALSE@	cp -L mprof-report $(TEST_BUNDLE_PATH)/
+@ENABLE_MSVC_ONLY_FALSE@	chmod +x $(TEST_BUNDLE_PATH)/mprof-report
 
-run-test: test
-	MONO_PATH=$(CLASS) perl $(srcdir)/ptestrunner.pl $(top_builddir) nunit TestResult-profiler.xml
+@ENABLE_MSVC_ONLY_FALSE@run-test: test
+@ENABLE_MSVC_ONLY_FALSE@	MONO_PATH=$(CLASS) perl $(srcdir)/ptestrunner.pl $(top_builddir) nunit TestResult-profiler.xml
 
-check-local: $(check_targets)
+@ENABLE_MSVC_ONLY_FALSE@check-local: $(check_targets)
+
+@ENABLE_MSVC_ONLY_TRUE@all-local:
+
+@ENABLE_MSVC_ONLY_TRUE@	$(MAKE) -C $(top_srcdir)/msvc mprof-report
+@ENABLE_MSVC_ONLY_TRUE@	cp -f $(mono_msvc_build_bin_dir)/mprof-report$(EXEEXT) ./mprof-report$(EXEEXT)
+
+@ENABLE_MSVC_ONLY_TRUE@clean-local:
+
+@ENABLE_MSVC_ONLY_TRUE@	$(MAKE) -C $(top_srcdir)/msvc clean-mprof-report
+@ENABLE_MSVC_ONLY_TRUE@	rm ./mprof-report$(EXEEXT)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

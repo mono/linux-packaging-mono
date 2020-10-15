@@ -202,12 +202,13 @@ am__libmonoutils_la_SOURCES_DIST = dlmalloc.h dlmalloc.c \
 	networking-missing.c networking-windows.c networking.h \
 	mono-rand.c mono-rand-windows.c mono-rand.h memfuncs.c \
 	memfuncs.h parse.c parse.h checked-build.c checked-build.h \
-	os-event.h refcount.h w32api.h unlocked.h ward.h \
-	mach-support-x86.c mach-support-amd64.c mach-support-arm.c \
-	mach-support-arm64.c mach-support-unknown.c mono-hwcap-x86.c \
-	mono-hwcap-arm.c mono-hwcap-arm64.c mono-hwcap-mips.c \
-	mono-hwcap-ppc.c mono-hwcap-sparc.c mono-hwcap-s390x.c \
-	mono-hwcap-riscv.c mono-hwcap-wasm.c mono-hwcap-cross.c
+	os-event.h refcount.h w32api.h unlocked.h ward.h options.h \
+	options-def.h options.c mach-support-x86.c \
+	mach-support-amd64.c mach-support-arm.c mach-support-arm64.c \
+	mach-support-unknown.c mono-hwcap-x86.c mono-hwcap-arm.c \
+	mono-hwcap-arm64.c mono-hwcap-mips.c mono-hwcap-ppc.c \
+	mono-hwcap-sparc.c mono-hwcap-s390x.c mono-hwcap-riscv.c \
+	mono-hwcap-wasm.c mono-hwcap-cross.c
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_1 = libmonoutils_la-dlmalloc.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoutils_la-os-event-unix.lo
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_2 = libmonoutils_la-mono-os-semaphore-win32.lo \
@@ -303,7 +304,8 @@ am__libmonoutils_la_SOURCES_DIST = dlmalloc.h dlmalloc.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-mono-rand-windows.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-memfuncs.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-parse.lo \
-@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-checked-build.lo
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-checked-build.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoutils_la-options.lo
 @CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@@X86_TRUE@am__objects_5 = libmonoutils_la-mach-support-x86.lo
 @AMD64_TRUE@@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__objects_6 = libmonoutils_la-mach-support-amd64.lo
 @ARM_TRUE@@CROSS_COMPILE_FALSE@@ENABLE_MSVC_ONLY_FALSE@am__objects_7 = libmonoutils_la-mach-support-arm.lo
@@ -955,7 +957,10 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@	refcount.h	\
 @ENABLE_MSVC_ONLY_FALSE@	w32api.h	\
 @ENABLE_MSVC_ONLY_FALSE@	unlocked.h	\
-@ENABLE_MSVC_ONLY_FALSE@	ward.h
+@ENABLE_MSVC_ONLY_FALSE@	ward.h \
+@ENABLE_MSVC_ONLY_FALSE@	options.h \
+@ENABLE_MSVC_ONLY_FALSE@	options-def.h \
+@ENABLE_MSVC_ONLY_FALSE@	options.c
 
 @ENABLE_MSVC_ONLY_FALSE@arch_sources = $(am__append_1) $(am__append_2) \
 @ENABLE_MSVC_ONLY_FALSE@	$(am__append_3) $(am__append_4) \
@@ -1151,6 +1156,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-networking-posix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-networking-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-networking.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-options.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-os-event-unix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-os-event-win32.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-parse.Plo@am__quote@
@@ -1823,6 +1829,13 @@ libmonoutils_la-checked-build.lo: checked-build.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='checked-build.c' object='libmonoutils_la-checked-build.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-checked-build.lo `test -f 'checked-build.c' || echo '$(srcdir)/'`checked-build.c
+
+libmonoutils_la-options.lo: options.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-options.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-options.Tpo -c -o libmonoutils_la-options.lo `test -f 'options.c' || echo '$(srcdir)/'`options.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-options.Tpo $(DEPDIR)/libmonoutils_la-options.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='options.c' object='libmonoutils_la-options.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-options.lo `test -f 'options.c' || echo '$(srcdir)/'`options.c
 
 libmonoutils_la-mach-support-x86.lo: mach-support-x86.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mach-support-x86.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mach-support-x86.Tpo -c -o libmonoutils_la-mach-support-x86.lo `test -f 'mach-support-x86.c' || echo '$(srcdir)/'`mach-support-x86.c
