@@ -202,8 +202,8 @@ am__libmonoutils_la_SOURCES_DIST = dlmalloc.h dlmalloc.c \
 	networking-missing.c networking-windows.c networking.h \
 	mono-rand.c mono-rand-windows.c mono-rand.h memfuncs.c \
 	memfuncs.h parse.c parse.h checked-build.c checked-build.h \
-	os-event.h refcount.h w32api.h unlocked.h ward.h options.h \
-	options-def.h options.c mach-support-x86.c \
+	os-event.h refcount.h w32api.h w32subset.h unlocked.h ward.h \
+	options.h options-def.h options.c mach-support-x86.c \
 	mach-support-amd64.c mach-support-arm.c mach-support-arm64.c \
 	mach-support-unknown.c mono-hwcap-x86.c mono-hwcap-arm.c \
 	mono-hwcap-arm64.c mono-hwcap-mips.c mono-hwcap-ppc.c \
@@ -956,6 +956,7 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@	os-event.h \
 @ENABLE_MSVC_ONLY_FALSE@	refcount.h	\
 @ENABLE_MSVC_ONLY_FALSE@	w32api.h	\
+@ENABLE_MSVC_ONLY_FALSE@	w32subset.h	\
 @ENABLE_MSVC_ONLY_FALSE@	unlocked.h	\
 @ENABLE_MSVC_ONLY_FALSE@	ward.h \
 @ENABLE_MSVC_ONLY_FALSE@	options.h \
