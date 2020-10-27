@@ -6546,7 +6546,6 @@ namespace System.Diagnostics
         public System.Diagnostics.ProcessModule MainModule { get { throw null; } }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Diagnostics.MonitoringDescriptionAttribute("The handle of the main window of the process.")]
-        [System.MonoTODOAttribute]
         public System.IntPtr MainWindowHandle { get { throw null; } }
         [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         [System.Diagnostics.MonitoringDescriptionAttribute("The title of the main window of the process.")]
