@@ -685,6 +685,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  eg_my_charset@Base 5.14.0.78
  eg_utf8_to_utf16_with_nuls@Base 5.8.0.22
  eg_wtf8_to_utf16@Base 5.11.0.264
+ g_log_disabled@Base 6.13.0.949
  ld@Base 6.10.0.52
  mini_get_debug_options@Base 4.1.0.1738
  mini_parse_debug_option@Base 4.3.3.38
@@ -880,6 +881,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_cpu_count@Base 5.8.0.22
  mono_cpu_features_disabled@Base 6.8.0.73
  mono_cpu_features_enabled@Base 6.8.0.73
+ mono_create_new_bundled_satellite_assembly@Base 6.13.0.949
  mono_custom_attrs_construct@Base 4.1.0.1738
  mono_custom_attrs_free@Base 4.1.0.1738
  mono_custom_attrs_from_assembly@Base 4.1.0.1738
@@ -949,6 +951,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_domain_assembly_open@Base 4.1.0.1738
  mono_domain_create@Base 4.1.0.1738
  mono_domain_create_appdomain@Base 4.1.0.1738
+ mono_domain_ensure_entry_assembly@Base 6.13.0.949
  mono_domain_finalize@Base 4.1.0.1738
  mono_domain_foreach@Base 4.1.0.1738
  mono_domain_free@Base 4.1.0.1738
@@ -1170,6 +1173,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_image_lookup_resource@Base 4.1.0.1738
  mono_image_open@Base 4.1.0.1738
  mono_image_open_from_data@Base 4.1.0.1738
+ mono_image_open_from_data_alc@Base 6.13.0.949
  mono_image_open_from_data_full@Base 4.1.0.1738
  mono_image_open_from_data_with_name@Base 4.1.0.1738
  mono_image_open_full@Base 4.1.0.1738
@@ -1410,6 +1414,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_opcode_name@Base 4.1.0.1738
  mono_opcode_value@Base 4.1.0.1738
  mono_opcodes@Base 4.5.2.363-0nightly1
+ mono_opt_bool_flag@Base 6.13.0.949
  mono_os_event_destroy@Base 5.14.0.78
  mono_os_event_init@Base 5.14.0.78
  mono_os_event_reset@Base 5.14.0.78
@@ -1577,6 +1582,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_reflection_type_from_name@Base 4.1.0.1738
  mono_reflection_type_get_type@Base 4.1.0.1738
  mono_register_bundled_assemblies@Base 4.1.0.1738
+ mono_register_bundled_satellite_assemblies@Base 6.13.0.949
  mono_register_config_for_assembly@Base 4.1.0.1738
  mono_register_machine_config@Base 4.1.0.1738
  mono_register_symfile_for_assembly@Base 4.1.0.1738
@@ -1698,7 +1704,9 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_thread_info_uninstall_interrupt@Base 5.18.0.143
  mono_thread_info_yield@Base 4.7.0.488
  mono_thread_init@Base 4.1.0.1738
+ mono_thread_internal_attach@Base 6.13.0.949
  mono_thread_internal_current@Base 5.14.0.78
+ mono_thread_internal_detach@Base 6.13.0.949
  mono_thread_is_foreign@Base 4.1.0.1738
  mono_thread_manage@Base 4.1.0.1738
  mono_thread_new_init@Base 4.1.0.1738
@@ -1929,6 +1937,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_g_propagate_error@Base 5.8.0.22
  monoeg_g_ptr_array_add@Base 5.8.0.22
  monoeg_g_ptr_array_capacity@Base 5.10.0.53
+ monoeg_g_ptr_array_find@Base 6.13.0.949
  monoeg_g_ptr_array_foreach@Base 5.8.0.22
  monoeg_g_ptr_array_free@Base 5.8.0.22
  monoeg_g_ptr_array_new@Base 5.8.0.22
