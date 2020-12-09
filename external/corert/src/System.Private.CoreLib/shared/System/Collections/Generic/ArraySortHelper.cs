@@ -14,6 +14,7 @@
 ===========================================================*/
 
 using System.Diagnostics;
+using System.Threading;
 using System.Runtime.CompilerServices;
 
 namespace System.Collections.Generic
@@ -68,6 +69,10 @@ namespace System.Collections.Generic
             {
                 IntrospectiveSortUtilities.ThrowOrIgnoreBadComparer(comparer);
             }
+            catch (ThreadAbortException)
+            {
+                    throw;
+            }
             catch (Exception e)
             {
                 throw new InvalidOperationException(SR.InvalidOperation_IComparerFailed, e);
@@ -84,6 +89,10 @@ namespace System.Collections.Generic
                 }
 
                 return InternalBinarySearch(array, index, length, value, comparer);
+            }
+            catch (ThreadAbortException)
+            {
+                    throw;
             }
             catch (Exception e)
             {
@@ -107,6 +116,10 @@ namespace System.Collections.Generic
             catch (IndexOutOfRangeException)
             {
                 IntrospectiveSortUtilities.ThrowOrIgnoreBadComparer(comparer);
+            }
+            catch (ThreadAbortException)
+            {
+                    throw;
             }
             catch (Exception e)
             {
@@ -355,6 +368,10 @@ namespace System.Collections.Generic
             {
                 IntrospectiveSortUtilities.ThrowOrIgnoreBadComparer(comparer);
             }
+            catch (ThreadAbortException)
+            {
+                    throw;
+            }
             catch (Exception e)
             {
                 throw new InvalidOperationException(SR.InvalidOperation_IComparerFailed, e);
@@ -376,6 +393,10 @@ namespace System.Collections.Generic
                 {
                     return ArraySortHelper<T>.InternalBinarySearch(array, index, length, value, comparer);
                 }
+            }
+            catch (ThreadAbortException)
+            {
+                    throw;
             }
             catch (Exception e)
             {
@@ -645,6 +666,10 @@ namespace System.Collections.Generic
             {
                 IntrospectiveSortUtilities.ThrowOrIgnoreBadComparer(comparer);
             }
+            catch (ThreadAbortException)
+            {
+                    throw;
+            }
             catch (Exception e)
             {
                 throw new InvalidOperationException(SR.InvalidOperation_IComparerFailed, e);
@@ -892,6 +917,10 @@ namespace System.Collections.Generic
             catch (IndexOutOfRangeException)
             {
                 IntrospectiveSortUtilities.ThrowOrIgnoreBadComparer(comparer);
+            }
+            catch (ThreadAbortException)
+            {
+                    throw;
             }
             catch (Exception e)
             {

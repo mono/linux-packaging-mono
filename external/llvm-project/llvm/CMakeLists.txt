@@ -1025,3 +1025,8 @@ if (MSVC AND CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
   include(InstallRequiredSystemLibraries)
 endif()
 
+
+# emit version we consume in Arcade
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/version.txt.in
+  ${CMAKE_CURRENT_BINARY_DIR}/version.txt)

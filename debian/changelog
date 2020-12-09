@@ -1,8 +1,392 @@
-mono (6.12.0.90-0xamarin1) stable; urgency=medium
+mono (6.12.0.107-0xamarin8) preview; urgency=medium
 
-  * New release - mono-6.12.0.90.tar.xz
+  * Packaging bugfix:
 
- -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 04 Sep 2020 13:33:11 +0000
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 05 Nov 2020 08:00:26 +0000
+
+mono (6.12.0.107-0xamarin7) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Wed, 04 Nov 2020 08:00:07 +0000
+
+mono (6.12.0.107-0xamarin6) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 03 Nov 2020 07:54:19 +0000
+
+mono (6.12.0.107-0xamarin5) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 02 Nov 2020 08:17:22 +0000
+
+mono (6.12.0.107-0xamarin4) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sun, 01 Nov 2020 07:59:06 +0000
+
+mono (6.12.0.107-0xamarin3) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sat, 31 Oct 2020 08:17:01 +0000
+
+mono (6.12.0.107-0xamarin2) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 30 Oct 2020 07:59:41 +0000
+
+mono (6.12.0.107-0xamarin1) preview; urgency=medium
+
+  * New release - mono-6.12.0.107.tar.xz
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 29 Oct 2020 08:46:58 +0000
+
+mono (6.12.0.106-0xamarin1) preview; urgency=medium
+
+  * New release - mono-6.12.0.106.tar.xz
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Wed, 28 Oct 2020 08:47:58 +0000
+
+mono (6.12.0.105-0xamarin5) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 27 Oct 2020 07:59:56 +0000
+
+mono (6.12.0.105-0xamarin4) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 26 Oct 2020 08:19:18 +0000
+
+mono (6.12.0.105-0xamarin3) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sun, 25 Oct 2020 07:59:35 +0000
+
+mono (6.12.0.105-0xamarin2) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sat, 24 Oct 2020 07:59:29 +0000
+
+mono (6.12.0.105-0xamarin1) preview; urgency=medium
+
+  * New release - mono-6.12.0.105.tar.xz
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 23 Oct 2020 08:36:18 +0000
+
+mono (6.12.0.102-0xamarin9) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 20 Oct 2020 07:58:04 +0000
+
+mono (6.12.0.102-0xamarin8) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sat, 17 Oct 2020 08:18:01 +0000
+
+mono (6.12.0.102-0xamarin7) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 16 Oct 2020 08:00:38 +0000
+
+mono (6.12.0.102-0xamarin6) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 15 Oct 2020 08:16:15 +0000
+
+mono (6.12.0.102-0xamarin5) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Wed, 14 Oct 2020 08:01:32 +0000
+
+mono (6.12.0.102-0xamarin4) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 13 Oct 2020 08:18:07 +0000
+
+mono (6.12.0.102-0xamarin3) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 12 Oct 2020 08:03:09 +0000
+
+mono (6.12.0.102-0xamarin2) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sun, 11 Oct 2020 08:15:48 +0000
+
+mono (6.12.0.102-0xamarin1) preview; urgency=medium
+
+  * New release - mono-6.12.0.102.tar.xz
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sat, 10 Oct 2020 08:55:33 +0000
+
+mono (6.12.0.101-0xamarin7) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 09 Oct 2020 08:16:45 +0000
+
+mono (6.12.0.101-0xamarin6) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 08 Oct 2020 07:58:45 +0000
+
+mono (6.12.0.101-0xamarin5) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Wed, 07 Oct 2020 07:59:35 +0000
+
+mono (6.12.0.101-0xamarin4) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 06 Oct 2020 07:59:11 +0000
+
+mono (6.12.0.101-0xamarin3) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 05 Oct 2020 07:57:37 +0000
+
+mono (6.12.0.101-0xamarin2) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sun, 04 Oct 2020 08:16:27 +0000
+
+mono (6.12.0.101-0xamarin1) preview; urgency=medium
+
+  * New release - mono-6.12.0.101.tar.xz
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sat, 03 Oct 2020 08:40:47 +0000
+
+mono (6.12.0.100-0xamarin16) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 02 Oct 2020 07:58:20 +0000
+
+mono (6.12.0.100-0xamarin15) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 01 Oct 2020 07:58:41 +0000
+
+mono (6.12.0.100-0xamarin14) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Wed, 30 Sep 2020 07:59:08 +0000
+
+mono (6.12.0.100-0xamarin13) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 29 Sep 2020 07:59:24 +0000
+
+mono (6.12.0.100-0xamarin12) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 28 Sep 2020 07:58:35 +0000
+
+mono (6.12.0.100-0xamarin11) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sun, 27 Sep 2020 08:17:45 +0000
+
+mono (6.12.0.100-0xamarin10) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sat, 26 Sep 2020 08:16:34 +0000
+
+mono (6.12.0.100-0xamarin9) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 25 Sep 2020 07:58:52 +0000
+
+mono (6.12.0.100-0xamarin8) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 24 Sep 2020 08:17:39 +0000
+
+mono (6.12.0.100-0xamarin7) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Wed, 23 Sep 2020 08:16:16 +0000
+
+mono (6.12.0.100-0xamarin6) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 22 Sep 2020 08:17:00 +0000
+
+mono (6.12.0.100-0xamarin5) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 21 Sep 2020 07:58:13 +0000
+
+mono (6.12.0.100-0xamarin4) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sun, 20 Sep 2020 08:15:58 +0000
+
+mono (6.12.0.100-0xamarin3) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sat, 19 Sep 2020 07:59:19 +0000
+
+mono (6.12.0.100-0xamarin2) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 18 Sep 2020 07:58:47 +0000
+
+mono (6.12.0.100-0xamarin1) preview; urgency=medium
+
+  * New release - mono-6.12.0.100.tar.xz
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 17 Sep 2020 08:41:54 +0000
+
+mono (6.12.0.99-0xamarin1) preview; urgency=medium
+
+  * New release - mono-6.12.0.99.tar.xz
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Wed, 16 Sep 2020 08:49:34 +0000
+
+mono (6.12.0.98-0xamarin4) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 15 Sep 2020 07:58:35 +0000
+
+mono (6.12.0.98-0xamarin3) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 14 Sep 2020 08:16:07 +0000
+
+mono (6.12.0.98-0xamarin2) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sun, 13 Sep 2020 07:58:43 +0000
+
+mono (6.12.0.98-0xamarin1) preview; urgency=medium
+
+  * New release - mono-6.12.0.98.tar.xz
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sat, 12 Sep 2020 08:45:42 +0000
+
+mono (6.12.0.93-0xamarin10) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 11 Sep 2020 07:58:42 +0000
+
+mono (6.12.0.93-0xamarin9) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 10 Sep 2020 08:00:11 +0000
+
+mono (6.12.0.93-0xamarin8) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Wed, 09 Sep 2020 08:16:39 +0000
+
+mono (6.12.0.93-0xamarin7) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 08 Sep 2020 08:04:42 +0000
+
+mono (6.12.0.93-0xamarin6) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 07 Sep 2020 08:00:15 +0000
+
+mono (6.12.0.93-0xamarin5) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sun, 06 Sep 2020 07:59:37 +0000
+
+mono (6.12.0.93-0xamarin4) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sat, 05 Sep 2020 07:58:50 +0000
+
+mono (6.12.0.93-0xamarin3) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 04 Sep 2020 07:58:36 +0000
+
+mono (6.12.0.93-0xamarin2) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 03 Sep 2020 07:58:57 +0000
+
+mono (6.12.0.93-0xamarin1) preview; urgency=medium
+
+  * New release - mono-6.12.0.93.tar.xz
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Wed, 02 Sep 2020 08:48:08 +0000
+
+mono (6.12.0.91-0xamarin4) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 01 Sep 2020 07:58:15 +0000
+
+mono (6.12.0.91-0xamarin3) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 31 Aug 2020 08:00:08 +0000
+
+mono (6.12.0.91-0xamarin2) preview; urgency=medium
+
+  * Packaging bugfix:
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sun, 30 Aug 2020 07:59:14 +0000
+
+mono (6.12.0.91-0xamarin1) preview; urgency=medium
+
+  * New release - mono-6.12.0.91.tar.xz
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Sat, 29 Aug 2020 07:59:19 +0000
 
 mono (6.12.0.86-0xamarin8) preview; urgency=medium
 
