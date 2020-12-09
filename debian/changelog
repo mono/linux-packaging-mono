@@ -1,3 +1,16 @@
+mono (6.12.0.107-0xamarin9) stable; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [87f8a0f] Merge tag 'debian/6.12.0.107-0xamarin8' into master-2020-
+    02 [92ce25d] Finalize changelog [6ccb486] Merge branch 'upstream-
+    2020-02' into master-2020-02 [243404a] Imported Upstream version
+    6.12.0.90
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Wed, 09 Dec 2020 21:06:27 +0000
+
 mono (6.12.0.107-0xamarin8) preview; urgency=medium
 
   * Packaging bugfix:
