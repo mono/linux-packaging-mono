@@ -149,7 +149,6 @@ LTLIBRARIES = $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
 @BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@@ENABLE_MSVC_ONLY_FALSE@@WASM_FALSE@libmono_icall_table_la_DEPENDENCIES = $(glib_libs) \
 @BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@@ENABLE_MSVC_ONLY_FALSE@@WASM_FALSE@	../utils/libmonoutils.la \
 @BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@@ENABLE_MSVC_ONLY_FALSE@@WASM_FALSE@	../sgen/libmonosgen.la \
-@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@@ENABLE_MSVC_ONLY_FALSE@@WASM_FALSE@	$(eventpipe_libs) \
 @BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@@ENABLE_MSVC_ONLY_FALSE@@WASM_FALSE@	libmonoruntimesgen.la
 am__libmono_icall_table_la_SOURCES_DIST = icall-table.c
 @DISABLE_ICALL_TABLES_TRUE@@ENABLE_MSVC_ONLY_FALSE@am_libmono_icall_table_la_OBJECTS = libmono_icall_table_la-icall-table.lo
@@ -168,7 +167,6 @@ libmono_icall_table_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @BITCODE_TRUE@@ENABLE_ILGEN_FALSE@@ENABLE_MSVC_ONLY_FALSE@@WASM_FALSE@libmono_ilgen_la_DEPENDENCIES = $(glib_libs) \
 @BITCODE_TRUE@@ENABLE_ILGEN_FALSE@@ENABLE_MSVC_ONLY_FALSE@@WASM_FALSE@	../utils/libmonoutils.la \
 @BITCODE_TRUE@@ENABLE_ILGEN_FALSE@@ENABLE_MSVC_ONLY_FALSE@@WASM_FALSE@	../sgen/libmonosgen.la \
-@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@@ENABLE_MSVC_ONLY_FALSE@@WASM_FALSE@	$(eventpipe_libs) \
 @BITCODE_TRUE@@ENABLE_ILGEN_FALSE@@ENABLE_MSVC_ONLY_FALSE@@WASM_FALSE@	libmonoruntimesgen.la
 am__libmono_ilgen_la_SOURCES_DIST = method-builder-ilgen.c \
 	method-builder-ilgen.h method-builder-ilgen-internals.h \
@@ -258,14 +256,15 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	loader-internals.h loaded-images-internals.h loaded-images.c \
 	loaded-images-global.c loaded-images-netcore.c locales.h \
 	lock-tracer.c lock-tracer.h marshal.c marshal.h \
-	marshal-internals.h mempool.c mempool.h mempool-internals.h \
-	metadata.c metadata-verify.c metadata-internals.h \
-	method-builder.h method-builder-internals.h method-builder.c \
-	mono-basic-block.c mono-basic-block.h mono-config-internals.h \
-	mono-config.c mono-debug.h mono-debug.c debug-internals.h \
-	mono-endian.c mono-endian.h mono-hash-internals.h mono-hash.c \
-	mono-hash.h mono-conc-hash.c mono-conc-hash.h mono-mlist.c \
-	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
+	marshal-internals.h marshal-noilgen.c mempool.c mempool.h \
+	mempool-internals.h metadata.c metadata-verify.c \
+	metadata-internals.h method-builder.h \
+	method-builder-internals.h method-builder.c mono-basic-block.c \
+	mono-basic-block.h mono-config-internals.h mono-config.c \
+	mono-debug.h mono-debug.c debug-internals.h mono-endian.c \
+	mono-endian.h mono-hash-internals.h mono-hash.c mono-hash.h \
+	mono-conc-hash.c mono-conc-hash.h mono-mlist.c mono-mlist.h \
+	mono-perfcounters.c mono-perfcounters.h \
 	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
 	monitor.h normalization-tables.h number-formatter.h \
 	number-ms.h object.c object-forward.h object-internals.h \
@@ -360,6 +359,7 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-loaded-images-netcore.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-lock-tracer.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-marshal.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-marshal-noilgen.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-mempool.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-metadata.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-metadata-verify.lo \
@@ -467,14 +467,15 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	loaded-images-internals.h loaded-images.c \
 	loaded-images-global.c loaded-images-netcore.c locales.h \
 	lock-tracer.c lock-tracer.h marshal.c marshal.h \
-	marshal-internals.h mempool.c mempool.h mempool-internals.h \
-	metadata.c metadata-verify.c metadata-internals.h \
-	method-builder.h method-builder-internals.h method-builder.c \
-	mono-basic-block.c mono-basic-block.h mono-config-internals.h \
-	mono-config.c mono-debug.h mono-debug.c debug-internals.h \
-	mono-endian.c mono-endian.h mono-hash-internals.h mono-hash.c \
-	mono-hash.h mono-conc-hash.c mono-conc-hash.h mono-mlist.c \
-	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
+	marshal-internals.h marshal-noilgen.c mempool.c mempool.h \
+	mempool-internals.h metadata.c metadata-verify.c \
+	metadata-internals.h method-builder.h \
+	method-builder-internals.h method-builder.c mono-basic-block.c \
+	mono-basic-block.h mono-config-internals.h mono-config.c \
+	mono-debug.h mono-debug.c debug-internals.h mono-endian.c \
+	mono-endian.h mono-hash-internals.h mono-hash.c mono-hash.h \
+	mono-conc-hash.c mono-conc-hash.h mono-mlist.c mono-mlist.h \
+	mono-perfcounters.c mono-perfcounters.h \
 	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
 	monitor.h normalization-tables.h number-formatter.h \
 	number-ms.h object.c object-forward.h object-internals.h \
@@ -572,6 +573,7 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-loaded-images-netcore.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-lock-tracer.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-marshal.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-marshal-noilgen.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-mempool.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-metadata.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-metadata-verify.lo \
@@ -1066,7 +1068,6 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@boehm_libraries = libmonoruntime.la
 @DISABLE_ICALL_TABLES_TRUE@@ENABLE_MSVC_ONLY_FALSE@icall_table_libraries = libmono-icall-table.la
 @ENABLE_ILGEN_FALSE@@ENABLE_MSVC_ONLY_FALSE@ilgen_libraries = libmono-ilgen.la
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_PERFTRACING_TRUE@eventpipe_libs = $(top_builddir)/mono/eventpipe/libeventpipe.la
 @ENABLE_MSVC_ONLY_FALSE@BUNDLE_ZLIB_PATH = $(top_builddir)/mono/zlib/libz.la
 @ENABLE_MSVC_ONLY_FALSE@@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_FALSE@Z_LIBS = $(BUNDLE_ZLIB_PATH)
 @ENABLE_MSVC_ONLY_FALSE@@HAVE_STATIC_ZLIB_FALSE@@HAVE_SYS_ZLIB_TRUE@Z_LIBS = -lz
@@ -1118,7 +1119,7 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 # Add CXX_ADD_CFLAGS per-library until/unless https://github.com/dotnet/corefx/pull/31342.
 @DISABLE_ICALL_TABLES_TRUE@@ENABLE_MSVC_ONLY_FALSE@libmono_icall_table_la_CFLAGS = $(SGEN_DEFINES) @CXX_ADD_CFLAGS@
 @DISABLE_ICALL_TABLES_TRUE@@ENABLE_MSVC_ONLY_FALSE@libmono_icall_table_la_LDFLAGS = $(libmonoldflags)
-@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@@ENABLE_MSVC_ONLY_FALSE@@WASM_FALSE@libmono_icall_table_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la $(eventpipe_libs) libmonoruntimesgen.la
+@BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@@ENABLE_MSVC_ONLY_FALSE@@WASM_FALSE@libmono_icall_table_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
 @BITCODE_TRUE@@DISABLE_ICALL_TABLES_TRUE@@ENABLE_MSVC_ONLY_FALSE@@WASM_TRUE@libmono_icall_table_la_LIBADD = # empty to avoid duplicate symbols when enabling dynamic linking
 
 #
@@ -1136,7 +1137,7 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 # Add CXX_ADD_CFLAGS per-library until/unless https://github.com/dotnet/corefx/pull/31342.
 @ENABLE_ILGEN_FALSE@@ENABLE_MSVC_ONLY_FALSE@libmono_ilgen_la_CFLAGS = $(SGEN_DEFINES) @CXX_ADD_CFLAGS@
 @ENABLE_ILGEN_FALSE@@ENABLE_MSVC_ONLY_FALSE@libmono_ilgen_la_LDFLAGS = $(libmonoldflags)
-@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@@ENABLE_MSVC_ONLY_FALSE@@WASM_FALSE@libmono_ilgen_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la $(eventpipe_libs) libmonoruntimesgen.la
+@BITCODE_TRUE@@ENABLE_ILGEN_FALSE@@ENABLE_MSVC_ONLY_FALSE@@WASM_FALSE@libmono_ilgen_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
 @BITCODE_TRUE@@ENABLE_ILGEN_FALSE@@ENABLE_MSVC_ONLY_FALSE@@WASM_TRUE@libmono_ilgen_la_LIBADD = # empty to avoid duplicate symbols when enabling dynamic linking
 @ENABLE_MSVC_ONLY_FALSE@CLEANFILES = mono-bundle.stamp
 @ENABLE_MSVC_ONLY_FALSE@null_sources = \
@@ -1229,6 +1230,7 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@	marshal.c		\
 @ENABLE_MSVC_ONLY_FALSE@	marshal.h		\
 @ENABLE_MSVC_ONLY_FALSE@	marshal-internals.h \
+@ENABLE_MSVC_ONLY_FALSE@	marshal-noilgen.c	\
 @ENABLE_MSVC_ONLY_FALSE@	mempool.c		\
 @ENABLE_MSVC_ONLY_FALSE@	mempool.h		\
 @ENABLE_MSVC_ONLY_FALSE@	mempool-internals.h	\
@@ -1607,6 +1609,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-loader.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-lock-tracer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-marshal-ilgen.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-marshal-noilgen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-marshal-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-marshal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-memory-manager.Plo@am__quote@
@@ -1722,6 +1725,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-loader.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-lock-tracer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-marshal-ilgen.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-marshal-noilgen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-marshal-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-marshal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-memory-manager.Plo@am__quote@
@@ -2339,6 +2343,13 @@ libmonoruntime_la-marshal.lo: marshal.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='marshal.c' object='libmonoruntime_la-marshal.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-marshal.lo `test -f 'marshal.c' || echo '$(srcdir)/'`marshal.c
+
+libmonoruntime_la-marshal-noilgen.lo: marshal-noilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-marshal-noilgen.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-marshal-noilgen.Tpo -c -o libmonoruntime_la-marshal-noilgen.lo `test -f 'marshal-noilgen.c' || echo '$(srcdir)/'`marshal-noilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-marshal-noilgen.Tpo $(DEPDIR)/libmonoruntime_la-marshal-noilgen.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='marshal-noilgen.c' object='libmonoruntime_la-marshal-noilgen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-marshal-noilgen.lo `test -f 'marshal-noilgen.c' || echo '$(srcdir)/'`marshal-noilgen.c
 
 libmonoruntime_la-mempool.lo: mempool.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-mempool.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-mempool.Tpo -c -o libmonoruntime_la-mempool.lo `test -f 'mempool.c' || echo '$(srcdir)/'`mempool.c
@@ -3144,6 +3155,13 @@ libmonoruntimesgen_la-marshal.lo: marshal.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='marshal.c' object='libmonoruntimesgen_la-marshal.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-marshal.lo `test -f 'marshal.c' || echo '$(srcdir)/'`marshal.c
+
+libmonoruntimesgen_la-marshal-noilgen.lo: marshal-noilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-marshal-noilgen.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-marshal-noilgen.Tpo -c -o libmonoruntimesgen_la-marshal-noilgen.lo `test -f 'marshal-noilgen.c' || echo '$(srcdir)/'`marshal-noilgen.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-marshal-noilgen.Tpo $(DEPDIR)/libmonoruntimesgen_la-marshal-noilgen.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='marshal-noilgen.c' object='libmonoruntimesgen_la-marshal-noilgen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-marshal-noilgen.lo `test -f 'marshal-noilgen.c' || echo '$(srcdir)/'`marshal-noilgen.c
 
 libmonoruntimesgen_la-mempool.lo: mempool.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-mempool.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-mempool.Tpo -c -o libmonoruntimesgen_la-mempool.lo `test -f 'mempool.c' || echo '$(srcdir)/'`mempool.c

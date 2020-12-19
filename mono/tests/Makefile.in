@@ -345,8 +345,9 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	vt-sync-method.exe \
 @FULL_AOT_TESTS_TRUE@	resolve_method_bug.2.exe \
 @FULL_AOT_TESTS_TRUE@	resolve_field_bug.2.exe \
-@FULL_AOT_TESTS_TRUE@	resolve_type_bug.2.exe bug-81691.exe \
-@FULL_AOT_TESTS_TRUE@	bug-327438.2.exe newobj-abstract.exe \
+@FULL_AOT_TESTS_TRUE@	resolve_type_bug.2.exe struct-static.exe \
+@FULL_AOT_TESTS_TRUE@	bug-81691.exe bug-327438.2.exe \
+@FULL_AOT_TESTS_TRUE@	newobj-abstract.exe \
 @FULL_AOT_TESTS_TRUE@	invalid-isbyreflike.exe \
 @FULL_AOT_TESTS_TRUE@	context-static.exe bug-415577.exe \
 @FULL_AOT_TESTS_TRUE@	generic-marshalbyref.2.exe \
@@ -537,7 +538,8 @@ target_triplet = @target@
 @FULL_AOT_INTERP_TESTS_TRUE@	xdomain-threads.exe \
 @FULL_AOT_INTERP_TESTS_TRUE@	assembly-load-remap.exe \
 @FULL_AOT_INTERP_TESTS_TRUE@	namedmutex-destroy-race.exe \
-@FULL_AOT_INTERP_TESTS_TRUE@	bug-80307.exe transparentproxy.exe
+@FULL_AOT_INTERP_TESTS_TRUE@	bug-80307.exe struct-static.exe \
+@FULL_AOT_INTERP_TESTS_TRUE@	transparentproxy.exe
 
 # Tests depending on assembly load order. Under Full AOT using WinAOT
 # profile, console is still available, meaning that more assemblies (I18N)
@@ -1282,10 +1284,10 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	runtime-invoke.gen.cs imt_big_iface_test.cs \
 	bug-58782-plain-throw.cs bug-58782-capture-and-throw.cs \
 	recursive-struct-arrays.cs struct-explicit-layout.cs \
-	bug-59281.cs init_array_with_lazy_type.cs weak-fields.cs \
-	threads-leak.cs threads-init.cs bug-60848.cs bug-59400.cs \
-	tailcall-generic-cast-cs.cs tailcall-interface.cs bug-60843.cs \
-	nested_type_visibility.cs dynamic-method-churn.cs \
+	struct-static.cs bug-59281.cs init_array_with_lazy_type.cs \
+	weak-fields.cs threads-leak.cs threads-init.cs bug-60848.cs \
+	bug-59400.cs tailcall-generic-cast-cs.cs tailcall-interface.cs \
+	bug-60843.cs nested_type_visibility.cs dynamic-method-churn.cs \
 	dynamic-method-delegate.cs verbose.cs \
 	generic-unmanaged-constraint.cs bug-10834.cs bug-10837.cs \
 	bug-gh-9507.cs async-generic-enum.cs null-blob-main.cs \
