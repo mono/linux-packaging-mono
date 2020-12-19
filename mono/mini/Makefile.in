@@ -889,7 +889,6 @@ mono = $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),mono)
 @ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_FALSE@libgc_static_libs = $(monodir)/external/bdwgc/libgc-static.la
 @ENABLE_MSVC_ONLY_FALSE@@SUPPORT_NULLGC_TRUE@libgc_static_libs = 
 @ENABLE_MSVC_ONLY_FALSE@glib_libs = $(monodir)/mono/eglib/libeglib.la
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_PERFTRACING_TRUE@eventpipe_libs = $(monodir)/mono/eventpipe/libeventpipe.la
 @ENABLE_MSVC_ONLY_FALSE@boehm_libs = \
 @ENABLE_MSVC_ONLY_FALSE@	$(monodir)/mono/metadata/libmonoruntime.la	\
 @ENABLE_MSVC_ONLY_FALSE@	$(monodir)/mono/utils/libmonoutils.la \
@@ -900,7 +899,6 @@ mono = $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),mono)
 @ENABLE_MSVC_ONLY_FALSE@	$(monodir)/mono/metadata/libmonoruntimesgen.la	\
 @ENABLE_MSVC_ONLY_FALSE@	$(monodir)/mono/sgen/libmonosgen.la	\
 @ENABLE_MSVC_ONLY_FALSE@	$(monodir)/mono/utils/libmonoutils.la \
-@ENABLE_MSVC_ONLY_FALSE@	$(eventpipe_libs) \
 @ENABLE_MSVC_ONLY_FALSE@	$(glib_libs)
 
 @ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@LLVM_CFLAGS = $(LLVM_CFLAGS_INTERNAL) $(LLVM_CFLAGS_EXTERNAL)

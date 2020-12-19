@@ -54,9 +54,6 @@
 /* Disables use of DllMaps in MonoVM */
 #undef DISABLE_DLLMAP
 
-/* Disable EventPipe support */
-#undef DISABLE_EVENTPIPE
-
 /* Disable GAC */
 #undef DISABLE_GAC
 
@@ -238,9 +235,6 @@
 
 /* Overridable allocator support enabled */
 #undef ENABLE_OVERRIDABLE_ALLOCATORS
-
-/* Enables support for eventpipe library */
-#undef ENABLE_PERFTRACING
 
 /* Have GLIBC_BEFORE_2_3_4_SCHED_SETAFFINITY */
 #undef GLIBC_BEFORE_2_3_4_SCHED_SETAFFINITY
