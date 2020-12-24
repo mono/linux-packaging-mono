@@ -978,6 +978,7 @@ ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 @ENABLE_MSVC_ONLY_FALSE@AM_CPPFLAGS = $(LIBGC_CPPFLAGS)
 @ENABLE_MSVC_ONLY_FALSE@mono_sgen_SOURCES = 
 @ENABLE_MSVC_ONLY_FALSE@mono_sgen_CFLAGS = $(AM_CFLAGS) @CXX_REMOVE_CFLAGS@
+@ENABLE_MSVC_ONLY_FALSE@BUILD_DATE = $(shell SOURCE_DATE_EPOCH="$${SOURCE_DATE_EPOCH:-$$(date +%s)}" ;date -u -d "@$$SOURCE_DATE_EPOCH" 2>/dev/null || date -u -r "$$SOURCE_DATE_EPOCH" 2>/dev/null || date -u)
 @DTRACE_G_REQUIRED_FALSE@@ENABLE_MSVC_ONLY_FALSE@LIBMONO_DTRACE_OBJECT = 
 @DTRACE_G_REQUIRED_TRUE@@ENABLE_MSVC_ONLY_FALSE@LIBMONO_DTRACE_OBJECT = .libs/mono-dtrace.$(OBJEXT)
 @DTRACE_G_REQUIRED_FALSE@@ENABLE_MSVC_ONLY_FALSE@MONO_DTRACE_OBJECT = 
@@ -2907,11 +2908,11 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 # We build this after libmono was built so it contains the date when the final
 # link was done
 @ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@buildver-boehm.h: libmini.la $(monodir)/mono/metadata/libmonoruntime.la
-@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@	@echo "const char *build_date = \"`date`\";" > buildver-boehm.h
+@ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@	@echo "const char *build_date = \"$(BUILD_DATE)\";" > buildver-boehm.h
 @ENABLE_MSVC_ONLY_FALSE@@SUPPORT_BOEHM_TRUE@libmain_a-main.$(OBJEXT): buildver-boehm.h
 
 @ENABLE_MSVC_ONLY_FALSE@buildver-sgen.h: libmini.la $(monodir)/mono/metadata/libmonoruntimesgen.la $(monodir)/mono/sgen/libmonosgen.la
-@ENABLE_MSVC_ONLY_FALSE@	@echo "const char *build_date = \"`date`\";" > buildver-sgen.h
+@ENABLE_MSVC_ONLY_FALSE@	@echo "const char *build_date = \"$(BUILD_DATE)\";" > buildver-sgen.h
 
 @ENABLE_MSVC_ONLY_FALSE@libmain_a-main-sgen.$(OBJEXT): buildver-sgen.h
 
