@@ -1,1 +1,1 @@
-#define FULL_VERSION "explicit/a88d26e"
+#define FULL_VERSION "explicit/fde27cd"
