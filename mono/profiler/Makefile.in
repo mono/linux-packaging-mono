@@ -1132,9 +1132,9 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@ENABLE_MSVC_ONLY_TRUE@test-bundle-local:
 @ENABLE_MSVC_ONLY_FALSE@clean-local:
 @ENABLE_MSVC_ONLY_TRUE@test-local:
+@ENABLE_MSVC_ONLY_TRUE@test-bundle-local:
 clean: clean-am
 
 clean-am: clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
