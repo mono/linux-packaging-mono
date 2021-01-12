@@ -258,13 +258,13 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	lock-tracer.c lock-tracer.h marshal.c marshal.h \
 	marshal-internals.h marshal-noilgen.c mempool.c mempool.h \
 	mempool-internals.h metadata.c metadata-verify.c \
-	metadata-internals.h method-builder.h \
-	method-builder-internals.h method-builder.c mono-basic-block.c \
-	mono-basic-block.h mono-config-internals.h mono-config.c \
-	mono-debug.h mono-debug.c debug-internals.h mono-endian.c \
-	mono-endian.h mono-hash-internals.h mono-hash.c mono-hash.h \
-	mono-conc-hash.c mono-conc-hash.h mono-mlist.c mono-mlist.h \
-	mono-perfcounters.c mono-perfcounters.h \
+	metadata-internals.h metadata-update.h metadata-update.c \
+	method-builder.h method-builder-internals.h method-builder.c \
+	mono-basic-block.c mono-basic-block.h mono-config-internals.h \
+	mono-config.c mono-debug.h mono-debug.c debug-internals.h \
+	mono-endian.c mono-endian.h mono-hash-internals.h mono-hash.c \
+	mono-hash.h mono-conc-hash.c mono-conc-hash.h mono-mlist.c \
+	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
 	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
 	monitor.h normalization-tables.h number-formatter.h \
 	number-ms.h object.c object-forward.h object-internals.h \
@@ -363,6 +363,7 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-mempool.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-metadata.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-metadata-verify.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-metadata-update.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-method-builder.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-mono-basic-block.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntime_la-mono-config.lo \
@@ -469,13 +470,13 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	lock-tracer.c lock-tracer.h marshal.c marshal.h \
 	marshal-internals.h marshal-noilgen.c mempool.c mempool.h \
 	mempool-internals.h metadata.c metadata-verify.c \
-	metadata-internals.h method-builder.h \
-	method-builder-internals.h method-builder.c mono-basic-block.c \
-	mono-basic-block.h mono-config-internals.h mono-config.c \
-	mono-debug.h mono-debug.c debug-internals.h mono-endian.c \
-	mono-endian.h mono-hash-internals.h mono-hash.c mono-hash.h \
-	mono-conc-hash.c mono-conc-hash.h mono-mlist.c mono-mlist.h \
-	mono-perfcounters.c mono-perfcounters.h \
+	metadata-internals.h metadata-update.h metadata-update.c \
+	method-builder.h method-builder-internals.h method-builder.c \
+	mono-basic-block.c mono-basic-block.h mono-config-internals.h \
+	mono-config.c mono-debug.h mono-debug.c debug-internals.h \
+	mono-endian.c mono-endian.h mono-hash-internals.h mono-hash.c \
+	mono-hash.h mono-conc-hash.c mono-conc-hash.h mono-mlist.c \
+	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
 	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
 	monitor.h normalization-tables.h number-formatter.h \
 	number-ms.h object.c object-forward.h object-internals.h \
@@ -577,6 +578,7 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-mempool.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-metadata.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-metadata-verify.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-metadata-update.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-method-builder.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-mono-basic-block.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmonoruntimesgen_la-mono-config.lo \
@@ -1237,6 +1239,8 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@	metadata.c		\
 @ENABLE_MSVC_ONLY_FALSE@	metadata-verify.c	\
 @ENABLE_MSVC_ONLY_FALSE@	metadata-internals.h	\
+@ENABLE_MSVC_ONLY_FALSE@	metadata-update.h	\
+@ENABLE_MSVC_ONLY_FALSE@	metadata-update.c	\
 @ENABLE_MSVC_ONLY_FALSE@	method-builder.h 	\
 @ENABLE_MSVC_ONLY_FALSE@	method-builder-internals.h 	\
 @ENABLE_MSVC_ONLY_FALSE@	method-builder.c 	\
@@ -1615,6 +1619,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-memory-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mempool.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-metadata-cross-helpers.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-metadata-update.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-metadata-verify.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-metadata.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-method-builder-ilgen.Plo@am__quote@
@@ -1731,6 +1736,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-memory-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mempool.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-metadata-cross-helpers.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-metadata-update.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-metadata-verify.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-metadata.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-method-builder-ilgen.Plo@am__quote@
@@ -2371,6 +2377,13 @@ libmonoruntime_la-metadata-verify.lo: metadata-verify.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='metadata-verify.c' object='libmonoruntime_la-metadata-verify.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-metadata-verify.lo `test -f 'metadata-verify.c' || echo '$(srcdir)/'`metadata-verify.c
+
+libmonoruntime_la-metadata-update.lo: metadata-update.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-metadata-update.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-metadata-update.Tpo -c -o libmonoruntime_la-metadata-update.lo `test -f 'metadata-update.c' || echo '$(srcdir)/'`metadata-update.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-metadata-update.Tpo $(DEPDIR)/libmonoruntime_la-metadata-update.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='metadata-update.c' object='libmonoruntime_la-metadata-update.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-metadata-update.lo `test -f 'metadata-update.c' || echo '$(srcdir)/'`metadata-update.c
 
 libmonoruntime_la-method-builder.lo: method-builder.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-method-builder.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-method-builder.Tpo -c -o libmonoruntime_la-method-builder.lo `test -f 'method-builder.c' || echo '$(srcdir)/'`method-builder.c
@@ -3183,6 +3196,13 @@ libmonoruntimesgen_la-metadata-verify.lo: metadata-verify.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='metadata-verify.c' object='libmonoruntimesgen_la-metadata-verify.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-metadata-verify.lo `test -f 'metadata-verify.c' || echo '$(srcdir)/'`metadata-verify.c
+
+libmonoruntimesgen_la-metadata-update.lo: metadata-update.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-metadata-update.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-metadata-update.Tpo -c -o libmonoruntimesgen_la-metadata-update.lo `test -f 'metadata-update.c' || echo '$(srcdir)/'`metadata-update.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-metadata-update.Tpo $(DEPDIR)/libmonoruntimesgen_la-metadata-update.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='metadata-update.c' object='libmonoruntimesgen_la-metadata-update.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-metadata-update.lo `test -f 'metadata-update.c' || echo '$(srcdir)/'`metadata-update.c
 
 libmonoruntimesgen_la-method-builder.lo: method-builder.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-method-builder.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-method-builder.Tpo -c -o libmonoruntimesgen_la-method-builder.lo `test -f 'method-builder.c' || echo '$(srcdir)/'`method-builder.c
