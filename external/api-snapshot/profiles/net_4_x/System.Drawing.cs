@@ -3397,6 +3397,7 @@ namespace System.Drawing.Imaging
         public Metafile(string fileName, System.IntPtr referenceHdc, System.Drawing.RectangleF frameRect, System.Drawing.Imaging.MetafileFrameUnit frameUnit, System.Drawing.Imaging.EmfType type) { }
         public Metafile(string fileName, System.IntPtr referenceHdc, System.Drawing.RectangleF frameRect, System.Drawing.Imaging.MetafileFrameUnit frameUnit, System.Drawing.Imaging.EmfType type, string description) { }
         public Metafile(string fileName, System.IntPtr referenceHdc, System.Drawing.RectangleF frameRect, System.Drawing.Imaging.MetafileFrameUnit frameUnit, string desc) { }
+        protected override void Dispose(bool disposing) { }
         public System.IntPtr GetHenhmetafile() { throw null; }
         [System.MonoLimitationAttribute("Metafiles aren't only partially supported by libgdiplus.")]
         public System.Drawing.Imaging.MetafileHeader GetMetafileHeader() { throw null; }
