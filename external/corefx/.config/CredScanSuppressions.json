@@ -1,0 +1,33 @@
+{
+ "tool": "Credential Scanner",
+ "suppressions": [
+  {
+    "file": [
+      "/src/Common/src/Interop/Windows/winhttp/Interop.winhttp_types.cs",
+      "/src/Common/tests/System/Net/Configuration.Certificates.cs",
+      "/src/System.Data.SqlClient/src/System/Data/SqlClient/TdsEnums.cs",
+      "/src/System.Data.SqlClient/tests/FunctionalTests/DiagnosticTest.cs",
+      "/src/System.Data.SqlClient/tests/FunctionalTests/ExceptionTest.cs",
+      "/src/System.Data.SqlClient/tests/FunctionalTests/SqlConnectionBasicTests.cs",
+      "/src/System.Data.SqlClient/tests/Tools/TDS/TDS.Servers/TDSServerArguments.cs",
+      "/src/System.Data.SqlClient/tests/Tools/TDS/TDS.Servers/TdsServerCertificate.pfx",
+      "/src/System.Diagnostics.Process/tests/ProcessStartInfoTests.cs",
+      "/src/System.DirectoryServices.AccountManagement/src/System/DirectoryServices/AccountManagement/constants.cs",
+      "/src/System.DirectoryServices.AccountManagement/tests/PrincipalTest.cs",
+      "/src/System.Net.Http.WinHttpHandler/tests/UnitTests/ClientCertificateHelper.cs",
+      "/src/System.Net.Http/tests/FunctionalTests/HttpClientHandlerTest.cs",
+      "/src/System.Net.Http/tests/FunctionalTests/HttpClientHandlerTest.DefaultProxyCredentials.cs",
+      "/src/System.Net.Http/tests/FunctionalTests/HttpClientHandlerTest.Proxy.cs",
+      "/src/System.Net.Http/tests/FunctionalTests/PostScenarioTest.cs",
+      "/src/System.Net.Http/tests/UnitTests/DigestAuthenticationTests.cs",
+      "/src/System.Net.Requests/src/System/Net/FtpWebRequest.cs",
+      "/src/System.Private.Uri/tests/ExtendedFunctionalTests/UriRelativeResolutionTest.cs",
+      "/src/System.Private.Uri/tests/FunctionalTests/UriBuilderTests.cs",
+      "/src/System.Runtime/tests/System/Uri.CreateStringTests.cs",
+      "/src/System.Security.Cryptography.X509Certificates/tests/ExportTests.cs",
+      "/src/System.Security.Cryptography.Xml/tests/SignedXmlTest.cs"
+    ],
+    "_justification": "Mostly test files. Other files contain harmless examples or constants."
+  },
+ ]
+}
