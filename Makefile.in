@@ -1091,47 +1091,10 @@ uninstall-am:
 @ENABLE_NETCORE_FALSE@	  (cd $${mydir} && ${MAKE} install) \
 @ENABLE_NETCORE_FALSE@	done
 
-@ENABLE_NETCORE_FALSE@update-csproj:
-@ENABLE_NETCORE_FALSE@	-rm msvc/scripts/order 
-@ENABLE_NETCORE_FALSE@	-rm msvc/scripts/order.xml
-@ENABLE_NETCORE_FALSE@	-rm -rf msvc/scripts/inputs
-@ENABLE_NETCORE_FALSE@	-mkdir msvc/scripts/inputs
-@ENABLE_NETCORE_FALSE@	(cd runtime; $(MAKE) V=1 extra_targets=csproj-local)
-
-@ENABLE_NETCORE_FALSE@package-inputs:
-@ENABLE_NETCORE_FALSE@	echo '<?xml version="1.0" encoding="utf-8"?>' > msvc/scripts/order.xml
-@ENABLE_NETCORE_FALSE@	echo '<root>' >> msvc/scripts/order.xml
-@ENABLE_NETCORE_FALSE@	for i in `cat msvc/scripts/order`; do \
-@ENABLE_NETCORE_FALSE@		set `echo $$i | sed -e 's/:/ /' -e 's/.input//'`; \
-@ENABLE_NETCORE_FALSE@		cat msvc/scripts/inputs/$$2.input | sed -e 's/\\\\/\\/g' -e 's/\\/\\\\/g' | \
-@ENABLE_NETCORE_FALSE@		(echo "    <project dir=\"$$1\" library=\"$$2\">"; \
-@ENABLE_NETCORE_FALSE@		 read boot;   echo "      <boot>$$boot</boot>"; \
-@ENABLE_NETCORE_FALSE@		 read flags;  echo "      <flags>$$flags</flags>"; \
-@ENABLE_NETCORE_FALSE@		 read sources;echo "      <sources>$$sources</sources>"; \
-@ENABLE_NETCORE_FALSE@		 read output; echo "      <output>$$output</output>"; \
-@ENABLE_NETCORE_FALSE@		 read built;  echo "      <built_sources>`echo $$built | sed 's/\\\/\\\\/g'`</built_sources>"; \
-@ENABLE_NETCORE_FALSE@		 read libou;  echo "      <library_output>$$libou</library_output>"; \
-@ENABLE_NETCORE_FALSE@		 read fx_ver; echo "      <fx_version>$$fx_ver</fx_version>"; \
-@ENABLE_NETCORE_FALSE@		 read profile; echo "      <profile>$$profile</profile>"; \
-@ENABLE_NETCORE_FALSE@		 read resxt;  echo "      <resources>$$resxt</resources>"; \
-@ENABLE_NETCORE_FALSE@		 read resp;   echo "      <response>$$resp</response>"; \
-@ENABLE_NETCORE_FALSE@		 echo "    </project>") >> msvc/scripts/order.xml; \
-@ENABLE_NETCORE_FALSE@	done
-@ENABLE_NETCORE_FALSE@	echo "</root>" >> msvc/scripts/order.xml
-
 # Update llvm version in configure.ac to the output of $LLVM_DIR/bin/llvm-config --version
 @ENABLE_NETCORE_FALSE@update-llvm-version:
 @ENABLE_NETCORE_FALSE@	if test "x$$LLVM_DIR" = "x"; then echo "Set the make variable LLVM_DIR to the directory containing the LLVM installation."; exit 1; fi
 @ENABLE_NETCORE_FALSE@	REV=`$(LLVM_DIR)/bin/llvm-config --version` && sed -e "s,expected_llvm_version=.*,expected_llvm_version=\"$$REV\"," < configure.ac > tmp && mv tmp configure.ac && echo "Version set to $$REV."
-
-@ENABLE_NETCORE_FALSE@update-solution-files:
-@ENABLE_NETCORE_FALSE@	cd msvc/scripts && $(MAKE) genproj.exe || exit $$?;
-@ENABLE_NETCORE_FALSE@	$(MAKE) update-csproj
-@ENABLE_NETCORE_FALSE@	$(MAKE) package-inputs
-@ENABLE_NETCORE_FALSE@	(cd msvc/scripts; mono --debug genproj.exe $(GENPROJ_ARGS))
-
-@ENABLE_NETCORE_FALSE@update-solution-files-with-tests:
-@ENABLE_NETCORE_FALSE@	$(MAKE) "GENPROJ_ARGS=2012 true true" update-solution-files
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
