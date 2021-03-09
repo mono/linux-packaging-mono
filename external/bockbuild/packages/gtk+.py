@@ -234,7 +234,8 @@ class GtkPackage (GitHubPackage):
                 'patches/gtk/Fix-1080409-StackOverflow-exception-opening-Gtk-host.patch',
 
                 # https://dev.azure.com/devdiv/DevDiv/_workitems/edit/1092021/
-                'patches/gtk/0078-Optimize-querying-symbolic-hotkeys.patch'
+                'patches/gtk/0078-Optimize-querying-symbolic-hotkeys.patch',
+                'patches/gtk/gdk-quartz-Remove-titlebar-handling-from-find_child.patch'
             ])
 
     def prep(self):
