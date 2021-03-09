@@ -4,7 +4,7 @@
 # This line is parsed by tools besides autoconf, such as msvc/mono.winconfig.targets.
 # It should remain in the format they expect.
 #
-AC_INIT(mono, [6.13.0.1078],
+AC_INIT(mono, [6.13.0.1087],
         [https://github.com/mono/mono/issues/new])
 
 AC_CONFIG_SRCDIR([Makefile.am])
@@ -4781,10 +4781,12 @@ if test "x$host" != "x$target"; then
 		sizeof_register=8
 		AC_DEFINE(TARGET_WATCHOS, 1, [...])
 		;;
+	aarch64*darwin20*)
+		TARGET=ARM64
+		TARGET_SYS=OSX
+		;;
 	aarch64*darwin*)
 		TARGET=ARM64
-		# Both ios and osx/arm64 have the same aarc64-darwin triple,
-		# assume ios for now when cross compiling
 		TARGET_SYS=IOS
 		;;
 	aarch64-*)
