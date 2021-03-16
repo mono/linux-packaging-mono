@@ -159,7 +159,7 @@ namespace System.Net.Http.Tests
             {
                 IWebProxy p;
 
-                Environment.SetEnvironmentVariable("all_proxy", "http://foo:bar@1.1.1.1:3000");
+                Environment.SetEnvironmentVariable("all_proxy", "http://foo:PLACEHOLDER@1.1.1.1:3000");
                 Assert.True(HttpEnvironmentProxy.TryCreate(out p));
                 Assert.NotNull(p);
                 Assert.NotNull(p.Credentials);
@@ -171,7 +171,7 @@ namespace System.Net.Http.Tests
                 Assert.NotNull(p.Credentials);
 
                 // Use different user for http and https
-                Environment.SetEnvironmentVariable("https_proxy", "http://foo1:bar1@1.1.1.1:3000");
+                Environment.SetEnvironmentVariable("https_proxy", "http://foo1:PLACEHOLDER@1.1.1.1:3000");
                 Assert.True(HttpEnvironmentProxy.TryCreate(out p));
                 Assert.NotNull(p);
                 Uri u = p.GetProxy(fooHttp);
@@ -194,7 +194,7 @@ namespace System.Net.Http.Tests
                 IWebProxy p;
 
                 Environment.SetEnvironmentVariable("no_proxy", ".test.com,, foo.com");
-                Environment.SetEnvironmentVariable("all_proxy", "http://foo:bar@1.1.1.1:3000");
+                Environment.SetEnvironmentVariable("all_proxy", "http://foo:PLACEHOLDER@1.1.1.1:3000");
                 Assert.True(HttpEnvironmentProxy.TryCreate(out p));
                 Assert.NotNull(p);
 
