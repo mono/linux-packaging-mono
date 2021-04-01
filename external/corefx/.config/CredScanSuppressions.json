@@ -1,23 +1,11 @@
 {
- "tool": "Credential Scanner",
- "suppressions": [
-  {
-    "file": [
-      "/src/Common/tests/System/Net/Configuration.Certificates.cs",
-      "/src/System.Data.SqlClient/tests/FunctionalTests/SqlConnectionBasicTests.cs",
-      "/src/System.Data.SqlClient/tests/Tools/TDS/TDS.Servers/TDSServerArguments.cs",
-      "/src/System.Data.SqlClient/tests/Tools/TDS/TDS.Servers/TdsServerCertificate.pfx",
-      "/src/System.Net.Http.WinHttpHandler/tests/UnitTests/ClientCertificateHelper.cs",
-      "/src/System.Net.Http/tests/FunctionalTests/HttpClientHandlerTest.Proxy.cs",
-      "/src/System.Net.Http/tests/UnitTests/DigestAuthenticationTests.cs",
-      "/src/System.Net.Requests/src/System/Net/FtpWebRequest.cs",
-      "/src/System.Private.Uri/tests/ExtendedFunctionalTests/UriRelativeResolutionTest.cs",
-      "/src/System.Private.Uri/tests/FunctionalTests/UriBuilderTests.cs",
-      "/src/System.Runtime/tests/System/Uri.CreateStringTests.cs",
-      "/src/System.Security.Cryptography.X509Certificates/tests/ExportTests.cs",
-      "/src/System.Security.Cryptography.Xml/tests/SignedXmlTest.cs"
-    ],
-    "_justification": "Mostly test files. Other files contain harmless examples or constants."
-  },
- ]
+    "tool": "Credential Scanner",
+    "suppressions": [
+        {
+            "_justification": "Certificate for SQL test server.",
+            "file": [
+                "src/System.Data.SqlClient/tests/Tools/TDS/TDS.Servers/TdsServerCertificate.pfx"
+            ]
+        }
+    ]
 }
