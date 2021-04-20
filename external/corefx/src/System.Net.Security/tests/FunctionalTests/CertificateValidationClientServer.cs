@@ -43,7 +43,7 @@ namespace System.Net.Security.Tests
         [InlineData(true)]
         public async Task CertificateValidationClientServer_EndToEnd_Ok(bool useClientSelectionCallback)
         {
-            IPEndPoint endPoint = new IPEndPoint(IPAddress.IPv6Loopback, 0);
+            IPEndPoint endPoint = new IPEndPoint(Socket.OSSupportsIPv6 ? IPAddress.IPv6Loopback : IPAddress.Loopback, 0);
             var server = new TcpListener(endPoint);
             server.Start();
 
@@ -63,7 +63,7 @@ namespace System.Net.Security.Tests
                 _clientCertificateRemovedByFilter = true;
             }
 
-            using (var clientConnection = new TcpClient(AddressFamily.InterNetworkV6))
+            using (var clientConnection = new TcpClient(Socket.OSSupportsIPv6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork))
             {
                 IPEndPoint serverEndPoint = (IPEndPoint)server.LocalEndpoint;
 

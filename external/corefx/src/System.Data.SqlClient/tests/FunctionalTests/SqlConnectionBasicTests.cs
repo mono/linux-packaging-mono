@@ -108,7 +108,7 @@ namespace System.Data.SqlClient.Tests
         [Fact]
         public void ExceptionsWithMinPoolSizeCanBeHandled()
         {
-            string connectionString = $"Data Source={Guid.NewGuid().ToString()};uid=random;pwd=asd;Connect Timeout=2; Min Pool Size=3";
+            string connectionString = $"Data Source={Guid.NewGuid().ToString()};uid=random;pwd=PLACEHOLDER;Connect Timeout=2; Min Pool Size=3";
             for (int i = 0; i < 2; i++)
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -122,7 +122,7 @@ namespace System.Data.SqlClient.Tests
         [Fact]
         public void ConnectionTestInvalidCredentialCombination()
         {
-            var cleartextCredsConnStr = "User=test;Password=test;";
+            var cleartextCredsConnStr = "User=test;Password=PLACEHOLDER;";
             var sspiConnStr = "Integrated Security=true;";
             var testPassword = new SecureString();
             testPassword.MakeReadOnly();
