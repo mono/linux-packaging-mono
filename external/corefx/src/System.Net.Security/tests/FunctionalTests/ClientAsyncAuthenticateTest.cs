@@ -150,10 +150,10 @@ namespace System.Net.Security.Tests
         {
             _log.WriteLine("Server: " + serverSslProtocols + "; Client: " + clientSslProtocols);
 
-            IPEndPoint endPoint = new IPEndPoint(IPAddress.IPv6Loopback, 0);
+            IPEndPoint endPoint = new IPEndPoint(Socket.OSSupportsIPv6 ? IPAddress.IPv6Loopback : IPAddress.Loopback, 0);
 
             using (var server = new DummyTcpServer(endPoint, encryptionPolicy))
-            using (var client = new TcpClient(AddressFamily.InterNetworkV6))
+            using (var client = new TcpClient(Socket.OSSupportsIPv6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork))
             {
                 server.SslProtocols = serverSslProtocols;
                 await client.ConnectAsync(server.RemoteEndPoint.Address, server.RemoteEndPoint.Port);

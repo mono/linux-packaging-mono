@@ -248,6 +248,7 @@ namespace System.Net.Http.Functional.Tests
             }
 
             const string expectedUsername = "testusername";
+            // [SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="This is adding a testpassword as part of an auth header test and verifying it later in the test. ")]
             const string expectedPassword = "testpassword";
             const string authHeader = "Proxy-Authenticate: Digest realm=\"NetCore\", nonce=\"PwOnWgAAAAAAjnbW438AAJSQi1kAAAAA\", qop=\"auth\", stale=false\r\n";
             LoopbackServer.Options options = new LoopbackServer.Options { IsProxy = true, Username = expectedUsername, Password = expectedPassword };
