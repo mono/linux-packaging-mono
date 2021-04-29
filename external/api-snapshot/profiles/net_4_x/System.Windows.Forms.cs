@@ -2297,7 +2297,7 @@ namespace System.Windows.Forms
         [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public System.Windows.Forms.Control SourceControl { get { throw null; } protected set { } }
         protected override void Dispose(bool disposing) { }
-        protected override void SetOwnerControl(System.Windows.Forms.Control control) { }
+        protected override void SetOwnerControl(System.Windows.Forms.Control newOwner) { }
         protected override void SetVisibleCore(bool visible) { }
     }
     [System.ComponentModel.DefaultEventAttribute("Click")]
