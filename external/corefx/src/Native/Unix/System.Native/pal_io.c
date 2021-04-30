@@ -455,7 +455,7 @@ int32_t SystemNative_ReadDirR(DIR* dir, uint8_t* buffer, int32_t bufferSize, str
         //  kernel set errno -> failure
         if (errno != 0)
         {
-            assert_err(errno == EBADF, "Invalid directory stream descriptor dir", errno);
+            assert_err(errno == EBADF || errno == EINTR, "Invalid directory stream descriptor dir", errno);
             return errno;
         }
         return -1;
