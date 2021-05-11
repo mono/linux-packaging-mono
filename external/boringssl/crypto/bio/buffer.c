@@ -417,11 +417,8 @@ static long buffer_callback_ctrl(BIO *b, int cmd, bio_info_cb fp) {
     return 0;
   }
 
-  switch (cmd) {
-    default:
-      ret = BIO_callback_ctrl(b->next_bio, cmd, fp);
-      break;
-  }
+  ret = BIO_callback_ctrl(b->next_bio, cmd, fp);
+
   return ret;
 }
 
