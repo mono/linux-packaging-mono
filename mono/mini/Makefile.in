@@ -225,13 +225,13 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	exceptions-mips.c tramp-mips.c mini-ppc.c mini-ppc.h \
 	exceptions-ppc.c tramp-ppc.c mini-riscv.c mini-riscv.h \
 	exceptions-riscv.c tramp-riscv.c mini-s390x.c mini-s390x.h \
-	support-s390x.h exceptions-s390x.c tramp-s390x.c mini-sparc.c \
-	mini-sparc.h exceptions-sparc.c tramp-sparc.c mini-wasm.c \
-	mini-wasm.h mini-wasm-debugger.c debugger-engine.c \
-	exceptions-wasm.c tramp-wasm.c mini-x86.c mini-x86.h \
-	exceptions-x86.c tramp-x86.c mini-x86-gsharedvt.c \
-	tramp-x86-gsharedvt.c mini-darwin.c mini-posix.c \
-	mini-windows.c mini-windows-tls-callback.c mini-windows.h \
+	exceptions-s390x.c tramp-s390x.c mini-sparc.c mini-sparc.h \
+	exceptions-sparc.c tramp-sparc.c mini-wasm.c mini-wasm.h \
+	mini-wasm-debugger.c debugger-engine.c exceptions-wasm.c \
+	tramp-wasm.c mini-x86.c mini-x86.h exceptions-x86.c \
+	tramp-x86.c mini-x86-gsharedvt.c tramp-x86-gsharedvt.c \
+	mini-darwin.c mini-posix.c mini-windows.c \
+	mini-windows-tls-callback.c mini-windows.h \
 	mini-windows-dllmain.c mini-windows-dlldac.c main-core.c
 @ENABLE_MSVC_ONLY_FALSE@am__objects_2 = libmini_la-mini.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-runtime.lo \
@@ -1090,7 +1090,6 @@ ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 @ENABLE_MSVC_ONLY_FALSE@s390x_sources = \
 @ENABLE_MSVC_ONLY_FALSE@	mini-s390x.c		\
 @ENABLE_MSVC_ONLY_FALSE@	mini-s390x.h		\
-@ENABLE_MSVC_ONLY_FALSE@	support-s390x.h		\
 @ENABLE_MSVC_ONLY_FALSE@	exceptions-s390x.c	\
 @ENABLE_MSVC_ONLY_FALSE@	tramp-s390x.c
 
