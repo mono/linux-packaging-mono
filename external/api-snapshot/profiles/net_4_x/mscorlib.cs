@@ -1272,8 +1272,8 @@ namespace System
     public static partial class Console
     {
         public static System.ConsoleColor BackgroundColor { get { throw null; } set { } }
-        public static int BufferHeight { get { throw null; } [System.MonoLimitationAttribute("Implemented only on Windows")]set { } }
-        public static int BufferWidth { get { throw null; } [System.MonoLimitationAttribute("Implemented only on Windows")]set { } }
+        public static int BufferHeight { get { throw null; } [System.MonoLimitationAttribute("Works only on Windows, or with some Xterm-based terminals")]set { } }
+        public static int BufferWidth { get { throw null; } [System.MonoLimitationAttribute("Works only on Windows, or with some Xterm-based terminals")]set { } }
         [System.MonoLimitationAttribute("Implemented only on Windows")]
         public static bool CapsLock { get { throw null; } }
         public static int CursorLeft { get { throw null; } set { } }
@@ -1295,10 +1295,10 @@ namespace System
         public static System.Text.Encoding OutputEncoding { get { throw null; } set { } }
         public static string Title { get { throw null; } set { } }
         public static bool TreatControlCAsInput { get { throw null; } set { } }
-        public static int WindowHeight { get { throw null; } set { } }
-        public static int WindowLeft { get { throw null; } set { } }
-        public static int WindowTop { get { throw null; } set { } }
-        public static int WindowWidth { get { throw null; } set { } }
+        public static int WindowHeight { get { throw null; } [System.MonoLimitationAttribute("Works only on Windows, or with some Xterm-based terminals")]set { } }
+        public static int WindowLeft { get { throw null; } [System.MonoLimitationAttribute("Works only on Windows, or with some Xterm-based terminals")]set { } }
+        public static int WindowTop { get { throw null; } [System.MonoLimitationAttribute("Works only on Windows, or with some Xterm-based terminals")]set { } }
+        public static int WindowWidth { get { throw null; } [System.MonoLimitationAttribute("Works only on Windows, or with some Xterm-based terminals")]set { } }
         public static event System.ConsoleCancelEventHandler CancelKeyPress { add { } remove { } }
         public static void Beep() { }
         public static void Beep(int frequency, int duration) { }
@@ -1321,7 +1321,7 @@ namespace System
         public static System.ConsoleKeyInfo ReadKey(bool intercept) { throw null; }
         public static string ReadLine() { throw null; }
         public static void ResetColor() { }
-        [System.MonoLimitationAttribute("Only works on windows")]
+        [System.MonoLimitationAttribute("Works only on Windows, or with some Xterm-based terminals")]
         public static void SetBufferSize(int width, int height) { }
         public static void SetCursorPosition(int left, int top) { }
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
@@ -1330,7 +1330,9 @@ namespace System
         public static void SetIn(System.IO.TextReader newIn) { }
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, UnmanagedCode=true)]
         public static void SetOut(System.IO.TextWriter newOut) { }
+        [System.MonoLimitationAttribute("Works only on Windows")]
         public static void SetWindowPosition(int left, int top) { }
+        [System.MonoLimitationAttribute("Works only on Windows, or with some Xterm-based terminals")]
         public static void SetWindowSize(int width, int height) { }
         public static void Write(bool value) { }
         public static void Write(char value) { }
