@@ -1296,8 +1296,8 @@ namespace System
         public static string Title { get { throw null; } set { } }
         public static bool TreatControlCAsInput { get { throw null; } set { } }
         public static int WindowHeight { get { throw null; } [System.MonoLimitationAttribute("Works only on Windows, or with some Xterm-based terminals")]set { } }
-        public static int WindowLeft { get { throw null; } [System.MonoLimitationAttribute("Works only on Windows, or with some Xterm-based terminals")]set { } }
-        public static int WindowTop { get { throw null; } [System.MonoLimitationAttribute("Works only on Windows, or with some Xterm-based terminals")]set { } }
+        public static int WindowLeft { get { throw null; } [System.MonoLimitationAttribute("Works only on Windows")]set { } }
+        public static int WindowTop { get { throw null; } [System.MonoLimitationAttribute("Works only on Windows")]set { } }
         public static int WindowWidth { get { throw null; } [System.MonoLimitationAttribute("Works only on Windows, or with some Xterm-based terminals")]set { } }
         public static event System.ConsoleCancelEventHandler CancelKeyPress { add { } remove { } }
         public static void Beep() { }
