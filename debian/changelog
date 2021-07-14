@@ -1,3 +1,14 @@
+mono (6.12.0.147-0xamarin18) preview; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [dc2831b] Revert 503356305d83d32ff5aa3c0f819cb0590c3ee49e [5033563]
+    Refresh symbols
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Wed, 14 Jul 2021 10:01:38 +0000
+
 mono (6.12.0.147-0xamarin17) preview; urgency=medium
 
   * Packaging bugfix:
