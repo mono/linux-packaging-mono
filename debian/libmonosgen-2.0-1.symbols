@@ -1164,6 +1164,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  monoeg_g_filename_to_uri@Base 5.8.0.22
  monoeg_g_find_program_in_path@Base 5.8.0.22
  monoeg_g_fprintf@Base 5.8.0.22
+ monoeg_g_fixed_buffer_custom_allocator@Base 6.13.0.1176
  monoeg_g_free@Base 5.8.0.22
  monoeg_g_get_charset@Base 5.8.0.22
  monoeg_g_get_current_dir@Base 5.8.0.22
@@ -1371,6 +1372,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  monoeg_g_utf16_asciiz_equal@Base 5.14.0.78
  monoeg_g_utf16_to_ucs4@Base 5.8.0.22
  monoeg_g_utf16_to_utf8@Base 5.8.0.22
+ monoeg_g_utf16_to_utf8_custom_alloc@Base 6.13.0.1176
  monoeg_g_utf8_get_char@Base 5.8.0.22
  monoeg_g_utf8_jump_table@Base 5.14.0.78
  monoeg_g_utf8_offset_to_pointer@Base 5.8.0.22
@@ -1380,6 +1382,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  monoeg_g_utf8_strup@Base 5.8.0.22
  monoeg_g_utf8_to_ucs4_fast@Base 5.8.0.22
  monoeg_g_utf8_to_utf16@Base 5.8.0.22
+ monoeg_g_utf8_to_utf16_custom_alloc@Base 6.13.0.1176
  monoeg_g_utf8_validate@Base 5.8.0.22
  monoeg_g_vasprintf@Base 5.8.0.22
  monoeg_g_win32_getlocale@Base 5.8.0.22
