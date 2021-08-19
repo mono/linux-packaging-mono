@@ -105,6 +105,8 @@ namespace Mono.Options
     {
         public OptionSet() { }
         public OptionSet(System.Converter<string, string> localizer) { }
+        public OptionSet(System.Converter<string, string> localizer, System.StringComparer comparer) { }
+        public OptionSet(System.StringComparer comparer) { }
         public System.Collections.ObjectModel.ReadOnlyCollection<Mono.Options.ArgumentSource> ArgumentSources { get { throw null; } }
         public System.Converter<string, string> MessageLocalizer { get { throw null; } }
         public Mono.Options.OptionSet Add(Mono.Options.ArgumentSource source) { throw null; }
