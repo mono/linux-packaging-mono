@@ -142,7 +142,7 @@ GC_API void GC_CALL GC_init_gcj_vector (int mp_index,
 #define ELEMENT_CHUNK_SIZE 256
 
 GC_API mse *GC_CALL
-GC_gcj_vector_mark_proc (mse *mark_stack_ptr, GC_descr element_desc, word *start, word *end, int words_per_element)
+GC_gcj_vector_mark_proc (mse *mark_stack_ptr, mse* mark_stack_limit, GC_descr element_desc, word *start, word *end, int words_per_element)
 {
   /* create new descriptor that is shifted two bits to account 
   * for lack of object header. Descriptors for value types include
@@ -162,6 +162,8 @@ GC_gcj_vector_mark_proc (mse *mark_stack_ptr, GC_descr element_desc, word *start
   /* attempt to bulk process multiple elements with single descriptor */
   size_t elements_per_desc = (CPP_WORDSZ - GC_DS_TAG_BITS) / words_per_element;
 
+  if (mark_stack_ptr >= mark_stack_limit)
+    return GC_signal_mark_stack_overflow (mark_stack_ptr);
 
   /* setup bulk processing */
   if (elements_per_desc > 1) {
@@ -188,12 +190,16 @@ GC_gcj_vector_mark_proc (mse *mark_stack_ptr, GC_descr element_desc, word *start
         remainder_count = 0;
 
         mark_stack_ptr++;
+        if (mark_stack_ptr >= mark_stack_limit)
+          mark_stack_ptr = GC_signal_mark_stack_overflow (mark_stack_ptr);
         mark_stack_ptr->mse_descr.w = GC_MAKE_PROC (GC_gcj_vector_mp_index, 1 /* continue processing */);
         mark_stack_ptr->mse_start = (ptr_t)end;
       }
 
       while (bulk_count > 0) {
         mark_stack_ptr++;
+        if (mark_stack_ptr >= mark_stack_limit)
+          mark_stack_ptr = GC_signal_mark_stack_overflow (mark_stack_ptr);
 
         mark_stack_ptr->mse_start = (ptr_t) (current);
         mark_stack_ptr->mse_descr.w = bulk_desc;
@@ -206,6 +212,8 @@ GC_gcj_vector_mark_proc (mse *mark_stack_ptr, GC_descr element_desc, word *start
 
     while (remainder_count > 0) {
       mark_stack_ptr++;
+      if (mark_stack_ptr >= mark_stack_limit)
+        mark_stack_ptr = GC_signal_mark_stack_overflow (mark_stack_ptr);
 
       mark_stack_ptr->mse_start = (ptr_t) (current);
       mark_stack_ptr->mse_descr.w = element_desc_shifted;
@@ -224,6 +232,9 @@ GC_gcj_vector_mark_proc (mse *mark_stack_ptr, GC_descr element_desc, word *start
       end = start + remainder_count * words_per_element;
 
       mark_stack_ptr++;
+      if (mark_stack_ptr >= mark_stack_limit)
+        mark_stack_ptr = GC_signal_mark_stack_overflow (mark_stack_ptr);
+
       mark_stack_ptr->mse_descr.w = GC_MAKE_PROC (GC_gcj_vector_mp_index, 1 /* continue processing */);
       mark_stack_ptr->mse_start = (ptr_t)end;
     }
@@ -231,6 +242,8 @@ GC_gcj_vector_mark_proc (mse *mark_stack_ptr, GC_descr element_desc, word *start
     word *current = start;
     while (remainder_count > 0) {
       mark_stack_ptr++;
+      if (mark_stack_ptr >= mark_stack_limit)
+        mark_stack_ptr = GC_signal_mark_stack_overflow (mark_stack_ptr);
 
       mark_stack_ptr->mse_start = (ptr_t) (current);
       mark_stack_ptr->mse_descr.w = element_desc_shifted;

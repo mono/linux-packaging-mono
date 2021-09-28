@@ -14,7 +14,7 @@
 
 #include "private/gc_priv.h"
 
-#if !defined(SN_TARGET_ORBIS) && !defined(SN_TARGET_PSP2)
+#if !defined(PLATFORM_MACH_DEP) && !defined(SN_TARGET_PSP2)
 
 #include <stdio.h>
 
