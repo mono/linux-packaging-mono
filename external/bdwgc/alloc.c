@@ -20,7 +20,7 @@
 #include <stdio.h>
 #if !defined(MACOS) && !defined(MSWINCE)
 # include <signal.h>
-# if !defined(SN_TARGET_ORBIS) && !defined(SN_TARGET_PSP2) \
+# if !defined(GC_NO_TYPES) && !defined(SN_TARGET_PSP2) \
      && !defined(__CC_ARM)
 #   include <sys/types.h>
 # endif
@@ -366,6 +366,22 @@ STATIC void GC_clear_a_few_frames(void)
 /* Heap size at which we need a collection to avoid expanding past      */
 /* limits used by blacklisting.                                         */
 STATIC word GC_collect_at_heapsize = (word)(-1);
+STATIC GC_bool GC_should_start_incremental_collection = FALSE;
+STATIC GC_bool GC_disable_automatic_collection = FALSE;
+
+GC_API void GC_set_disable_automatic_collection(GC_bool disable)
+{
+  GC_disable_automatic_collection = disable;
+}
+
+GC_API void GC_start_incremental_collection()
+{
+  if (GC_incremental)
+  {
+    GC_should_start_incremental_collection = TRUE;
+    GC_collect_a_little();
+  }
+}
 
 /* Have we allocated enough to amortize a collection? */
 GC_INNER GC_bool GC_should_collect(void)
@@ -376,6 +392,13 @@ GC_INNER GC_bool GC_should_collect(void)
       last_gc_no = GC_gc_no;
       last_min_bytes_allocd = min_bytes_allocd();
     }
+    if (GC_should_start_incremental_collection)
+    {
+      GC_should_start_incremental_collection = FALSE;
+      return TRUE;
+    }
+    if (GC_disable_automatic_collection)
+      return FALSE;
     return(GC_adj_bytes_allocd() >= last_min_bytes_allocd
            || GC_heapsize >= GC_collect_at_heapsize);
 }

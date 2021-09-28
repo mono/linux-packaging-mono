@@ -380,7 +380,7 @@ class Package:
                 # if source.startswith ('http://'):
                 #	raise Exception ('HTTP downloads are no longer allowed: %s', source)
 
-                if source.startswith(('http://', 'https://', 'ftp://')):
+                if source.startswith(('http://', 'https://', 'ftp://')) and not source.endswith('.git'):
                     cache = get_download_dest(source, self.version)
                     if self.profile.cache_host is not None:
                         cached_source = os.path.join(
@@ -1040,7 +1040,7 @@ class GitHubPackage (Package):
                          configure_flags=configure_flags,
                          configure=configure,
                          sources=[
-                             'git://github.com/%{organization}/%{name}.git'],
+                             'https://github.com/%{organization}/%{name}.git'],
                          override_properties=override_properties)
 
 

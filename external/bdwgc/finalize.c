@@ -78,6 +78,13 @@ STATIC struct fnlz_roots_s {
   struct finalizable_object *finalize_now;
 } GC_fnlz_roots = { NULL, NULL };
 
+void GC_clear_finalizable_object_table()
+{
+    log_fo_table_size = -1;
+    GC_fnlz_roots.fo_head = NULL;
+    GC_fnlz_roots.finalize_now = NULL;
+}
+
 #ifdef AO_HAVE_store
   /* Update finalize_now atomically as GC_should_invoke_finalizers does */
   /* not acquire the allocation lock.                                   */
