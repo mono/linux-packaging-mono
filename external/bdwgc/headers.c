@@ -32,6 +32,12 @@ STATIC bottom_index * GC_all_bottom_indices_end = 0;
                         /* Pointer to the last (highest address)        */
                         /* bottom_index.  Assumes the lock is held.     */
 
+void GC_clear_bottom_indices()
+{
+    GC_all_bottom_indices = 0;
+    GC_all_bottom_indices_end = 0;
+}
+
 /* Non-macro version of header location routine */
 GC_INNER hdr * GC_find_header(ptr_t h)
 {
@@ -194,10 +200,13 @@ GC_INNER void GC_init_headers(void)
 {
     unsigned i;
 
-    GC_all_nils = (bottom_index *)GC_scratch_alloc(sizeof(bottom_index));
-    if (GC_all_nils == NULL) {
-      GC_err_printf("Insufficient memory for GC_all_nils\n");
-      EXIT();
+    if (GC_all_nils == NULL)
+    {
+        GC_all_nils = (bottom_index *)GC_scratch_alloc(sizeof(bottom_index));
+        if (GC_all_nils == NULL) {
+          GC_err_printf("Insufficient memory for GC_all_nils\n");
+          EXIT();
+        }
     }
     BZERO(GC_all_nils, sizeof(bottom_index));
     for (i = 0; i < TOP_SZ; i++) {

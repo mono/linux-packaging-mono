@@ -53,6 +53,7 @@ GC_API GC_ATTR_MALLOC void * GC_CALL GC_gcj_vector_malloc(size_t /* lb */,
 
 GC_API struct GC_ms_entry *GC_CALL
 GC_gcj_vector_mark_proc (struct GC_ms_entry *mark_stack_ptr,
+  struct GC_ms_entry* mark_stack_limit,
   GC_descr element_desc,
   GC_word*start,
   GC_word*end,

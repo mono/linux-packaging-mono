@@ -49,9 +49,8 @@ struct thread_stop_info {
       ptr_t reg_storage[NACL_GC_REG_STORAGE_SIZE];
 #   endif
 
-#if defined(SN_TARGET_ORBIS)
-#   define ORBIS_GC_REG_STORAGE_SIZE 27
-    __uint64_t registers[ORBIS_GC_REG_STORAGE_SIZE];
+#if defined(PLATFORM_GC_REG_STORAGE_SIZE)
+    __uint64_t registers[PLATFORM_GC_REG_STORAGE_SIZE];
 #endif
 };
 

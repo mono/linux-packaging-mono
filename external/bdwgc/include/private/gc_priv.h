@@ -463,7 +463,21 @@ EXTERN_C_END
 # define GET_TIME(x) (void)(x = n3ds_get_system_tick())
 # define MS_TIME_DIFF(a,b) ((long)n3ds_convert_tick_to_ms((a)-(b)))
 # define NS_TIME_DIFF(a,b) ((long long)n3ds_convert_tick_to_ms((a)-(b)) * 1000000)
-#else /* !BSD_TIME && !NN_PLATFORM_CTR && !MSWIN32 && !MSWINCE */
+#elif defined(NINTENDO_SWITCH)
+#include <time.h>
+# define CLOCK_TYPE long long
+# define GET_TIME(x) \
+                do { \
+                  struct timespec t;\
+                  int r = clock_gettime(CLOCK_REALTIME, &t);\
+                  x=-1;\
+                  if (r != -1) {\
+                    x = (t.tv_sec * 1000000000) + t.tv_nsec;\
+                  }\
+                } while (0)
+# define MS_TIME_DIFF(a,b) ((unsigned long)(((a) - (b)) / 1000000))
+# define NS_TIME_DIFF(a,b) ((a)-(b))
+#else /* !BSD_TIME && !NN_PLATFORM_CTR && !MSWIN32 && !MSWINCE && !NINTENDO_SWITCH */
 # include <time.h>
 # if defined(FREEBSD) && !defined(CLOCKS_PER_SEC)
 #   include <machine/limits.h>
@@ -835,7 +849,7 @@ EXTERN_C_BEGIN
 # if defined(LARGE_CONFIG) || !defined(SMALL_CONFIG)
 #   ifdef ALPHA
 #     define CPP_LOG_HBLKSIZE 13
-#   elif defined(SN_TARGET_ORBIS) || defined(SN_TARGET_PSP2)
+#   elif defined(SN_TARGET_PSP2)
 #     define CPP_LOG_HBLKSIZE 16    /* page size is set to 64K  */
 #   else
 #     define CPP_LOG_HBLKSIZE 12

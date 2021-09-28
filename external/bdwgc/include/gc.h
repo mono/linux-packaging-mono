@@ -598,6 +598,9 @@ GC_API void GC_CALL GC_set_max_heap_size(GC_word /* n */);
 GC_API void GC_CALL GC_exclude_static_roots(void * /* low_address */,
                                             void * /* high_address_plus_1 */);
 
+/* Clear the number of entries in the exclustion table.  Wizards only.  */
+GC_API void GC_CALL GC_clear_exclusion_table(void);
+
 /* Clear the set of root segments.  Wizards only.                       */
 GC_API void GC_CALL GC_clear_roots(void);
 
@@ -2034,6 +2037,8 @@ GC_API void GC_CALL GC_stop_world_external(void);
 GC_API void GC_CALL GC_start_world_external(void);
 
 GC_API void GC_CALL GC_disable_incremental(void);
+GC_API void GC_CALL GC_start_incremental_collection (void);
+GC_API void GC_CALL GC_set_disable_automatic_collection(int);
 
 /* APIs for getting access to raw GC heap */
 /* These are NOT thread safe, so should be called with GC lock held */
