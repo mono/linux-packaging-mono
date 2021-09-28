@@ -130,7 +130,7 @@ EXTERN_C_BEGIN
 /* And one for FreeBSD: */
 # if (defined(__FreeBSD__) || defined(__DragonFly__) \
       || defined(__FreeBSD_kernel__)) && !defined(FREEBSD) \
-     && !defined(SN_TARGET_ORBIS) /* Orbis compiler defines __FreeBSD__ */
+     && !defined(GC_NO_FREEBSD) 
 #   define FREEBSD
 # endif
 
@@ -168,7 +168,7 @@ EXTERN_C_BEGIN
           && !defined(OPENBSD) && !defined(DARWIN) && !defined(_WIN32) \
           && !defined(__CEGCC__) && !defined(NN_PLATFORM_CTR) \
           && !defined(NN_BUILD_TARGET_PLATFORM_NX) \
-          && !defined(SN_TARGET_ORBIS) && !defined(SN_TARGET_PSP2) \
+          && !defined(GC_NO_NOSYS) && !defined(SN_TARGET_PSP2) \
           && !defined(SYMBIAN)
 #      define NOSYS
 #      define mach_type_known
@@ -481,7 +481,7 @@ EXTERN_C_BEGIN
 #   define I386
 #   define mach_type_known
 # endif
-# if (defined(FREEBSD) || defined(SN_TARGET_ORBIS)) \
+# if (defined(FREEBSD)) \
      && (defined(__amd64__) || defined(__x86_64__))
 #   define X86_64
 #   define mach_type_known
@@ -2565,14 +2565,14 @@ EXTERN_C_BEGIN
 #   ifndef CACHE_LINE_SIZE
 #     define CACHE_LINE_SIZE 64
 #   endif
-#   ifdef SN_TARGET_ORBIS
+#   ifdef PLATFORM_GETMEM
 #     define DATASTART (ptr_t)ALIGNMENT
 #     define DATAEND (ptr_t)ALIGNMENT
       EXTERN_C_END
 #     include <pthread.h>
       EXTERN_C_BEGIN
-      void *ps4_get_stack_bottom(void);
-#     define STACKBOTTOM ((ptr_t)ps4_get_stack_bottom())
+      void *platform_get_stack_bottom(void);
+#     define STACKBOTTOM ((ptr_t)platform_get_stack_bottom())
 #   endif
 #   ifdef OPENBSD
 #       define OS_TYPE "OPENBSD"
@@ -3082,7 +3082,7 @@ EXTERN_C_BEGIN
 /* The platform does not have a virtual paging system, so it does not   */
 /* have a large virtual address space that a standard x64 platform has. */
 #if defined(USE_MUNMAP) && !defined(MUNMAP_THRESHOLD) \
-    && (defined(SN_TARGET_ORBIS) || defined(SN_TARGET_PS3) \
+    && (defined(SN_TARGET_PS3) \
         || defined(SN_TARGET_PSP2) || defined(MSWIN_XBOX1))
 # define MUNMAP_THRESHOLD 2
 #endif
@@ -3250,9 +3250,11 @@ EXTERN_C_BEGIN
 
 #if defined(PCR) || defined(GC_WIN32_THREADS) || defined(GC_PTHREADS) \
     || defined(NN_PLATFORM_CTR) || defined(NINTENDO_SWITCH) \
-    || defined(SN_TARGET_ORBIS) || defined(SN_TARGET_PS3) \
+    || defined(SN_TARGET_PS3) \
     || defined(SN_TARGET_PSP2)
-# define THREADS
+  #if !defined(THREADS)
+    # define THREADS
+  #endif
 #endif
 
 #if defined(PARALLEL_MARK) && !defined(THREADS) && !defined(CPPCHECK)
@@ -3339,7 +3341,7 @@ EXTERN_C_BEGIN
 #endif
 
 #if defined(CAN_HANDLE_FORK) && !defined(CAN_CALL_ATFORK) \
-    && !defined(HURD) && !defined(SN_TARGET_ORBIS) && !defined(HOST_TIZEN) \
+    && !defined(HURD) && !defined(GC_NO_CAN_CALL_ATFORK) && !defined(HOST_TIZEN) \
     && (!defined(HOST_ANDROID) || __ANDROID_API__ >= 21)
   /* Have working pthread_atfork().     */
 # define CAN_CALL_ATFORK
@@ -3574,9 +3576,9 @@ EXTERN_C_BEGIN
                                             SIZET_SAT_ADD(bytes, \
                                                           GC_page_size)) \
                           + GC_page_size-1)
-# elif defined(SN_TARGET_ORBIS)
-    void *ps4_get_mem(size_t bytes);
-#   define GET_MEM(bytes) (struct hblk*)ps4_get_mem(bytes)
+# elif defined(PLATFORM_GETMEM)
+    void *platform_get_mem(size_t bytes);
+#   define GET_MEM(bytes) (struct hblk*)platform_get_mem(bytes)
 # elif defined(SN_TARGET_PS3)
     void *ps3_get_mem(size_t bytes);
 #   define GET_MEM(bytes) (struct hblk*)ps3_get_mem(bytes)
@@ -3589,6 +3591,9 @@ EXTERN_C_BEGIN
 # elif defined(HAIKU)
     ptr_t GC_haiku_get_mem(size_t bytes);
 #   define GET_MEM(bytes) (struct hblk*)GC_haiku_get_mem(bytes)
+# elif defined(EMSCRIPTEN_TINY)
+    void *emmalloc_memalign(size_t alignment, size_t size);
+#   define GET_MEM(bytes) (struct hblk*)emmalloc_memalign(GC_page_size, bytes)
 # else
     ptr_t GC_unix_get_mem(size_t bytes);
 #   define GET_MEM(bytes) (struct hblk *)GC_unix_get_mem(bytes)

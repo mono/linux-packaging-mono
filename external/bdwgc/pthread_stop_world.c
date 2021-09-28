@@ -128,8 +128,11 @@ STATIC volatile AO_t GC_world_is_stopped = FALSE;
     || defined(ADDRESS_SANITIZER) || defined(MEMORY_SANITIZER)
   STATIC GC_bool GC_retry_signals = TRUE;
 #else
-  STATIC GC_bool GC_retry_signals = FALSE;
+  // Unity: Always enable retry signals, since any platform could lose signals
+  STATIC GC_bool GC_retry_signals = TRUE;
 #endif
+
+#define UNITY_RETRY_SIGNALS
 
 /*
  * We use signals to stop threads during GC.
@@ -458,6 +461,49 @@ static int resend_lost_signals(int n_live_threads,
     }
     return n_live_threads;
 }
+
+#ifdef UNITY_RETRY_SIGNALS
+static void suspend_restart_barrier_retry(int n_live_threads, 
+                                          int (*suspend_restart_all)(void))
+{
+#   define TIMEOUT_UNIT 10000
+
+    int i;
+    int acked_threads = 0;
+    struct timespec ts;
+
+    if (clock_gettime(CLOCK_REALTIME, &ts) == -1) {
+        n_live_threads = resend_lost_signals(n_live_threads, suspend_restart_all);
+        suspend_restart_barrier(n_live_threads);
+        return;
+    }
+
+    ts.tv_nsec += TIMEOUT_UNIT * 1000;
+
+    for (i = 0; i < n_live_threads; i++) {
+      while (0 != sem_timedwait(&GC_suspend_ack_sem, &ts)) {
+        /* On Linux, sem_wait is documented to always return zero.      */
+        /* But the documentation appears to be incorrect.               */
+        /* EINTR seems to happen with some versions of gdb.             */
+
+        if (errno == ETIMEDOUT || errno == EINVAL) {
+            // Wait timed out or the timeout period has passed
+            n_live_threads = resend_lost_signals(n_live_threads - acked_threads, suspend_restart_all);
+            suspend_restart_barrier(n_live_threads);
+            return;
+        }
+        else if (errno != EINTR) {
+          ABORT("sem_wait failed");
+        }
+      }
+      acked_threads++;
+    }
+#   ifdef GC_ASSERTIONS
+      sem_getvalue(&GC_suspend_ack_sem, &i);
+      GC_ASSERT(0 == i);
+#   endif
+}
+#endif
 
 STATIC void GC_restart_handler(int sig)
 {
@@ -897,9 +943,16 @@ GC_INNER void GC_stop_world(void)
 # endif
     AO_store_release(&GC_world_is_stopped, TRUE);
     n_live_threads = GC_suspend_all();
+#ifndef UNITY_RETRY_SIGNALS
     if (GC_retry_signals)
       n_live_threads = resend_lost_signals(n_live_threads, GC_suspend_all);
     suspend_restart_barrier(n_live_threads);
+#else
+    if (GC_retry_signals)
+        suspend_restart_barrier_retry(n_live_threads, GC_suspend_all);
+    else
+        suspend_restart_barrier(n_live_threads);
+#endif
 # ifdef MANUAL_VDB
     GC_release_dirty_lock(); /* cannot be done in GC_suspend_all */
 # endif    
@@ -1147,13 +1200,20 @@ GC_INNER void GC_start_world(void)
 #   endif
     n_live_threads = GC_restart_all();
 #   ifndef GC_OPENBSD_UTHREADS
+#   ifndef UNITY_RETRY_SIGNALS
       if (GC_retry_signals)
         n_live_threads = resend_lost_signals(n_live_threads, GC_restart_all);
+#   endif
 #     ifdef GC_NETBSD_THREADS_WORKAROUND
         suspend_restart_barrier(n_live_threads);
 #     else
         if (GC_retry_signals)
+#       ifndef UNITY_RETRY_SIGNALS
           suspend_restart_barrier(n_live_threads);
+#       else
+          suspend_restart_barrier_retry(n_live_threads, GC_restart_all);
+#       endif
+
 #     endif
 #   else
       (void)n_live_threads;

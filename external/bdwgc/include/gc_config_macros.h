@@ -70,6 +70,7 @@
 # define GC_WIN32_THREADS
 #endif
 
+
 #if defined(GC_AIX_THREADS) || defined(GC_DARWIN_THREADS) \
     || defined(GC_DGUX386_THREADS) || defined(GC_FREEBSD_THREADS) \
     || defined(GC_HPUX_THREADS) \
@@ -77,7 +78,7 @@
     || defined(GC_NETBSD_THREADS) || defined(GC_OPENBSD_THREADS) \
     || defined(GC_OSF1_THREADS) || defined(GC_SOLARIS_THREADS) \
     || defined(GC_WIN32_THREADS) || defined(GC_RTEMS_PTHREADS) \
-    || defined(SN_TARGET_ORBIS) || defined(SN_TARGET_PSP2)
+    || defined(SN_TARGET_PSP2)
 # ifndef GC_THREADS
 #   define GC_THREADS
 # endif
@@ -91,8 +92,8 @@
 #   define GC_HAIKU_THREADS
 # elif defined(__OpenBSD__)
 #   define GC_OPENBSD_THREADS
-# elif defined(__DragonFly__) || defined(__FreeBSD_kernel__) \
-       || (defined(__FreeBSD__) && !defined(SN_TARGET_ORBIS))
+# elif ( defined(__DragonFly__) || defined(__FreeBSD_kernel__) \
+       || defined(__FreeBSD__) ) && !defined(GC_NO_FREEBSD)
 #   define GC_FREEBSD_THREADS
 # elif defined(__NetBSD__)
 #   define GC_NETBSD_THREADS
