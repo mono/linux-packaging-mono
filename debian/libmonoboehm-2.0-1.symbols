@@ -1433,6 +1433,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_perfcounters_init@Base 4.1.0.1738
  mono_personality@Base 4.3.0.723
  mono_pmip@Base 4.1.0.1738
+ mono_pmip_u@Base 6.12.0.154
  mono_poll@Base 4.1.0.1738
  mono_print_method_from_ip@Base 4.1.0.1738
  mono_print_thread_dump@Base 4.1.0.1738
