@@ -1094,7 +1094,9 @@ namespace System.Windows
         public System.Windows.Freezable GetCurrentValueAsFrozen() { throw null; }
         protected virtual void GetCurrentValueAsFrozenCore(System.Windows.Freezable sourceFreezable) { }
         protected virtual void OnChanged() { }
+        [System.MonoTODOAttribute]
         protected void OnFreezablePropertyChanged(System.Windows.DependencyObject oldValue, System.Windows.DependencyObject newValue) { }
+        [System.MonoTODOAttribute]
         protected void OnFreezablePropertyChanged(System.Windows.DependencyObject oldValue, System.Windows.DependencyObject newValue, System.Windows.DependencyProperty property) { }
         protected override void OnPropertyChanged(System.Windows.DependencyPropertyChangedEventArgs e) { }
         protected void ReadPreamble() { }
