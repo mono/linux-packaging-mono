@@ -549,7 +549,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_reset_default_push_other_roots@Base 6.12.0.156
  GC_reset_fault_handler@Base 4.1.0.1738
  GC_reset_finalizer_nested@Base 6.10.0.52
- GC_reset_mark_statistics@Base 6.12.0.156
+ GC_reset_mark_statics@Base 6.12.0.156
  GC_restart_all@Base 6.10.0.52
  GC_restart_handler@Base 4.1.0.1738
  GC_resume_thread@Base 6.10.0.52
