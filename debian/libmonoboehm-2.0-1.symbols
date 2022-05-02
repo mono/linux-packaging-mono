@@ -64,8 +64,11 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_check_leaked@Base 6.10.0.52
  GC_clear_a_few_frames@Base 4.1.0.1738
  GC_clear_bl@Base 4.1.0.1738
+ GC_clear_bottom_indices@Base 6.12.0.156
+ GC_clear_exclusion_table@Base 6.12.0.156
  GC_clear_fl_links@Base 4.1.0.1738
  GC_clear_fl_marks@Base 4.1.0.1738
+ GC_clear_freelist@Base 6.12.0.156
  GC_clear_hdr_marks@Base 4.1.0.1738
  GC_clear_mark_bit@Base 4.1.0.1738
  GC_clear_marks@Base 4.1.0.1738
@@ -134,6 +137,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_dirty_init@Base 4.1.0.1738
  GC_dirty_inner@Base 6.10.0.52
  GC_disable@Base 4.1.0.1738
+ GC_disable_automatic_collection@Base 6.12.0.156
  GC_disable_incremental@Base 6.10.0.52
  GC_disclaim_and_reclaim@Base 6.10.0.52
  GC_disclaim_and_reclaim_or_free_small_block@Base 6.10.0.52
@@ -541,8 +545,10 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_remove_roots_inner@Base 4.1.0.1738
  GC_remove_tmp_roots@Base 4.1.0.1738
  GC_repeat_read@Base 4.1.0.1738
+ GC_reset_default_push_other_roots@Base 6.12.0.156
  GC_reset_fault_handler@Base 4.1.0.1738
  GC_reset_finalizer_nested@Base 6.10.0.52
+ GC_reset_mark_statistics@Base 6.12.0.156
  GC_restart_all@Base 6.10.0.52
  GC_restart_handler@Base 4.1.0.1738
  GC_resume_thread@Base 6.10.0.52
@@ -558,6 +564,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_set_all_interior_pointers@Base 6.10.0.52
  GC_set_and_save_fault_handler@Base 4.1.0.1738
  GC_set_await_finalize_proc@Base 4.3.0.2390
+ GC_set_disable_automatic_collection@Base 6.12.0.156
  GC_set_dont_expand@Base 6.10.0.52
  GC_set_dont_precollect@Base 6.10.0.52
  GC_set_finalize_on_demand@Base 6.10.0.52
@@ -597,6 +604,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_setup_temporary_fault_handler@Base 4.1.0.1738
  GC_should_collect@Base 4.1.0.1738
  GC_should_invoke_finalizers@Base 4.1.0.1738
+ GC_should_start_incremental_collection@Base 6.12.0.156
  GC_sig_suspend@Base 6.10.0.52
  GC_sig_thr_restart@Base 6.10.0.52
  GC_signal_mark_stack_overflow@Base 4.1.0.1738
@@ -606,6 +614,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_stackbottom@Base 4.1.0.1738
  GC_start_call_back@Base 4.1.0.1738
  GC_start_debugging_inner@Base 6.10.0.52
+ GC_start_incremental_collection@Base 6.12.0.156
  GC_start_mark_threads@Base 6.10.0.52
  GC_start_mark_threads_inner@Base 6.10.0.52
  GC_start_performance_measurement@Base 6.10.0.52
