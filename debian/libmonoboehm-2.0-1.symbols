@@ -66,6 +66,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  GC_clear_bl@Base 4.1.0.1738
  GC_clear_bottom_indices@Base 6.12.0.156
  GC_clear_exclusion_table@Base 6.12.0.156
+ GC_clear_finalizable_object_table@Base 6.12.0.156
  GC_clear_fl_links@Base 4.1.0.1738
  GC_clear_fl_marks@Base 4.1.0.1738
  GC_clear_freelist@Base 6.12.0.156
