@@ -1,3 +1,14 @@
+mono (6.13.0.1204-0nightly3) nightly; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [aadc063] Refreshed symbols [2088102] Support upgrading from
+    6.8.0.105+dfsg-3.1 without erroring out
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 02 May 2022 19:26:47 +0000
+
 mono (6.13.0.1204-0nightly2) nightly; urgency=medium
 
   * Packaging bugfix:
