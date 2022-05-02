@@ -667,6 +667,8 @@ Description: Mono SMDiagnostics Library (for CLI 4.0)
 
 Package: libmono-corlib4.5-cil
 Architecture: all
+Replaces: libmono-corlib4.5-dll
+Breaks: libmono-corlib4.5-dll
 Depends: ${misc:Depends},
          mono-runtime (>= ${mono:upversion}), mono-runtime (<< ${mono:next-upversion})
 Recommends: libmono-i18n-west4.0-cil
