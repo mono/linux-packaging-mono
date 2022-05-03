@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 		if (read < 1) exit(EXIT_FAILURE);
 		pe_magic = dotnet_header.pe.pe_magic[0]
 			 | dotnet_header.pe.pe_magic[1] << 8;
-		if (dotnet_header.pesig[0] != 'P' || dotnet_header.pesig[1] != 'E' || pe_magic != 0x10B) exit(EXIT_FAILURE);
+		if (dotnet_header.pesig[0] != 'P' || dotnet_header.pesig[1] != 'E' || (pe_magic != 0x10B && pe_magic != 0x20B)) exit(EXIT_FAILURE);
 		rva = dotnet_header.datadir.pe_cli_header.rva[0]
 		    | dotnet_header.datadir.pe_cli_header.rva[1] << 8
 		    | dotnet_header.datadir.pe_cli_header.rva[2] << 16
