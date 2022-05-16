@@ -1107,6 +1107,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  monoeg_assert_abort@Base 5.20.0.184
  monoeg_assertion_disable_global@Base 5.20.0.184
  monoeg_assertion_message@Base 5.8.0.22
+ monoeg_clock_nanosleep@Base 6.12.0.179
  monoeg_g_array_append_vals@Base 5.8.0.22
  monoeg_g_array_free@Base 5.8.0.22
  monoeg_g_array_insert_vals@Base 5.8.0.22
