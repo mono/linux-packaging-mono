@@ -262,6 +262,8 @@ namespace System.Net.Http
 
         public HttpConnectionKind Kind => _pool.Kind;
 
+        private int MaxResponseHeadersLength => (int)Math.Min(int.MaxValue, _pool.Settings._maxResponseHeadersLength * 1024L);
+
         private int ReadBufferSize => _readBuffer.Length;
 
         private ReadOnlyMemory<byte> RemainingBuffer => new ReadOnlyMemory<byte>(_readBuffer, _readOffset, _readLength - _readOffset);
@@ -535,7 +537,7 @@ namespace System.Net.Http
                 }
 
                 // Start to read response.
-                _allowedReadLineBytes = (int)Math.Min(int.MaxValue, _pool.Settings._maxResponseHeadersLength * 1024L);
+                _allowedReadLineBytes = MaxResponseHeadersLength;
 
                 // We should not have any buffered data here; if there was, it should have been treated as an error
                 // by the previous request handling.  (Note we do not support HTTP pipelining.)

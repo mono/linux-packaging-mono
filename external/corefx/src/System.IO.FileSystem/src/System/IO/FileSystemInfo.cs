@@ -26,8 +26,8 @@ namespace System.IO
             FullPath = Path.GetFullPathInternal(info.GetString("FullPath"));
             OriginalPath = info.GetString("OriginalPath");
             _name = info.GetString("Name");
-        }
 #endif
+        }
 
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
