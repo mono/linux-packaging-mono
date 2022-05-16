@@ -1,3 +1,16 @@
+mono (6.12.0.158-0xamarin2) preview; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [c34130e] Bugfix: binfmt-detect-cli returns false negative for CLR
+    with x64. (#35) [ddaf044] Typo. Serves me right for typing these by
+    hand. [917bc0b] Refreshed symbols [a7d4cf7] Support upgrading from
+    6.8.0.105+dfsg-3.1 without erroring out
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 16 May 2022 13:23:28 +0000
+
 mono (6.12.0.158-0xamarin1) preview; urgency=medium
 
   * New release - mono-6.12.0.158.tar.xz
