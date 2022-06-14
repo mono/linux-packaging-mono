@@ -121,9 +121,9 @@ am__libeglib_la_SOURCES_DIST = eglib-remap.h sort.frag.h glib.h \
 	gfile-posix.c gpattern.c gmarkup.c gutf8.c gunicode.c \
 	unicode-data.h gdate-unix.c gdir-unix.c gfile-unix.c \
 	gmisc-unix.c gmodule-unix.c gtimer-unix.c gmodule-aix.c \
-	gspawn.c eglib-config.hw gdate-win32.c gdir-win32.c \
-	gfile-win32.c gmisc-win32.c gmodule-win32.c gtimer-win32.c \
-	gunicode-win32.c
+	gspawn.c gclock-nanosleep.c eglib-config.hw gdate-win32.c \
+	gdir-win32.c gfile-win32.c gmisc-win32.c gmodule-win32.c \
+	gtimer-win32.c gunicode-win32.c
 @ENABLE_MSVC_ONLY_FALSE@am__objects_1 = libeglib_la-gdate-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gdir-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gfile-unix.lo \
@@ -131,7 +131,8 @@ am__libeglib_la_SOURCES_DIST = eglib-remap.h sort.frag.h glib.h \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gmodule-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gtimer-unix.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gmodule-aix.lo \
-@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gspawn.lo
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gspawn.lo \
+@ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gclock-nanosleep.lo
 @ENABLE_MSVC_ONLY_FALSE@am__objects_2 = libeglib_la-gdate-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gdir-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libeglib_la-gfile-win32.lo \
@@ -370,7 +371,6 @@ FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GLIB_CFLAGS = @GLIB_CFLAGS@
-GLOBALIZATION_SHIM_DEFINES = @GLOBALIZATION_SHIM_DEFINES@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUC_NORETURN = @GNUC_NORETURN@
@@ -387,8 +387,6 @@ HAVE_NINJA = @HAVE_NINJA@
 HAVE_UNISTD_H = @HAVE_UNISTD_H@
 HAVE_YASM = @HAVE_YASM@
 HOST_CC = @HOST_CC@
-ICU_CFLAGS = @ICU_CFLAGS@
-ICU_SHIM_PATH = @ICU_SHIM_PATH@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -604,7 +602,7 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@unix_files = \
 @ENABLE_MSVC_ONLY_FALSE@	gdate-unix.c  gdir-unix.c  gfile-unix.c  gmisc-unix.c	\
 @ENABLE_MSVC_ONLY_FALSE@	gmodule-unix.c gtimer-unix.c gmodule-aix.c \
-@ENABLE_MSVC_ONLY_FALSE@	gspawn.c
+@ENABLE_MSVC_ONLY_FALSE@	gspawn.c gclock-nanosleep.c
 
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@os_files = $(unix_files)
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@os_files = $(win_files)
@@ -706,6 +704,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_la-garray.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_la-gbytearray.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_la-gclock-nanosleep.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_la-gdate-unix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_la-gdate-win32.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_la-gdir-unix.Plo@am__quote@
@@ -975,6 +974,13 @@ libeglib_la-gspawn.lo: gspawn.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gspawn.c' object='libeglib_la-gspawn.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_la_CFLAGS) $(CFLAGS) -c -o libeglib_la-gspawn.lo `test -f 'gspawn.c' || echo '$(srcdir)/'`gspawn.c
+
+libeglib_la-gclock-nanosleep.lo: gclock-nanosleep.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_la_CFLAGS) $(CFLAGS) -MT libeglib_la-gclock-nanosleep.lo -MD -MP -MF $(DEPDIR)/libeglib_la-gclock-nanosleep.Tpo -c -o libeglib_la-gclock-nanosleep.lo `test -f 'gclock-nanosleep.c' || echo '$(srcdir)/'`gclock-nanosleep.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_la-gclock-nanosleep.Tpo $(DEPDIR)/libeglib_la-gclock-nanosleep.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gclock-nanosleep.c' object='libeglib_la-gclock-nanosleep.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_la_CFLAGS) $(CFLAGS) -c -o libeglib_la-gclock-nanosleep.lo `test -f 'gclock-nanosleep.c' || echo '$(srcdir)/'`gclock-nanosleep.c
 
 libeglib_la-gdate-win32.lo: gdate-win32.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_la_CFLAGS) $(CFLAGS) -MT libeglib_la-gdate-win32.lo -MD -MP -MF $(DEPDIR)/libeglib_la-gdate-win32.Tpo -c -o libeglib_la-gdate-win32.lo `test -f 'gdate-win32.c' || echo '$(srcdir)/'`gdate-win32.c

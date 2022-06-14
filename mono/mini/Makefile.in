@@ -203,8 +203,7 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	aot-compiler.c aot-runtime.c aot-runtime-wasm.c \
 	wasm_m2n_invoke.g.h graph.c mini-codegen.c mini-exceptions.c \
 	mini-trampolines.c branch-opts.c mini-generic-sharing.c \
-	simd-methods.h simd-methods-netcore.h tasklets.c tasklets.h \
-	simd-intrinsics.c simd-intrinsics-netcore.c \
+	simd-methods.h tasklets.c tasklets.h simd-intrinsics.c \
 	mini-native-types.c mini-unwind.h unwind.c image-writer.h \
 	image-writer.c dwarfwriter.h dwarfwriter.c mini-gc.h mini-gc.c \
 	debugger-agent.h debugger-engine.h debugger-agent-stubs.c \
@@ -232,7 +231,7 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	tramp-x86.c mini-x86-gsharedvt.c tramp-x86-gsharedvt.c \
 	mini-darwin.c mini-posix.c mini-windows.c \
 	mini-windows-tls-callback.c mini-windows.h \
-	mini-windows-dllmain.c mini-windows-dlldac.c main-core.c
+	mini-windows-dllmain.c mini-windows-dlldac.c
 @ENABLE_MSVC_ONLY_FALSE@am__objects_2 = libmini_la-mini.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-runtime.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmini_la-seq-points.lo \
@@ -262,7 +261,6 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 @ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-generic-sharing.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmini_la-tasklets.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmini_la-simd-intrinsics.lo \
-@ENABLE_MSVC_ONLY_FALSE@	libmini_la-simd-intrinsics-netcore.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmini_la-mini-native-types.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmini_la-unwind.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmini_la-image-writer.lo \
@@ -352,11 +350,9 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_DARWIN_TRUE@am__objects_19 =  \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_DARWIN_TRUE@	$(am__objects_16) \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_DARWIN_TRUE@	$(am__objects_17)
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@am__objects_20 = libmini_la-main-core.lo
 @ENABLE_MSVC_ONLY_FALSE@am_libmini_la_OBJECTS = $(am__objects_2) \
 @ENABLE_MSVC_ONLY_FALSE@	$(am__objects_3) $(am__objects_4) \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_15) $(am__objects_19) \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_20)
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_15) $(am__objects_19)
 libmini_la_OBJECTS = $(am_libmini_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -366,11 +362,11 @@ am__v_lt_1 =
 @BITCODE_TRUE@@DISABLE_DEBUGGER_AGENT_TRUE@@ENABLE_MSVC_ONLY_FALSE@libmono_dbg_la_DEPENDENCIES = libmonosgen-2.0.la
 am__libmono_dbg_la_SOURCES_DIST = debugger-agent.c \
 	debugger-state-machine.c debugger-engine.c
-@ENABLE_MSVC_ONLY_FALSE@@WASM_FALSE@am__objects_21 = libmono_dbg_la-debugger-engine.lo
+@ENABLE_MSVC_ONLY_FALSE@@WASM_FALSE@am__objects_20 = libmono_dbg_la-debugger-engine.lo
 @ENABLE_MSVC_ONLY_FALSE@am_libmono_dbg_la_OBJECTS =  \
 @ENABLE_MSVC_ONLY_FALSE@	libmono_dbg_la-debugger-agent.lo \
 @ENABLE_MSVC_ONLY_FALSE@	libmono_dbg_la-debugger-state-machine.lo \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_21)
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_20)
 libmono_dbg_la_OBJECTS = $(am_libmono_dbg_la_OBJECTS)
 libmono_dbg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -386,13 +382,13 @@ am__libmono_ee_interp_la_SOURCES_DIST = interp/interp.h \
 	interp/interp-intrins.h interp/interp-intrins.c \
 	interp/mintops.h interp/mintops.def interp/mintops.c \
 	interp/transform.h interp/transform.c
-@ENABLE_MSVC_ONLY_FALSE@am__objects_22 =  \
+@ENABLE_MSVC_ONLY_FALSE@am__objects_21 =  \
 @ENABLE_MSVC_ONLY_FALSE@	interp/libmono_ee_interp_la-interp.lo \
 @ENABLE_MSVC_ONLY_FALSE@	interp/libmono_ee_interp_la-interp-intrins.lo \
 @ENABLE_MSVC_ONLY_FALSE@	interp/libmono_ee_interp_la-mintops.lo \
 @ENABLE_MSVC_ONLY_FALSE@	interp/libmono_ee_interp_la-transform.lo
 @ENABLE_MSVC_ONLY_FALSE@am_libmono_ee_interp_la_OBJECTS =  \
-@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_22)
+@ENABLE_MSVC_ONLY_FALSE@	$(am__objects_21)
 libmono_ee_interp_la_OBJECTS = $(am_libmono_ee_interp_la_OBJECTS)
 libmono_ee_interp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -475,9 +471,9 @@ mono_sgen_OBJECTS = $(am_mono_sgen_OBJECTS)
 mono_sgen_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_sgen_CFLAGS) \
 	$(CFLAGS) $(mono_sgen_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_23 =
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@am_monow_OBJECTS = $(am__objects_23)
-@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@am_monow_OBJECTS = $(am__objects_23)
+am__objects_22 =
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@am_monow_OBJECTS = $(am__objects_22)
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@am_monow_OBJECTS = $(am__objects_22)
 monow_OBJECTS = $(am_monow_OBJECTS)
 @ENABLE_MSVC_ONLY_FALSE@am__DEPENDENCIES_9 =  \
 @ENABLE_MSVC_ONLY_FALSE@	libmain_a-main-sgen.$(OBJEXT) \
@@ -651,7 +647,6 @@ FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GLIB_CFLAGS = @GLIB_CFLAGS@
-GLOBALIZATION_SHIM_DEFINES = @GLOBALIZATION_SHIM_DEFINES@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUC_NORETURN = @GNUC_NORETURN@
@@ -668,8 +663,6 @@ HAVE_NINJA = @HAVE_NINJA@
 HAVE_UNISTD_H = @HAVE_UNISTD_H@
 HAVE_YASM = @HAVE_YASM@
 HOST_CC = @HOST_CC@
-ICU_CFLAGS = @ICU_CFLAGS@
-ICU_SHIM_PATH = @ICU_SHIM_PATH@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -1137,9 +1130,6 @@ ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 @ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@llvm_runtime_sources = \
 @ENABLE_LLVM_TRUE@@ENABLE_MSVC_ONLY_FALSE@	llvm-runtime.cpp
 
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@netcore_sources = \
-@ENABLE_MSVC_ONLY_FALSE@@ENABLE_NETCORE_TRUE@	main-core.c
-
 @ENABLE_MSVC_ONLY_FALSE@common_sources = \
 @ENABLE_MSVC_ONLY_FALSE@	mini.c			\
 @ENABLE_MSVC_ONLY_FALSE@	mini-runtime.c	\
@@ -1184,11 +1174,9 @@ ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 @ENABLE_MSVC_ONLY_FALSE@	branch-opts.c		\
 @ENABLE_MSVC_ONLY_FALSE@	mini-generic-sharing.c	\
 @ENABLE_MSVC_ONLY_FALSE@	simd-methods.h		\
-@ENABLE_MSVC_ONLY_FALSE@	simd-methods-netcore.h	\
 @ENABLE_MSVC_ONLY_FALSE@	tasklets.c		\
 @ENABLE_MSVC_ONLY_FALSE@	tasklets.h		\
 @ENABLE_MSVC_ONLY_FALSE@	simd-intrinsics.c	\
-@ENABLE_MSVC_ONLY_FALSE@	simd-intrinsics-netcore.c	\
 @ENABLE_MSVC_ONLY_FALSE@	mini-native-types.c \
 @ENABLE_MSVC_ONLY_FALSE@	mini-unwind.h		\
 @ENABLE_MSVC_ONLY_FALSE@	unwind.c		\
@@ -1357,7 +1345,7 @@ regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 # This library is shared between mono and mono-sgen, since the code in mini/ doesn't contain
 # compile time dependencies on boehm/sgen.
 #
-@ENABLE_MSVC_ONLY_FALSE@libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(llvm_runtime_sources) $(arch_sources) $(os_sources) $(netcore_sources)
+@ENABLE_MSVC_ONLY_FALSE@libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(llvm_runtime_sources) $(arch_sources) $(os_sources)
 @ENABLE_MSVC_ONLY_FALSE@libmini_la_CFLAGS = $(AM_CFLAGS) @CXX_ADD_CFLAGS@
 @ENABLE_MSVC_ONLY_FALSE@libmonoboehm_2_0_la_SOURCES = 
 @ENABLE_MSVC_ONLY_FALSE@libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS) @CXX_ADD_CFLAGS@
@@ -1705,7 +1693,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-lldb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-llvmonly-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-local-propagation.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-main-core.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-memory-access.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-method-to-ir.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-amd64-gsharedvt.Plo@am__quote@
@@ -1742,7 +1729,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-monovm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-seq-points.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-simd-intrinsics-netcore.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-simd-intrinsics.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-ssa.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-tasklets.Plo@am__quote@
@@ -2045,13 +2031,6 @@ libmini_la-simd-intrinsics.lo: simd-intrinsics.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='simd-intrinsics.c' object='libmini_la-simd-intrinsics.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-simd-intrinsics.lo `test -f 'simd-intrinsics.c' || echo '$(srcdir)/'`simd-intrinsics.c
-
-libmini_la-simd-intrinsics-netcore.lo: simd-intrinsics-netcore.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-simd-intrinsics-netcore.lo -MD -MP -MF $(DEPDIR)/libmini_la-simd-intrinsics-netcore.Tpo -c -o libmini_la-simd-intrinsics-netcore.lo `test -f 'simd-intrinsics-netcore.c' || echo '$(srcdir)/'`simd-intrinsics-netcore.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-simd-intrinsics-netcore.Tpo $(DEPDIR)/libmini_la-simd-intrinsics-netcore.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='simd-intrinsics-netcore.c' object='libmini_la-simd-intrinsics-netcore.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-simd-intrinsics-netcore.lo `test -f 'simd-intrinsics-netcore.c' || echo '$(srcdir)/'`simd-intrinsics-netcore.c
 
 libmini_la-mini-native-types.lo: mini-native-types.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-native-types.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-native-types.Tpo -c -o libmini_la-mini-native-types.lo `test -f 'mini-native-types.c' || echo '$(srcdir)/'`mini-native-types.c
@@ -2521,13 +2500,6 @@ libmini_la-mini-windows-dlldac.lo: mini-windows-dlldac.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-windows-dlldac.c' object='libmini_la-mini-windows-dlldac.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-windows-dlldac.lo `test -f 'mini-windows-dlldac.c' || echo '$(srcdir)/'`mini-windows-dlldac.c
-
-libmini_la-main-core.lo: main-core.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-main-core.lo -MD -MP -MF $(DEPDIR)/libmini_la-main-core.Tpo -c -o libmini_la-main-core.lo `test -f 'main-core.c' || echo '$(srcdir)/'`main-core.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-main-core.Tpo $(DEPDIR)/libmini_la-main-core.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main-core.c' object='libmini_la-main-core.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-main-core.lo `test -f 'main-core.c' || echo '$(srcdir)/'`main-core.c
 
 libmono_dbg_la-debugger-agent.lo: debugger-agent.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_dbg_la_CFLAGS) $(CFLAGS) -MT libmono_dbg_la-debugger-agent.lo -MD -MP -MF $(DEPDIR)/libmono_dbg_la-debugger-agent.Tpo -c -o libmono_dbg_la-debugger-agent.lo `test -f 'debugger-agent.c' || echo '$(srcdir)/'`debugger-agent.c
@@ -3137,27 +3109,25 @@ check-local: $(check_local_targets)
 clean-local:
 	rm -f mono mono.exe monow.exe mono-sgen.exe a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
-@ENABLE_NETCORE_TRUE@version.h: Makefile
-@ENABLE_NETCORE_TRUE@	echo "#define FULL_VERSION \"netcore\"" > version.h
-@ENABLE_NETCORE_FALSE@version.h: Makefile
-@ENABLE_NETCORE_FALSE@	if test -e $(top_srcdir)/.git; then \
-@ENABLE_NETCORE_FALSE@		(cd $(top_srcdir); \
-@ENABLE_NETCORE_FALSE@			LANG=C; export LANG; \
-@ENABLE_NETCORE_FALSE@			if test -z "$$ghprbPullId"; then \
-@ENABLE_NETCORE_FALSE@				branch=`git branch | grep '^\*' | sed 's/.*detached .*/explicit/' | cut -d ' ' -f 2`; \
-@ENABLE_NETCORE_FALSE@			else \
-@ENABLE_NETCORE_FALSE@				branch="pull-request-$$ghprbPullId"; \
-@ENABLE_NETCORE_FALSE@			fi; \
-@ENABLE_NETCORE_FALSE@			version=`git log --no-color --first-parent -n1 --pretty=format:%h`; \
-@ENABLE_NETCORE_FALSE@			echo "#define FULL_VERSION \"$$branch/$$version\""; \
-@ENABLE_NETCORE_FALSE@		); \
-@ENABLE_NETCORE_FALSE@	else \
-@ENABLE_NETCORE_FALSE@		if test -z "$$MONO_BRANCH" -o -z "$$MONO_BUILD_REVISION"; then \
-@ENABLE_NETCORE_FALSE@			echo "#define FULL_VERSION \"tarball\""; \
-@ENABLE_NETCORE_FALSE@		else \
-@ENABLE_NETCORE_FALSE@			echo "#define FULL_VERSION \"$$MONO_BRANCH/$$MONO_BUILD_REVISION\""; \
-@ENABLE_NETCORE_FALSE@		fi \
-@ENABLE_NETCORE_FALSE@	fi > version.h
+version.h: Makefile
+	if test -e $(top_srcdir)/.git; then \
+		(cd $(top_srcdir); \
+			LANG=C; export LANG; \
+			if test -z "$$ghprbPullId"; then \
+				branch=`git branch | grep '^\*' | sed 's/.*detached .*/explicit/' | cut -d ' ' -f 2`; \
+			else \
+				branch="pull-request-$$ghprbPullId"; \
+			fi; \
+			version=`git log --no-color --first-parent -n1 --pretty=format:%h`; \
+			echo "#define FULL_VERSION \"$$branch/$$version\""; \
+		); \
+	else \
+		if test -z "$$MONO_BRANCH" -o -z "$$MONO_BUILD_REVISION"; then \
+			echo "#define FULL_VERSION \"tarball\""; \
+		else \
+			echo "#define FULL_VERSION \"$$MONO_BRANCH/$$MONO_BUILD_REVISION\""; \
+		fi \
+	fi > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

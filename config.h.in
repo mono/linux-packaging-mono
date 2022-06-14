@@ -230,9 +230,6 @@
 /* Enable runtime support for Monotouch (Xamarin.iOS and Xamarin.Mac) */
 #undef ENABLE_MONOTOUCH
 
-/* Enables the support for .NET Core Features in the MonoVM */
-#undef ENABLE_NETCORE
-
 /* Overridable allocator support enabled */
 #undef ENABLE_OVERRIDABLE_ALLOCATORS
 
@@ -302,6 +299,9 @@
 
 /* BoringTls is supported */
 #undef HAVE_BTLS
+
+/* Define to 1 if you have the <linux/cgroupstats.h> header file. */
+#undef HAVE_CGROUP_SUPPORT
 
 /* Define to 1 if you have the <checklist.h> header file. */
 #undef HAVE_CHECKLIST_H
