@@ -146,7 +146,7 @@ libmonomath_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$@
 @ENABLE_MSVC_ONLY_FALSE@am_libmonomath_la_rpath =
 @ENABLE_MSVC_ONLY_FALSE@libmonoutils_la_DEPENDENCIES = mono-math-c.lo
-am__libmonoutils_la_SOURCES_DIST = dlmalloc.h dlmalloc.c \
+am__libmonoutils_la_SOURCES_DIST = dlmalloc.h dlmalloc.c mono-cgroup.c \
 	os-event-unix.c mono-os-semaphore-win32.c mono-os-wait-win32.c \
 	mono-windows-thread-name.c os-event-win32.c mono-md5.c \
 	mono-sha1.c mono-logger.c mono-logger-internals.h \
@@ -210,6 +210,7 @@ am__libmonoutils_la_SOURCES_DIST = dlmalloc.h dlmalloc.c \
 	mono-hwcap-sparc.c mono-hwcap-s390x.c mono-hwcap-riscv.c \
 	mono-hwcap-wasm.c mono-hwcap-cross.c
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@am__objects_1 = libmonoutils_la-dlmalloc.lo \
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoutils_la-mono-cgroup.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	libmonoutils_la-os-event-unix.lo
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@am__objects_2 = libmonoutils_la-mono-os-semaphore-win32.lo \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_TRUE@	libmonoutils_la-mono-os-wait-win32.lo \
@@ -536,7 +537,6 @@ FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GLIB_CFLAGS = @GLIB_CFLAGS@
-GLOBALIZATION_SHIM_DEFINES = @GLOBALIZATION_SHIM_DEFINES@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUC_NORETURN = @GNUC_NORETURN@
@@ -553,8 +553,6 @@ HAVE_NINJA = @HAVE_NINJA@
 HAVE_UNISTD_H = @HAVE_UNISTD_H@
 HAVE_YASM = @HAVE_YASM@
 HOST_CC = @HOST_CC@
-ICU_CFLAGS = @ICU_CFLAGS@
-ICU_SHIM_PATH = @ICU_SHIM_PATH@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -781,6 +779,7 @@ MAKEFLAGS := $(MAKEFLAGS) --no-builtin-rules
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@unix_sources = \
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	dlmalloc.h      	\
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	dlmalloc.c      	\
+@ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	mono-cgroup.c		\
 @ENABLE_MSVC_ONLY_FALSE@@HOST_WIN32_FALSE@	os-event-unix.c
 
 @ENABLE_MSVC_ONLY_FALSE@monoutils_sources = \
@@ -1072,6 +1071,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mach-support-unknown.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mach-support-x86.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-memfuncs.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-cgroup.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-codeman.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-conc-hashtable.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoutils_la-mono-context.Plo@am__quote@
@@ -1201,6 +1201,13 @@ libmonoutils_la-dlmalloc.lo: dlmalloc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dlmalloc.c' object='libmonoutils_la-dlmalloc.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-dlmalloc.lo `test -f 'dlmalloc.c' || echo '$(srcdir)/'`dlmalloc.c
+
+libmonoutils_la-mono-cgroup.lo: mono-cgroup.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-mono-cgroup.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-mono-cgroup.Tpo -c -o libmonoutils_la-mono-cgroup.lo `test -f 'mono-cgroup.c' || echo '$(srcdir)/'`mono-cgroup.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoutils_la-mono-cgroup.Tpo $(DEPDIR)/libmonoutils_la-mono-cgroup.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-cgroup.c' object='libmonoutils_la-mono-cgroup.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -c -o libmonoutils_la-mono-cgroup.lo `test -f 'mono-cgroup.c' || echo '$(srcdir)/'`mono-cgroup.c
 
 libmonoutils_la-os-event-unix.lo: os-event-unix.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoutils_la_CFLAGS) $(CFLAGS) -MT libmonoutils_la-os-event-unix.lo -MD -MP -MF $(DEPDIR)/libmonoutils_la-os-event-unix.Tpo -c -o libmonoutils_la-os-event-unix.lo `test -f 'os-event-unix.c' || echo '$(srcdir)/'`os-event-unix.c

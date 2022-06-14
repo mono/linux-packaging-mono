@@ -104,15 +104,14 @@ target_triplet = @target@
 @INSTALL_ORBIS_TRUE@am__append_13 = orbis
 @INSTALL_UNREAL_TRUE@am__append_14 = unreal
 @INSTALL_WASM_TRUE@am__append_15 = wasm wasm_tools
-@ENABLE_NETCORE_TRUE@am__append_16 = netcore
 
 # Mono.WebBrowser.dll fails to verify on Windows
-@HOST_WIN32_TRUE@am__append_17 = Mono.WebBrowser.dll
+@HOST_WIN32_TRUE@am__append_16 = Mono.WebBrowser.dll
 
 #  ILASM.exe has features which a testing_aot_full runtime will not support.
 #  It is invoked with an external mono when used in the runtime.
 #  We skip it here because otherwise it will fail to verify.
-@FULL_AOT_TESTS_TRUE@am__append_18 = ilasm.exe
+@FULL_AOT_TESTS_TRUE@am__append_17 = ilasm.exe
 subdir = runtime
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/apple-target.m4 \
@@ -222,7 +221,6 @@ FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GLIB_CFLAGS = @GLIB_CFLAGS@
-GLOBALIZATION_SHIM_DEFINES = @GLOBALIZATION_SHIM_DEFINES@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUC_NORETURN = @GNUC_NORETURN@
@@ -239,8 +237,6 @@ HAVE_NINJA = @HAVE_NINJA@
 HAVE_UNISTD_H = @HAVE_UNISTD_H@
 HAVE_YASM = @HAVE_YASM@
 HOST_CC = @HOST_CC@
-ICU_CFLAGS = @ICU_CFLAGS@
-ICU_SHIM_PATH = @ICU_SHIM_PATH@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -459,7 +455,7 @@ build_profiles = $(am__append_2) $(am__append_3) $(am__append_4) \
 	$(am__append_5) $(am__append_6) $(am__append_7) \
 	$(am__append_8) $(am__append_9) $(am__append_10) \
 	$(am__append_11) $(am__append_12) $(am__append_13) \
-	$(am__append_14) $(am__append_15) $(am__append_16)
+	$(am__append_14) $(am__append_15)
 @INSTALL_4_x_TRUE@net_profile = net_4_x
 test_profiles = $(filter-out binary_reference_assemblies monodroid_tools wasm_tools,$(build_profiles))
 MAKE_FLAGS = $(if $(V),,--no-print-directory -s)
@@ -475,8 +471,8 @@ TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/csc
 
 # fails to verify with "VTable setup of type Xunit.NetCore.Extensions.SkippedTestCase failed", not sure why
 VERIFY_TESTS_FILTER = System.Runtime.CompilerServices.Unsafe.dll \
-	nunitlite.dll $(am__append_17) Xunit.NetCore.Extensions.dll \
-	$(am__append_18)
+	nunitlite.dll $(am__append_16) Xunit.NetCore.Extensions.dll \
+	$(am__append_17)
 CLEANFILES = etc/mono/config
 all: all-am
 

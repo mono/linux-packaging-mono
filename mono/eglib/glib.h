@@ -31,6 +31,7 @@
 #else
 #include <eglib-config.h>
 #endif
+#include <time.h>
 
 // - Pointers should only be converted to or from pointer-sized integers.
 // - Any size integer can be converted to any other size integer.
@@ -959,14 +960,6 @@ GUnicodeBreakType   g_unichar_break_type (gunichar c);
 
 #define  g_assert_not_reached() G_STMT_START { mono_assertion_message_unreachable (__FILE__, __LINE__); eg_unreachable(); } G_STMT_END
 
-#if ENABLE_NETCORE
-#define g_assert_netcore()     /* nothing */
-#define g_assert_not_netcore() g_assert (!"This function should only be called on mono-notnetcore.")
-#else
-#define g_assert_netcore()     g_assert (!"This function should only be called on mono-netcore.")
-#define g_assert_not_netcore() /* nothing */
-#endif
-
 /* f is format -- like printf and scanf
  * Where you might have said:
  * 	if (!(expr))
@@ -1527,5 +1520,10 @@ mono_qsort (void* base, size_t num, size_t size, int (*compare)(const void*, con
 #define g_try_malloc(x) (g_cast (monoeg_try_malloc (x)))
 #define g_try_realloc(obj, size) (g_cast (monoeg_try_realloc ((obj), (size))))
 #define g_memdup(mem, size) (g_cast (monoeg_g_memdup ((mem), (size))))
+
+#ifndef G_OS_WIN32
+gint
+g_clock_nanosleep (clockid_t clockid, gint flags, const struct timespec *request, struct timespec *remain);
+#endif
 
 #endif // __GLIB_H

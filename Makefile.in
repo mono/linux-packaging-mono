@@ -282,7 +282,6 @@ FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GLIB_CFLAGS = @GLIB_CFLAGS@
-GLOBALIZATION_SHIM_DEFINES = @GLOBALIZATION_SHIM_DEFINES@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUC_NORETURN = @GNUC_NORETURN@
@@ -299,8 +298,6 @@ HAVE_NINJA = @HAVE_NINJA@
 HAVE_UNISTD_H = @HAVE_UNISTD_H@
 HAVE_YASM = @HAVE_YASM@
 HOST_CC = @HOST_CC@
-ICU_CFLAGS = @ICU_CFLAGS@
-ICU_SHIM_PATH = @ICU_SHIM_PATH@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -508,24 +505,24 @@ ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = @MONO_SUBDIRS@
 noinst_SUBDIRS = @MONO_NOINST_SUBDIRS@
 DIST_SUBDIRS = $(SUBDIRS) m4
-@ENABLE_NETCORE_FALSE@EXTRA_DIST = \
-@ENABLE_NETCORE_FALSE@	README.md 		\
-@ENABLE_NETCORE_FALSE@	LICENSE 		\
-@ENABLE_NETCORE_FALSE@	autogen.sh 		\
-@ENABLE_NETCORE_FALSE@	mkinstalldirs 		\
-@ENABLE_NETCORE_FALSE@	mono-uninstalled.pc.in 	\
-@ENABLE_NETCORE_FALSE@	winconfig.h 		\
-@ENABLE_NETCORE_FALSE@	code_of_conduct.md 	\
-@ENABLE_NETCORE_FALSE@	external		\
-@ENABLE_NETCORE_FALSE@	mcs/class/referencesource
+EXTRA_DIST = \
+	README.md 		\
+	LICENSE 		\
+	autogen.sh 		\
+	mkinstalldirs 		\
+	mono-uninstalled.pc.in 	\
+	winconfig.h 		\
+	code_of_conduct.md 	\
+	external		\
+	mcs/class/referencesource
 
-@ENABLE_NETCORE_FALSE@DISTCHECK_CONFIGURE_FLAGS = EXTERNAL_RUNTIME=false
-@ENABLE_NETCORE_FALSE@pkgconfigdir = $(libdir)/pkgconfig
-@ENABLE_NETCORE_FALSE@noinst_DATA = mono-uninstalled.pc
-@ENABLE_NETCORE_FALSE@DISTCLEANFILES = mono-uninstalled.pc
-@BITCODE_TRUE@@ENABLE_NETCORE_FALSE@BITCODE_CHECK = yes
-@DEFAULT_TESTS_FALSE@@ENABLE_NETCORE_FALSE@CI_TEST_SCRIPT = $(srcdir)/scripts/ci/run-test-$(TEST_PROFILE).sh
-@DEFAULT_TESTS_TRUE@@ENABLE_NETCORE_FALSE@CI_TEST_SCRIPT = $(srcdir)/scripts/ci/run-test-default.sh
+DISTCHECK_CONFIGURE_FLAGS = EXTERNAL_RUNTIME=false
+pkgconfigdir = $(libdir)/pkgconfig
+noinst_DATA = mono-uninstalled.pc
+DISTCLEANFILES = mono-uninstalled.pc
+@BITCODE_TRUE@BITCODE_CHECK = yes
+@DEFAULT_TESTS_FALSE@CI_TEST_SCRIPT = $(srcdir)/scripts/ci/run-test-$(TEST_PROFILE).sh
+@DEFAULT_TESTS_TRUE@CI_TEST_SCRIPT = $(srcdir)/scripts/ci/run-test-default.sh
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -699,7 +696,6 @@ cscopelist-am: $(am__tagged_files)
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 	-rm -f cscope.out cscope.in.out cscope.po.out cscope.files
-@ENABLE_NETCORE_TRUE@dist-hook:
 
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
@@ -896,7 +892,6 @@ check: check-recursive
 all-am: Makefile $(DATA) config.h
 installdirs: installdirs-recursive
 installdirs-am:
-@ENABLE_NETCORE_TRUE@install: install-recursive
 install-exec: install-exec-recursive
 install-data: install-data-recursive
 uninstall: uninstall-recursive
@@ -1028,73 +1023,73 @@ uninstall-am:
 .PRECIOUS: Makefile
 
 
-@ENABLE_NETCORE_FALSE@all: $(update_submodules)
+all: $(update_submodules)
 
-@ENABLE_NETCORE_FALSE@update_submodules:
-@ENABLE_NETCORE_FALSE@	@cd $(srcdir) && scripts/update_submodules.sh
+update_submodules:
+	@cd $(srcdir) && scripts/update_submodules.sh
 
-@ENABLE_NETCORE_FALSE@.PHONY: update_submodules
+.PHONY: update_submodules
 
 # Distribute the 'mcs' tree too
-@ENABLE_NETCORE_FALSE@GIT_DIR ?= $(srcdir)/.git
-@ENABLE_NETCORE_FALSE@dist-hook:
-@ENABLE_NETCORE_FALSE@	test -d $(distdir)/mcs || mkdir $(distdir)/mcs
-@ENABLE_NETCORE_FALSE@	d=`cd $(distdir)/mcs && pwd`; cd $(mcs_topdir) && $(MAKE) distdir=$$d dist-recursive
-@ENABLE_NETCORE_FALSE@	rm -rf `find $(top_distdir)/external -path '*\.git'`
-@ENABLE_NETCORE_FALSE@	rm -rf `find $(top_distdir)/external -path '*\.libs'`
-@ENABLE_NETCORE_FALSE@	rm -rf `find $(top_distdir)/external -path '*\.deps'`
-@ENABLE_NETCORE_FALSE@	rm -f `find $(top_distdir)/external -path '*\.o'`
-@ENABLE_NETCORE_FALSE@	rm -f `find $(top_distdir)/external -path '*\.so'`
-@ENABLE_NETCORE_FALSE@	rm -f `find $(top_distdir)/external -path '*\.lo'`
-@ENABLE_NETCORE_FALSE@	rm -f `find $(top_distdir)/external -path '*\.Plo'`
-@ENABLE_NETCORE_FALSE@	rm -f `find $(top_distdir)/external -name '\.dirstamp'`
-@ENABLE_NETCORE_FALSE@	rm -f `find $(top_distdir)/external -path '*\.exe' -not -path '*/roslyn-binaries/*'`
-@ENABLE_NETCORE_FALSE@	rm -f `find $(top_distdir)/external -path '*\.dll' -not -path '*/binary-reference-assemblies/*' -not -path '*/roslyn-binaries/*' -not -path '*/helix-binaries/*'`
-@ENABLE_NETCORE_FALSE@	rm -rf "$(top_distdir)/external/linker/test"
-@ENABLE_NETCORE_FALSE@	rm -rf "$(top_distdir)/external/llvm-project/lldb/test"
-@ENABLE_NETCORE_FALSE@	rm -rf "$(top_distdir)/external/llvm-project/libcxx/test"
-@ENABLE_NETCORE_FALSE@	rm -rf "$(top_distdir)/external/llvm-project/clang/test"
+GIT_DIR ?= $(srcdir)/.git
+dist-hook:
+	test -d $(distdir)/mcs || mkdir $(distdir)/mcs
+	d=`cd $(distdir)/mcs && pwd`; cd $(mcs_topdir) && $(MAKE) distdir=$$d dist-recursive
+	rm -rf `find $(top_distdir)/external -path '*\.git'`
+	rm -rf `find $(top_distdir)/external -path '*\.libs'`
+	rm -rf `find $(top_distdir)/external -path '*\.deps'`
+	rm -f `find $(top_distdir)/external -path '*\.o'`
+	rm -f `find $(top_distdir)/external -path '*\.so'`
+	rm -f `find $(top_distdir)/external -path '*\.lo'`
+	rm -f `find $(top_distdir)/external -path '*\.Plo'`
+	rm -f `find $(top_distdir)/external -name '\.dirstamp'`
+	rm -f `find $(top_distdir)/external -path '*\.exe' -not -path '*/roslyn-binaries/*'`
+	rm -f `find $(top_distdir)/external -path '*\.dll' -not -path '*/binary-reference-assemblies/*' -not -path '*/roslyn-binaries/*'`
+	rm -rf "$(top_distdir)/external/linker/test"
+	rm -rf "$(top_distdir)/external/llvm-project/lldb/test"
+	rm -rf "$(top_distdir)/external/llvm-project/libcxx/test"
+	rm -rf "$(top_distdir)/external/llvm-project/clang/test"
 
 # building with monolite
-@ENABLE_NETCORE_FALSE@.PHONY: get-monolite-latest 
-@ENABLE_NETCORE_FALSE@get-monolite-latest:
-@ENABLE_NETCORE_FALSE@	$(MAKE) -C $(mcs_topdir)/class get-monolite-latest
+.PHONY: get-monolite-latest 
+get-monolite-latest:
+	$(MAKE) -C $(mcs_topdir)/class get-monolite-latest
 
-@ENABLE_NETCORE_FALSE@.PHONY: check-ci
-@ENABLE_NETCORE_FALSE@check-ci:
-@ENABLE_NETCORE_FALSE@	MONO_LLVMONLY=$(BITCODE_CHECK) $(CI_TEST_SCRIPT)
+.PHONY: check-ci
+check-ci:
+	MONO_LLVMONLY=$(BITCODE_CHECK) $(CI_TEST_SCRIPT)
 
-@ENABLE_NETCORE_FALSE@.PHONY: validate do-build-mono-mcs mcs-do-clean mcs-do-tests
-@ENABLE_NETCORE_FALSE@validate: do-build-mono-mcs
-@ENABLE_NETCORE_FALSE@	$(MAKE) mcs-do-tests
-@ENABLE_NETCORE_FALSE@do-build-mono-mcs: mcs-do-clean
-@ENABLE_NETCORE_FALSE@	$(MAKE) all
-@ENABLE_NETCORE_FALSE@mcs-do-clean:
-@ENABLE_NETCORE_FALSE@	cd runtime && $(MAKE) clean-local
-@ENABLE_NETCORE_FALSE@	cd mono/tests && $(MAKE) clean
-@ENABLE_NETCORE_FALSE@mcs-do-tests:
-@ENABLE_NETCORE_FALSE@	cd runtime && $(MAKE) check-local
-@ENABLE_NETCORE_FALSE@	cd mono/tests && $(MAKE) check
+.PHONY: validate do-build-mono-mcs mcs-do-clean mcs-do-tests
+validate: do-build-mono-mcs
+	$(MAKE) mcs-do-tests
+do-build-mono-mcs: mcs-do-clean
+	$(MAKE) all
+mcs-do-clean:
+	cd runtime && $(MAKE) clean-local
+	cd mono/tests && $(MAKE) clean
+mcs-do-tests:
+	cd runtime && $(MAKE) check-local
+	cd mono/tests && $(MAKE) check
 
-@ENABLE_NETCORE_FALSE@.PHONY: compiler-tests mcs-do-compiler-tests
-@ENABLE_NETCORE_FALSE@compiler-tests:
-@ENABLE_NETCORE_FALSE@	$(MAKE) test_select='TEST_SUBDIRS="tests errors"' validate
-@ENABLE_NETCORE_FALSE@mcs-do-compiler-tests:
-@ENABLE_NETCORE_FALSE@	$(MAKE) test_select='TEST_SUBDIRS="tests errors"' mcs-do-tests
+.PHONY: compiler-tests mcs-do-compiler-tests
+compiler-tests:
+	$(MAKE) test_select='TEST_SUBDIRS="tests errors"' validate
+mcs-do-compiler-tests:
+	$(MAKE) test_select='TEST_SUBDIRS="tests errors"' mcs-do-tests
 
-@ENABLE_NETCORE_FALSE@.PHONY: bootstrap-world
-@ENABLE_NETCORE_FALSE@bootstrap-world: compiler-tests
-@ENABLE_NETCORE_FALSE@	$(MAKE) install
+.PHONY: bootstrap-world
+bootstrap-world: compiler-tests
+	$(MAKE) install
 
-@ENABLE_NETCORE_FALSE@install:
-@ENABLE_NETCORE_FALSE@	for mydir in $(filter-out $(noinst_SUBDIRS),$(SUBDIRS)); do \
-@ENABLE_NETCORE_FALSE@	  (cd $${mydir} && ${MAKE} install) \
-@ENABLE_NETCORE_FALSE@	done
+install:
+	for mydir in $(filter-out $(noinst_SUBDIRS),$(SUBDIRS)); do \
+	  (cd $${mydir} && ${MAKE} install) \
+	done
 
 # Update llvm version in configure.ac to the output of $LLVM_DIR/bin/llvm-config --version
-@ENABLE_NETCORE_FALSE@update-llvm-version:
-@ENABLE_NETCORE_FALSE@	if test "x$$LLVM_DIR" = "x"; then echo "Set the make variable LLVM_DIR to the directory containing the LLVM installation."; exit 1; fi
-@ENABLE_NETCORE_FALSE@	REV=`$(LLVM_DIR)/bin/llvm-config --version` && sed -e "s,expected_llvm_version=.*,expected_llvm_version=\"$$REV\"," < configure.ac > tmp && mv tmp configure.ac && echo "Version set to $$REV."
+update-llvm-version:
+	if test "x$$LLVM_DIR" = "x"; then echo "Set the make variable LLVM_DIR to the directory containing the LLVM installation."; exit 1; fi
+	REV=`$(LLVM_DIR)/bin/llvm-config --version` && sed -e "s,expected_llvm_version=.*,expected_llvm_version=\"$$REV\"," < configure.ac > tmp && mv tmp configure.ac && echo "Version set to $$REV."
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1645,13 +1645,6 @@ handle_enum:
 
 	if (sig->ret->byref) {
 		/* perform indirect load and return by value */
-#ifdef ENABLE_NETCORE
-		int pos;
-		mono_mb_emit_byte (mb, CEE_DUP);
-		pos = mono_mb_emit_branch (mb, CEE_BRTRUE);
-		mono_mb_emit_exception_full (mb, "Mono", "NullByRefReturnException", NULL);
-		mono_mb_patch_branch (mb, pos);
-#endif
 
 		int ldind_op;
 		MonoType* ret_byval = m_class_get_byval_arg (mono_class_from_mono_type_internal (sig->ret));
@@ -2061,40 +2054,6 @@ emit_native_wrapper_ilgen (MonoImage *image, MonoMethodBuilder *mb, MonoMethodSi
 	if (need_gc_safe)
 		gc_safe_transition_builder_add_locals (&gc_safe_transition_builder);
 
-#ifdef ENABLE_NETCORE
-	if (!func && !aot && !func_param && !MONO_CLASS_IS_IMPORT (mb->method->klass)) {
-		/*
-		 * On netcore, its possible to register pinvoke resolvers at runtime, so
-		 * a pinvoke lookup can fail, and then succeed later. So if the
-		 * original lookup failed, do a lookup every time until it
-		 * succeeds.
-		 * This adds some overhead, but only when the pinvoke lookup
-		 * was not initially successful.
-		 * FIXME: AOT case
-		 */
-		func_addr_local = mono_mb_add_local (mb, int_type);
-
-		int cache_local = mono_mb_add_local (mb, int_type);
-		mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-		mono_mb_emit_op (mb, CEE_MONO_PINVOKE_ADDR_CACHE, &piinfo->method);
-		mono_mb_emit_stloc (mb, cache_local);
-
-		mono_mb_emit_ldloc (mb, cache_local);
-		mono_mb_emit_byte (mb, CEE_LDIND_I);
-		int pos = mono_mb_emit_branch (mb, CEE_BRTRUE);
-
-		mono_mb_emit_ldloc (mb, cache_local);
-		mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-		mono_mb_emit_op (mb, CEE_MONO_METHODCONST, &piinfo->method);
-		mono_mb_emit_icall (mb, mono_marshal_lookup_pinvoke);
-		mono_mb_emit_byte (mb, CEE_STIND_I);
-
-		mono_mb_patch_branch (mb, pos);
-		mono_mb_emit_ldloc (mb, cache_local);
-		mono_mb_emit_byte (mb, CEE_LDIND_I);
-		mono_mb_emit_stloc (mb, func_addr_local);
-	}
-#endif
 
 	/*
 	 * cookie = mono_threads_enter_gc_safe_region_unbalanced (ref dummy);
@@ -6328,7 +6287,7 @@ emit_managed_wrapper_ilgen (MonoMethodBuilder *mb, MonoMethodSignature *invoke_s
 	/* ret = method (...) */
 	mono_mb_emit_managed_call (mb, method, NULL);
 
-	if (MONO_TYPE_ISSTRUCT (sig->ret)) {
+	if (MONO_TYPE_ISSTRUCT (sig->ret) && sig->ret->type != MONO_TYPE_GENERICINST) {
 		MonoClass *klass = mono_class_from_mono_type_internal (sig->ret);
 		mono_class_init_internal (klass);
 		if (!(mono_class_is_explicit_layout (klass) || m_class_is_blittable (klass))) {
@@ -6372,6 +6331,10 @@ emit_managed_wrapper_ilgen (MonoMethodBuilder *mb, MonoMethodSignature *invoke_s
 		case MONO_TYPE_SZARRAY:
 			mono_emit_marshal (m, 0, sig->ret, mspecs [0], 0, NULL, MARSHAL_ACTION_MANAGED_CONV_RESULT);
 			break;
+		case MONO_TYPE_GENERICINST: {
+			mono_mb_emit_byte (mb, CEE_POP);
+			break;
+		}
 		default:
 			g_warning ("return type 0x%02x unknown", sig->ret->type);	
 			g_assert_not_reached ();
@@ -6513,11 +6476,7 @@ emit_create_string_hack_ilgen (MonoMethodBuilder *mb, MonoMethodSignature *csig,
 {
 	int i;
 
-#ifdef ENABLE_NETCORE
-	g_assert (!mono_method_signature_internal (res)->hasthis);
-#else
 	mono_mb_emit_byte (mb, CEE_LDARG_0);
-#endif
 	for (i = 1; i <= csig->param_count; i++)
 		mono_mb_emit_ldarg (mb, i);
 	mono_mb_emit_managed_call (mb, res, NULL);
