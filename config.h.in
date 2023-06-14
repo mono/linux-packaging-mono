@@ -755,6 +755,9 @@
 /* No GC support. */
 #undef HAVE_NULL_GC
 
+/* struct objc_super.super_class */
+#undef HAVE_OBJC_SUPER_SUPER_CLASS
+
 /* Define to 1 if you have the `openlog' function. */
 #undef HAVE_OPENLOG
 
