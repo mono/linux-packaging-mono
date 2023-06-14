@@ -269,7 +269,7 @@ typedef struct {
 #define HEADER_LENGTH 11
 
 #define MAJOR_VERSION 2
-#define MINOR_VERSION 58
+#define MINOR_VERSION 63
 
 typedef enum {
 	CMD_SET_VM = 1,
@@ -358,7 +358,8 @@ typedef enum {
 	CMD_VM_GET_TYPES = 12,
 	CMD_VM_INVOKE_METHODS = 13,
 	CMD_VM_START_BUFFERING = 14,
-	CMD_VM_STOP_BUFFERING = 15
+	CMD_VM_STOP_BUFFERING = 15,
+	CMD_GET_ENC_CAPABILITIES = 21
 } CmdVM;
 
 typedef enum {
@@ -408,6 +409,8 @@ typedef enum {
 	CMD_ASSEMBLY_GET_METHOD_FROM_TOKEN = 12,
 	CMD_ASSEMBLY_HAS_DEBUG_INFO = 13,
 	CMD_ASSEMBLY_GET_CATTRS = 14,
+	CMD_ASSEMBLY_GET_DEBUG_INFORMATION = 17,
+	CMD_ASSEMBLY_HAS_DEBUG_INFO_LOADED = 18
 } CmdAssembly;
 
 typedef enum {
@@ -875,6 +878,25 @@ debugger_agent_parse_options (char *options)
 			exit (1);
 		}
 	}
+
+	mini_get_debug_options ()->gen_sdb_seq_points = TRUE;
+	/* 
+	 * This is needed because currently we don't handle liveness info.
+	 */
+	mini_get_debug_options ()->mdb_optimizations = TRUE;
+
+#ifndef MONO_ARCH_HAVE_CONTEXT_SET_INT_REG
+	/* This is needed because we can't set local variables in registers yet */
+	mono_disable_optimizations (MONO_OPT_LINEARS);
+#endif
+
+	/*
+	 * The stack walk done from thread_interrupt () needs to be signal safe, but it
+	 * isn't, since it can call into mono_aot_find_jit_info () which is not signal
+	 * safe (#3411). So load AOT info eagerly when the debugger is running as a
+	 * workaround.
+	 */
+	mini_get_debug_options ()->load_aot_jit_info_eagerly = TRUE;
 }
 
 void
@@ -1001,25 +1023,6 @@ debugger_agent_init (void)
 	ids_init ();
 	objrefs_init ();
 	suspend_init ();
-
-	mini_get_debug_options ()->gen_sdb_seq_points = TRUE;
-	/* 
-	 * This is needed because currently we don't handle liveness info.
-	 */
-	mini_get_debug_options ()->mdb_optimizations = TRUE;
-
-#ifndef MONO_ARCH_HAVE_CONTEXT_SET_INT_REG
-	/* This is needed because we can't set local variables in registers yet */
-	mono_disable_optimizations (MONO_OPT_LINEARS);
-#endif
-
-	/*
-	 * The stack walk done from thread_interrupt () needs to be signal safe, but it
-	 * isn't, since it can call into mono_aot_find_jit_info () which is not signal
-	 * safe (#3411). So load AOT info eagerly when the debugger is running as a
-	 * workaround.
-	 */
-	mini_get_debug_options ()->load_aot_jit_info_eagerly = TRUE;
 
 #ifdef HAVE_SETPGID
 	if (agent_config.setpgid)
@@ -7312,6 +7315,10 @@ vm_commands (int command, int id, guint8 *p, guint8 *end, Buffer *buf)
 	case CMD_VM_STOP_BUFFERING:
 		/* Handled in the main loop */
 		break;
+	case CMD_GET_ENC_CAPABILITIES: {
+		buffer_add_string (buf, "Baseline");
+		break;
+	}
 	default:
 		return ERR_NOT_IMPLEMENTED;
 	}
@@ -7912,6 +7919,58 @@ assembly_commands (int command, guint8 *p, guint8 *end, Buffer *buf)
 		err = buffer_add_cattrs (buf, domain, mono_assembly_get_image_internal (ass), attr_klass, cinfo);
 		if (err != ERR_NONE)
 			return err;
+		break;
+	}
+	case CMD_ASSEMBLY_GET_DEBUG_INFORMATION: {
+		guint8 pe_guid [16];
+		gint32 pe_age;
+		gint32 pe_timestamp;
+		guint8 *ppdb_data = NULL;
+		int ppdb_size = 0, ppdb_compressed_size = 0;
+		char *ppdb_path;
+		GArray *pdb_checksum_hash_type = g_array_new (FALSE, TRUE, sizeof (char*));
+		GArray *pdb_checksum = g_array_new (FALSE, TRUE, sizeof (guint8*));
+		gboolean has_debug_info = mono_get_pe_debug_info_full (ass->image, pe_guid, &pe_age, &pe_timestamp, &ppdb_data, &ppdb_size, &ppdb_compressed_size, &ppdb_path, pdb_checksum_hash_type, pdb_checksum);
+		if (!has_debug_info || ppdb_size > 0)
+		{
+			buffer_add_byte (buf, 0);
+			g_array_free (pdb_checksum_hash_type, TRUE);
+			g_array_free (pdb_checksum, TRUE);
+			return ERR_NONE;
+		}
+		buffer_add_byte (buf, 1);
+		buffer_add_int (buf, pe_age);
+		buffer_add_byte_array (buf, pe_guid, 16);
+		buffer_add_string (buf, ppdb_path);
+		buffer_add_int (buf, pdb_checksum_hash_type->len);
+		for (int i = 0 ; i < pdb_checksum_hash_type->len; ++i) {
+			char* checksum_hash_type =  g_array_index (pdb_checksum_hash_type, char*, i);
+			buffer_add_string (buf, checksum_hash_type);
+			if (!strcmp (checksum_hash_type, "SHA256"))
+				buffer_add_byte_array (buf, g_array_index (pdb_checksum, guint8*, i), 32);
+			else if (!strcmp (checksum_hash_type, "SHA384"))
+				buffer_add_byte_array (buf, g_array_index (pdb_checksum, guint8*, i), 48);
+			else if (!strcmp (checksum_hash_type, "SHA512"))
+				buffer_add_byte_array (buf, g_array_index (pdb_checksum, guint8*, i), 64);
+		}
+		g_array_free (pdb_checksum_hash_type, TRUE);
+		g_array_free (pdb_checksum, TRUE);
+		break;
+	}
+	case CMD_ASSEMBLY_HAS_DEBUG_INFO_LOADED: {
+		MonoImage* image = ass->image;
+		MonoDebugHandle* handle = mono_debug_get_handle (image);
+		if (!handle) {
+			buffer_add_byte (buf, 0);
+			return ERR_NONE;
+		}
+		MonoPPDBFile* ppdb = handle->ppdb;
+		if (ppdb) {
+			image = mono_ppdb_get_image (ppdb);
+			buffer_add_byte (buf, image->raw_data_len > 0);
+		} else {
+			buffer_add_byte (buf, 0);
+		}
 		break;
 	}
 	default:
@@ -8616,6 +8675,8 @@ method_commands_internal (int command, MonoMethod *method, MonoDomain *domain, g
 	}
 	case CMD_METHOD_GET_PARAM_INFO: {
 		MonoMethodSignature *sig = mono_method_signature_internal (method);
+		if (!sig)
+			return ERR_INVALID_ARGUMENT;
 		guint32 i;
 		char **names;
 

@@ -70,6 +70,7 @@
 			__d [__i] = NULL;		\
 	} while (0)
 
+#define MINMEMSZ 20971520	/* Minimum restricted memory size - 20MB */
 
 /**
  * mono_gc_bzero_aligned:
@@ -320,7 +321,7 @@ mono_determine_physical_ram_size (void)
 				restricted_limit = (3 * restricted_limit) / 4;	/* Use 75% limit of container */
 			}
 		}
-		return (restricted_limit < 209715200 ? 209715200 : 	/* Use at least 20MB */
+		return (restricted_limit < MINMEMSZ ? MINMEMSZ : 	/* Use at least 20MB */
 			(restricted_limit < memsize ? restricted_limit : memsize));
 	}
 
