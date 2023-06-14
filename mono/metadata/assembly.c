@@ -749,7 +749,7 @@ mono_assembly_names_equal_flags (MonoAssemblyName *l, MonoAssemblyName *r, MonoA
  * if \p r is a lower version than \p l, or zero if \p l and \p r are equal
  * versions (comparing upto \p maxcomps components).
  *
- * Components are \c major, \c minor, \c revision, and \c build. \p maxcomps 1 means just compare
+ * Components are \c major, \c minor, \c build, and \c revision. \p maxcomps 1 means just compare
  * majors. 2 means majors then minors. etc.
  */
 static int
@@ -765,9 +765,9 @@ assembly_names_compare_versions (MonoAssemblyName *l, MonoAssemblyName *r, int m
 	++i;
 	CMP (minor);
 	++i;
-	CMP (revision);
-	++i;
 	CMP (build);
+	++i;
+	CMP (revision);
 #undef CMP
 	return 0;
 }
@@ -3176,6 +3176,8 @@ mono_assembly_request_load_from (MonoImage *image, const char *fname,
 	if (m_image_is_module_handle (image))
 		mono_image_fixup_vtable (image);
 #endif
+
+	*status = MONO_IMAGE_OK;
 
 	mono_assembly_invoke_load_hook_internal (req->alc, ass);
 
