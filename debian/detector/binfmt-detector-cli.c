@@ -84,7 +84,7 @@ int main(int argc, char **argv)
 		rva = dotnet_header.datadir.pe_cli_header.rva[0]
 		    | dotnet_header.datadir.pe_cli_header.rva[1] << 8
 		    | dotnet_header.datadir.pe_cli_header.rva[2] << 16
-		    | dotnet_header.datadir.pe_cli_header.rva[1] << 24;
+		    | dotnet_header.datadir.pe_cli_header.rva[3] << 24;
 		if ((dotnet_header.datadir.pe_cli_header.size != 0) &&
 			(rva != 0) &&
 			(fseek(image, rva, SEEK_SET) == 0))
