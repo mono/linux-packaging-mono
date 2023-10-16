@@ -1,4 +1,4 @@
-binfmt-detector-cli: binfmt-detector-cli.c cil-coff.h
+binfmt-detector-cli: binfmt-detector-cli.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) binfmt-detector-cli.c -o binfmt-detector-cli
 	strip binfmt-detector-cli
 
